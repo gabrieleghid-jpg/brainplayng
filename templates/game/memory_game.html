@@ -141,7 +141,8 @@
         .card-back {
             background: white;
             transform: rotateY(180deg);
-            font-size: 3em;
+            font-size: 4em;
+            font-weight: bold;
         }
         
         @keyframes matchPulse {
@@ -307,6 +308,14 @@
             isProcessing: false
         };
         
+        // Configurazione gioco
+        const CARD_SYMBOLS = ['🎮', '🎯', '🎨', '🎭', '🎪', '🎸', '🎺', '🎻'];
+        const LEVEL_CONFIG = {
+            'facile': {'pairs': 4, 'time_bonus': 100},
+            'medio': {'pairs': 6, 'time_bonus': 150},
+            'difficile': {'pairs': 8, 'time_bonus': 200}
+        };
+        
         // Inizializza il gioco
         function initGame() {
             setupLevelButtons();
@@ -326,29 +335,32 @@
         }
         
         // Inizia una nuova partita
-        async function startNewGame() {
-            try {
-                const response = await fetch(`/game/api/new-game?level=${gameState.level}`);
-                const data = await response.json();
-                
-                gameState.cards = data.cards;
-                gameState.flipped = [];
-                gameState.matched = [];
-                gameState.moves = 0;
-                gameState.score = 0;
-                gameState.isProcessing = false;
-                
-                updateDisplay();
-                renderGameBoard();
-                updatePairsDisplay();
-                
-                // Aggiorna la griglia in base al livello
-                const board = document.getElementById('gameBoard');
-                board.className = `game-board ${gameState.level}`;
-                
-            } catch (error) {
-                console.error('Errore nell\'avvio del gioco:', error);
+        function startNewGame() {
+            const pairs = LEVEL_CONFIG[gameState.level]['pairs'];
+            
+            // Crea carte duplicate
+            const symbols = CARD_SYMBOLS.slice(0, pairs);
+            gameState.cards = [...symbols, ...symbols];
+            
+            // Mischia le carte
+            for (let i = gameState.cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [gameState.cards[i], gameState.cards[j]] = [gameState.cards[j], gameState.cards[i]];
             }
+            
+            gameState.flipped = [];
+            gameState.matched = [];
+            gameState.moves = 0;
+            gameState.score = 0;
+            gameState.isProcessing = false;
+            
+            updateDisplay();
+            renderGameBoard();
+            updatePairsDisplay();
+            
+            // Aggiorna la griglia in base al livello
+            const board = document.getElementById('gameBoard');
+            board.className = `game-board ${gameState.level}`;
         }
         
         // Renderizza il tabellone di gioco
@@ -372,10 +384,14 @@
         }
         
         // Gira una carta
-        async function flipCard(index) {
+        function flipCard(index) {
             if (gameState.isProcessing) return;
             if (gameState.flipped.includes(index) || gameState.matched.includes(index)) return;
             if (gameState.flipped.length >= 2) return;
+            
+            // Conta la mossa solo quando si clicca una carta
+            gameState.moves++;
+            updateDisplay();
             
             const card = document.querySelector(`[data-index="${index}"]`);
             card.classList.add('flipped');
@@ -384,67 +400,44 @@
             if (gameState.flipped.length === 2) {
                 gameState.isProcessing = true;
                 
-                try {
-                    const response = await fetch('/game/api/flip-card', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ index: index })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (data.error) {
-                        console.error(data.error);
-                        return;
-                    }
-                    
-                    gameState.moves = data.moves;
-                    gameState.score = data.score;
-                    gameState.matched = data.matched;
-                    
-                    updateDisplay();
-                    updatePairsDisplay();
-                    
-                    if (data.game_won) {
-                        showVictory(data);
-                    } else if (!data.matched) {
-                        // Le carte non corrispondono, rigirale dopo un delay
-                        setTimeout(async () => {
-                            await resetFlipped();
-                        }, 1000);
-                    } else {
-                        // Le carte corrispondono, aggiungi l'animazione
-                        gameState.flipped.forEach(i => {
-                            document.querySelector(`[data-index="${i}"]`).classList.add('matched');
-                        });
+                const [card1, card2] = gameState.flipped;
+                
+                // Controlla se le carte corrispondono
+                if (gameState.cards[card1] === gameState.cards[card2]) {
+                    // Le carte corrispondono
+                    setTimeout(() => {
+                        gameState.matched.push(card1, card2);
+                        gameState.flipped = [];
+                        
+                        // Aggiungi animazione di match
+                        document.querySelector(`[data-index="${card1}"]`).classList.add('matched');
+                        document.querySelector(`[data-index="${card2}"]`).classList.add('matched');
+                        
+                        // Calcola punteggio
+                        const timeBonus = LEVEL_CONFIG[gameState.level]['time_bonus'];
+                        gameState.score += timeBonus - (gameState.moves * 2);
+                        
+                        updateDisplay();
+                        updatePairsDisplay();
+                        
+                        // Controlla vittoria
+                        if (gameState.matched.length === gameState.cards.length) {
+                            showVictory();
+                        }
+                        
+                        gameState.isProcessing = false;
+                    }, 600);
+                } else {
+                    // Le carte non corrispondono, rigirale
+                    setTimeout(() => {
+                        document.querySelector(`[data-index="${card1}"]`).classList.remove('flipped');
+                        document.querySelector(`[data-index="${card2}"]`).classList.remove('flipped');
                         gameState.flipped = [];
                         gameState.isProcessing = false;
-                    }
-                    
-                } catch (error) {
-                    console.error('Errore nel girare la carta:', error);
-                    gameState.isProcessing = false;
+                    }, 1000);
                 }
-            }
-        }
-        
-        // Resetta le carte girate che non corrispondono
-        async function resetFlipped() {
-            try {
-                await fetch('/game/api/reset-flipped');
                 
-                gameState.flipped.forEach(index => {
-                    const card = document.querySelector(`[data-index="${index}"]`);
-                    card.classList.remove('flipped');
-                });
-                
-                gameState.flipped = [];
-                gameState.isProcessing = false;
-                
-            } catch (error) {
-                console.error('Errore nel reset delle carte:', error);
+                updateDisplay();
             }
         }
         
@@ -462,10 +455,10 @@
         }
         
         // Mostra la vittoria
-        function showVictory(data) {
-            document.getElementById('finalMoves').textContent = data.moves;
-            document.getElementById('finalScore').textContent = data.score;
-            document.getElementById('finalTime').textContent = Math.round(data.time);
+        function showVictory() {
+            document.getElementById('finalMoves').textContent = gameState.moves;
+            document.getElementById('finalScore').textContent = gameState.score;
+            document.getElementById('finalTime').textContent = Math.floor(gameState.moves * 2); // Tempo simulato
             document.getElementById('victoryModal').style.display = 'flex';
         }
         
@@ -475,32 +468,31 @@
             startNewGame();
         }
         
-        // Mostra la classifica
-        async function showLeaderboard() {
+        // Mostra la classifica (dati di esempio)
+        function showLeaderboard() {
             const leaderboard = document.getElementById('leaderboard');
             
             if (leaderboard.style.display === 'none') {
-                try {
-                    const response = await fetch('/game/api/leaderboard');
-                    const data = await response.json();
-                    
-                    const leaderboardList = document.getElementById('leaderboardList');
-                    leaderboardList.innerHTML = '';
-                    
-                    data.forEach((entry, index) => {
-                        const item = document.createElement('div');
-                        item.className = 'leaderboard-item';
-                        item.innerHTML = `
-                            <span>${index + 1}. ${entry.name}</span>
-                            <span>${entry.score} pts - ${entry.level}</span>
-                        `;
-                        leaderboardList.appendChild(item);
-                    });
-                    
-                    leaderboard.style.display = 'block';
-                } catch (error) {
-                    console.error('Errore nel caricare la classifica:', error);
-                }
+                const leaderboardList = document.getElementById('leaderboardList');
+                leaderboardList.innerHTML = '';
+                
+                const sampleData = [
+                    {name: 'Player1', score: 850, level: 'difficile'},
+                    {name: 'Player2', score: 720, level: 'medio'},
+                    {name: 'Player3', score: 650, level: 'facile'}
+                ];
+                
+                sampleData.forEach((entry, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'leaderboard-item';
+                    item.innerHTML = `
+                        <span>${index + 1}. ${entry.name}</span>
+                        <span>${entry.score} pts - ${entry.level}</span>
+                    `;
+                    leaderboardList.appendChild(item);
+                });
+                
+                leaderboard.style.display = 'block';
             } else {
                 leaderboard.style.display = 'none';
             }
