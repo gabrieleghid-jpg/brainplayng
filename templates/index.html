@@ -1,0 +1,173 @@
+<!-- Responsabile: COLLABORATORE 2 - Home & Estetica -->
+<!-- Homepage principale della piattaforma BrainPlayNG -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainPlayNG - Piattaforma di Studio con IA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <h1>🧠 BrainPlayNG</h1>
+                </div>
+                <div class="nav-links">
+                    <a href="#features">Funzionalità</a>
+                    <a href="#about">Chi Siamo</a>
+                    <a href="/auth/login" class="btn btn-primary">Accedi</a>
+                    <a href="/auth/register" class="btn btn-secondary">Registrati</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Impara Divertendoti con l'Intelligenza Artificiale</h1>
+                <p class="hero-subtitle">
+                    La piattaforma innovativa che unisce studio e gioco attraverso schemi personalizzati 
+                    generati da IA per un apprendimento efficace e coinvolgente.
+                </p>
+                <div class="hero-buttons">
+                    <a href="/auth/register" class="btn btn-primary btn-large">Inizia Gratis</a>
+                    <a href="#features" class="btn btn-outline btn-large">Scopri di Più</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-cards">
+                    <div class="card card-1">🎮</div>
+                    <div class="card card-2">🎯</div>
+                    <div class="card card-3">🧩</div>
+                    <div class="card card-4">📚</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2 class="section-title">Funzionalità Principali</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>Generazione IA</h3>
+                    <p>Schemi di apprendimento personalizzati creati da intelligenza artificiale avanzata</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎮</div>
+                    <h3>Giochi Interattivi</h3>
+                    <p>Memory, quiz e puzzle adattivi per ogni livello di conoscenza</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitoraggio dettagliato dei progressi e achievement personalizzati</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">👥</div>
+                    <h3>Collaborazione</h3>
+                    <p>Studiare insieme ad altri utenti e condividere i propri successi</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Obiettivi Personalizzati</h3>
+                    <p>Percorsi di apprendimento su misura per raggiungere i tuoi obiettivi</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🏆</div>
+                    <h3>Classifiche</h3>
+                    <p>Competi con altri studenti e scala le classifiche di apprendimento</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Il Nostro Team</h2>
+                    <p>BrainPlayNG è sviluppato da un team appassionato di esperti in educazione, 
+                    tecnologia e intelligenza artificiale, uniti dalla missione di rendere 
+                    l'apprendimento più efficace e divertente.</p>
+                    <div class="team-members">
+                        <div class="member">
+                            <h4>GABRIELE</h4>
+                            <p>Core Logic & IA Development</p>
+                        </div>
+                        <div class="member">
+                            <h4>COLLABORATORE 1</h4>
+                            <p>Authentication & User Experience</p>
+                        </div>
+                        <div class="member">
+                            <h4>COLLABORATORE 2</h4>
+                            <p>Design & User Interface</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="team-illustration">
+                        <div class="person person-1">👨‍💻</div>
+                        <div class="person person-2">👩‍💻</div>
+                        <div class="person person-3">🧑‍💻</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <h2>Pronto a Iniziare il Tuo Viaggio di Apprendimento?</h2>
+            <p>Unisciti a migliaia di studenti che già usano BrainPlayNG per migliorare il loro studio.</p>
+            <a href="/auth/register" class="btn btn-primary btn-large">Registrati Ora</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>BrainPlayNG</h3>
+                    <p>La piattaforma di studio con IA che rende l'apprendimento un'avventura.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Link Utili</h4>
+                    <ul>
+                        <li><a href="#features">Funzionalità</a></li>
+                        <li><a href="#about">Chi Siamo</a></li>
+                        <li><a href="/auth/login">Accedi</a></li>
+                        <li><a href="/auth/register">Registrati</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contatti</h4>
+                    <ul>
+                        <li>📧 info@brainplayng.com</li>
+                        <li>📱 +39 123 456 7890</li>
+                        <li>📍 Milano, Italia</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BrainPlayNG. Tutti i diritti riservati.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
