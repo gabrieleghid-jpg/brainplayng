@@ -1,0 +1,54 @@
+{
+  "games": {
+    "memory-game": {
+      "name": "Memory Game",
+      "description": "Trova tutte le coppie di carte corrispondenti",
+      "category": "puzzle",
+      "difficulty": ["facile", "medio", "difficile"],
+      "files": {
+        "js": "memory-game.js",
+        "css": "memory-game.css",
+        "template": "game/memory_game.html"
+      },
+      "settings": {
+        "cardSymbols": ["🎮", "🎯", "🎨", "🎭", "🎪", "🎸", "🎺", "🎻"],
+        "maxPairs": 8,
+        "timeBonusMultiplier": 2,
+        "movePenalty": 2
+      },
+      "routes": {
+        "play": "/game/memory-game",
+        "api": "/game/api/memory-game"
+      }
+    }
+  },
+  "globalSettings": {
+    "defaultDifficulty": "facile",
+    "maxScore": 9999,
+    "leaderboardEntries": 10,
+    "animationDuration": 600,
+    "cardFlipDelay": 1000
+  },
+  "categories": {
+    "puzzle": {
+      "name": "Puzzle",
+      "icon": "🧩",
+      "description": "Giochi di logica e risoluzione enigmi"
+    },
+    "action": {
+      "name": "Azione",
+      "icon": "⚡",
+      "description": "Giochi veloci e reattivi"
+    },
+    "strategy": {
+      "name": "Strategia",
+      "icon": "♟️",
+      "description": "Giochi che richiedono pianificazione"
+    },
+    "quiz": {
+      "name": "Quiz",
+      "icon": "📝",
+      "description": "Sfide di conoscenza e apprendimento"
+    }
+  }
+}
