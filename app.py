@@ -4,6 +4,7 @@
 from flask import Flask, render_template
 from auth import auth_bp
 from core_logic import core_bp
+from game import game_bp
 
 app = Flask(__name__)
 app.secret_key = 'brainplayng-secret-key-2024'
@@ -11,6 +12,7 @@ app.secret_key = 'brainplayng-secret-key-2024'
 # Registrazione dei blueprint modulari
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(core_bp)
+app.register_blueprint(game_bp, url_prefix='/game')
 
 @app.route('/')
 def index():
