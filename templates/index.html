@@ -9,6 +9,7 @@
     <title>BrainPlayNG - Piattaforma di Studio con IA</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home/home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home/leaderboard.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -22,6 +23,7 @@
                 <div class="nav-links">
                     <a href="#features">Funzionalità</a>
                     <a href="#about">Chi Siamo</a>
+                    <a href="#" onclick="showGlobalLeaderboard(); return false;" class="btn btn-outline">🏆 Classifiche</a>
                     <a href="/auth/login" class="btn btn-primary">Accedi</a>
                     <a href="/auth/register" class="btn btn-secondary">Registrati</a>
                 </div>
@@ -172,5 +174,6 @@
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="{{ url_for('static', filename='home/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='home/leaderboard.js') }}"></script>
 </body>
 </html>

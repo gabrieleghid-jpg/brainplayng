@@ -263,30 +263,43 @@ class MemoryGame {
     
     // Aggiorna il display delle coppie
     updatePairsDisplay() {
-        const totalPairs = this.gameState.cards.length / 2;
-        const foundPairs = this.gameState.matched.length / 2;
+        const totalPairs = this.gameState.cards / 2;
+        const foundPairs = this.gameState.matched / 2;
         document.getElementById('pairs').textContent = `${foundPairs}/${totalPairs}`;
     }
     
     // Mostra la vittoria
     showVictory() {
-        // Ferma il timer
-        if (this.gameState.timerInterval) {
-            clearInterval(this.gameState.timerInterval);
-        }
-        
         document.getElementById('finalMoves').textContent = this.gameState.moves;
         document.getElementById('finalScore').textContent = this.gameState.score;
-        document.getElementById('finalTime').textContent = this.formatTime(this.gameState.elapsedTime);
+        document.getElementById('finalTime').textContent = Math.floor(this.gameState.moves * 2);
         document.getElementById('victoryModal').style.display = 'flex';
+        
+        // Salva il punteggio nella leaderboard globale
+        this.saveScoreToLeaderboard();
     }
     
-    // Inizializza il timer di gioco
-    startTimer() {
-        this.gameState.timerInterval = setInterval(() => {
-            this.gameState.elapsedTime = Math.floor((Date.now() - this.gameState.startTime) / 1000);
-            this.updateDisplay();
-        }, 1000);
+    // Salva il punteggio nella leaderboard globale
+    saveScoreToLeaderboard() {
+        // Ottieni il nome utente (da sessionStorage o prompt)
+        let username = sessionStorage.getItem('username');
+        
+        if (!username) {
+            // Se non c'è un nome utente, chiedilo
+            username = prompt('Inserisci il tuo nome per la classifica:') || 'Anonimo';
+            sessionStorage.setItem('username', username);
+        }
+        
+        // Emetti l'evento per aggiornare la leaderboard
+        const event = new CustomEvent('updateScore', {
+            detail: {
+                username: username,
+                score: this.gameState.score,
+                gameName: 'Memory Game'
+            }
+        });
+        
+        document.dispatchEvent(event);
     }
     
     // Formatta il tempo in MM:SS
