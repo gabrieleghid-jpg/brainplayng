@@ -9,11 +9,34 @@ from datetime import datetime
 game_bp = Blueprint('game', __name__)
 
 # Configurazione gioco
-CARD_SYMBOLS = ['🎮', '🎯', '🎨', '🎭', '🎪', '🎸', '🎺', '🎻']
+CARD_SYMBOLS = [
+    '🎮', '🎯', '🎨', '🎭', '🎪', '🎸', '🎺', '🎻',
+    '🎲', '🎳', '�', '�🎪', '🎭', '🎮', '🎨', '🎸',
+    '🎺', '🎻', '🎲', '🎳', '🎰', '🎱', '🎲', '🎳',
+    '🎯', '🎪', '🎭', '🎮', '🎨', '🎸'
+]
 LEVEL_CONFIG = {
-    'facile': {'pairs': 4, 'time_bonus': 100},
-    'medio': {'pairs': 6, 'time_bonus': 150},
-    'difficile': {'pairs': 8, 'time_bonus': 200}
+    'facile': {
+        'pairs': 6, 
+        'grid_cols': 4, 
+        'grid_rows': 3,
+        'time_bonus': 100,
+        'max_width': '450px'
+    },
+    'medio': {
+        'pairs': 8, 
+        'grid_cols': 4, 
+        'grid_rows': 4,
+        'time_bonus': 150,
+        'max_width': '500px'
+    },
+    'difficile': {
+        'pairs': 15, 
+        'grid_cols': 6, 
+        'grid_rows': 5,
+        'time_bonus': 200,
+        'max_width': '700px'
+    }
 }
 
 @game_bp.route('/memory-game')
@@ -25,10 +48,12 @@ def memory_game():
 def new_game():
     """API per iniziare una nuova partita"""
     level = request.args.get('level', 'facile')
-    pairs = LEVEL_CONFIG[level]['pairs']
+    config = LEVEL_CONFIG[level]
+    pairs = config['pairs']
     
     # Crea carte duplicate
-    cards = CARD_SYMBOLS[:pairs] * 2
+    symbols = CARD_SYMBOLS[:pairs]
+    cards = symbols * 2
     random.shuffle(cards)
     
     # Inizializza sessione gioco
@@ -39,13 +64,17 @@ def new_game():
         'moves': 0,
         'start_time': datetime.now().isoformat(),
         'level': level,
-        'score': 0
+        'score': 0,
+        'config': config
     }
     
     return jsonify({
         'cards': cards,
         'level': level,
-        'pairs': pairs
+        'pairs': pairs,
+        'grid_cols': config['grid_cols'],
+        'grid_rows': config['grid_rows'],
+        'max_width': config['max_width']
     })
 
 @game_bp.route('/api/flip-card', methods=['POST'])
