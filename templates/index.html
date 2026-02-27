@@ -13,6 +13,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Messaggi Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ 'error' if category == 'error' else 'success' }}">
+                        {{ message }}
+                        <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <!-- Header -->
     <header class="header">
         <nav class="navbar">
@@ -24,8 +38,14 @@
                     <a href="#features">Funzionalità</a>
                     <a href="#about">Chi Siamo</a>
                     <a href="#" onclick="showGlobalLeaderboard(); return false;" class="btn btn-outline">🏆 Classifiche</a>
-                    <a href="/auth/login" class="btn btn-primary">Accedi</a>
-                    <a href="/auth/register" class="btn btn-secondary">Registrati</a>
+                    <a href="/ai/schema-generator" class="btn btn-primary">🤖 IA Schemi</a>
+                    {% if 'user_id' in session %}
+                        <span class="user-welcome">👋 Ciao, {{ session.username }}!</span>
+                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    {% else %}
+                        <a href="/auth/login" class="btn btn-primary">Accedi</a>
+                        <a href="/auth/register" class="btn btn-secondary">Registrati</a>
+                    {% endif %}
                 </div>
             </div>
         </nav>

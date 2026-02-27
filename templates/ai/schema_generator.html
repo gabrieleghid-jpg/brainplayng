@@ -1,0 +1,651 @@
+<!-- Responsabile: GABRIELE - Interfaccia IA Schema Generator -->
+<!-- Interfaccia utente per generazione schemi con intelligenza artificiale -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore Schemi IA - BrainPlayNG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .ai-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+        
+        .ai-header {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .ai-header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .ai-header p {
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .generator-form {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group select,
+        .form-group input,
+        .form-group textarea {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group select:focus,
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .custom-params {
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .param-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .param-item input[type="checkbox"] {
+            margin-right: 0.75rem;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .param-item label {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        .btn-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .btn:disabled {
+            background: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result-container {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .result-container.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .result-title {
+            color: #667eea;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .schema-preview {
+            background: #f9fafb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .schema-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+        
+        .info-value {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #ef4444;
+            margin-bottom: 1rem;
+        }
+        
+        .success-message {
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #10b981;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+            }
+            
+            .result-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="ai-container">
+        <!-- Header -->
+        <div class="ai-header">
+            <h1>🤖 Generatore di Schemi IA</h1>
+            <p>Crea schemi di apprendimento personalizzati con intelligenza artificiale avanzata</p>
+        </div>
+        
+        <!-- Form di Generazione -->
+        <div class="generator-form">
+            <form id="schemaForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="schemaType">Tipo di Schema *</label>
+                        <select id="schemaType" name="schema_type" required>
+                            <option value="">Seleziona un tipo...</option>
+                            <option value="memory">🧠 Memory Game</option>
+                            <option value="quiz">📝 Quiz Game</option>
+                            <option value="puzzle">🧩 Puzzle Game</option>
+                            <option value="math">🔢 Math Exercises</option>
+                            <option value="logic">🧠 Logic Problems</option>
+                            <option value="language">🌍 Language Learning</option>
+                            <option value="science">🔬 Science Learning</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="difficulty">Difficoltà *</label>
+                        <select id="difficulty" name="difficulty" required>
+                            <option value="easy">🟢 Facile</option>
+                            <option value="medium" selected>🟡 Medio</option>
+                            <option value="hard">🔴 Difficile</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Materia (Opzionale)</label>
+                        <input type="text" id="subject" name="subject" placeholder="Es: Matematica, Storia...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ageGroup">Fascia d'Età (Opzionale)</label>
+                        <select id="ageGroup" name="age_group">
+                            <option value="">Seleziona...</option>
+                            <option value="6-8">6-8 anni</option>
+                            <option value="9-11">9-11 anni</option>
+                            <option value="12-14">12-14 anni</option>
+                            <option value="15-18">15-18 anni</option>
+                            <option value="18+">18+ anni</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Parametri Personalizzati -->
+                <div class="custom-params">
+                    <h3>⚙️ Parametri Personalizzati</h3>
+                    <div id="customParamsContainer">
+                        <!-- I parametri verranno caricati dinamicamente -->
+                    </div>
+                </div>
+                
+                <!-- Pulsanti Azione -->
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" onclick="validateConfig()">
+                        <i class="fas fa-check"></i> Valida Configurazione
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="generateBtn">
+                        <i class="fas fa-magic"></i> Genera Schema
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p>Generazione schema in corso...</p>
+        </div>
+        
+        <!-- Risultato -->
+        <div id="resultContainer" class="result-container">
+            <div class="result-header">
+                <h2 class="result-title">Schema Generato</h2>
+                <div class="result-actions">
+                    <button class="btn btn-primary" onclick="downloadSchema()">
+                        <i class="fas fa-download"></i> Scarica
+                    </button>
+                    <button class="btn btn-secondary" onclick="shareSchema()">
+                        <i class="fas fa-share"></i> Condividi
+                    </button>
+                </div>
+            </div>
+            
+            <div id="schemaContent">
+                <!-- Contenuto schema generato -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentSchema = null;
+        let availableThemes = {};
+        
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSchemaTypes();
+            setupEventListeners();
+        });
+        
+        function loadSchemaTypes() {
+            fetch('/api/ai/schema-types')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Schema types loaded:', data);
+                })
+                .catch(error => {
+                    console.error('Error loading schema types:', error);
+                });
+        }
+        
+        function setupEventListeners() {
+            document.getElementById('schemaType').addEventListener('change', loadCustomParams);
+            document.getElementById('schemaForm').addEventListener('submit', generateSchema);
+        }
+        
+        function loadCustomParams() {
+            const schemaType = document.getElementById('schemaType').value;
+            const container = document.getElementById('customParamsContainer');
+            
+            if (!schemaType) {
+                container.innerHTML = '<p>Seleziona un tipo di schema per vedere i parametri personalizzati</p>';
+                return;
+            }
+            
+            // Carica i temi disponibili
+            fetch(`/api/ai/themes/${schemaType}`)
+                .then(response => response.json())
+                .then(data => {
+                    availableThemes = data.themes || [];
+                    renderCustomParams(schemaType, availableThemes);
+                })
+                .catch(error => {
+                    console.error('Error loading themes:', error);
+                    renderCustomParams(schemaType, []);
+                });
+        }
+        
+        function renderCustomParams(schemaType, themes) {
+            const container = document.getElementById('customParamsContainer');
+            let html = '';
+            
+            if (schemaType === 'memory') {
+                html = `
+                    <div class="param-item">
+                        <input type="checkbox" id="themeParam" name="theme" value="animals">
+                        <label for="themeParam">Tema Animali</label>
+                    </div>
+                    <div class="param-item">
+                        <input type="checkbox" id="adaptiveParam" name="adaptive_difficulty">
+                        <label for="adaptiveParam">Difficoltà Adattiva</label>
+                    </div>
+                `;
+            } else if (schemaType === 'quiz') {
+                html = `
+                    <div class="param-item">
+                        <input type="checkbox" id="mathCategory" name="category" value="mathematics">
+                        <label for="mathCategory">Matematica</label>
+                    </div>
+                    <div class="param-item">
+                        <input type="checkbox" id="scienceCategory" name="category" value="science">
+                        <label for="scienceCategory">Scienze</label>
+                    </div>
+                `;
+            } else if (schemaType === 'puzzle') {
+                html = `
+                    <div class="param-item">
+                        <input type="checkbox" id="sequencePuzzle" name="puzzle_type" value="sequence">
+                        <label for="sequencePuzzle">Sequenza</label>
+                    </div>
+                    <div class="param-item">
+                        <input type="checkbox" id="logicPuzzle" name="puzzle_type" value="logic">
+                        <label for="logicPuzzle">Logica</label>
+                    </div>
+                `;
+            } else {
+                html = '<p>Nessun parametro personalizzato disponibile per questo tipo di schema</p>';
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function validateConfig() {
+            const formData = new FormData(document.getElementById('schemaForm'));
+            const config = Object.fromEntries(formData);
+            
+            fetch('/api/ai/validate-config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(config)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    showMessage('Configurazione valida! Tempo stimato: ' + data.estimated_time, 'success');
+                } else {
+                    showMessage('Errore nella configurazione: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                showMessage('Errore durante la validazione', 'error');
+            });
+        }
+        
+        function generateSchema(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(document.getElementById('schemaForm'));
+            const config = Object.fromEntries(formData);
+            
+            // Raccogli parametri personalizzati
+            config.custom_params = {};
+            document.querySelectorAll('#customParamsContainer input:checked').forEach(input => {
+                config.custom_params[input.name] = input.value;
+            });
+            
+            // Mostra loading
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('resultContainer').classList.remove('active');
+            
+            fetch('/api/ai/generate-schema', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(config)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loadingState').style.display = 'none';
+                
+                if (data.success) {
+                    currentSchema = data.schema;
+                    displaySchema(data.schema, data.config);
+                    showMessage('Schema generato con successo!', 'success');
+                } else {
+                    showMessage('Errore nella generazione: ' + data.error, 'error');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingState').style.display = 'none';
+                showMessage('Errore durante la generazione', 'error');
+            });
+        }
+        
+        function displaySchema(schema, config) {
+            const container = document.getElementById('schemaContent');
+            let html = '';
+            
+            // Informazioni schema
+            html += `
+                <div class="schema-info">
+                    <div class="info-item">
+                        <div class="info-label">Tipo</div>
+                        <div class="info-value">${schema.type}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Difficoltà</div>
+                        <div class="info-value">${schema.difficulty}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Complessità</div>
+                        <div class="info-value">${schema.metadata?.complexity_score || 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Generato</div>
+                        <div class="info-value">${new Date(schema.metadata?.generated_at).toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+            
+            // Anteprima schema specifica
+            if (schema.type === 'memory') {
+                html += `
+                    <div class="schema-preview">
+                        <h3>🧠 Anteprima Memory Game</h3>
+                        <p><strong>Coppie:</strong> ${schema.metadata.pairs}</p>
+                        <p><strong>Griglia:</strong> ${schema.grid.cols}×${schema.grid.rows}</p>
+                        <p><strong>Tema:</strong> ${schema.metadata.theme}</p>
+                        <div style="display: grid; grid-template-columns: repeat(${schema.grid.cols}, 1fr); gap: 10px; margin-top: 1rem;">
+                            ${schema.cards.slice(0, 8).map(card => 
+                                `<div style="aspect-ratio: 1; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">${card.symbol}</div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (schema.type === 'quiz') {
+                html += `
+                    <div class="schema-preview">
+                        <h3>📝 Anteprima Quiz</h3>
+                        <p><strong>Domande:</strong> ${schema.metadata.total_questions}</p>
+                        <p><strong>Categoria:</strong> ${schema.metadata.category}</p>
+                        <p><strong>Tempo limite:</strong> ${schema.metadata.time_limit}s</p>
+                        <div style="margin-top: 1rem;">
+                            ${schema.questions.slice(0, 2).map(q => 
+                                `<div style="background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
+                                    <strong>Q${q.id + 1}:</strong> ${q.question}
+                                </div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+            document.getElementById('resultContainer').classList.add('active');
+        }
+        
+        function downloadSchema() {
+            if (!currentSchema) return;
+            
+            const dataStr = JSON.stringify(currentSchema, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `schema_${currentSchema.type}_${Date.now()}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+        }
+        
+        function shareSchema() {
+            if (!currentSchema) return;
+            
+            // Implementa condivisione (es. copia link, email, etc.)
+            const shareText = `Ho generato uno schema ${currentSchema.type} con BrainPlayNG!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Schema BrainPlayNG',
+                    text: shareText
+                });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                showMessage('Link copiato negli appunti!', 'success');
+            }
+        }
+        
+        function showMessage(message, type) {
+            // Rimuovi messaggi esistenti
+            const existingMessages = document.querySelectorAll('.error-message, .success-message');
+            existingMessages.forEach(msg => msg.remove());
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message`;
+            messageDiv.textContent = message;
+            
+            const form = document.querySelector('.generator-form');
+            form.insertBefore(messageDiv, form.firstChild);
+            
+            // Rimuovi dopo 5 secondi
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
