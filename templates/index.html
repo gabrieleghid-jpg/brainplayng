@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home/leaderboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home/layout-new.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -27,86 +28,486 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Header -->
-    <header class="header">
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="logo">
-                    <h1>🧠 BrainPlayNG</h1>
-                </div>
-                <div class="nav-links">
-                    <a href="#features">Funzionalità</a>
-                    <a href="#about">Chi Siamo</a>
-                    <a href="#" onclick="showGlobalLeaderboard(); return false;" class="btn btn-outline">🏆 Classifiche</a>
-                    <a href="/ai/schema-generator" class="btn btn-primary">🤖 IA Schemi</a>
-                    {% if 'user_id' in session %}
-                        <span class="user-welcome">👋 Ciao, {{ session.username }}!</span>
-                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
-                    {% else %}
-                        <a href="/auth/login" class="btn btn-primary">Accedi</a>
-                        <a href="/auth/register" class="btn btn-secondary">Registrati</a>
-                    {% endif %}
-                </div>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <h1>🧠 BrainPlayNG</h1>
             </div>
+        </div>
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li><a href="#home" class="nav-link active">🏠 Home</a></li>
+                <li><a href="#games" class="nav-link">🎮 Giochi</a></li>
+                <li><a href="#ai-tools" class="nav-link">🤖 Strumenti IA</a></li>
+                <li><a href="#progress" class="nav-link">📊 Progressi</a></li>
+                <li><a href="#community" class="nav-link">👥 Community</a></li>
+                <li><a href="#" onclick="showGlobalLeaderboard(); return false;" class="nav-link">🏆 Classifiche</a></li>
+            </ul>
         </nav>
-    </header>
+        <div class="sidebar-footer">
+            {% if 'user_id' in session %}
+                <div class="user-profile">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <span class="user-name">{{ session.username }}</span>
+                        <span class="user-status">Online</span>
+                    </div>
+                </div>
+                <a href="/auth/logout" class="btn btn-secondary btn-block">Logout</a>
+            {% else %}
+                <a href="/auth/login" class="btn btn-primary btn-block">Accedi</a>
+                <a href="/auth/register" class="btn btn-outline btn-block">Registrati</a>
+            {% endif %}
+        </div>
+    </aside>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">Impara Divertendoti con l'Intelligenza Artificiale</h1>
-                <p class="hero-subtitle">
-                    La piattaforma innovativa che unisce studio e gioco attraverso schemi personalizzati 
-                    generati da IA per un apprendimento efficace e coinvolgente.
-                </p>
-                <div class="hero-buttons">
-                    <a href="/game/memory-game" class="btn btn-primary btn-large">🎮 Gioca Ora</a>
-                    <a href="/auth/register" class="btn btn-outline btn-large">Inizia Gratis</a>
-                    <a href="#features" class="btn btn-outline btn-large">Scopri di Più</a>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menuToggle">☰</button>
+                <div class="breadcrumb">
+                    <span>Home</span>
                 </div>
             </div>
-            <div class="hero-image">
-                <div class="floating-cards">
-                    <div class="card card-1">🎮</div>
-                    <div class="card card-2">🎯</div>
-                    <div class="card card-3">🧩</div>
-                    <div class="card card-4">📚</div>
+            <div class="top-bar-right">
+                <div class="search-bar">
+                    <input type="text" placeholder="Cerca giochi, schemi...">
+                    <button class="search-btn">🔍</button>
+                </div>
+                <div class="notifications">
+                    <button class="notification-btn">🔔</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero-new">
+            <div class="hero-grid">
+                <div class="hero-left">
+                    <div class="hero-badge">🚀 Nuova Piattaforma</div>
+                    <h1 class="hero-title-new">Impara Divertendoti con l'Intelligenza Artificiale</h1>
+                    <p class="hero-subtitle-new">
+                        La piattaforma innovativa che unisce studio e gioco attraverso schemi personalizzati 
+                        generati da IA per un apprendimento efficace e coinvolgente.
+                    </p>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">10K+</span>
+                            <span class="stat-label">Studenti</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Giochi</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">95%</span>
+                            <span class="stat-label">Soddisfazione</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="/game/memory-game" class="btn btn-primary btn-large">🎮 Gioca Ora</a>
+                        <a href="/ai/schema-generator" class="btn btn-secondary btn-large">🤖 Prova IA</a>
+                    </div>
+                </div>
+                <div class="hero-right">
+                    <div class="hero-visual">
+                        <div class="floating-elements">
+                            <div class="float-element float-1">🎮</div>
+                            <div class="float-element float-2">🎯</div>
+                            <div class="float-element float-3">🧩</div>
+                            <div class="float-element float-4">📚</div>
+                            <div class="float-element float-5">🤖</div>
+                            <div class="float-element float-6">🏆</div>
+                        </div>
+                        <div class="hero-card">
+                            <div class="card-header">
+                                <span class="card-title">Memory Game</span>
+                                <span class="card-badge">Nuovo</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="game-preview">
+                                    <div class="mini-card">🎮</div>
+                                    <div class="mini-card">🎯</div>
+                                    <div class="mini-card">🧩</div>
+                                    <div class="mini-card">?</div>
+                                </div>
+                                <div class="game-info">
+                                    <span class="difficulty">Facile</span>
+                                    <span class="players">1.2K giocatori</span>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button class="btn btn-primary btn-small">Gioca Ora</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions">
+            <div class="actions-grid">
+                <div class="action-card">
+                    <div class="action-icon">🎮</div>
+                    <h3>Giochi Rapidi</h3>
+                    <p>Accedi subito ai giochi più popolari</p>
+                    <a href="/game/memory-game" class="action-link">Gioca →</a>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">🤖</div>
+                    <h3>Generatore IA</h3>
+                    <p>Crea schemi personalizzati con l'IA</p>
+                    <a href="/ai/schema-generator" class="action-link">Prova →</a>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">📊</div>
+                    <h3>I Tuoi Progressi</h3>
+                    <p>Visualizza statistiche e achievement</p>
+                    <a href="#progress" class="action-link">Scopri →</a>
+                </div>
+                <div class="action-card">
+                    <div class="action-icon">🏆</div>
+                    <h3>Classifiche</h3>
+                    <p>Confronta i tuoi punteggi</p>
+                    <a href="#" onclick="showGlobalLeaderboard(); return false;" class="action-link">Vedi →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section id="features" class="features-new">
+            <div class="section-header">
+                <h2 class="section-title-new">Funzionalità Principali</h2>
+                <p class="section-subtitle">Scopri tutte le possibilità della piattaforma</p>
+            </div>
+            <div class="features-grid-new">
+                <div class="feature-card-new">
+                    <div class="feature-icon-new">🤖</div>
+                    <h3>Generazione IA</h3>
+                    <p>Schemi di apprendimento personalizzati creati da intelligenza artificiale avanzata</p>
+                    <div class="feature-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                        <span>85%</span>
+                    </div>
+                </div>
+                <div class="feature-card-new">
+                    <div class="feature-icon-new">🎮</div>
+                    <h3>Giochi Interattivi</h3>
+                    <p>Memory, quiz e puzzle adattivi per ogni livello di conoscenza</p>
+                    <div class="feature-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 92%"></div>
+                        </div>
+                        <span>92%</span>
+                    </div>
+                </div>
+                <div class="feature-card-new">
+                    <div class="feature-icon-new">📊</div>
+                    <h3>Progress Tracking</h3>
+                    <p>Monitoraggio dettagliato dei progressi e achievement personalizzati</p>
+                    <div class="feature-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 78%"></div>
+                        </div>
+                        <span>78%</span>
+                    </div>
+                </div>
+                <div class="feature-card-new">
+                    <div class="feature-icon-new">👥</div>
+                    <h3>Collaborazione</h3>
+                    <p>Studiare insieme ad altri utenti e condividere i propri successi</p>
+                    <div class="feature-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 88%"></div>
+                        </div>
+                        <span>88%</span>
+                    </div>
+                </div>
+                <div class="feature-card-new">
+                    <div class="feature-icon-new">🎯</div>
+                    <h3>Obiettivi Personalizzati</h3>
+                    <p>Percorsi di apprendimento su misura per raggiungere i tuoi obiettivi</p>
+                    <div class="feature-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 95%"></div>
+                        </div>
+                        <span>95%</span>
+                    </div>
+                </div>
+                <div class="feature-card-new">
+                    <div class="feature-icon-new">🏆</div>
+                    <h3>Classifiche</h3>
+                    <p>Competi con altri studenti e scala le classifiche di apprendimento</p>
+                    <div class="feature-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                        <span>90%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="games" class="games-section">
+            <div class="section-header">
+                <h2 class="section-title-new">Giochi Popolari</h2>
+                <p class="section-subtitle">Sfida te stesso con i nostri giochi educativi</p>
+            </div>
+            <div class="games-grid">
+                <div class="game-card">
+                    <div class="game-image">
+                        <div class="game-preview-mini">
+                            <div class="mini-game-card">🎮</div>
+                            <div class="mini-game-card">🎯</div>
+                            <div class="mini-game-card">🧩</div>
+                            <div class="mini-game-card">?</div>
+                        </div>
+                    </div>
+                    <div class="game-info">
+                        <h3>Memory Game</h3>
+                        <p>Trova le coppie di carte corrispondenti</p>
+                        <div class="game-meta">
+                            <span class="difficulty-badge easy">Facile</span>
+                            <span class="players-count">1.2K giocatori</span>
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <a href="/game/memory-game" class="btn btn-primary btn-small">Gioca</a>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image">
+                        <div class="game-preview-mini quiz">
+                            <span class="quiz-icon">❓</span>
+                        </div>
+                    </div>
+                    <div class="game-info">
+                        <h3>Quiz Matematica</h3>
+                        <p>Metti alla prova le tue abilità numeriche</p>
+                        <div class="game-meta">
+                            <span class="difficulty-badge medium">Medio</span>
+                            <span class="players-count">856 giocatori</span>
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <button class="btn btn-primary btn-small">Prossimamente</button>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-image">
+                        <div class="game-preview-mini puzzle">
+                            <span class="puzzle-icon">🧩</span>
+                        </div>
+                    </div>
+                    <div class="game-info">
+                        <h3>Puzzle Logico</h3>
+                        <p>Risolvi enigmi e problemi complessi</p>
+                        <div class="game-meta">
+                            <span class="difficulty-badge hard">Difficile</span>
+                            <span class="players-count">623 giocatori</span>
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <button class="btn btn-primary btn-small">Prossimamente</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section id="progress" class="progress-section">
+            <div class="section-header">
+                <h2 class="section-title-new">I Tuoi Progressi</h2>
+                <p class="section-subtitle">Traccia il tuo percorso di apprendimento</p>
+            </div>
+            <div class="progress-dashboard">
+                <div class="progress-stats">
+                    <div class="progress-stat-card">
+                        <div class="stat-icon">🎮</div>
+                        <div class="stat-info">
+                            <span class="stat-number">127</span>
+                            <span class="stat-label">Partite Giocate</span>
+                        </div>
+                    </div>
+                    <div class="progress-stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-info">
+                            <span class="stat-number">85%</span>
+                            <span class="stat-label">Tasso di Vittoria</span>
+                        </div>
+                    </div>
+                    <div class="progress-stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-info">
+                            <span class="stat-number">1,250</span>
+                            <span class="stat-label">Punti Totali</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Section -->
+        <section id="community" class="community-section">
+            <div class="section-header">
+                <h2 class="section-title-new">Community</h2>
+                <p class="section-subtitle">Connettiti con altri studenti</p>
+            </div>
+            <div class="community-grid">
+                <div class="community-card">
+                    <div class="community-icon">�</div>
+                    <h3>Forum Discussione</h3>
+                    <p>Condividi idee e risolvi dubbi con la community</p>
+                    <a href="#" class="action-link">Entra →</a>
+                </div>
+                <div class="community-card">
+                    <div class="community-icon">👥</div>
+                    <h3>Gruppi di Studio</h3>
+                    <p>Unisciti a gruppi di studio tematici</p>
+                    <a href="#" class="action-link">Scopri →</a>
+                </div>
+                <div class="community-card">
+                    <div class="community-icon">🎯</div>
+                    <h3>Sfide Settimanali</h3>
+                    <p>Partecipa alle sfide e vinci premi</p>
+                    <a href="#" class="action-link">Partecipa →</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Tools Section -->
+        <section id="ai-tools" class="ai-tools-section">
+            <div class="section-header">
+                <h2 class="section-title-new">Strumenti IA</h2>
+                <p class="section-subtitle">Sfrutta la potenza dell'intelligenza artificiale</p>
+            </div>
+            <div class="ai-tools-grid">
+                <div class="ai-tool-card">
+                    <div class="ai-icon">📝</div>
+                    <h3>Generatore Schemi</h3>
+                    <p>Crea schemi di apprendimento personalizzati</p>
+                    <a href="/ai/schema-generator" class="action-link">Usa Ora →</a>
+                </div>
+                <div class="ai-tool-card">
+                    <div class="ai-icon">🔍</div>
+                    <h3>Analisi Performance</h3>
+                    <p>Ottieni analisi dettagliate sui tuoi progressi</p>
+                    <a href="#" class="action-link">Analizza →</a>
+                </div>
+                <div class="ai-tool-card">
+                    <div class="ai-icon">🎯</div>
+                    <h3>Raccomandazioni IA</h3>
+                    <p>Ricevi suggerimenti personalizzati</p>
+                    <a href="#" class="action-link">Scopri →</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-new">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>BrainPlayNG</h4>
+                <p>Piattaforma innovativa di apprendimento con intelligenza artificiale</p>
+            </div>
+            <div class="footer-section">
+                <h4>Link Rapidi</h4>
+                <ul>
+                    <li><a href="#games">Giochi</a></li>
+                    <li><a href="#ai-tools">Strumenti IA</a></li>
+                    <li><a href="#progress">Progressi</a></li>
+                    <li><a href="#" onclick="showGlobalLeaderboard(); return false;">Classifiche</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Supporto</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contatti</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Termini</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Seguici</h4>
+                <div class="social-links">
+                    <a href="#">📘</a>
+                    <a href="#">📷</a>
+                    <a href="#">🐦</a>
+                    <a href="#">💼</a>
                 </div>
             </div>
         </div>
-    </section>
+        <div class="footer-bottom">
+            <p>&copy; 2024 BrainPlayNG. Tutti i diritti riservati.</p>
+        </div>
+    </footer>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title">Funzionalità Principali</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">🤖</div>
-                    <h3>Generazione IA</h3>
-                    <p>Schemi di apprendimento personalizzati creati da intelligenza artificiale avanzata</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎮</div>
-                    <h3>Giochi Interattivi</h3>
-                    <p>Memory, quiz e puzzle adattivi per ogni livello di conoscenza</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">📊</div>
-                    <h3>Progress Tracking</h3>
-                    <p>Monitoraggio dettagliato dei progressi e achievement personalizzati</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">👥</div>
-                    <h3>Collaborazione</h3>
-                    <p>Studiare insieme ad altri utenti e condividere i propri successi</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Obiettivi Personalizzati</h3>
-                    <p>Percorsi di apprendimento su misura per raggiungere i tuoi obiettivi</p>
-                </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='home/home.js') }}"></script>
+    <script src="{{ url_for('static', filename='home/leaderboard.js') }}"></script>
+    <script>
+        // Menu Toggle Functionality
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(event) {
+            const sidebar = document.querySelector('.sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Active navigation link highlighting
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
                 <div class="feature-card">
                     <div class="feature-icon">🏆</div>
                     <h3>Classifiche</h3>
