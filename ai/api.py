@@ -14,8 +14,9 @@ ai_generator = AISchemaGenerator()
 @ai_bp.route('/generate-schema', methods=['POST'])
 def generate_schema():
     """API principale per generare schemi personalizzati"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Autenticazione richiesta'}), 401
+    # Permetti accesso anche senza autenticazione per demo
+    # if 'user_id' not in session:
+    #     return jsonify({'error': 'Autenticazione richiesta'}), 401
     
     try:
         data = request.get_json()
@@ -37,8 +38,9 @@ def generate_schema():
         # Generazione schema
         schema = ai_generator.generate_schema(config)
         
-        # Log della generazione
-        print(f"[{datetime.now()}] Schema generato: {config.schema_type.value} - {config.difficulty.value} - Utente: {session['user_id']}")
+        # Log della generazione (demo mode)
+        user_id = session.get('user_id', 'demo_user')
+        print(f"[{datetime.now()}] Schema generato: {config.schema_type.value} - {config.difficulty.value} - Utente: {user_id}")
         
         return jsonify({
             'success': True,
@@ -152,8 +154,9 @@ def get_themes(schema_type):
 @ai_bp.route('/validate-config', methods=['POST'])
 def validate_config():
     """Valida una configurazione schema prima della generazione"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Autenticazione richiesta'}), 401
+    # Permetti accesso anche senza autenticazione per demo
+    # if 'user_id' not in session:
+    #     return jsonify({'error': 'Autenticazione richiesta'}), 401
     
     try:
         data = request.get_json()
@@ -185,8 +188,9 @@ def validate_config():
 @ai_bp.route('/generation-stats')
 def get_generation_stats():
     """Restituisce statistiche sulle generazioni dell'utente"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Autenticazione richiesta'}), 401
+    # Permetti accesso anche senza autenticazione per demo
+    # if 'user_id' not in session:
+    #     return jsonify({'error': 'Autenticazione richiesta'}), 401
     
     # In produzione, questi dati verrebbero da un database
     return jsonify({
@@ -211,8 +215,9 @@ def get_generation_stats():
 @ai_bp.route('/adaptive-suggestions')
 def get_adaptive_suggestions():
     """Suggerimenti adattivi basati sul profilo utente"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Autenticazione richiesta'}), 401
+    # Permetti accesso anche senza autenticazione per demo
+    # if 'user_id' not in session:
+    #     return jsonify({'error': 'Autenticazione richiesta'}), 401
     
     # Logica di suggerimento basata su dati utente
     suggestions = [

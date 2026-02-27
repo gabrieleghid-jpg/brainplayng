@@ -16,6 +16,11 @@ app.register_blueprint(core_bp)
 app.register_blueprint(game_bp, url_prefix='/game')
 app.register_blueprint(ai_bp)
 
+@app.route('/ai/schema-generator')
+def schema_generator():
+    """Pagina generatore schemi IA"""
+    return render_template('ai/schema_generator.html')
+
 @app.route('/')
 def index():
     """Homepage principale della piattaforma"""
