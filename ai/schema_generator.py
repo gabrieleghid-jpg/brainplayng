@@ -463,30 +463,142 @@ class AISchemaGenerator:
     # Metodi helper per quiz e altre funzionalità
     def _get_correct_answer(self, question: str, category: str) -> str:
         """Ottiene la risposta corretta per una domanda"""
-        # Implementazione semplificata - in produzione usare database knowledge
+        # Database di risposte corrette espanso
         answers = {
+            # Matematica
+            '2+2': '4',
+            '5-3': '2', 
+            '4×2': '8',
+            '10÷2': '5',
+            '15+23': '38',
+            '45-17': '28',
+            '12×8': '96',
+            '144÷12': '12',
+            '67+89': '156',
+            '156-78': '78',
+            '234+567': '801',
+            '891-234': '657',
+            '45×67': '3015',
+            '2025÷45': '45',
+            
+            # Scienze
             'H2O è?': 'Acqua',
             'Sole è?': 'Stella',
             'Terra?': 'Pianeta',
+            'Acqua?': 'H2O',
+            'Aria?': 'Miscela di gas',
+            'Formula CO2?': 'CO2',
+            'Velocità luce?': '300.000 km/s',
+            'Gravità?': '9,8 m/s²',
+            'DNA?': 'Acido Desossiribonucleico',
+            'Fotosintesi?': 'Processo delle piante',
+            'Costante Planck?': '6,626×10⁻³⁴ J·s',
+            'Relatività?': 'E=mc²',
+            'Meccanica quantistica?': 'Teoria quantistica',
+            'Teoria stringhe?': 'Teoria delle corde',
+            
+            # Storia
             'Anno 1492?': 'Scoperta America',
             'Roma?': 'Capitale Italia',
-            '2+2': '4',
-            '5-3': '2',
-            '4×2': '8',
-            '10÷2': '5'
+            'Leonardo?': 'Leonardo da Vinci',
+            'Monna Lisa?': 'Dipinto di Leonardo',
+            'Colombo?': 'Scopritore America',
+            'Guerra mondiale 1?': '1914-1918',
+            'Rivoluzione francese?': '1789',
+            'Rinascimento?': 'XIV-XVI secolo',
+            'Illuminismo?': 'Secolo dei Lumi',
+            'Trattato Versailles?': '1919',
+            'Caduta Impero Romano?': '476 d.C.',
+            'Riforma Protestante?': '1517',
+            
+            # Geografia
+            'Capitale Italia?': 'Roma',
+            'Continente Asia?': 'Asia',
+            'Oceano Atlantico?': 'Oceano Atlantico',
+            'Monte Everest?': 'Himalaya',
+            'Fiume più lungo?': 'Nilo',
+            'Deserto più grande?': 'Sahara',
+            'Paese più popoloso?': 'Cina',
+            'Coordinate Greenwich?': '0° longitudine',
+            'Fuso orario internazionale?': 'UTC',
+            'Linea data internazionale?': '180° longitudine'
         }
         return answers.get(question, 'Risposta non disponibile')
 
     def _generate_wrong_answers(self, question: str, category: str, correct: str) -> List[str]:
         """Genera risposte sbagliate plausibili"""
-        # Implementazione semplificata
+        wrong_answers = []
+        
         if category == 'mathematics':
             if correct.isdigit():
                 correct_num = int(correct)
-                return [str(correct_num + 1), str(correct_num - 1), str(correct_num + 2)]
+                # Genera risposte vicine ma sbagliate
+                wrong_answers = [
+                    str(correct_num + 1),
+                    str(correct_num - 1) if correct_num > 1 else str(correct_num + 2),
+                    str(correct_num + 10),
+                    str(correct_num * 2) if correct_num < 10 else str(correct_num // 2)
+                ]
+            else:
+                # Per espressioni complesse
+                wrong_answers = ['Risposta errata', 'Calcolo sbagliato', 'Non so', 'Forse così']
+                
+        elif category == 'science':
+            science_wrong = {
+                'Acqua': ['Vino', 'Latte', 'Succo', 'Olio'],
+                'Stella': ['Pianeta', 'Satellite', 'Cometa', 'Asteroide'],
+                'Pianeta': ['Stella', 'Galassia', 'Nebulosa', 'Asteroidi'],
+                'H2O': ['CO2', 'O2', 'N2', 'He'],
+                'Miscela di gas': ['Elemento puro', 'Composto', 'Soluzione', 'Sospensione'],
+                'CO2': ['H2O', 'O2', 'N2', 'CH4'],
+                '300.000 km/s': ['150.000 km/s', '1.000.000 km/s', '50.000 km/s', '10.000 km/s'],
+                '9,8 m/s²': ['1,6 m/s²', '25 m/s²', '0 m/s²', '100 m/s²'],
+                'Acido Desossiribonucleico': ['Acido Ribonucleico', 'Proteina', 'Lipide', 'Glucosio'],
+                'Processo delle piante': ['Processo animale', 'Reazione chimica', 'Fusione nucleare', 'Decomposizione']
+            }
+            wrong_answers = science_wrong.get(correct, ['Opzione B', 'Opzione C', 'Opzione D'])
+            
+        elif category == 'history':
+            history_wrong = {
+                'Scoperta America': ['Scoperta Australia', 'Scoperta Africa', 'Scoperta Asia', 'Scoperta Europa'],
+                'Capitale Italia': ['Milano', 'Napoli', 'Torino', 'Firenze'],
+                'Leonardo da Vinci': ['Michelangelo', 'Raffaello', 'Donatello', 'Botticelli'],
+                'Dipinto di Leonardo': ['Statua di Michelangelo', 'Affresco di Raffaello', 'Mosaico di Giotto', 'Scultura di Donatello'],
+                'Scopritore America': ['Marco Polo', 'Vasco de Gama', 'Ferdinando Magellano', 'Cristoforo Colombo'],
+                '1914-1918': ['1939-1945', '1850-1860', '2001-2010', '1790-1800'],
+                '1789': ['1848', '1517', '476', '1492'],
+                'XIV-XVI secolo': ['XVII-XVIII secolo', 'XI-XIII secolo', 'XIX-XX secolo', 'XXI secolo'],
+                'Secolo dei Lumi': ['Medioevo', 'Rinascimento', 'Età Vittoriana', 'Post-modernismo'],
+                '1919': ['1945', '1815', '1789', '2001'],
+                '476 d.C.': ['1453', '1066', '1492', '1789'],
+                '1517': ['1648', '1215', '1054', '1962']
+            }
+            wrong_answers = history_wrong.get(correct, ['Anno sbagliato', 'Secolo errato', 'Data non corretta', 'Periodo diverso'])
+            
+        elif category == 'geography':
+            geography_wrong = {
+                'Roma': ['Milano', 'Napoli', 'Torino', 'Venezia'],
+                'Asia': ['Europa', 'Africa', 'America', 'Oceania'],
+                'Oceano Atlantico': ['Oceano Pacifico', 'Mar Mediterraneo', 'Mar Rosso', 'Oceano Indiano'],
+                'Himalaya': ['Alpi', 'Ande', 'Rocky Mountains', 'Appennini'],
+                'Nilo': ['Amazonas', 'Mississippi', 'Danubio', 'Po'],
+                'Sahara': ['Gobi', 'Kalahari', 'Arabico', 'Antartide'],
+                'Cina': ['India', 'Stati Uniti', 'Brasile', 'Russia'],
+                '0° longitudine': ['90° E', '180° E', '45° W', '90° W'],
+                'UTC': ['GMT+1', 'EST', 'JST', 'AEST'],
+                '180° longitudine': ['0° longitudine', '90° E', '45° W', 'Equatore']
+            }
+            wrong_answers = geography_wrong.get(correct, ['Luogo sbagliato', 'Posizione errata', 'Coordinate non corrette', 'Località diversa'])
+        
         else:
-            return ['Opzione B', 'Opzione C', 'Opzione D']
-        return ['Risposta errata 1', 'Risposta errata 2', 'Risposta errata 3']
+            # Fallback generico
+            wrong_answers = ['Risposta plausibile 1', 'Risposta plausibile 2', 'Risposta plausibile 3']
+        
+        # Assicurati di avere 3 risposte sbagliate
+        while len(wrong_answers) < 3:
+            wrong_answers.append(f'Alternativa {len(wrong_answers) + 1}')
+        
+        return wrong_answers[:3]
 
     def _calculate_question_points(self, category: str, difficulty: str) -> int:
         """Calcola i punti per una domanda"""

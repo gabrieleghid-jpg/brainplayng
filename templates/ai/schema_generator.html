@@ -319,14 +319,41 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="ageGroup">Fascia d'Età (Opzionale)</label>
-                        <select id="ageGroup" name="age_group">
+                        <label for="classGroup">Classe Scolastica (Opzionale)</label>
+                        <select id="classGroup" name="class_group">
                             <option value="">Seleziona...</option>
-                            <option value="6-8">6-8 anni</option>
-                            <option value="9-11">9-11 anni</option>
-                            <option value="12-14">12-14 anni</option>
-                            <option value="15-18">15-18 anni</option>
-                            <option value="18+">18+ anni</option>
+                            <option value="1a">1ª A</option>
+                            <option value="1b">1ª B</option>
+                            <option value="1c">1ª C</option>
+                            <option value="2a">2ª A</option>
+                            <option value="2b">2ª B</option>
+                            <option value="2c">2ª C</option>
+                            <option value="3a">3ª A</option>
+                            <option value="3b">3ª B</option>
+                            <option value="3c">3ª C</option>
+                            <option value="4a">4ª A</option>
+                            <option value="4b">4ª B</option>
+                            <option value="4c">4ª C</option>
+                            <option value="5a">5ª A</option>
+                            <option value="5b">5ª B</option>
+                            <option value="5c">5ª C</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="schoolTrack">Indirizzo Scolastico (Opzionale)</label>
+                        <select id="schoolTrack" name="school_track">
+                            <option value="">Seleziona...</option>
+                            <option value="classico">Liceo Classico</option>
+                            <option value="scientifico">Liceo Scientifico</option>
+                            <option value="linguistico">Liceo Linguistico</option>
+                            <option value="artistico">Liceo Artistico</option>
+                            <option value="musicale">Liceo Musicale</option>
+                            <option value="tecnologico">Liceo Tecnologico</option>
+                            <option value="scienze_umane">Liceo Scienze Umane</option>
+                            <option value="economico">Istituto Tecnico Economico</option>
+                            <option value="tecnologico_industriale">Istituto Tecnico Tecnologico</option>
+                            <option value="professionale">Istituto Professionale</option>
                         </select>
                     </div>
                 </div>
@@ -380,6 +407,11 @@
     <script>
         let currentSchema = null;
         let availableThemes = {};
+        let currentQuestion = 0;
+        let quizAnswers = {};
+        let memoryFlippedCards = [];
+        let memoryMatchedPairs = [];
+        let memoryMoves = 0;
         
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
@@ -560,34 +592,54 @@
                 </div>
             `;
             
-            // Anteprima schema specifica
+        // Anteprima schema specifica
             if (schema.type === 'memory') {
                 html += `
                     <div class="schema-preview">
-                        <h3>🧠 Anteprima Memory Game</h3>
+                        <h3>🧠 Memory Game Interattivo</h3>
                         <p><strong>Coppie:</strong> ${schema.metadata.pairs}</p>
                         <p><strong>Griglia:</strong> ${schema.grid.cols}×${schema.grid.rows}</p>
                         <p><strong>Tema:</strong> ${schema.metadata.theme}</p>
-                        <div style="display: grid; grid-template-columns: repeat(${schema.grid.cols}, 1fr); gap: 10px; margin-top: 1rem;">
-                            ${schema.cards.slice(0, 8).map(card => 
-                                `<div style="aspect-ratio: 1; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem;">${card.symbol}</div>`
+                        <div id="memoryGameBoard" style="display: grid; grid-template-columns: repeat(${schema.grid.cols}, 1fr); gap: 10px; margin-top: 1rem;">
+                            ${schema.cards.map((card, index) => 
+                                `<div class="memory-card" data-index="${index}" data-symbol="${card.symbol}" onclick="flipCard(${index})" style="aspect-ratio: 1; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: all 0.3s ease;">?</div>`
                             ).join('')}
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                            <button class="btn btn-primary" onclick="resetMemoryGame()">🔄 Ricomincia</button>
+                            <button class="btn btn-secondary" onclick="showMemorySolution()">👁️ Mostra Soluzione</button>
                         </div>
                     </div>
                 `;
             } else if (schema.type === 'quiz') {
                 html += `
                     <div class="schema-preview">
-                        <h3>📝 Anteprima Quiz</h3>
+                        <h3>📝 Quiz Interattivo</h3>
                         <p><strong>Domande:</strong> ${schema.metadata.total_questions}</p>
                         <p><strong>Categoria:</strong> ${schema.metadata.category}</p>
                         <p><strong>Tempo limite:</strong> ${schema.metadata.time_limit}s</p>
-                        <div style="margin-top: 1rem;">
-                            ${schema.questions.slice(0, 2).map(q => 
-                                `<div style="background: #f9fafb; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem;">
-                                    <strong>Q${q.id + 1}:</strong> ${q.question}
+                        <div id="quizContainer" style="margin-top: 1rem;">
+                            ${schema.questions.map((q, index) => 
+                                `<div class="quiz-question" data-question="${index}" style="display: ${index === 0 ? 'block' : 'none'}; background: #f9fafb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+                                    <h4>Domanda ${index + 1}: ${q.question}</h4>
+                                    <div class="quiz-options" style="margin-top: 1rem;">
+                                        ${q.options.map((option, optIndex) => 
+                                            `<div class="quiz-option" data-option="${optIndex}" onclick="selectQuizOption(${index}, ${optIndex})" style="background: white; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.3s ease;">
+                                                ${option}
+                                            </div>`
+                                        ).join('')}
+                                    </div>
+                                    <div class="quiz-feedback" id="feedback-${index}" style="margin-top: 1rem; display: none;"></div>
                                 </div>`
                             ).join('')}
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: space-between;">
+                            <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn" disabled>⬅️ Precedente</button>
+                            <span id="questionCounter">Domanda 1/${schema.questions.length}</span>
+                            <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">Prossima ➡️</button>
+                        </div>
+                        <div style="margin-top: 1rem; text-align: center;">
+                            <button class="btn btn-secondary" onclick="showQuizSolution()">👁️ Mostra Tutte le Risposte</button>
                         </div>
                     </div>
                 `;
@@ -595,6 +647,152 @@
             
             container.innerHTML = html;
             document.getElementById('resultContainer').classList.add('active');
+            
+            // Resetta stato interattivo
+            currentQuestion = 0;
+            quizAnswers = {};
+            memoryFlippedCards = [];
+            memoryMatchedPairs = [];
+            memoryMoves = 0;
+        }
+        
+        // Funzioni per Memory Game
+        function flipCard(index) {
+            if (!currentSchema || currentSchema.type !== 'memory') return;
+            
+            const card = document.querySelector(`[data-index="${index}"]`);
+            if (!card || memoryFlippedCards.includes(index) || memoryMatchedPairs.includes(index)) return;
+            
+            // Flip della carta
+            card.textContent = card.dataset.symbol;
+            card.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            memoryFlippedCards.push(index);
+            
+            // Controlla se ci sono due carte girate
+            if (memoryFlippedCards.length === 2) {
+                memoryMoves++;
+                const [card1, card2] = memoryFlippedCards;
+                
+                if (document.querySelector(`[data-index="${card1}"]`).dataset.symbol === 
+                    document.querySelector(`[data-index="${card2}"]`).dataset.symbol) {
+                    // Coppia trovata!
+                    memoryMatchedPairs.push(card1, card2);
+                    memoryFlippedCards = [];
+                    
+                    // Controlla vittoria
+                    if (memoryMatchedPairs.length === currentSchema.cards.length) {
+                        setTimeout(() => {
+                            showMessage(`🎉 Completato in ${memoryMoves} mosse!`, 'success');
+                        }, 500);
+                    }
+                } else {
+                    // Coppia sbagliata, rigira dopo 1 secondo
+                    setTimeout(() => {
+                        document.querySelector(`[data-index="${card1}"]`).textContent = '?';
+                        document.querySelector(`[data-index="${card1}"]`).style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                        document.querySelector(`[data-index="${card2}"]`).textContent = '?';
+                        document.querySelector(`[data-index="${card2}"]`).style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+                        memoryFlippedCards = [];
+                    }, 1000);
+                }
+            }
+        }
+        
+        function resetMemoryGame() {
+            document.querySelectorAll('.memory-card').forEach(card => {
+                card.textContent = '?';
+                card.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            });
+            memoryFlippedCards = [];
+            memoryMatchedPairs = [];
+            memoryMoves = 0;
+        }
+        
+        function showMemorySolution() {
+            document.querySelectorAll('.memory-card').forEach(card => {
+                card.textContent = card.dataset.symbol;
+                card.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+            });
+        }
+        
+        // Funzioni per Quiz
+        function selectQuizOption(questionIndex, optionIndex) {
+            if (!currentSchema || currentSchema.type !== 'quiz') return;
+            
+            const question = currentSchema.questions[questionIndex];
+            const isCorrect = optionIndex === question.correct;
+            
+            // Salva risposta
+            quizAnswers[questionIndex] = optionIndex;
+            
+            // Visualizza feedback
+            const options = document.querySelectorAll(`[data-question="${questionIndex}"] .quiz-option`);
+            options.forEach((opt, idx) => {
+                opt.style.pointerEvents = 'none';
+                if (idx === question.correct) {
+                    opt.style.background = '#dcfce7';
+                    opt.style.borderColor = '#16a34a';
+                } else if (idx === optionIndex && !isCorrect) {
+                    opt.style.background = '#fef2f2';
+                    opt.style.borderColor = '#dc2626';
+                }
+            });
+            
+            // Mostra feedback
+            const feedback = document.getElementById(`feedback-${questionIndex}`);
+            feedback.style.display = 'block';
+            feedback.innerHTML = isCorrect ? 
+                '✅ Risposta Corretta!' : 
+                `❌ Risposta Sbagliata. La risposta corretta è: ${question.options[question.correct]}`;
+            feedback.style.color = isCorrect ? '#16a34a' : '#dc2626';
+        }
+        
+        function nextQuestion() {
+            if (!currentSchema || currentSchema.type !== 'quiz') return;
+            
+            if (currentQuestion < currentSchema.questions.length - 1) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'none';
+                currentQuestion++;
+                document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'block';
+                updateQuizNavigation();
+            }
+        }
+        
+        function previousQuestion() {
+            if (!currentSchema || currentSchema.type !== 'quiz') return;
+            
+            if (currentQuestion > 0) {
+                document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'none';
+                currentQuestion--;
+                document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'block';
+                updateQuizNavigation();
+            }
+        }
+        
+        function updateQuizNavigation() {
+            document.getElementById('questionCounter').textContent = `Domanda ${currentQuestion + 1}/${currentSchema.questions.length}`;
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').disabled = currentQuestion === currentSchema.questions.length - 1;
+        }
+        
+        function showQuizSolution() {
+            if (!currentSchema || currentSchema.type !== 'quiz') return;
+            
+            currentSchema.questions.forEach((q, index) => {
+                const options = document.querySelectorAll(`[data-question="${index}"] .quiz-option`);
+                options.forEach((opt, idx) => {
+                    opt.style.pointerEvents = 'none';
+                    if (idx === q.correct) {
+                        opt.style.background = '#dcfce7';
+                        opt.style.borderColor = '#16a34a';
+                    }
+                });
+                
+                const feedback = document.getElementById(`feedback-${index}`);
+                feedback.style.display = 'block';
+                feedback.innerHTML = `✅ Risposta Corretta: ${q.options[q.correct]}`;
+                feedback.style.color = '#16a34a';
+            });
         }
         
         function downloadSchema() {
