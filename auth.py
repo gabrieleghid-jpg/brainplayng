@@ -10,19 +10,30 @@ import datetime
 auth_bp = Blueprint('auth', __name__)
 
 # Database utenti semplificato (in produzione usare database reale)
-USERS_FILE = 'users.json'
+USERS_FILE = 'data/users.dat'
 
 def load_users():
-    """Carica gli utenti dal file JSON"""
-    if os.path.exists(USERS_FILE):
-        with open(USERS_FILE, 'r') as f:
-            return json.load(f)
-    return {}
+    """Carica gli utenti dal file DAT"""
+    try:
+        if os.path.exists(USERS_FILE):
+            with open(USERS_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {}
+    except Exception as e:
+        print(f"Errore nel caricare utenti: {e}")
+        return {}
 
 def save_users(users):
-    """Salva gli utenti nel file JSON"""
-    with open(USERS_FILE, 'w') as f:
-        json.dump(users, f, indent=2)
+    """Salva gli utenti nel file DAT"""
+    try:
+        # Assicurati che la directory esista
+        os.makedirs(os.path.dirname(USERS_FILE), exist_ok=True)
+        with open(USERS_FILE, 'w', encoding='utf-8') as f:
+            json.dump(users, f, indent=2, ensure_ascii=False)
+        return True
+    except Exception as e:
+        print(f"Errore nel salvare utenti: {e}")
+        return False
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -37,10 +48,15 @@ def login():
             # Hash della password per confronto
             password_hash = hashlib.sha256(password.encode()).hexdigest()
             if users[username]['password'] == password_hash:
+                # Aggiorna ultimo login
+                users[username]['last_login'] = datetime.datetime.now().isoformat()
+                save_users(users)
+                
                 session['user_id'] = username
                 session['username'] = username
-                flash('Login successful!', 'success')
-                return redirect(url_for('core.dashboard'))
+                session['email'] = users[username]['email']
+                flash('Bentornato! Login effettuato con successo.', 'success')
+                return redirect(url_for('index'))
             else:
                 flash('Password incorrect!', 'error')
         else:
@@ -79,14 +95,19 @@ def register():
         users[username] = {
             'email': email,
             'password': password_hash,
-            'created_at': str(datetime.datetime.now()),
+            'created_at': datetime.datetime.now().isoformat(),
             'games_played': 0,
-            'high_score': 0
+            'high_score': 0,
+            'last_login': None,
+            'is_active': True
         }
         
-        save_users(users)
-        flash('Registration successful! Please login.', 'success')
-        return redirect(url_for('auth.login'))
+        if save_users(users):
+            flash('Registrazione completata! Ora puoi accedere.', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Errore durante la registrazione. Riprova.', 'error')
+            return render_template('auth/register.html')
     
     return render_template('auth/register.html')
 

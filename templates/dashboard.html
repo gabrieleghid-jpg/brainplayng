@@ -1,0 +1,436 @@
+<!-- Responsabile: GABRIELE - Dashboard Utente -->
+<!-- Template per la dashboard principale dopo il login -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - BrainPlayNG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+        
+        .dashboard-header {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .user-details h2 {
+            margin: 0;
+            color: #1f2937;
+            font-size: 1.5rem;
+        }
+        
+        .user-details p {
+            margin: 0;
+            color: #6b7280;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #fbbf24;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .card-icon.memory {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .card-icon.quiz {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        .card-icon.puzzle {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+        
+        .card-icon.stats {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .card-description {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .card-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn-play {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+        }
+        
+        .btn-disabled {
+            background: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .quick-stats {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .quick-stat {
+            text-align: center;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
+        
+        .quick-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .quick-stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="header-content">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        {{ session.username[0]|upper if session.username else 'U' }}
+                    </div>
+                    <div class="user-details">
+                        <h2>Benvenuto, {{ session.username }}!</h2>
+                        <p>{{ session.email }}</p>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <a href="{{ url_for('auth.profile') }}" class="btn btn-secondary">
+                        <i class="fas fa-user"></i> Profilo
+                    </a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-stats">
+            <div class="stats-grid">
+                <div class="quick-stat">
+                    <div class="quick-stat-value">0</div>
+                    <div class="quick-stat-label">Giochi Giocati</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">0</div>
+                    <div class="quick-stat-label">Punteggio Massimo</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">0</div>
+                    <div class="quick-stat-label">Ore di Studio</div>
+                </div>
+                <div class="quick-stat">
+                    <div class="quick-stat-value">1</div>
+                    <div class="quick-stat-label">Giorni Attivi</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon memory">🧠</div>
+                    <h3 class="card-title">Memory Game</h3>
+                </div>
+                <p class="card-description">
+                    Migliora la tua memoria con il nostro gioco di carte interattivo. Trova tutte le coppie corrispondenti!
+                </p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Partite</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Record</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <a href="{{ url_for('game.memory_game') }}" class="btn btn-play">
+                        <i class="fas fa-play"></i> Gioca Ora
+                    </a>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon quiz">📝</div>
+                    <h3 class="card-title">Quiz Game</h3>
+                </div>
+                <p class="card-description">
+                    Metti alla prova le tue conoscenze con i nostri quiz interattivi su vari argomenti.
+                </p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Quiz</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0%</div>
+                        <div class="stat-label">Accuratezza</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-disabled" disabled>
+                        <i class="fas fa-lock"></i> Prossimamente
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon puzzle">🧩</div>
+                    <h3 class="card-title">Puzzle Game</h3>
+                </div>
+                <p class="card-description">
+                    Risolvi puzzle logici e metti alla prova le tue capacità di problem solving.
+                </p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Puzzle</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Completati</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-disabled" disabled>
+                        <i class="fas fa-lock"></i> Prossimamente
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon stats">📊</div>
+                    <h3 class="card-title">Statistiche</h3>
+                </div>
+                <p class="card-description">
+                    Visualizza le tue statistiche dettagliate, i progressi e confrontati con altri utenti.
+                </p>
+                <div class="card-stats">
+                    <div class="stat">
+                        <div class="stat-value">#</div>
+                        <div class="stat-label">Ranking</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0</div>
+                        <div class="stat-label">Achievement</div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-disabled" disabled>
+                        <i class="fas fa-chart-line"></i> Dettagli
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Animazioni e interazioni
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animazione di ingresso per le card
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Animazione per le statistiche
+            const statValues = document.querySelectorAll('.quick-stat-value, .stat-value');
+            statValues.forEach(stat => {
+                const finalValue = stat.textContent;
+                if (!isNaN(finalValue) && finalValue !== '0') {
+                    let currentValue = 0;
+                    const increment = Math.ceil(finalValue / 20);
+                    const timer = setInterval(() => {
+                        currentValue += increment;
+                        if (currentValue >= finalValue) {
+                            currentValue = finalValue;
+                            clearInterval(timer);
+                        }
+                        stat.textContent = currentValue;
+                    }, 50);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

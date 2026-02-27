@@ -48,6 +48,70 @@ body {
     z-index: 1000;
 }
 
+/* Messaggi Flash */
+.flash-messages {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 2000;
+    max-width: 400px;
+}
+
+.flash-message {
+    background: var(--bg-white);
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-lg);
+    border-left: 4px solid;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease;
+}
+
+.flash-success {
+    border-left-color: #10b981;
+    color: #065f46;
+}
+
+.flash-error {
+    border-left-color: #ef4444;
+    color: #991b1b;
+}
+
+.close-btn {
+    cursor: pointer;
+    font-size: 18px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+    opacity: 1;
+}
+
+.user-welcome {
+    color: var(--text-dark);
+    font-weight: 500;
+    margin-right: 15px;
+    padding: 8px 15px;
+    background: var(--bg-light);
+    border-radius: 20px;
+    display: inline-block;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 .navbar {
     padding: 1rem 0;
 }
