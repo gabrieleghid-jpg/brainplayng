@@ -249,6 +249,9 @@ body {
     padding: 3rem 2rem;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-grid {
@@ -258,10 +261,15 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
+    text-align: center;
 }
 
 .hero-left {
     animation: slideInLeft 1s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-badge {
@@ -272,6 +280,7 @@ body {
     font-size: 0.9rem;
     margin-bottom: 1rem;
     backdrop-filter: blur(10px);
+    text-align: center;
 }
 
 .hero-title-new {
@@ -279,6 +288,7 @@ body {
     font-weight: 700;
     margin-bottom: 1.5rem;
     line-height: 1.2;
+    text-align: center;
 }
 
 .hero-subtitle-new {
@@ -286,12 +296,15 @@ body {
     margin-bottom: 2rem;
     opacity: 0.9;
     line-height: 1.6;
+    text-align: center;
+    max-width: 600px;
 }
 
 .hero-stats {
     display: flex;
     gap: 2rem;
     margin-bottom: 2rem;
+    justify-content: center;
 }
 
 .stat {
@@ -313,21 +326,31 @@ body {
 .hero-actions {
     display: flex;
     gap: 1rem;
+    justify-content: center;
 }
 
 .hero-right {
     animation: slideInRight 1s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-visual {
     position: relative;
     height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .floating-elements {
     position: absolute;
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .float-element {
@@ -362,6 +385,7 @@ body {
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
     width: 280px;
     color: var(--text-primary);
+    text-align: center;
 }
 
 .card-header {
@@ -369,6 +393,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    text-align: center;
 }
 
 .card-title {
@@ -390,6 +415,7 @@ body {
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
     margin-bottom: 1rem;
+    justify-content: center;
 }
 
 .mini-card {
@@ -408,6 +434,7 @@ body {
     justify-content: space-between;
     margin-bottom: 1rem;
     font-size: 0.9rem;
+    text-align: center;
 }
 
 .difficulty {
@@ -427,6 +454,9 @@ body {
 .quick-actions {
     padding: 3rem 2rem;
     background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .actions-grid {
@@ -435,6 +465,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 2rem;
+    text-align: center;
 }
 
 .action-card {
@@ -446,6 +477,10 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .action-card::before {
@@ -494,11 +529,18 @@ body {
 .features-new {
     padding: 3rem 2rem;
     background: var(--light-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .section-header {
     text-align: center;
     margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .section-title-new {
@@ -519,6 +561,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 2rem;
+    text-align: center;
 }
 
 .feature-card-new {
@@ -527,6 +570,11 @@ body {
     padding: 2rem;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .feature-card-new:hover {
@@ -555,6 +603,7 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
+    justify-content: center;
 }
 
 .progress-bar {
@@ -563,6 +612,7 @@ body {
     background: var(--light-bg);
     border-radius: 4px;
     overflow: hidden;
+    max-width: 200px;
 }
 
 .progress-fill {
@@ -582,6 +632,9 @@ body {
 .games-section {
     padding: 3rem 2rem;
     background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .games-grid {
@@ -590,6 +643,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
+    text-align: center;
 }
 
 .game-card {
@@ -598,6 +652,10 @@ body {
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .game-card:hover {
@@ -612,12 +670,14 @@ body {
     align-items: center;
     justify-content: center;
     position: relative;
+    width: 100%;
 }
 
 .game-preview-mini {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 0.5rem;
+    justify-content: center;
 }
 
 .mini-game-card {
@@ -647,6 +707,7 @@ body {
 
 .game-info {
     padding: 1.5rem;
+    text-align: center;
 }
 
 .game-info h3 {
@@ -696,6 +757,259 @@ body {
 
 .game-actions {
     padding: 0 1.5rem 1.5rem;
+    text-align: center;
+}
+
+/* Progress Section */
+.progress-section {
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+}
+
+.progress-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-info {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+/* Community Section */
+.community-section {
+    padding: 3rem 2rem;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.community-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.community-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.community-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.community-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.community-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.community-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* AI Tools Section */
+.ai-tools-section {
+    padding: 3rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-tools-section .section-title-new,
+.ai-tools-section .section-subtitle {
+    color: white;
+}
+
+.ai-tools-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+
+.ai-tool-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-tool-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.ai-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.ai-tool-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.ai-tool-card p {
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 1rem;
+}
+
+.ai-tool-card .action-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.ai-tool-card .action-link:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Footer New */
+.footer-new {
+    background: var(--dark-bg);
+    color: white;
+    padding: 3rem 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.footer-section h4 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: white;
+}
+
+.footer-section p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1rem;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+}
+
+.footer-section ul li a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+    color: white;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.social-links a {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: white;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding: 2rem 2rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
 }
 
 /* Utility Classes */
