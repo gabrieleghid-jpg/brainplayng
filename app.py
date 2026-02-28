@@ -24,7 +24,7 @@ def schema_generator():
 @app.route('/')
 def index():
     """Homepage principale della piattaforma"""
-    return render_template('index.html')
+    return render_template('index-new.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
