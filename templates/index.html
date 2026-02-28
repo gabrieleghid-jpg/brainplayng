@@ -28,8 +28,11 @@
         {% endif %}
     {% endwith %}
 
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside class="sidebar collapsed" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
                 <h1>🧠 BrainPlayNG</h1>
@@ -455,22 +458,56 @@
     <script src="{{ url_for('static', filename='home/home.js') }}"></script>
     <script src="{{ url_for('static', filename='home/leaderboard.js') }}"></script>
     <script>
-        // Menu Toggle Functionality
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        });
-
-        // Close sidebar when clicking outside
-        document.addEventListener('click', function(event) {
-            const sidebar = document.querySelector('.sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            
-            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
-                sidebar.classList.remove('active');
+        // Gestione Sidebar Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        // Funzione per aprire la sidebar
+        function openSidebar() {
+            sidebar.classList.remove('collapsed');
+            sidebar.classList.add('expanded');
+            sidebarOverlay.classList.add('active');
+            menuToggle.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Blocca lo scroll quando la sidebar è aperta
+        }
+        
+        // Funzione per chiudere la sidebar
+        function closeSidebar() {
+            sidebar.classList.remove('expanded');
+            sidebar.classList.add('collapsed');
+            sidebarOverlay.classList.remove('active');
+            menuToggle.classList.remove('active');
+            document.body.style.overflow = ''; // Ripristina lo scroll
+        }
+        
+        // Toggle sidebar al click sul pulsante menu
+        menuToggle.addEventListener('click', function() {
+            if (sidebar.classList.contains('collapsed')) {
+                openSidebar();
+            } else {
+                closeSidebar();
             }
         });
 
-        // Smooth scrolling for navigation links
+        // Chiudi sidebar quando si clicca sull'overlay
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Chiudi sidebar quando si clicca su un link di navigazione
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                closeSidebar();
+            });
+        });
+
+        // Chiudi sidebar con tasto ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && !sidebar.classList.contains('collapsed')) {
+                closeSidebar();
+            }
+        });
+
+        // Smooth scrolling per navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -504,6 +541,13 @@
                     link.classList.add('active');
                 }
             });
+        });
+
+        // Gestione responsive - chiudi sidebar su resize se necessario
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024 && !sidebar.classList.contains('collapsed')) {
+                closeSidebar();
+            }
         });
     </script>
 </body>
