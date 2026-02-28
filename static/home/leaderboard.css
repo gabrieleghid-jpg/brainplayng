@@ -33,6 +33,7 @@
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     transform: scale(0.9);
     transition: transform 0.3s ease;
+    text-align: center;
 }
 
 .leaderboard-modal.show .leaderboard-content {
@@ -45,6 +46,7 @@
     color: white;
     padding: 2rem;
     position: relative;
+    text-align: center;
 }
 
 .leaderboard-header h2 {
@@ -62,49 +64,68 @@
 }
 
 .filter-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: 2px solid #f093fb;
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
     cursor: pointer;
     transition: all 0.3s ease;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: translateY(-1px);
+    background: linear-gradient(135deg, #e083eb 0%, #e4475c 100%);
+    border-color: #e083eb;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
 }
 
 .filter-btn.active {
-    background: white;
-    color: #667eea;
-    border-color: white;
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    border-color: #f5576c;
+    box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+    transform: scale(1.05);
+}
+
+.filter-btn.active:hover {
+    background: linear-gradient(135deg, #e4475c 0%, #e083eb 100%);
+    transform: scale(1.08) translateY(-2px);
 }
 
 .close-btn {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     border: none;
     color: white;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    text-decoration: none;
 }
 
 .close-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: rotate(90deg);
+    background: linear-gradient(135deg, #e083eb 0%, #e4475c 100%);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
 }
 
 /* Statistiche Classifiche */
@@ -294,29 +315,35 @@
 }
 
 .pagination-btn {
-    background: #667eea;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     color: white;
     border: none;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.5rem;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    text-decoration: none;
 }
 
 .pagination-btn:hover {
-    background: #5a6fd8;
-    transform: scale(1.1);
+    background: linear-gradient(135deg, #e083eb 0%, #e4475c 100%);
+    transform: scale(1.15);
+    box-shadow: 0 8px 25px rgba(240, 147, 251, 0.4);
 }
 
 .pagination-btn:disabled {
-    background: #6c757d;
+    background: linear-gradient(135deg, #f8b4d9 0%, #ff8a95 100%);
     cursor: not-allowed;
     transform: scale(1);
+    opacity: 0.6;
+    box-shadow: 0 2px 8px rgba(240, 147, 251, 0.2);
 }
 
 .page-info {
