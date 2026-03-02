@@ -171,7 +171,6 @@
                             <button class="filter-btn" data-filter="quiz">Quiz</button>
                             <button class="filter-btn" data-filter="puzzle">Puzzle</button>
                         </div>
-                        <button class="close-btn" onclick="window.location.href='/'">&times;</button>
                     </div>
 
                     <!-- Statistiche Classifiche -->
@@ -369,7 +368,7 @@
             setupSearch();
         });
 
-        function loadLeaderboardData() {
+        function loadLeaderboardData(filter = 'all') {
             // Dati di esempio per la leaderboard
             const leaderboardData = [
                 { position: 1, name: "AlphaPlayer", avatar: "👤", score: 9850, games: 342, bestGame: "Memory", level: "esperto" },
