@@ -21,6 +21,11 @@ def schema_generator():
     """Pagina generatore schemi IA"""
     return render_template('ai/schema_generator.html')
 
+@app.route('/game/memory-ia')
+def memory_ia():
+    """Pagina Memory Game generato da IA"""
+    return render_template('game/memory-ia.html')
+
 @app.route('/')
 def index():
     """Homepage principale della piattaforma"""

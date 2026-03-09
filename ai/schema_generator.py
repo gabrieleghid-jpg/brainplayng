@@ -267,38 +267,21 @@ class AISchemaGenerator:
         }
 
     def _generate_logic_schema(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera schema per esercizi di logica"""
-        logic_types = ['syllogism', 'pattern', 'deduction', 'classification']
-        num_exercises = 8
-        
-        exercises = []
-        for i in range(num_exercises):
-            logic_type = random.choice(logic_types)
-            
-            if logic_type == 'syllogism':
-                exercise = self._generate_syllogism()
-            elif logic_type == 'pattern':
-                exercise = self._generate_pattern_logic()
-            elif logic_type == 'deduction':
-                exercise = self._generate_deduction()
-            else:  # classification
-                exercise = self._generate_classification()
-            
-            exercises.append({
-                'id': i,
-                'type': logic_type,
-                'question': exercise['question'],
-                'answer': exercise['answer'],
-                'explanation': exercise.get('explanation', '')
-            })
+        """Genera un singolo problema di logica ben formattato"""
+        # Usa il metodo che ho già creato con la vasta libreria
+        puzzle = self._generate_logic_puzzle(config)
         
         return {
             'type': 'logic',
             'difficulty': config.difficulty.value,
-            'exercises': exercises,
+            'question': puzzle['question'],
+            'answer': puzzle['answer'],
+            'explanation': puzzle['explanation'],
+            'category': puzzle.get('category', 'logica'),
             'metadata': {
-                'logic_types': logic_types,
-                'generated_at': datetime.now().isoformat()
+                'generated_at': datetime.now().isoformat(),
+                'logic_type': puzzle.get('type', 'logic'),
+                'complexity_score': random.randint(60, 95)
             }
         }
 
@@ -402,26 +385,182 @@ class AISchemaGenerator:
         }
 
     def _generate_logic_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera puzzle di logica pura"""
+        """Genera puzzle di logica pura con vasta libreria di problemi"""
         puzzles = [
+            # Problemi di logica matematica
             {
                 'question': 'Ci sono 5 persone in una stanza. 2 escono, 3 entrano. Quante persone ci sono?',
                 'answer': 6,
-                'explanation': '5 - 2 + 3 = 6 persone'
+                'explanation': '5 - 2 + 3 = 6 persone',
+                'difficulty': 'facile',
+                'category': 'matematica'
             },
             {
                 'question': 'Un padre ha 4 figli. Ogni figlio ha 1 sorella. Quante figlie ha il padre?',
                 'answer': 1,
-                'explanation': 'Tutti i figli condividono la stessa sorella'
+                'explanation': 'Tutti i figli condividono la stessa sorella',
+                'difficulty': 'facile',
+                'category': 'famiglia'
+            },
+            {
+                'question': 'Se 2 macchine lavorano insieme per 2 ore per fare un lavoro, quanto tempo ci mette una macchina da sola?',
+                'answer': 4,
+                'explanation': '2 macchine × 2 ore = 4 ore per 1 macchina',
+                'difficulty': 'medio',
+                'category': 'lavoro'
+            },
+            {
+                'question': 'Un albero raddoppia di altezza ogni anno. In 4 anni raggiunge i 16 metri. Quanto era alto all\'inizio?',
+                'answer': 1,
+                'explanation': '16 ÷ 2 ÷ 2 ÷ 2 ÷ 2 = 1 metro',
+                'difficulty': 'medio',
+                'category': 'crescita'
+            },
+            
+            # Problemi di logica verbale
+            {
+                'question': 'Tutti i gatti sono animali. Alcuni animali sono domestici. Quale conclusione è certamente vera?',
+                'answer': 'Alcuni gatti sono domestici',
+                'explanation': 'Se tutti i gatti sono animali e alcuni animali sono domestici, allora alcuni gatti devono essere domestici',
+                'difficulty': 'medio',
+                'category': 'sillogismo'
+            },
+            {
+                'question': 'Nessun elefante può volare. Tiki è un elefante. Quale conclusione è vera?',
+                'answer': 'Tiki non può volare',
+                'explanation': 'Se nessun elefante può volare e Tiki è un elefante, allora Tiki non può volare',
+                'difficulty': 'facile',
+                'category': 'sillogismo'
+            },
+            {
+                'question': 'Tutti i libri di matematica sono difficili. Alcuni libri difficili sono interessanti. Quale potrebbe essere vero?',
+                'answer': 'Alcuni libri di matematica sono interessanti',
+                'explanation': 'Non è garantito, ma è possibile che alcuni libri di matematica siano tra quelli interessanti',
+                'difficulty': 'difficile',
+                'category': 'sillogismo'
+            },
+            
+            # Problemi di logica spaziale
+            {
+                'question': 'In una fila di 10 persone, Marco è il 6° da sinistra e il 5° da destra. Quante persone ci sono nella fila?',
+                'answer': 10,
+                'explanation': 'Se è 6° da sinistra e 5° da destra, ci sono 5 persone a sinistra e 4 a destra di lui: 5 + 1 + 4 = 10',
+                'difficulty': 'medio',
+                'category': 'posizione'
+            },
+            {
+                'question': '3 amici si siedono in fila. Mario non è primo né ultimo. Luca non è ultimo. Chi è seduto al centro?',
+                'answer': 'Mario',
+                'explanation': 'Se Mario non è primo né ultimo, deve essere al centro',
+                'difficulty': 'facile',
+                'category': 'posizione'
+            },
+            {
+                'question': 'In un cerchio ci sono 12 persone equamente distanti. Quante persone sono di fronte a ciascuna persona?',
+                'answer': 1,
+                'explanation': 'In un cerchio con numero pari, ogni persona ha esattamente una persona di fronte',
+                'difficulty': 'medio',
+                'category': 'geometria'
+            },
+            
+            # Problemi di logica temporale
+            {
+                'question': 'Oggi è lunedì. Tra 100 giorni che giorno sarà?',
+                'answer': 'mercoledì',
+                'explanation': '100 giorni = 14 settimane + 2 giorni. 14 settimane dopo lunedì è ancora lunedì, +2 giorni = mercoledì',
+                'difficulty': 'difficile',
+                'category': 'tempo'
+            },
+            {
+                'question': 'Un orologio segna le 15:00. Quanti gradi ha percorso la lancetta delle ore dalle 9:00?',
+                'answer': 180,
+                'explanation': 'Dalle 9:00 alle 15:00 ci sono 6 ore. Ogni ora = 30°, quindi 6 × 30° = 180°',
+                'difficulty': 'difficile',
+                'category': 'tempo'
+            },
+            {
+                'question': 'Se ieri era il giorno prima di domani di dopodomani, che giorno è oggi?',
+                'answer': 'venerdì',
+                'explanation': 'Dopodomani - 1 giorno = domani. Domani - 1 giorno = oggi. Quindi oggi è venerdì',
+                'difficulty': 'difficile',
+                'category': 'tempo'
+            },
+            
+            # Problemi di logica deduttiva
+            {
+                'question': '3 scatole A, B, C. Una contiene un premio. A dice: "Il premio non è qui". B dice: "Il premio è in C". C dice: "Il premio non è qui". Solo una persona dice il vero. Dove è il premio?',
+                'answer': 'B',
+                'explanation': 'Se solo B dice il vero, allora il premio è in C. Ma se B dice il vero, allora C mente (il premio è in C), e A mente (il premio è in A). Contraddizione. Se solo A dice il vero, il premio non è in A, quindi è in B o C. Se B mente, il premio non è in C, quindi è in B. Se C mente, il premio è in C. Contraddizione. Se solo C dice il vero, il premio non è in C, quindi è in A o B. Se A mente, il premio è in A. Se B mente, il premio non è in C. Quindi premio in A.',
+                'difficulty': 'difficile',
+                'category': 'deduzione'
+            },
+            {
+                'question': '4 persone con diversi colori di maglietta. Rossi ha la maglietta blu. Verdi non ha quella rossa. Bianchi ha la maglietta gialla. Neri non ha quella verde. Quale colore ha Verdi?',
+                'answer': 'nera',
+                'explanation': 'Rossi=blu, Bianchi=gialla. Restano rossa e verde per Verdi e Neri. Verdi non ha quella rossa, quindi ha la nera',
+                'difficulty': 'medio',
+                'category': 'deduzione'
+            },
+            {
+                'question': '5 numeri: 2, 4, 8, 16, ? Qual è il prossimo numero?',
+                'answer': 32,
+                'explanation': 'Ogni numero è il doppio del precedente: 2×2=4, 4×2=8, 8×2=16, 16×2=32',
+                'difficulty': 'facile',
+                'category': 'sequenza'
+            },
+            {
+                'question': '3, 6, 9, 12, ? Qual è il prossimo numero?',
+                'answer': 15,
+                'explanation': 'Si aggiunge 3 ogni volta: 3+3=6, 6+3=9, 9+3=12, 12+3=15',
+                'difficulty': 'facile',
+                'category': 'sequenza'
+            },
+            {
+                'question': '1, 1, 2, 3, 5, 8, ? Qual è il prossimo numero?',
+                'answer': 13,
+                'explanation': 'Sequenza di Fibonacci: ogni numero è la somma dei due precedenti: 5+8=13',
+                'difficulty': 'medio',
+                'category': 'sequenza'
+            },
+            
+            # Problemi di logica pratica
+            {
+                'question': 'Hai 2 ciotole d\'acqua. Una contiene acqua fredda, l\'altra calda. Dove si ghiaccia prima?',
+                'answer': 'in entrambe alla stessa temperatura',
+                'explanation': 'L\'acqua ghiaccia a 0°C indipendentemente dalla temperatura iniziale',
+                'difficulty': 'medio',
+                'category': 'scienza'
+            },
+            {
+                'question': 'Un uovo cade da 10 metri e non si rompe. Come è possibile?',
+                'answer': 'l\'uovo era già sodo',
+                'explanation': 'Solo un uovo sodo può cadere da altezze elevate senza rompersi',
+                'difficulty': 'facile',
+                'category': 'pratica'
+            },
+            {
+                'question': 'Cosa può viaggiare intorno al mondo restando sempre nello stesso angolo?',
+                'answer': 'un francobollo',
+                'explanation': 'Un francobollo è attaccato a una lettera che viaggia intorno al mondo',
+                'difficulty': 'facile',
+                'category': 'indovinello'
             }
         ]
+        
+        # Filtra per difficoltà se specificata
+        if hasattr(config, 'difficulty') and config.difficulty != 'all':
+            filtered_puzzles = [p for p in puzzles if p.get('difficulty', 'medio') == config.difficulty]
+            if filtered_puzzles:
+                puzzles = filtered_puzzles
         
         puzzle = random.choice(puzzles)
         return {
             'question': puzzle['question'],
             'answer': puzzle['answer'],
             'explanation': puzzle['explanation'],
-            'type': 'logic'
+            'type': 'logic',
+            'category': puzzle.get('category', 'logica'),
+            'difficulty': puzzle.get('difficulty', 'medio')
         }
 
     def _generate_pattern_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:

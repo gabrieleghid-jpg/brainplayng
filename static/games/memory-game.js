@@ -52,14 +52,42 @@ class MemoryGame {
     
     // Inizializza il gioco
     init() {
+        console.log('Memory Game: Inizializzazione...');
+        
+        // Verifica che gli elementi DOM esistano
+        const gameBoard = document.getElementById('gameBoard');
+        const movesElement = document.getElementById('moves');
+        const scoreElement = document.getElementById('score');
+        
+        if (!gameBoard) {
+            console.error('Memory Game: Elemento gameBoard non trovato!');
+            return;
+        }
+        if (!movesElement) {
+            console.error('Memory Game: Elemento moves non trovato!');
+            return;
+        }
+        if (!scoreElement) {
+            console.error('Memory Game: Elemento score non trovato!');
+            return;
+        }
+        
+        console.log('Memory Game: Elementi DOM trovati, procedo...');
+        
         this.setupLevelButtons();
         this.startNewGame();
     }
     
     // Configura i pulsanti di livello
     setupLevelButtons() {
-        document.querySelectorAll('.level-btn').forEach(btn => {
+        console.log('Memory Game: Configurazione pulsanti livello...');
+        
+        const buttons = document.querySelectorAll('.level-btn');
+        console.log('Memory Game: Trovati', buttons.length, 'pulsanti livello');
+        
+        buttons.forEach(btn => {
             btn.addEventListener('click', () => {
+                console.log('Memory Game: Click su livello', btn.dataset.level);
                 document.querySelectorAll('.level-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 this.gameState.level = btn.dataset.level;
@@ -70,21 +98,20 @@ class MemoryGame {
     
     // Inizia una nuova partita
     startNewGame() {
+        console.log('Memory Game: Inizio nuova partita, livello:', this.gameState.level);
+        
         // Ferma il timer precedente
         if (this.gameState.timerInterval) {
             clearInterval(this.gameState.timerInterval);
         }
         
-        const pairs = this.LEVEL_CONFIG[this.gameState.level]['pairs'];
+        const config = this.LEVEL_CONFIG[this.gameState.level];
+        const pairs = config['pairs'];
         
-        // Crea carte duplicate
-        const symbols = this.CARD_SYMBOLS.slice(0, pairs);
-        const cards = [...symbols, ...symbols];
+        console.log('Memory Game: Configurazione livello', config);
+        console.log('Memory Game: Numero coppie', pairs);
         
-        // Mescola le carte con l'algoritmo migliorato
-        this.gameState.cards = this.shuffleArray(cards);
-        
-        // Resetta lo stato
+        // Resetta lo stato PRIMA di creare le carte
         this.gameState.flipped = [];
         this.gameState.matched = [];
         this.gameState.moves = 0;
@@ -93,6 +120,17 @@ class MemoryGame {
         this.gameState.startTime = Date.now();
         this.gameState.elapsedTime = 0;
         
+        console.log('Memory Game: Stato resettato');
+        
+        // Crea carte duplicate
+        const symbols = this.CARD_SYMBOLS.slice(0, pairs);
+        const cards = [...symbols, ...symbols];
+        
+        // Mescola le carte con l'algoritmo migliorato
+        this.gameState.cards = this.shuffleArray(cards);
+        
+        console.log('Memory Game: Carte mescolate', this.gameState.cards.length);
+        
         // Inizializza il timer
         this.startTimer();
         
@@ -100,9 +138,17 @@ class MemoryGame {
         this.renderGameBoard();
         this.updatePairsDisplay();
         
+        console.log('Memory Game: Partita avviata! Gioco pronto!');
+        
         // Aggiorna la griglia in base al livello
         const board = document.getElementById('gameBoard');
         board.className = `game-board ${this.gameState.level}`;
+        
+        // Resetta isProcessing dopo un breve delay per assicurarsi che il gioco sia pronto
+        setTimeout(() => {
+            this.gameState.isProcessing = false;
+            console.log('Memory Game: Gioco completamente pronto per interazione!');
+        }, 100);
     }
     
     // Algoritmo Fisher-Yates migliorato per mescolare array
@@ -134,10 +180,42 @@ class MemoryGame {
         const board = document.getElementById('gameBoard');
         board.innerHTML = '';
         
+        console.log('Memory Game: Renderizzo board con', this.gameState.cards.length, 'carte');
+        
         this.gameState.cards.forEach((symbol, index) => {
             const card = this.createCard(symbol, index);
             board.appendChild(card);
         });
+        
+        // IMPORTANTE: Applica event delegation dopo aver creato le carte
+        this.setupCardEventListeners();
+        
+        console.log('Memory Game: Board renderizzata, event listeners applicati');
+    }
+    
+    // Configura gli event listeners per le carte (Event Delegation)
+    setupCardEventListeners() {
+        const board = document.getElementById('gameBoard');
+        
+        // Rimuovi event listener precedente per evitare duplicati
+        board.removeEventListener('click', this.handleCardClick);
+        
+        // Aggiungi event listener con delegation
+        this.handleCardClick = (event) => {
+            const card = event.target.closest('.card');
+            if (!card) return;
+            
+            const index = parseInt(card.dataset.index);
+            console.log('Memory Game: Card clicked!', index);
+            
+            if (!isNaN(index)) {
+                this.flipCard(index);
+            }
+        };
+        
+        board.addEventListener('click', this.handleCardClick);
+        
+        console.log('Memory Game: Event delegation configurata sul board');
     }
     
     // Crea una singola carta
@@ -145,34 +223,64 @@ class MemoryGame {
         const card = document.createElement('div');
         card.className = 'card';
         card.dataset.index = index;
-        card.onclick = () => this.flipCard(index);
+        
+        // NON usare onclick qui - useremo event delegation
+        // card.onclick = () => this.flipCard(index);
         
         card.innerHTML = `
             <div class="card-face card-front">?</div>
             <div class="card-face card-back">${symbol}</div>
         `;
         
+        // Debug: assicuriamoci che la carta sia cliccabile
+        card.style.cursor = 'pointer';
+        card.style.pointerEvents = 'auto';
+        
         return card;
     }
     
     // Gira una carta
     flipCard(index) {
+        console.log('Memory Game: flipCard called with index', index);
+        console.log('Memory Game: isProcessing:', this.gameState.isProcessing);
+        console.log('Memory Game: flipped:', this.gameState.flipped);
+        console.log('Memory Game: matched:', this.gameState.matched);
+        
         // Blocca qualsiasi azione durante il processing
-        if (this.gameState.isProcessing) return;
+        if (this.gameState.isProcessing) {
+            console.log('Memory Game: Bloccato - isProcessing attivo');
+            return;
+        }
         
         // Impedisci di cliccare carte già girate o già accoppiate
-        if (this.gameState.flipped.includes(index) || this.gameState.matched.includes(index)) return;
+        if (this.gameState.flipped.includes(index) || this.gameState.matched.includes(index)) {
+            console.log('Memory Game: Carta già girata o accoppiata');
+            return;
+        }
         
         // Impedisci di cliccare più di due carte contemporaneamente
-        if (this.gameState.flipped.length >= 2) return;
+        if (this.gameState.flipped.length >= 2) {
+            console.log('Memory Game: Già 2 carte girate');
+            return;
+        }
+        
+        console.log('Memory Game: Giro carta', index);
         
         // Gira la carta
         const card = document.querySelector(`[data-index="${index}"]`);
+        if (!card) {
+            console.error('Memory Game: Carta non trovata!', index);
+            return;
+        }
+        
         card.classList.add('flipped');
         this.gameState.flipped.push(index);
         
+        console.log('Memory Game: Carta girata, flipped array:', this.gameState.flipped);
+        
         // Controlla se sono state girate due carte
         if (this.gameState.flipped.length === 2) {
+            console.log('Memory Game: Due carte girate, attendo check...');
             this.gameState.isProcessing = true;
             this.gameState.moves++; // Incrementa mosse solo per coppia
             this.updateDisplay();
@@ -369,5 +477,19 @@ function closeVictory() {
 
 // Inizializza il gioco quando la pagina è caricata
 document.addEventListener('DOMContentLoaded', () => {
-    game = new MemoryGame();
+    console.log('Memory Game: DOM caricato, inizializzo...');
+    
+    // Forza l'inizializzazione immediata
+    setTimeout(() => {
+        console.log('Memory Game: Timeout scaduto, creo gioco...');
+        game = new MemoryGame();
+        
+        // Forza l'avvio di una nuova partita dopo l'inizializzazione
+        setTimeout(() => {
+            console.log('Memory Game: Forzo avvio partita...');
+            if (game) {
+                game.startNewGame();
+            }
+        }, 500);
+    }, 100);
 });

@@ -16,6 +16,183 @@
             padding: 2rem;
         }
         
+        /* Stili per Problemi di Logica */
+        .logic-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logic-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+        
+        .badge-label {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .badge-value {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .difficulty-facile .badge-value {
+            background: rgba(34, 197, 94, 0.8);
+        }
+        
+        .difficulty-medio .badge-value {
+            background: rgba(251, 146, 60, 0.8);
+        }
+        
+        .difficulty-difficile .badge-value {
+            background: rgba(239, 68, 68, 0.8);
+        }
+        
+        .logic-problem-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin: 1.5rem 0;
+        }
+        
+        .problem-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .problem-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .problem-title {
+            color: #1f2937;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .problem-content {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #667eea;
+        }
+        
+        .problem-text {
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: #374151;
+            font-weight: 500;
+        }
+        
+        .solution-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 2px solid #dcfce7;
+        }
+        
+        .solution-header {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .solution-icon {
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .solution-title {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 700;
+        }
+        
+        .solution-content {
+            padding: 2rem;
+        }
+        
+        .answer-section, .explanation-section {
+            margin-bottom: 2rem;
+        }
+        
+        .answer-section h5, .explanation-section h5 {
+            color: #16a34a;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .answer-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1f2937;
+            padding: 1rem;
+            background: #f0fdf4;
+            border-radius: 8px;
+            border: 2px solid #bbf7d0;
+            text-align: center;
+        }
+        
+        .explanation-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #374151;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-left: 4px solid #22c55e;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #667eea;
+            color: #667eea;
+        }
+        
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+        }
+        
         .ai-header {
             background: white;
             border-radius: 1rem;
@@ -294,7 +471,6 @@
                         <label for="schemaType">Tipo di Schema *</label>
                         <select id="schemaType" name="schema_type" required>
                             <option value="">Seleziona un tipo...</option>
-                            <option value="memory">🧠 Memory Game</option>
                             <option value="quiz">📝 Quiz Game</option>
                             <option value="puzzle">🧩 Puzzle Game</option>
                             <option value="math">🔢 Math Exercises</option>
@@ -409,9 +585,6 @@
         let availableThemes = {};
         let currentQuestion = 0;
         let quizAnswers = {};
-        let memoryFlippedCards = [];
-        let memoryMatchedPairs = [];
-        let memoryMoves = 0;
         
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
@@ -461,26 +634,19 @@
             const container = document.getElementById('customParamsContainer');
             let html = '';
             
-            if (schemaType === 'memory') {
+            if (schemaType === 'quiz') {
                 html = `
                     <div class="param-item">
-                        <input type="checkbox" id="themeParam" name="theme" value="animals">
-                        <label for="themeParam">Tema Animali</label>
+                        <label for="questionsParam">Numero Domande:</label>
+                        <input type="number" id="questionsParam" name="questions" min="5" max="20" value="10">
                     </div>
                     <div class="param-item">
-                        <input type="checkbox" id="adaptiveParam" name="adaptive_difficulty">
-                        <label for="adaptiveParam">Difficoltà Adattiva</label>
-                    </div>
-                `;
-            } else if (schemaType === 'quiz') {
-                html = `
-                    <div class="param-item">
-                        <input type="checkbox" id="mathCategory" name="category" value="mathematics">
-                        <label for="mathCategory">Matematica</label>
-                    </div>
-                    <div class="param-item">
-                        <input type="checkbox" id="scienceCategory" name="category" value="science">
-                        <label for="scienceCategory">Scienze</label>
+                        <label for="difficultyParam">Difficoltà:</label>
+                        <select id="difficultyParam" name="difficulty">
+                            <option value="easy">Facile</option>
+                            <option value="medium" selected>Medio</option>
+                            <option value="hard">Difficile</option>
+                        </select>
                     </div>
                 `;
             } else if (schemaType === 'puzzle') {
@@ -593,25 +759,7 @@
             `;
             
         // Anteprima schema specifica
-            if (schema.type === 'memory') {
-                html += `
-                    <div class="schema-preview">
-                        <h3>🧠 Memory Game Interattivo</h3>
-                        <p><strong>Coppie:</strong> ${schema.metadata.pairs}</p>
-                        <p><strong>Griglia:</strong> ${schema.grid.cols}×${schema.grid.rows}</p>
-                        <p><strong>Tema:</strong> ${schema.metadata.theme}</p>
-                        <div id="memoryGameBoard" style="display: grid; grid-template-columns: repeat(${schema.grid.cols}, 1fr); gap: 10px; margin-top: 1rem;">
-                            ${schema.cards.map((card, index) => 
-                                `<div class="memory-card" data-index="${index}" data-symbol="${card.symbol}" onclick="flipCard(${index})" style="aspect-ratio: 1; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: all 0.3s ease;">?</div>`
-                            ).join('')}
-                        </div>
-                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                            <button class="btn btn-primary" onclick="resetMemoryGame()">🔄 Ricomincia</button>
-                            <button class="btn btn-secondary" onclick="showMemorySolution()">👁️ Mostra Soluzione</button>
-                        </div>
-                    </div>
-                `;
-            } else if (schema.type === 'quiz') {
+            if (schema.type === 'quiz') {
                 html += `
                     <div class="schema-preview">
                         <h3>📝 Quiz Interattivo</h3>
@@ -629,17 +777,73 @@
                                             </div>`
                                         ).join('')}
                                     </div>
-                                    <div class="quiz-feedback" id="feedback-${index}" style="margin-top: 1rem; display: none;"></div>
+                                    <div id="feedback-${index}" style="margin-top: 1rem; font-weight: 600; display: none;"></div>
+                                    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                                        ${index > 0 ? `<button class="btn btn-secondary" onclick="previousQuestion(${index})">← Precedente</button>` : ''}
+                                        ${index < schema.questions.length - 1 ? `<button class="btn btn-primary" onclick="nextQuestion(${index})">Successivo →</button>` : `<button class="btn btn-success" onclick="showQuizResults()">🏆 Vedi Risultati</button>`}
+                                    </div>
                                 </div>`
                             ).join('')}
                         </div>
-                        <div style="margin-top: 1rem; display: flex; gap: 1rem; justify-content: space-between;">
-                            <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn" disabled>⬅️ Precedente</button>
-                            <span id="questionCounter">Domanda 1/${schema.questions.length}</span>
-                            <button class="btn btn-primary" onclick="nextQuestion()" id="nextBtn">Prossima ➡️</button>
+                    </div>
+                `;
+            } else if (schema.type === 'logic') {
+                html += `
+                    <div class="schema-preview">
+                        <h3>🧠 Problema di Logica</h3>
+                        <div class="logic-info" style="display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                            <div class="logic-badge">
+                                <span class="badge-label">Categoria:</span>
+                                <span class="badge-value">${schema.category || 'Logica'}</span>
+                            </div>
+                            <div class="logic-badge">
+                                <span class="badge-label">Difficoltà:</span>
+                                <span class="badge-value difficulty-${schema.difficulty}">${schema.difficulty}</span>
+                            </div>
+                            <div class="logic-badge">
+                                <span class="badge-label">Tipo:</span>
+                                <span class="badge-value">${schema.metadata?.logic_type || 'classico'}</span>
+                            </div>
                         </div>
-                        <div style="margin-top: 1rem; text-align: center;">
-                            <button class="btn btn-secondary" onclick="showQuizSolution()">👁️ Mostra Tutte le Risposte</button>
+                        <div class="logic-problem-container">
+                            <div class="problem-header">
+                                <div class="problem-icon">🤔</div>
+                                <h4 class="problem-title">Risolvi questo problema di logica:</h4>
+                            </div>
+                            <div class="problem-content">
+                                <div class="problem-text">
+                                    ${schema.question}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="logic-controls" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                            <button class="btn btn-primary" onclick="showLogicAnswer()">
+                                <i class="fas fa-lightbulb"></i> Mostra Soluzione
+                            </button>
+                            <button class="btn btn-secondary" onclick="hideLogicAnswer()">
+                                <i class="fas fa-eye-slash"></i> Nascondi
+                            </button>
+                            <button class="btn btn-outline" onclick="generateNewLogicProblem()">
+                                <i class="fas fa-sync"></i> Nuovo Problema
+                            </button>
+                        </div>
+                        <div id="logicAnswer" style="display: none; margin-top: 2rem;">
+                            <div class="solution-card">
+                                <div class="solution-header">
+                                    <div class="solution-icon">✅</div>
+                                    <h4 class="solution-title">Soluzione e Spiegazione</h4>
+                                </div>
+                                <div class="solution-content">
+                                    <div class="answer-section">
+                                        <h5>Risposta Corretta:</h5>
+                                        <div class="answer-value">${schema.answer}</div>
+                                    </div>
+                                    <div class="explanation-section">
+                                        <h5>Spiegazione Dettagliata:</h5>
+                                        <div class="explanation-text">${schema.explanation}</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -651,68 +855,36 @@
             // Resetta stato interattivo
             currentQuestion = 0;
             quizAnswers = {};
-            memoryFlippedCards = [];
-            memoryMatchedPairs = [];
-            memoryMoves = 0;
         }
         
-        // Funzioni per Memory Game
-        function flipCard(index) {
-            if (!currentSchema || currentSchema.type !== 'memory') return;
-            
-            const card = document.querySelector(`[data-index="${index}"]`);
-            if (!card || memoryFlippedCards.includes(index) || memoryMatchedPairs.includes(index)) return;
-            
-            // Flip della carta
-            card.textContent = card.dataset.symbol;
-            card.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-            memoryFlippedCards.push(index);
-            
-            // Controlla se ci sono due carte girate
-            if (memoryFlippedCards.length === 2) {
-                memoryMoves++;
-                const [card1, card2] = memoryFlippedCards;
-                
-                if (document.querySelector(`[data-index="${card1}"]`).dataset.symbol === 
-                    document.querySelector(`[data-index="${card2}"]`).dataset.symbol) {
-                    // Coppia trovata!
-                    memoryMatchedPairs.push(card1, card2);
-                    memoryFlippedCards = [];
-                    
-                    // Controlla vittoria
-                    if (memoryMatchedPairs.length === currentSchema.cards.length) {
-                        setTimeout(() => {
-                            showMessage(`🎉 Completato in ${memoryMoves} mosse!`, 'success');
-                        }, 500);
-                    }
-                } else {
-                    // Coppia sbagliata, rigira dopo 1 secondo
-                    setTimeout(() => {
-                        document.querySelector(`[data-index="${card1}"]`).textContent = '?';
-                        document.querySelector(`[data-index="${card1}"]`).style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-                        document.querySelector(`[data-index="${card2}"]`).textContent = '?';
-                        document.querySelector(`[data-index="${card2}"]`).style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-                        memoryFlippedCards = [];
-                    }, 1000);
-                }
+        // Funzioni per Problemi di Logica
+        function showLogicAnswer() {
+            const answerDiv = document.getElementById('logicAnswer');
+            if (answerDiv) {
+                answerDiv.style.display = 'block';
+                answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
         
-        function resetMemoryGame() {
-            document.querySelectorAll('.memory-card').forEach(card => {
-                card.textContent = '?';
-                card.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            });
-            memoryFlippedCards = [];
-            memoryMatchedPairs = [];
-            memoryMoves = 0;
+        function hideLogicAnswer() {
+            const answerDiv = document.getElementById('logicAnswer');
+            if (answerDiv) {
+                answerDiv.style.display = 'none';
+            }
         }
         
-        function showMemorySolution() {
-            document.querySelectorAll('.memory-card').forEach(card => {
-                card.textContent = card.dataset.symbol;
-                card.style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
-            });
+        function generateNewLogicProblem() {
+            // Nascondi la soluzione corrente
+            hideLogicAnswer();
+            
+            // Mostra loading
+            const container = document.getElementById('schemaContent');
+            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generazione nuovo problema...</p></div>';
+            
+            // Ricarica il form e genera nuovo schema
+            setTimeout(() => {
+                generateSchema();
+            }, 1000);
         }
         
         // Funzioni per Quiz
