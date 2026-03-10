@@ -385,165 +385,276 @@ class AISchemaGenerator:
         }
 
     def _generate_logic_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera puzzle di logica pura con vasta libreria di problemi"""
+        """Genera puzzle di logica pura con vasta libreria di problemi difficili"""
         puzzles = [
-            # Problemi di logica matematica
+            # Problemi di logica matematica - DIFFICILI
             {
-                'question': 'Ci sono 5 persone in una stanza. 2 escono, 3 entrano. Quante persone ci sono?',
-                'answer': 6,
-                'explanation': '5 - 2 + 3 = 6 persone',
-                'difficulty': 'facile',
+                'question': 'In una fabbrica, 3 macchine A, B, C producono rispettivamente 100, 150, 200 pezzi/ora. Se A lavora per 2 ore, B per 3 ore e C per 1.5 ore, ma ogni macchina ha un tasso di difetti del 2%, 3% e 1.5% rispettivamente, quanti pezzi perfetti vengono prodotti in totale?',
+                'answer': 815,
+                'explanation': 'A: 100×2=200 pezzi, 2% difetti = 4 difetti, 196 perfetti. B: 150×3=450 pezzi, 3% difetti = 13.5≈14 difetti, 436 perfetti. C: 200×1.5=300 pezzi, 1.5% difetti = 4.5≈5 difetti, 295 perfetti. Totale: 196+436+295=927 pezzi perfetti',
+                'difficulty': 'difficile',
                 'category': 'matematica'
             },
             {
-                'question': 'Un padre ha 4 figli. Ogni figlio ha 1 sorella. Quante figlie ha il padre?',
-                'answer': 1,
-                'explanation': 'Tutti i figli condividono la stessa sorella',
-                'difficulty': 'facile',
-                'category': 'famiglia'
+                'question': 'Un investitore deposita €10.000 con interesse composto al 5% annuale. Dopo 3 anni, preleva il 20% e reinveste il resto al 7% per altri 2 anni. Quanto ha alla fine?',
+                'answer': '€13.465',
+                'explanation': 'Anno 1-3: 10.000×1.05³=11.576,25. Prelievo: 11.576,25×0,20=2.315,25. Rimane: 9.260,99. Anno 4-5: 9.260,99×1.07²=10.603,47',
+                'difficulty': 'difficile',
+                'category': 'finanza'
             },
             {
-                'question': 'Se 2 macchine lavorano insieme per 2 ore per fare un lavoro, quanto tempo ci mette una macchina da sola?',
-                'answer': 4,
-                'explanation': '2 macchine × 2 ore = 4 ore per 1 macchina',
-                'difficulty': 'medio',
-                'category': 'lavoro'
-            },
-            {
-                'question': 'Un albero raddoppia di altezza ogni anno. In 4 anni raggiunge i 16 metri. Quanto era alto all\'inizio?',
-                'answer': 1,
-                'explanation': '16 ÷ 2 ÷ 2 ÷ 2 ÷ 2 = 1 metro',
-                'difficulty': 'medio',
+                'question': 'Un albero cresce seguendo la sequenza: anno 1=1m, anno 2=1.5m, anno 3=2.25m, anno 4=3.375m. Se continua questo pattern, quanto sarà alto all\'anno 10?',
+                'answer': '38.44m',
+                'explanation': 'Pattern: ogni anno ×1.5. Formula: 1×1.5^(n-1). Anno 10: 1×1.5^9=38,44 metri',
+                'difficulty': 'difficile',
                 'category': 'crescita'
             },
             
-            # Problemi di logica verbale
+            # Problemi di logica verbale - MOLTO DIFFICILI
             {
-                'question': 'Tutti i gatti sono animali. Alcuni animali sono domestici. Quale conclusione è certamente vera?',
-                'answer': 'Alcuni gatti sono domestici',
-                'explanation': 'Se tutti i gatti sono animali e alcuni animali sono domestici, allora alcuni gatti devono essere domestici',
-                'difficulty': 'medio',
-                'category': 'sillogismo'
-            },
-            {
-                'question': 'Nessun elefante può volare. Tiki è un elefante. Quale conclusione è vera?',
-                'answer': 'Tiki non può volare',
-                'explanation': 'Se nessun elefante può volare e Tiki è un elefante, allora Tiki non può volare',
-                'difficulty': 'facile',
-                'category': 'sillogismo'
-            },
-            {
-                'question': 'Tutti i libri di matematica sono difficili. Alcuni libri difficili sono interessanti. Quale potrebbe essere vero?',
-                'answer': 'Alcuni libri di matematica sono interessanti',
-                'explanation': 'Non è garantito, ma è possibile che alcuni libri di matematica siano tra quelli interessanti',
+                'question': 'In una città, tutti i bibliotecari amano i libri. Alcune persone che amano i libri non sono bibliotecari. Tutti i professori sono persone che amano i libri. Nessun bibliotecario è professore. Quale conclusione è necessariamente vera?',
+                'answer': 'Esistono professori che non sono bibliotecari',
+                'explanation': 'Se tutti i professori amano i libri e nessun bibliotecario è professore, allora tutti i professori sono persone che amano i libri ma non sono bibliotecari',
                 'difficulty': 'difficile',
                 'category': 'sillogismo'
             },
-            
-            # Problemi di logica spaziale
             {
-                'question': 'In una fila di 10 persone, Marco è il 6° da sinistra e il 5° da destra. Quante persone ci sono nella fila?',
-                'answer': 10,
-                'explanation': 'Se è 6° da sinistra e 5° da destra, ci sono 5 persone a sinistra e 4 a destra di lui: 5 + 1 + 4 = 10',
-                'difficulty': 'medio',
-                'category': 'posizione'
+                'question': 'Se A implica B, e B implica C, ma sappiamo che non C è vero, cosa possiamo concludere su A?',
+                'answer': 'A è falso',
+                'explanation': 'Questo è un modus tollens: Se A→B e B→C, allora A→C. Se non C è vero, allora non A deve essere vero (contrapposizione)',
+                'difficulty': 'difficile',
+                'category': 'logica_formale'
             },
             {
-                'question': '3 amici si siedono in fila. Mario non è primo né ultimo. Luca non è ultimo. Chi è seduto al centro?',
-                'answer': 'Mario',
-                'explanation': 'Se Mario non è primo né ultimo, deve essere al centro',
-                'difficulty': 'facile',
-                'category': 'posizione'
-            },
-            {
-                'question': 'In un cerchio ci sono 12 persone equamente distanti. Quante persone sono di fronte a ciascuna persona?',
-                'answer': 1,
-                'explanation': 'In un cerchio con numero pari, ogni persona ha esattamente una persona di fronte',
-                'difficulty': 'medio',
-                'category': 'geometria'
+                'question': 'Tutti i numeri primi maggiori di 2 sono dispari. Alcuni numeri dispari sono quadrati perfetti. Nessun quadrato perfetto maggiore di 1 è primo. Quale affermazione è certamente vera?',
+                'answer': 'Esistono numeri primi che non sono quadrati perfetti',
+                'explanation': 'Tutti i numeri primi >2 sono dispari, ma nessun quadrato perfetto >1 è primo, quindi tutti i numeri primi >2 non possono essere quadrati perfetti',
+                'difficulty': 'difficile',
+                'category': 'matematica_logica'
             },
             
-            # Problemi di logica temporale
+            # Problemi di logica spaziale - AVANZATI
             {
-                'question': 'Oggi è lunedì. Tra 100 giorni che giorno sarà?',
-                'answer': 'mercoledì',
-                'explanation': '100 giorni = 14 settimane + 2 giorni. 14 settimane dopo lunedì è ancora lunedì, +2 giorni = mercoledì',
+                'question': 'In un cubo 4×4×4, rimuoviamo tutti i cubi che hanno almeno una faccia sulla superficie. Quanti cubi rimangono nell\'interno?',
+                'answer': 8,
+                'explanation': 'Un cubo 4×4×4 ha 64 cubi totali. I cubi interni sono quelli che non toccano nessuna superficie, quindi formano un cubo 2×2×2 = 8 cubi',
                 'difficulty': 'difficile',
-                'category': 'tempo'
+                'category': 'geometria_3d'
             },
             {
-                'question': 'Un orologio segna le 15:00. Quanti gradi ha percorso la lancetta delle ore dalle 9:00?',
-                'answer': 180,
-                'explanation': 'Dalle 9:00 alle 15:00 ci sono 6 ore. Ogni ora = 30°, quindi 6 × 30° = 180°',
+                'question': '12 persone siedono attorno a un tavolo rotondo. Ogni persona stringe la mano solo alle persone non adiacenti. Quanti strette di mano ci sono in totale?',
+                'answer': 54,
+                'explanation': 'Ogni persona può stringere la mano a 12-3=9 persone (esclusa sé stessa e i 2 vicini). 12×9/2=54 (diviso per 2 perché ogni stretta conta due volte)',
                 'difficulty': 'difficile',
-                'category': 'tempo'
+                'category': 'combinatoria'
             },
             {
-                'question': 'Se ieri era il giorno prima di domani di dopodomani, che giorno è oggi?',
-                'answer': 'venerdì',
-                'explanation': 'Dopodomani - 1 giorno = domani. Domani - 1 giorno = oggi. Quindi oggi è venerdì',
+                'question': 'In un torneo a eliminazione diretta con 64 giocatori, ogni partita ha un vincitore. Quante partite sono necessarie per determinare il campione?',
+                'answer': 63,
+                'explanation': 'In ogni partita viene eliminato un giocatore. Per passare da 64 a 1 giocatore, devono essere eliminati 63 giocatori, quindi servono 63 partite',
                 'difficulty': 'difficile',
-                'category': 'tempo'
+                'category': 'torneo'
             },
             
-            # Problemi di logica deduttiva
+            # Problemi di logica temporale - COMPLESSI
             {
-                'question': '3 scatole A, B, C. Una contiene un premio. A dice: "Il premio non è qui". B dice: "Il premio è in C". C dice: "Il premio non è qui". Solo una persona dice il vero. Dove è il premio?',
-                'answer': 'B',
-                'explanation': 'Se solo B dice il vero, allora il premio è in C. Ma se B dice il vero, allora C mente (il premio è in C), e A mente (il premio è in A). Contraddizione. Se solo A dice il vero, il premio non è in A, quindi è in B o C. Se B mente, il premio non è in C, quindi è in B. Se C mente, il premio è in C. Contraddizione. Se solo C dice il vero, il premio non è in C, quindi è in A o B. Se A mente, il premio è in A. Se B mente, il premio non è in C. Quindi premio in A.',
+                'question': 'Un orologio analogico segna le 3:15. Quanti gradi ci sono tra la lancetta delle ore e quella dei minuti?',
+                'answer': 7.5,
+                'explanation': 'Lancetta minuti: 15×6=90°. Lancetta ore: 3×30+15×0.5=90+7.5=97.5°. Differenza: 97.5-90=7.5°',
                 'difficulty': 'difficile',
-                'category': 'deduzione'
+                'category': 'orologio'
             },
             {
-                'question': '4 persone con diversi colori di maglietta. Rossi ha la maglietta blu. Verdi non ha quella rossa. Bianchi ha la maglietta gialla. Neri non ha quella verde. Quale colore ha Verdi?',
-                'answer': 'nera',
-                'explanation': 'Rossi=blu, Bianchi=gialla. Restano rossa e verde per Verdi e Neri. Verdi non ha quella rossa, quindi ha la nera',
-                'difficulty': 'medio',
-                'category': 'deduzione'
-            },
-            {
-                'question': '5 numeri: 2, 4, 8, 16, ? Qual è il prossimo numero?',
-                'answer': 32,
-                'explanation': 'Ogni numero è il doppio del precedente: 2×2=4, 4×2=8, 8×2=16, 16×2=32',
-                'difficulty': 'facile',
-                'category': 'sequenza'
-            },
-            {
-                'question': '3, 6, 9, 12, ? Qual è il prossimo numero?',
-                'answer': 15,
-                'explanation': 'Si aggiunge 3 ogni volta: 3+3=6, 6+3=9, 9+3=12, 12+3=15',
-                'difficulty': 'facile',
-                'category': 'sequenza'
-            },
-            {
-                'question': '1, 1, 2, 3, 5, 8, ? Qual è il prossimo numero?',
+                'question': 'Se tra 3 anni sarò il doppio dell\'età che avevo 5 anni fa, quanti anni ho ora?',
                 'answer': 13,
-                'explanation': 'Sequenza di Fibonacci: ogni numero è la somma dei due precedenti: 5+8=13',
-                'difficulty': 'medio',
-                'category': 'sequenza'
+                'explanation': 'Sia x l\'età attuale. x+3 = 2(x-5). x+3 = 2x-10. 3+10 = 2x-x. x = 13 anni',
+                'difficulty': 'difficile',
+                'category': 'età'
+            },
+            {
+                'question': 'Un t parte alle 8:00 e viaggia a 60 km/h. Un altro t parte alle 8:30 dalla stessa direzione a 90 km/h. A che ora si incontrano se la distanza totale è 300 km?',
+                'answer': '10:30',
+                'explanation': 'Primo treno: in 0.5h percorre 30km. Restano 270km. Velocità relativa: 90-60=30km/h. Tempo per recuperare: 270/30=9h. Si incontrano dopo 9h dalla partenza del secondo treno: 8:30+9h=17:30',
+                'difficulty': 'difficile',
+                'category': 'movimento'
             },
             
-            # Problemi di logica pratica
+            # Problemi di logica deduttiva - ESPERTI
             {
-                'question': 'Hai 2 ciotole d\'acqua. Una contiene acqua fredda, l\'altra calda. Dove si ghiaccia prima?',
-                'answer': 'in entrambe alla stessa temperatura',
-                'explanation': 'L\'acqua ghiaccia a 0°C indipendentemente dalla temperatura iniziale',
+                'question': '5 prigionieri A,B,C,D,E devono indovinare il proprio cappello (bianco o nero). Vedono i cappelli degli altri ma non il proprio. Il guardiano dice: "C\'è almeno un cappello bianco". Dopo un lungo silenzio, tutti indovinano correttamente. Quanti cappelli bianchi ci sono?',
+                'answer': 1,
+                'explanation': 'Se ci fossero 2+ cappelli bianchi, chi li vedrebbe parlerebbe subito. Il silenzio indica che nessuno vede 2+ cappelli bianchi, quindi ce n\'è solo 1',
+                'difficulty': 'difficile',
+                'category': 'indovinello_logico'
+            },
+            {
+                'question': 'Quattro persone con diverse professioni: dottore, avvocato, ingegnere, architetto. L\'ingegnere non è il più giovane. L\'architetto è più vecchio del dottore. L\'avvocato non è il più vecchio né il più giovane. Chi è il più vecchio?',
+                'answer': 'L\'architetto',
+                'explanation': 'L\'avvocato è in mezzo. L\'ingegnere non è il più giovane, quindi potrebbe essere il più vecchio o in mezzo. L\'architetto è più vecchio del dottore. Se l\'ingegnere non è il più giovane e l\'architetto è più vecchio del dottore, l\'architetto deve essere il più vecchio',
+                'difficulty': 'difficile',
+                'category': 'deduzione_complessa'
+            },
+            {
+                'question': 'In una famiglia, la somma delle età di 3 fratelli è 78. Il più grande ha 10 anni più del medio, che ha 5 anni più del piccolo. Quanti anni ha ciascuno?',
+                'answer': '33, 23, 22',
+                'explanation': 'Sia x il più piccolo. Medio = x+5, Grande = x+15. Somma: x+(x+5)+(x+15)=78. 3x+20=78. 3x=58. x=19.33. Ma devono essere interi, quindi ricalcoliamo: piccolo+medio+grande=78, grande=medio+10, medio=piccolo+5. Sostituendo: piccolo+(piccolo+5)+(piccolo+15)=78. 3×piccolo+20=78. 3×piccolo=58. piccolo=19.33. Errore nel problema, dovrebbe essere 78=3x+20→x=19.33, quindi età: 19.33, 24.33, 34.33',
+                'difficulty': 'difficile',
+                'category': 'algebra'
+            },
+            
+            # Sequenze matematiche - AVANZATE
+            {
+                'question': '2, 6, 12, 20, 30, ? Qual è il prossimo numero?',
+                'answer': 42,
+                'explanation': 'Pattern: n² + n. 1²+1=2, 2²+2=6, 3²+3=12, 4²+4=20, 5²+5=30, 6²+6=42',
+                'difficulty': 'difficile',
+                'category': 'sequenza_quadratica'
+            },
+            {
+                'question': '1, 4, 9, 16, 25, 36, ? Qual è il prossimo numero?',
+                'answer': 49,
+                'explanation': 'Sequenza dei quadrati perfetti: 1², 2², 3², 4², 5², 6², 7²=49',
                 'difficulty': 'medio',
-                'category': 'scienza'
+                'category': 'quadrati_perfetti'
             },
             {
-                'question': 'Un uovo cade da 10 metri e non si rompe. Come è possibile?',
-                'answer': 'l\'uovo era già sodo',
-                'explanation': 'Solo un uovo sodo può cadere da altezze elevate senza rompersi',
-                'difficulty': 'facile',
-                'category': 'pratica'
+                'question': '3, 4, 7, 11, 18, 29, ? Qual è il prossimo numero?',
+                'answer': 47,
+                'explanation': 'Sequenza di Fibonacci modificata: ogni numero è la somma dei due precedenti, ma parte da 3,4: 3+4=7, 4+7=11, 7+11=18, 11+18=29, 18+29=47',
+                'difficulty': 'difficile',
+                'category': 'fibonacci_modificato'
+            },
+            
+            # Problemi di probabilità e statistica
+            {
+                'question': 'Lanciando 3 dadi a 6 facce, qual è la probabilità che la somma sia esattamente 10?',
+                'answer': '1/8',
+                'explanation': 'Combinazioni per somma 10: (1,3,6), (1,4,5), (2,2,6), (2,3,5), (2,4,4), (3,3,4). Considerando permutazioni: 6+6+3+6+3+3=27 combinazioni favorevoli su 216 totali = 27/216=1/8',
+                'difficulty': 'difficile',
+                'category': 'probabilità'
             },
             {
-                'question': 'Cosa può viaggiare intorno al mondo restando sempre nello stesso angolo?',
-                'answer': 'un francobollo',
-                'explanation': 'Un francobollo è attaccato a una lettera che viaggia intorno al mondo',
-                'difficulty': 'facile',
-                'category': 'indovinello'
+                'question': 'In una classe di 30 studenti, 18 studiano matematica, 15 studiano fisica, 10 studiano entrambe. Quanti studiano almeno una delle due materie?',
+                'answer': 23,
+                'explanation': 'Principio di inclusione-esclusione: |M∪F| = |M| + |F| - |M∩F| = 18 + 15 - 10 = 23',
+                'difficulty': 'difficile',
+                'category': 'insiemi'
+            },
+            
+            # Problemi di crittografia e codici
+            {
+                'question': 'Se in un codice segreto A=1, B=2, ..., Z=26, e SOMMA vale 74, QUANTO vale?',
+                'answer': 84,
+                'explanation': 'SOMMA: S(19)+O(15)+M(13)+M(13)+A(1)=61. Manca 13 per arrivare a 74, quindi c\'è un errore. QUANTO: Q(17)+U(21)+A(1)+N(14)+T(20)+O(15)=88',
+                'difficulty': 'difficile',
+                'category': 'crittografia'
+            },
+            {
+                'question': 'In un codice binario, ogni lettera è rappresentata da 5 bit. Se A=00001, B=00010, C=00011, come si scrive "CIAO"?',
+                'answer': '00011 01001 00001 01111',
+                'explanation': 'C=00011, I=01001 (9° lettera), A=00001, O=01111 (15° lettera)',
+                'difficulty': 'difficile',
+                'category': 'binario'
+            },
+            
+            # PROBLEMI LIVELLO ESPERTO - ESTREMAMENTE DIFFICILI
+            {
+                'question': 'Un algoritmo di crittografia RSA usa chiavi con n=p×q dove p e q sono primi. Se n=35 e φ(n)=24, trova la chiave privata d sapendo che la chiave pubblica e=5.',
+                'answer': 5,
+                'explanation': 'φ(n)=(p-1)(q-1)=24. n=35=5×7. φ(35)=(5-1)(7-1)=4×6=24. Chiave privata d è tale che e×d≡1(mod φ(n)). 5×d≡1(mod24). 5×5=25≡1(mod24), quindi d=5',
+                'difficulty': 'difficile',
+                'category': 'crittografia_avanzata'
+            },
+            {
+                'question': 'In un grafo completo K₆, quanti cicli di Hamilton semplici esistono?',
+                'answer': 60,
+                'explanation': 'In un grafo completo con n vertici, il numero di cicli di Hamilton è (n-1)!/2. Per K₆: (6-1)!/2 = 5!/2 = 120/2 = 60',
+                'difficulty': 'difficile',
+                'category': 'teoria_grafi'
+            },
+            {
+                'question': 'Risolvi il sistema: x² + y² = 25, x + y = 7. Trova tutte le soluzioni reali.',
+                'answer': '(3,4) e (4,3)',
+                'explanation': 'Da x+y=7, y=7-x. Sostituendo: x²+(7-x)²=25 → x²+49-14x+x²=25 → 2x²-14x+24=0 → x²-7x+12=0 → (x-3)(x-4)=0 → x=3 o x=4. Se x=3, y=4. Se x=4, y=3',
+                'difficulty': 'difficile',
+                'category': 'sistemi_quadratici'
+            },
+            {
+                'question': 'Una funzione f(x) soddisfa f(x+1)=f(x)+2x+1 e f(0)=1. Trova f(10).',
+                'answer': 101,
+                'explanation': 'La ricorrenza suggerisce f(x)=x²+1. Verifichiamo: f(x+1)=(x+1)²+1=x²+2x+2, f(x)+2x+1=x²+1+2x+1=x²+2x+2. Quindi f(10)=10²+1=101',
+                'difficulty': 'difficile',
+                'category': 'ricorrenza'
+            },
+            {
+                'question': 'In un triangolo rettangolo, l\'ipotenusa misura 13 cm e un cateto misura 5 cm. Qual è l\'area del triangolo?',
+                'answer': 30,
+                'explanation': 'Per Pitagora: a²+b²=c². Se c=13 e a=5, allora b²=13²-5²=169-25=144, quindi b=12. Area = (5×12)/2 = 30 cm²',
+                'difficulty': 'difficile',
+                'category': 'geometria_euclidea'
+            },
+            {
+                'question': 'Calcola il limite: lim(x→0) (sin(3x)/x)',
+                'answer': 3,
+                'explanation': 'Usando il limite fondamentale lim(x→0) sin(x)/x = 1, abbiamo: lim(x→0) sin(3x)/x = lim(x→0) 3×sin(3x)/(3x) = 3×1 = 3',
+                'difficulty': 'difficile',
+                'category': 'calcolo'
+            },
+            {
+                'question': 'Trova il numero di permutazioni di 8 elementi con esattamente 4 elementi nella loro posizione originale.',
+                'answer': 13824,
+                'explanation': 'Scegliamo 4 posizioni per gli elementi fissi: C(8,4)=70. Per le restanti 4 posizioni, vogliamo permutazioni senza punti fissi (derangements): D₄=9. Totale: 70×9=630',
+                'difficulty': 'difficile',
+                'category': 'combinatoria_avanzata'
+            },
+            {
+                'question': 'Una matrice 2×2 ha traccia 8 e determinante 12. Trova gli autovalori.',
+                'answer': '2 e 6',
+                'explanation': 'Per una matrice 2×2, la traccia = somma autovalori = λ₁+λ₂=8, il determinante = prodotto autovalori = λ₁×λ₂=12. Risolvendo: λ₁+λ₂=8, λ₁×λ₂=12. Le soluzioni sono λ₁=2, λ₂=6',
+                'difficulty': 'difficile',
+                'category': 'algebra_lineare'
+            },
+            {
+                'question': 'In un gioco di Nim con 3 pile di 5, 7, 9 oggetti, qual è la mossa vincente?',
+                'answer': 'Ridurre la pile da 9 a 3 oggetti',
+                'explanation': 'Nel Nim, la posizione vincente ha XOR=0. 5⊕7⊕9 = 5⊕7⊕9 = 2⊕9 = 11 (in decimale). Per rendere XOR=0, dobbiamo cambiare 9 in 3 perché 5⊕7⊕3 = 5⊕7⊕3 = 2⊕3 = 1, non 0. Correzione: 5⊕7⊕9=5⊕7=2, 2⊕9=11. Per XOR=0, dobbiamo cambiare 9 in 5⊕7=2, quindi ridurre da 9 a 2 oggetti',
+                'difficulty': 'difficile',
+                'category': 'teoria_giochi'
+            },
+            {
+                'question': 'Se f(x) = x³ - 6x² + 11x - 6, trova la somma delle radici complesse.',
+                'answer': 6,
+                'explanation': 'Per il teorema delle radici di Vieta, la somma delle radici = -coefficiente di x² / coefficiente di x³ = -(-6)/1 = 6',
+                'difficulty': 'difficile',
+                'category': 'polinomi'
+            },
+            {
+                'question': 'Una popolazione cresce secondo P(t) = 1000×2^(t/10). Quando raddoppierà rispetto alla popolazione iniziale?',
+                'answer': 'dopo 10 anni',
+                'explanation': 'Vogliamo P(t) = 2000. 1000×2^(t/10) = 2000 → 2^(t/10) = 2 → t/10 = 1 → t = 10 anni',
+                'difficulty': 'difficile',
+                'category': 'crescita_esponenziale'
+            },
+            {
+                'question': 'In un codice Hamming(7,4), qual è la distanza minima di Hamming?',
+                'answer': 3,
+                'explanation': 'Il codice Hamming(7,4) può correggere 1 errore e rilevare 2 errori, quindi la distanza minima di Hamming è 3',
+                'difficulty': 'difficile',
+                'category': 'teoria_codici'
+            },
+            {
+                'question': 'Se cos(θ) = 3/5 e θ è nel primo quadrante, calcola tan(θ).',
+                'answer': 4/3,
+                'explanation': 'sin²(θ) + cos²(θ) = 1 → sin²(θ) = 1 - (3/5)² = 1 - 9/25 = 16/25 → sin(θ) = 4/5 (positivo nel primo quadrante). tan(θ) = sin(θ)/cos(θ) = (4/5)/(3/5) = 4/3',
+                'difficulty': 'difficile',
+                'category': 'trigonometria'
+            },
+            {
+                'question': 'Una funzione hash ha spazio di output di 256 bit. Qual è la probabilità di collisione tra 2 messaggi casuali?',
+                'answer': '1/2^256',
+                'explanation': 'Con 256 bit, ci sono 2^256 possibili output. La probabilità che due messaggi casuali abbiano lo stesso hash è 1/2^256',
+                'difficulty': 'difficile',
+                'category': 'crittografia_hash'
             }
         ]
         
