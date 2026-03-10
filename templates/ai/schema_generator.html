@@ -855,6 +855,11 @@
             // Resetta stato interattivo
             currentQuestion = 0;
             quizAnswers = {};
+            
+            // Se è un problema di logica, aggiungi il pulsante "Ho risolto da solo"
+            if (schema.type === 'logic') {
+                setTimeout(addSolveButton, 100);
+            }
         }
         
         // Funzioni per Problemi di Logica
@@ -863,6 +868,11 @@
             if (answerDiv) {
                 answerDiv.style.display = 'block';
                 answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                // Salva che l'utente ha visualizzato la soluzione
+                if (currentSchema && currentSchema.type === 'logic') {
+                    saveLogicProblem(false); // Non risolto autonomamente
+                }
             }
         }
         
@@ -870,6 +880,52 @@
             const answerDiv = document.getElementById('logicAnswer');
             if (answerDiv) {
                 answerDiv.style.display = 'none';
+            }
+        }
+        
+        // Funzione per salvare il problema di logica risolto
+        async function saveLogicProblem(solved = true) {
+            try {
+                const gameData = {
+                    category: currentSchema.category || 'logica',
+                    difficulty: currentSchema.difficulty || 'medio',
+                    solved: solved,
+                    question: currentSchema.question,
+                    answer: currentSchema.answer,
+                    explanation: currentSchema.explanation
+                };
+                
+                const response = await fetch('/auth/api/user/add-game', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        type: 'logic',
+                        data: gameData
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('Problema di logica salvato nello storico');
+                }
+            } catch (error) {
+                console.error('Errore nel salvare il problema di logica:', error);
+            }
+        }
+        
+        // Aggiungi pulsante "Ho risolto da solo"
+        function addSolveButton() {
+            const controls = document.querySelector('.logic-controls');
+            if (controls && !controls.querySelector('.solve-btn')) {
+                const solveBtn = document.createElement('button');
+                solveBtn.className = 'btn btn-success solve-btn';
+                solveBtn.innerHTML = '<i class="fas fa-check"></i> Ho risolto da solo';
+                solveBtn.onclick = () => {
+                    saveLogicProblem(true); // Risolto autonomamente
+                    alert('Ottimo lavoro! Problema segnato come risolto autonomamente.');
+                };
+                controls.appendChild(solveBtn);
             }
         }
         

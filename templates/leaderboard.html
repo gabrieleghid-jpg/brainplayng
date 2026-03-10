@@ -47,6 +47,9 @@
                 <li><a href="#progress" class="nav-link">📊 Progressi</a></li>
                 <li><a href="#community" class="nav-link">👥 Community</a></li>
                 <li><a href="/leaderboard" class="nav-link active">🏆 Classifiche</a></li>
+                {% if 'user_id' in session %}
+                <li><a href="/auth/profile" class="nav-link">👤 Il Mio Profilo</a></li>
+                {% endif %}
             </ul>
         </nav>
         <div class="sidebar-footer">

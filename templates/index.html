@@ -145,6 +145,9 @@
                 <li><a href="#progress" class="nav-link">📊 Progressi</a></li>
                 <li><a href="#community" class="nav-link">👥 Community</a></li>
                 <li><a href="/leaderboard" class="nav-link">🏆 Classifiche</a></li>
+                {% if 'user_id' in session %}
+                <li><a href="/auth/profile" class="nav-link">👤 Il Mio Profilo</a></li>
+                {% endif %}
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -169,7 +172,7 @@
         <!-- Top Bar -->
         <header class="top-bar">
             <div class="top-bar-left">
-                <button class="menu-toggle" id="menuToggle">☰</button>
+                <button class="menu-toggle" id="menuToggle">🏠</button>
                 <div class="breadcrumb">
                     <span>Home</span>
                 </div>

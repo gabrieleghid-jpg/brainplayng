@@ -385,6 +385,41 @@ class MemoryGame {
         
         // Salva il punteggio nella leaderboard globale
         this.saveScoreToLeaderboard();
+        
+        // Salva la partita nello storico dell'utente
+        this.saveGameToHistory();
+    }
+    
+    // Salva la partita nello storico dell'utente
+    async saveGameToHistory() {
+        try {
+            const gameData = {
+                score: this.gameState.score,
+                moves: this.gameState.moves,
+                difficulty: this.gameState.level,
+                time: this.gameState.elapsedTime,
+                completed: true,
+                pairs_found: this.gameState.matched.length / 2,
+                total_pairs: this.gameState.cards.length / 2
+            };
+            
+            const response = await fetch('/auth/api/user/add-game', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    type: 'memory',
+                    data: gameData
+                })
+            });
+            
+            if (response.ok) {
+                console.log('Partita salvata nello storico');
+            }
+        } catch (error) {
+            console.error('Errore nel salvare la partita:', error);
+        }
     }
     
     // Salva il punteggio nella leaderboard globale
