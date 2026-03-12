@@ -13,7 +13,6 @@ class SchemaType(Enum):
     """Tipi di schemi generabili dall'IA"""
     MEMORY = "memory"
     QUIZ = "quiz"
-    PUZZLE = "puzzle"
     MATH = "math"
     LOGIC = "logic"
     LANGUAGE = "language"
@@ -73,14 +72,6 @@ class AISchemaGenerator:
                 'hard': ['Coordinate Greenwich?', 'Fuso orario internazionale?', 'Linea data internazionale?']
             }
         }
-        
-        self.puzzle_patterns = {
-            'sequence': self._generate_sequence_puzzle,
-            'logic': self._generate_logic_puzzle,
-            'pattern': self._generate_pattern_puzzle,
-            'spatial': self._generate_spatial_puzzle,
-            'numerical': self._generate_numerical_puzzle
-        }
 
     def generate_schema(self, config: SchemaConfig) -> Dict[str, Any]:
         """Genera uno schema basato sulla configurazione"""
@@ -88,8 +79,6 @@ class AISchemaGenerator:
             return self._generate_memory_schema(config)
         elif config.schema_type == SchemaType.QUIZ:
             return self._generate_quiz_schema(config)
-        elif config.schema_type == SchemaType.PUZZLE:
-            return self._generate_puzzle_schema(config)
         elif config.schema_type == SchemaType.MATH:
             return self._generate_math_schema(config)
         elif config.schema_type == SchemaType.LOGIC:
@@ -195,27 +184,6 @@ class AISchemaGenerator:
                 'total_questions': num_questions,
                 'time_limit': self._get_time_limit(config.difficulty),
                 'generated_at': datetime.now().isoformat()
-            }
-        }
-
-    def _generate_puzzle_schema(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera schema per puzzle logico"""
-        puzzle_type = config.custom_params.get('puzzle_type', 'sequence') if config.custom_params else 'sequence'
-        
-        if puzzle_type not in self.puzzle_patterns:
-            puzzle_type = 'sequence'
-        
-        generator = self.puzzle_patterns[puzzle_type]
-        puzzle_data = generator(config)
-        
-        return {
-            'type': 'puzzle',
-            'difficulty': config.difficulty.value,
-            'puzzle_type': puzzle_type,
-            'data': puzzle_data,
-            'metadata': {
-                'generated_at': datetime.now().isoformat(),
-                'hints': self._generate_hints(puzzle_type, puzzle_data)
             }
         }
 
@@ -347,41 +315,6 @@ class AISchemaGenerator:
                 'branches': science_branches,
                 'generated_at': datetime.now().isoformat()
             }
-        }
-
-    # Metodi helper per la generazione di puzzle
-    def _generate_sequence_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera puzzle di sequenza numerica/logica"""
-        sequence_length = 5 if config.difficulty == Difficulty.EASY else 8
-        start = random.randint(1, 20)
-        pattern = random.choice(['+2', '×2', '+3', 'fibonacci', 'primes'])
-        
-        sequence = [start]
-        for i in range(1, sequence_length):
-            if pattern == '+2':
-                sequence.append(sequence[-1] + 2)
-            elif pattern == '×2':
-                sequence.append(sequence[-1] * 2)
-            elif pattern == '+3':
-                sequence.append(sequence[-1] + 3)
-            elif pattern == 'fibonacci':
-                if len(sequence) >= 2:
-                    sequence.append(sequence[-1] + sequence[-2])
-                else:
-                    sequence.append(sequence[-1] + 1)
-            elif pattern == 'primes':
-                next_prime = self._next_prime(sequence[-1])
-                sequence.append(next_prime)
-        
-        # Nascondi l'ultimo elemento
-        answer = sequence[-1]
-        sequence[-1] = '?'
-        
-        return {
-            'sequence': sequence,
-            'answer': answer,
-            'pattern': pattern,
-            'type': 'sequence'
         }
 
     def _generate_logic_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:
@@ -672,42 +605,6 @@ class AISchemaGenerator:
             'type': 'logic',
             'category': puzzle.get('category', 'logica'),
             'difficulty': puzzle.get('difficulty', 'medio')
-        }
-
-    def _generate_pattern_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera puzzle di riconoscimento pattern"""
-        patterns = ['ABAB', 'AABB', 'ABCABC', '123123', '△○△○']
-        pattern = random.choice(patterns)
-        
-        # Genera sequenza con pattern interrotto
-        sequence = list(pattern) * 2
-        missing_index = random.randint(len(pattern), len(sequence) - 1)
-        answer = sequence[missing_index]
-        sequence[missing_index] = '?'
-        
-        return {
-            'sequence': ''.join(sequence),
-            'answer': answer,
-            'pattern': pattern,
-            'type': 'pattern'
-        }
-
-    def _generate_spatial_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera puzzle spaziale/visivo"""
-        return {
-            'question': 'Quanti cubi ci sono in questa struttura 3x3x3?',
-            'answer': 27,
-            'type': 'spatial',
-            'description': 'Immagina un cubo 3x3x3 fatto di cubi unitari'
-        }
-
-    def _generate_numerical_puzzle(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera puzzle numerico"""
-        return {
-            'question': 'Se 2+3=10, 7+2=63, 6+5=66, allora 4+8=?',
-            'answer': 48,
-            'explanation': 'Formula: (a+b)×a = risultato. Quindi (4+8)×4 = 48',
-            'type': 'numerical'
         }
 
     # Metodi helper per quiz e altre funzionalità
