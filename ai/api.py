@@ -212,35 +212,53 @@ def get_generation_stats():
         'last_generation': None
     })
 
-@ai_bp.route('/adaptive-suggestions')
-def get_adaptive_suggestions():
-    """Suggerimenti adattivi basati sul profilo utente"""
-    # Permetti accesso anche senza autenticazione per demo
-    # if 'user_id' not in session:
-    #     return jsonify({'error': 'Autenticazione richiesta'}), 401
-    
-    # Logica di suggerimento basata su dati utente
-    suggestions = [
-        {
-            'type': 'schema',
-            'schema_type': 'memory',
-            'difficulty': 'medium',
-            'reason': 'Hai completato con successo giochi facili, prova il livello medio',
-            'confidence': 0.8
-        },
-        {
-            'type': 'theme',
-            'schema_type': 'memory',
-            'theme': 'animals',
-            'reason': 'Gli animali sono popolari tra utenti con il tuo profilo',
-            'confidence': 0.7
-        }
-    ]
-    
-    return jsonify({
-        'suggestions': suggestions,
-        'based_on': 'user_profile_and_performance'
-    })
+@ai_bp.route('/leaderboard')
+def get_leaderboard():
+    """API per ottenere le classifiche globali"""
+    try:
+        # Carica dati utenti
+        users = load_users()
+        
+        # Converti in lista e ordina per high_score
+        leaderboard_data = []
+        for username, user_data in users.items():
+            if user_data.get('is_active', True):
+                leaderboard_data.append({
+                    'username': username,
+                    'high_score': user_data.get('high_score', 0),
+                    'games_played': user_data.get('games_played', 0),
+                    'created_at': user_data.get('created_at', ''),
+                    'last_login': user_data.get('last_login', '')
+                })
+        
+        # Ordina per high_score decrescente
+        leaderboard_data.sort(key=lambda x: x['high_score'], reverse=True)
+        
+        # Prendi i top 100
+        top_100 = leaderboard_data[:100]
+        
+        return jsonify({
+            'success': True,
+            'leaderboard': top_100,
+            'total_players': len(leaderboard_data)
+        })
+        
+    except Exception as e:
+        print(f"Errore caricamento classifiche: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Impossibile caricare le classifiche'
+        }), 500
+
+def load_users():
+    """Carica dati utenti dal file"""
+    try:
+        with open('data/users.dat', 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
+    except json.JSONDecodeError:
+        return {}
 
 def estimate_generation_time(config: SchemaConfig) -> str:
     """Stima il tempo di generazione"""

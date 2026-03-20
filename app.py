@@ -21,10 +21,20 @@ def schema_generator():
     """Pagina generatore schemi IA"""
     return render_template('ai/schema_generator.html')
 
+@app.route('/game/memory-ia')
+def memory_ia():
+    """Pagina Memory Game generato da IA"""
+    return render_template('game/memory-ia.html')
+
 @app.route('/')
 def index():
     """Homepage principale della piattaforma"""
-    return render_template('index.html')
+    return render_template('index-new.html')
+
+@app.route('/leaderboard')
+def leaderboard():
+    """Pagina dedicata alle classifiche"""
+    return render_template('leaderboard.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,0 +1,467 @@
+<!-- Responsabile: GABRIELE - Profilo Utente -->
+<!-- Pagina profilo con statistiche dettagliate dei giochi -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Mio Profilo - BrainPlayNG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+        
+        .profile-header {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .profile-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .profile-details h1 {
+            margin: 0 0 0.5rem 0;
+            color: #1f2937;
+            font-size: 2rem;
+        }
+        
+        .profile-details p {
+            margin: 0.25rem 0;
+            color: #6b7280;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .stat-icon.games {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+        
+        .stat-icon.score {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .stat-icon.time {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+        
+        .stat-icon.achievement {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+        
+        .stat-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+        
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin: 1rem 0;
+        }
+        
+        .stat-description {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        .games-history {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .game-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background 0.3s ease;
+        }
+        
+        .game-item:hover {
+            background: #f9fafb;
+        }
+        
+        .game-item:last-child {
+            border-bottom: none;
+        }
+        
+        .game-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .game-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .game-details h4 {
+            margin: 0 0 0.25rem 0;
+            color: #1f2937;
+            font-weight: 600;
+        }
+        
+        .game-details p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .game-score {
+            text-align: right;
+        }
+        
+        .score-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #059669;
+        }
+        
+        .score-date {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 1rem;
+            }
+            
+            .profile-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <!-- Header Profilo -->
+        <div class="profile-header">
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    {{ user.username[0]|upper }}
+                </div>
+                <div class="profile-details">
+                    <h1>{{ user.username|title }}</h1>
+                    <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+                    <p><i class="fas fa-calendar"></i> Membro dal: {{ user.created_at[:10] if user.created_at else 'N/A' }}</p>
+                    <p><i class="fas fa-clock"></i> Ultimo accesso: {{ user.last_login[:10] if user.last_login else 'N/A' }}</p>
+                </div>
+            </div>
+            <a href="/" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+                Torna alla Home
+            </a>
+        </div>
+
+        <!-- Statistiche Principali -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon games">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="stat-title">Giochi Giocati</h3>
+                </div>
+                <div class="stat-value">{{ user.games_played or 0 }}</div>
+                <p class="stat-description">
+                    Partite completate nella piattaforma
+                </p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon score">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 class="stat-title">Punteggio Massimo</h3>
+                </div>
+                <div class="stat-value">{{ user.high_score or 0 }}</div>
+                <p class="stat-description">
+                    Il tuo miglior punteggio assoluto
+                </p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon time">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="stat-title">Tempo di Gioco</h3>
+                </div>
+                <div class="stat-value">--</div>
+                <p class="stat-description">
+                    Ore totali passate a giocare
+                </p>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon achievement">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h3 class="stat-title">Achievement</h3>
+                </div>
+                <div class="stat-value">0</div>
+                <p class="stat-description">
+                    Trofei e medaglie sbloccate
+                </p>
+            </div>
+        </div>
+
+        <!-- Storico Giochi -->
+        <div class="games-history">
+            <h2 class="section-title">
+                <i class="fas fa-history"></i>
+                Storico Partite Recenti
+            </h2>
+            
+            <div id="gamesHistory">
+                <div class="empty-state">
+                    <i class="fas fa-gamepad"></i>
+                    <h3>Nessuna partita giocata</h3>
+                    <p>Inizia a giocare per vedere qui le tue statistiche dettagliate!</p>
+                    <div style="margin-top: 2rem;">
+                        <a href="/game/memory-ia" class="btn btn-primary" style="margin-right: 1rem;">
+                            <i class="fas fa-brain"></i> Gioca al Memory
+                        </a>
+                        <a href="/ai/schema-generator" class="btn btn-secondary">
+                            <i class="fas fa-puzzle"></i> Risolvi Problemi Logici
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Carica lo storico dei giochi dall'API
+        async function loadGamesHistory() {
+            try {
+                const response = await fetch('/api/user/games-history');
+                const games = await response.json();
+                
+                const container = document.getElementById('gamesHistory');
+                
+                if (games.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-gamepad"></i>
+                            <h3>Nessuna partita giocata</h3>
+                            <p>Inizia a giocare per vedere qui le tue statistiche dettagliate!</p>
+                            <div style="margin-top: 2rem;">
+                                <a href="/game/memory-ia" class="btn btn-primary" style="margin-right: 1rem;">
+                                    <i class="fas fa-brain"></i> Gioca al Memory
+                                </a>
+                                <a href="/ai/schema-generator" class="btn btn-secondary">
+                                    <i class="fas fa-puzzle"></i> Risolvi Problemi Logici
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Raggruppa i giochi per tipo
+                const gamesByType = {};
+                games.forEach(game => {
+                    if (!gamesByType[game.type]) {
+                        gamesByType[game.type] = [];
+                    }
+                    gamesByType[game.type].push(game);
+                });
+                
+                let html = '';
+                
+                // Memory Games
+                if (gamesByType.memory) {
+                    html += '<h3 style="margin: 2rem 0 1rem 0; color: #1f2937;"><i class="fas fa-brain"></i> Memory Game</h3>';
+                    gamesByType.memory.forEach(game => {
+                        html += `
+                            <div class="game-item">
+                                <div class="game-info">
+                                    <div class="game-icon" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
+                                        🧠
+                                    </div>
+                                    <div class="game-details">
+                                        <h4>Memory Game</h4>
+                                        <p>Difficoltà: ${game.difficulty || 'Medio'} | Mosse: ${game.moves || 'N/A'}</p>
+                                    </div>
+                                </div>
+                                <div class="game-score">
+                                    <div class="score-value">${game.score || 0} pts</div>
+                                    <div class="score-date">${new Date(game.date).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Logic Problems
+                if (gamesByType.logic) {
+                    html += '<h3 style="margin: 2rem 0 1rem 0; color: #1f2937;"><i class="fas fa-puzzle"></i> Problemi Logici</h3>';
+                    gamesByType.logic.forEach(game => {
+                        html += `
+                            <div class="game-item">
+                                <div class="game-info">
+                                    <div class="game-icon" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                                        🧩
+                                    </div>
+                                    <div class="game-details">
+                                        <h4>Problema di Logica</h4>
+                                        <p>Categoria: ${game.category || 'Logica'} | Difficoltà: ${game.difficulty || 'Medio'}</p>
+                                    </div>
+                                </div>
+                                <div class="game-score">
+                                    <div class="score-value">${game.solved ? '✅ Risolto' : '❌ Non risolto'}</div>
+                                    <div class="score-date">${new Date(game.date).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                container.innerHTML = html || `
+                    <div class="empty-state">
+                        <i class="fas fa-gamepad"></i>
+                        <h3>Nessuna partita giocata</h3>
+                        <p>Inizia a giocare per vedere qui le tue statistiche dettagliate!</p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                console.error('Errore nel caricare lo storico:', error);
+            }
+        }
+        
+        // Carica i dati quando la pagina è pronta
+        document.addEventListener('DOMContentLoaded', loadGamesHistory);
+    </script>
+</body>
+</html>

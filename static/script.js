@@ -50,12 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        if (currentScroll > lastScroll && !header.classList.contains('scroll-down')) {
-            header.classList.remove('scroll-up');
-            header.classList.add('scroll-down');
-        } else if (currentScroll < lastScroll && header.classList.contains('scroll-down')) {
-            header.classList.remove('scroll-down');
+        if (currentScroll > lastScroll) {
             header.classList.add('scroll-up');
+        } else {
+            header.classList.remove('scroll-up');
         }
         
         lastScroll = currentScroll;

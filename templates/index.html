@@ -8,10 +8,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BrainPlayNG - Piattaforma di Studio con IA</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<<<<<<< HEAD
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+=======
     <link rel="stylesheet" href="{{ url_for('static', filename='home/home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home/leaderboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home/layout-new.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+>>>>>>> af3f80a185848d3973de79e54083defbc62cd6b9
 </head>
 <body>
     <!-- Messaggi Flash -->
@@ -28,8 +33,105 @@
         {% endif %}
     {% endwith %}
 
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<<<<<<< HEAD
+    <!-- Hero Section Modern -->
+    <section class="hero-modern">
+        <div class="hero-background">
+            <div class="animated-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+                <div class="shape shape-4"></div>
+            </div>
+        </div>
+        <div class="hero-container">
+            <div class="hero-content-modern">
+                <div class="hero-badge">
+                    <span class="badge-text">🚀 Nuova Generazione di Apprendimento</span>
+                </div>
+                <h1 class="hero-title-modern">Trasforma lo Studio in un'Avventura con l'Intelligenza Artificiale</h1>
+                <p class="hero-subtitle-modern">
+                    Scopri il potere dell'apprendimento personalizzato attraverso schemi dinamici, 
+                    giochi interattivi e percorsi su misura creati dalla nostra IA avanzata.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Studenti Attivi</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Schemi IA</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">95%</div>
+                        <div class="stat-label">Soddisfazione</div>
+                    </div>
+                </div>
+                <div class="hero-buttons-modern">
+                    <a href="/ai/schema-generator" class="btn btn-hero btn-primary">
+                        <i class="fas fa-robot"></i>
+                        <span>Prova l'IA Ora</span>
+                    </a>
+                    <a href="/game/memory-game" class="btn btn-hero btn-secondary">
+                        <i class="fas fa-gamepad"></i>
+                        <span>Gioca Subito</span>
+                    </a>
+                    <a href="#features" class="btn btn-hero btn-outline">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Scopri di Più</span>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-devices">
+                    <div class="device device-laptop">
+                        <div class="screen">
+                            <div class="content-preview">
+                                <div class="preview-header">🧠 Memory Game</div>
+                                <div class="preview-grid">
+                                    <div class="preview-card">🎮</div>
+                                    <div class="preview-card">🎯</div>
+                                    <div class="preview-card">🎨</div>
+                                    <div class="preview-card">�</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="device device-tablet">
+                        <div class="screen">
+                            <div class="content-preview">
+                                <div class="preview-header">📝 Quiz IA</div>
+                                <div class="preview-quiz">
+                                    <div class="quiz-question">2+2 = ?</div>
+                                    <div class="quiz-options">
+                                        <div class="quiz-option">3</div>
+                                        <div class="quiz-option correct">4</div>
+                                        <div class="quiz-option">5</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="device device-phone">
+                        <div class="screen">
+                            <div class="content-preview">
+                                <div class="preview-header">🏆 Progress</div>
+                                <div class="preview-stats">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                    <div class="progress-text">75% Completato</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+=======
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside class="sidebar collapsed" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
                 <h1>🧠 BrainPlayNG</h1>
@@ -42,7 +144,10 @@
                 <li><a href="#ai-tools" class="nav-link">🤖 Strumenti IA</a></li>
                 <li><a href="#progress" class="nav-link">📊 Progressi</a></li>
                 <li><a href="#community" class="nav-link">👥 Community</a></li>
-                <li><a href="#" onclick="showGlobalLeaderboard(); return false;" class="nav-link">🏆 Classifiche</a></li>
+                <li><a href="/leaderboard" class="nav-link">🏆 Classifiche</a></li>
+                {% if 'user_id' in session %}
+                <li><a href="/auth/profile" class="nav-link">👤 Il Mio Profilo</a></li>
+                {% endif %}
             </ul>
         </nav>
         <div class="sidebar-footer">
@@ -67,7 +172,7 @@
         <!-- Top Bar -->
         <header class="top-bar">
             <div class="top-bar-left">
-                <button class="menu-toggle" id="menuToggle">☰</button>
+                <button class="menu-toggle" id="menuToggle">🏠</button>
                 <div class="breadcrumb">
                     <span>Home</span>
                 </div>
@@ -173,7 +278,7 @@
                     <div class="action-icon">🏆</div>
                     <h3>Classifiche</h3>
                     <p>Confronta i tuoi punteggi</p>
-                    <a href="#" onclick="showGlobalLeaderboard(); return false;" class="action-link">Vedi →</a>
+                    <a href="/leaderboard" class="action-link">Vedi →</a>
                 </div>
             </div>
         </section>
@@ -424,7 +529,7 @@
                     <li><a href="#games">Giochi</a></li>
                     <li><a href="#ai-tools">Strumenti IA</a></li>
                     <li><a href="#progress">Progressi</a></li>
-                    <li><a href="#" onclick="showGlobalLeaderboard(); return false;">Classifiche</a></li>
+                    <li><a href="/leaderboard">Classifiche</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -443,6 +548,7 @@
                     <a href="#">📷</a>
                     <a href="#">🐦</a>
                     <a href="#">💼</a>
+>>>>>>> af3f80a185848d3973de79e54083defbc62cd6b9
                 </div>
             </div>
         </div>
@@ -451,26 +557,135 @@
         </div>
     </footer>
 
+<<<<<<< HEAD
+    <!-- Features Section Modern -->
+    <section id="features" class="features-modern">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title-modern">Funzionalità Rivoluzionarie</h2>
+                <p class="section-subtitle">Scopri gli strumenti che trasformeranno il tuo modo di apprendere</p>
+            </div>
+            <div class="features-grid-modern">
+                <div class="feature-card-modern">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">🤖</div>
+                    </div>
+                    <h3>Generazione IA Avanzata</h3>
+                    <p>Schemi di apprendimento personalizzati creati da intelligenza artificiale che si adatta al tuo stile di studio</p>
+                    <div class="feature-tech">
+                        <span class="tech-tag">Machine Learning</span>
+                        <span class="tech-tag">Adaptive Learning</span>
+                    </div>
+                </div>
+                <div class="feature-card-modern">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">🎮</div>
+                    </div>
+                    <h3>Giochi Interattivi Immersivi</h3>
+                    <p>Memory, quiz e puzzle che rendono lo studio un'avventura coinvolgente e divertente</p>
+                    <div class="feature-tech">
+                        <span class="tech-tag">Gamification</span>
+                        <span class="tech-tag">Real-time Feedback</span>
+                    </div>
+                </div>
+                <div class="feature-card-modern">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">📊</div>
+                    </div>
+                    <h3>Analytics Predittivi</h3>
+                    <p>Monitoraggio dettagliato dei progressi con suggerimenti personalizzati basati sui tuoi dati</p>
+                    <div class="feature-tech">
+                        <span class="tech-tag">Data Science</span>
+                        <span class="tech-tag">Predictive Analytics</span>
+                    </div>
+                </div>
+                <div class="feature-card-modern">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">👥</div>
+                    </div>
+                    <h3>Learning Community</h3>
+                    <p>Collabora con altri studenti, condividi successi e scala le classifiche globali</p>
+                    <div class="feature-tech">
+                        <span class="tech-tag">Social Learning</span>
+                        <span class="tech-tag">Leaderboards</span>
+                    </div>
+                </div>
+                <div class="feature-card-modern">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">🎯</div>
+                    </div>
+                    <h3>Obiettivi Intelligenti</h3>
+                    <p>Percorsi di apprendimento su misura che si evolvono basandosi sui tuoi risultati</p>
+                    <div class="feature-tech">
+                        <span class="tech-tag">Smart Goals</span>
+                        <span class="tech-tag">Personalized Paths</span>
+                    </div>
+                </div>
+                <div class="feature-card-modern">
+                    <div class="feature-icon-wrapper">
+                        <div class="feature-icon">🏆</div>
+                    </div>
+                    <h3>Achievement System</h3>
+                    <p>Badge, premi e riconoscimenti che celebrano ogni tuo progresso e successo</p>
+                    <div class="feature-tech">
+                        <span class="tech-tag">Gamification</span>
+                        <span class="tech-tag">Motivation Design</span>
+                    </div>
+=======
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="{{ url_for('static', filename='home/home.js') }}"></script>
     <script src="{{ url_for('static', filename='home/leaderboard.js') }}"></script>
     <script>
-        // Menu Toggle Functionality
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        });
-
-        // Close sidebar when clicking outside
-        document.addEventListener('click', function(event) {
-            const sidebar = document.querySelector('.sidebar');
-            const menuToggle = document.getElementById('menuToggle');
-            
-            if (!sidebar.contains(event.target) && !menuToggle.contains(event.target)) {
-                sidebar.classList.remove('active');
+        // Gestione Sidebar Toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        
+        // Funzione per aprire la sidebar
+        function openSidebar() {
+            sidebar.classList.remove('collapsed');
+            sidebar.classList.add('expanded');
+            sidebarOverlay.classList.add('active');
+            menuToggle.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Blocca lo scroll quando la sidebar è aperta
+        }
+        
+        // Funzione per chiudere la sidebar
+        function closeSidebar() {
+            sidebar.classList.remove('expanded');
+            sidebar.classList.add('collapsed');
+            sidebarOverlay.classList.remove('active');
+            menuToggle.classList.remove('active');
+            document.body.style.overflow = ''; // Ripristina lo scroll
+        }
+        
+        // Toggle sidebar al click sul pulsante menu
+        menuToggle.addEventListener('click', function() {
+            if (sidebar.classList.contains('collapsed')) {
+                openSidebar();
+            } else {
+                closeSidebar();
             }
         });
 
-        // Smooth scrolling for navigation links
+        // Chiudi sidebar quando si clicca sull'overlay
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Chiudi sidebar quando si clicca su un link di navigazione
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                closeSidebar();
+            });
+        });
+
+        // Chiudi sidebar con tasto ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && !sidebar.classList.contains('collapsed')) {
+                closeSidebar();
+            }
+        });
+
+        // Smooth scrolling per navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -505,6 +720,13 @@
                 }
             });
         });
+
+        // Gestione responsive - chiudi sidebar su resize se necessario
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024 && !sidebar.classList.contains('collapsed')) {
+                closeSidebar();
+            }
+        });
     </script>
 </body>
 </html>
@@ -512,6 +734,7 @@
                     <div class="feature-icon">🏆</div>
                     <h3>Classifiche</h3>
                     <p>Competi con altri studenti e scala le classifiche di apprendimento</h3>
+>>>>>>> af3f80a185848d3973de79e54083defbc62cd6b9
                 </div>
             </div>
         </div>
