@@ -6,31 +6,6 @@ Una piattaforma web innovativa che unisce studio e gioco attraverso schemi perso
 
 Il progetto è organizzato in modo modulare per facilitare il lavoro di squadra:
 
-### 👤 **GABRIELE** - Core Logic
-**Responsabilità:** Logica principale per la creazione dei giochi e generazione schemi tramite IA
-**File:** `core_logic.py`
-- Gestione della dashboard principale
-- API per generazione giochi (`/api/generate-game`)
-- Logica di generazione schemi per memory, quiz e altri giochi
-- Implementazione algoritmi IA per personalizzazione
-
-### 👤 **COLLABORATORE 1** - Autenticazione
-**Responsabilità:** Login, registrazione e tutto ciò che avviene prima dell'accesso
-**File:** `auth.py` e cartella `templates/auth/`
-- Sistema di login e registrazione
-- Gestione sessioni utente
-- Profili utente
-- Recupero password
-- Template per pagine di autenticazione
-
-### 👤 **COLLABORATORE 2** - Home & Design
-**Responsabilità:** Homepage e design grafico
-**File:** `templates/index.html` e `static/style.css`
-- Homepage moderna e responsive
-- Design pulito e intuitivo
-- Animazioni e interazioni
-- Layout mobile-friendly
-
 ## 🚀 Avvio del Progetto
 
 ### Prerequisiti
@@ -176,5 +151,32 @@ Questo progetto è rilasciato sotto licenza MIT - vedere il file LICENSE per det
 - **GitHub:** https://github.com/brainplayng
 
 ---
+
+## 👥 Team di Sviluppo
+
+### 👤 **Gabriele Ghidoni** - Core Logic
+**Responsabilità:** Logica principale per la creazione dei giochi e generazione schemi tramite IA
+**File:** `core_logic.py`
+- Gestione della dashboard principale
+- API per generazione giochi (`/api/generate-game`)
+- Logica di generazione schemi per memory, quiz e altri giochi
+- Implementazione algoritmi IA per personalizzazione
+
+### 👤 **Federico Finorio** - Autenticazione
+**Responsabilità:** Login, registrazione e tutto ciò che avviene prima dell'accesso
+**File:** `auth.py` e cartella `templates/auth/`
+- Sistema di login e registrazione
+- Gestione sessioni utente
+- Profili utente
+- Recupero password
+- Template per pagine di autenticazione
+
+### 👤 **Christopher Petrosino** - Home & Design
+**Responsabilità:** Homepage e design grafico
+**File:** `templates/index.html` e `static/style.css`
+- Homepage moderna e responsive
+- Design pulito e intuitivo
+- Animazioni e interazioni
+- Layout mobile-friendly
 
 **Nota per il team:** Ogni sviluppatore dovrebbe lavorare principalmente sui propri file ma sentirsi libero di fare suggerimenti per migliorare le altre parti del progetto. La comunicazione è fondamentale per il successo del progetto!
