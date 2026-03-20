@@ -88,6 +88,19 @@ body {
     background: linear-gradient(135deg, #f5576c, #f093fb);
 }
 
+/* Cervello Emoji 🧠 al posto del cerchio */
+.brain-emoji {
+    font-size: 120px;
+    line-height: 1;
+    animation: pulse 2s ease-in-out infinite;
+    filter: drop-shadow(0 10px 20px rgba(102, 126, 234, 0.3));
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
 /* Hamburger Menu Icon */
 .menu-toggle::before {
     content: '🏠';
