@@ -52,24 +52,88 @@ class AISchemaGenerator:
         
         self.quiz_categories = {
             'mathematics': {
-                'easy': ['2+2', '5-3', '4×2', '10÷2', '7+1', '8-4'],
-                'medium': ['15+23', '45-17', '12×8', '144÷12', '67+89', '156-78'],
-                'hard': ['234+567', '891-234', '45×67', '2025÷45', '1234+5678', '9876-4321']
+                'easy': [
+                    '2+2', '5-3', '4×2', '10÷2', '7+1', '8-4', '3+6', '9-5', '6×1', '8÷4',
+                    '1+7', '6-2', '5×3', '12÷3', '4+4', '10-7', '2×8', '15÷5', '9+0', '11-3'
+                ],
+                'medium': [
+                    '15+23', '45-17', '12×8', '144÷12', '67+89', '156-78', '23×11', '225÷15',
+                    '34+56', '78-29', '18×7', '196÷14', '89+67', '145-88', '25×9', '256÷16',
+                    '47+73', '92-45', '31×6', '289÷17', '58+94', '167-79', '42×8', '324÷18'
+                ],
+                'hard': [
+                    '234+567', '891-234', '45×67', '2025÷45', '1234+5678', '9876-4321',
+                    '156×234', '6789÷123', '3456+7890', '8765-2345', '289×156', '5625÷225',
+                    '1234+8901', '7654-3210', '445×189', '7744÷88', '5678+2345', '9876-5432',
+                    '234×567', '8100÷90', '3456+6789', '8765-4321', '378×234', '5184÷72'
+                ]
             },
             'science': {
-                'easy': ['H2O è?', '2+2', 'Sole è?', 'Terra?', 'Acqua?', 'Aria?'],
-                'medium': ['Formula CO2?', 'Velocità luce?', 'Gravità?', 'DNA?', 'Fotosintesi?'],
-                'hard': ['Costante Planck?', 'Relatività?', 'Meccanica quantistica?', 'Teoria stringhe?']
+                'easy': [
+                    'H2O è?', 'Sole è?', 'Terra?', 'Acqua?', 'Aria?', 'Fuoco?', 'Pianta?', 'Animale?',
+                    'Gravità?', 'Luce?', 'Calore?', 'Freddo?', 'Elettricità?', 'Magnete?', 'Suono?',
+                    'Ossigeno?', 'Anidride?', 'Fotosintesi?', 'Ecosistema?', 'Ciclo acqua?', 'Catena alimentare?'
+                ],
+                'medium': [
+                    'Formula CO2?', 'Velocità luce?', 'DNA?', 'Fotosintesi?', 'Gravità?', 'Energia?',
+                    'Atomo?', 'Molecola?', 'Cellula?', 'Tessuto?', 'Organo?', 'Sistema?',
+                    'Photosintesi clorofilliana?', 'Respirazione cellulare?', 'Mitosi?', 'Meiosi?', 'Genetica?',
+                    'Periodo tabella?', 'Reazione chimica?', 'Forza?', 'Lavoro?', 'Potenza?', 'Energia cinetica?'
+                ],
+                'hard': [
+                    'Costante Planck?', 'Relatività?', 'Meccanica quantistica?', 'Teoria stringhe?',
+                    'Leggi termodinamiche?', 'Entropia?', 'Entalpia?', 'Gibbs free energy?',
+                    'Equazione Schrödinger?', 'Principio indeterminazione?', 'Dualismo onda-particella?',
+                    'Spazio-tempo curvo?', 'Buco nero?', 'Big Bang?', 'Inflazione cosmica?',
+                    'Equazioni Maxwell?', 'Teoria elettrodinamica?', 'Forza nucleare?', 'Decadimento radioattivo?'
+                ]
             },
             'history': {
-                'easy': ['Anno 1492?', 'Roma?', 'Leonardo?', 'Monna Lisa?', 'Colombo?'],
-                'medium': ['Guerra mondiale 1?', 'Rivoluzione francese?', 'Rinascimento?', 'Illuminismo?'],
-                'hard': ['Trattato Versailles?', 'Caduta Impero Romano?', 'Riforma Protestante?']
+                'easy': [
+                    'Anno 1492?', 'Roma?', 'Leonardo?', 'Monna Lisa?', 'Colombo?', 'Napoleone?',
+                    'Guerra mondiale?', 'Rivoluzione?', 'Impero Romano?', 'Medioevo?', 'Rinascimento?',
+                    'Piramide?', 'Faraone?', 'Grecia?', 'Filosofia?', 'Democrazia?', 'Marco Polo?',
+                    'Vikinghi?', 'Crociate?', 'Feudalesimo?', 'Umanesimo?', 'Stamperia?', 'America?'
+                ],
+                'medium': [
+                    'Guerra mondiale 1?', 'Rivoluzione francese?', 'Rinascimento?', 'Illuminismo?',
+                    'Riforma Protestante?', 'Controriforma?', 'Guerra dei 30 anni?', 'Pace Westfalia?',
+                    'Rivoluzione industriale?', 'Imperialismo?', 'Colonialismo?', 'Nazionalismo?',
+                    'Risorgimento italiano?', 'Unità Germania?', 'Belle Époque?', 'Art Nouveau?',
+                    'Decolonizzazione?', 'Guerra Fredda?', 'Cortina di ferro?', 'NATO?', 'Patto Varsavia?'
+                ],
+                'hard': [
+                    'Trattato Versailles?', 'Caduta Impero Romano?', 'Riforma Protestante?',
+                    'Concordato Worms?', 'Pace Augusta?', 'Editto Milano?', 'Concilio Trento?',
+                    'Guerra di Successione Spagnola?', 'Pace Utrecht?', 'Diplomacia segreta?', 'Sistema europeo?',
+                    'Rivoluzione Americana?', 'Costituzione USA?', 'Federalismo?', 'Repubblica?',
+                    'Rivoluzione Russa?', 'Bolscevichi?', 'Menševiki?', 'Soviet?', 'Collettivizzazione?'
+                ]
             },
             'geography': {
-                'easy': ['Capitale Italia?', 'Continente Asia?', 'Oceano Atlantico?', 'Monte Everest?'],
-                'medium': ['Fiume più lungo?', 'Deserto più grande?', 'Paese più popoloso?'],
-                'hard': ['Coordinate Greenwich?', 'Fuso orario internazionale?', 'Linea data internazionale?']
+                'easy': [
+                    'Capitale Italia?', 'Continente Asia?', 'Oceano Atlantico?', 'Monte Everest?',
+                    'Fiume Po?', 'Mare Mediterraneo?', 'Alpi?', 'Appennini?', 'Sicilia?', 'Sardegna?',
+                    'Europa?', 'Africa?', 'America?', 'Oceania?', 'Antartide?', 'Equatore?',
+                    'Meridiano Greenwich?', 'Tropico Cancro?', 'Tropico Capricorno?', 'Circolo Polare Artico?',
+                    'Deserto Sahara?', 'Foresta Amazzonica?', 'Steppe?', 'Tundra?', 'Taiga?', 'Savana?'
+                ],
+                'medium': [
+                    'Fiume più lungo?', 'Deserto più grande?', 'Paese più popoloso?',
+                    'Stato più piccolo?', 'Lago più profondo?', 'Montagna più alta?', 'Isola più grande?',
+                    'Penisola più lunga?', 'Golfo più grande?', 'Stretto più stretto?', 'Catena montuosa?',
+                    'Fiume Congo?', 'Lago Vittoria?', 'Monte Kilimanjaro?', 'Sahel?', 'Mekong?', 'Gange?',
+                    'Himalaya?', 'Ande?', 'Rocky Mountains?', 'Grand Canyon?', 'Great Barrier Reef?',
+                    'Monsoon?', 'Corrente Golfo?', 'El Niño?', 'La Niña?', 'Clima tropicale?', 'Tundra artica?'
+                ],
+                'hard': [
+                    'Coordinate Greenwich?', 'Fuso orario internazionale?', 'Linea data internazionale?',
+                    'Proiezione Mercatore?', 'Proiezione Peters?', 'Coordinate polari?', 'Convergenza meridiani?',
+                    'Placche tettoniche?', 'Subduzione?', 'Rifting?', 'Hotspot?', 'Vulcanismo?', 'Sismicità?',
+                    'Correnti oceaniche?', 'Upwelling?', 'Downwelling?', 'Termohalina?', 'Giro oceanico?',
+                    'Biomi?', 'Ecotoni?', 'Successione ecologica?', 'Diversità beta?', 'Endemismo?',
+                    'Urbanizzazione?', 'Megacittà?', 'Conurbazione?', 'Sprawl urbano?', 'Gentrificazione?'
+                ]
             }
         }
 
@@ -140,24 +204,27 @@ class AISchemaGenerator:
         }
 
     def _generate_quiz_schema(self, config: SchemaConfig) -> Dict[str, Any]:
-        """Genera schema per quiz personalizzato"""
+        """Genera schema per quiz personalizzato con numero esatto di domande"""
         category = config.custom_params.get('category', 'mathematics') if config.custom_params else 'mathematics'
         difficulty = config.difficulty.value
+        num_questions = config.custom_params.get('questions', 10) if config.custom_params else 10
         
         if category not in self.quiz_categories:
             category = 'mathematics'
         
         questions_pool = self.quiz_categories[category][difficulty]
-        num_questions = {
-            Difficulty.EASY: 5,
-            Difficulty.MEDIUM: 10,
-            Difficulty.HARD: 15
-        }[config.difficulty]
+        
+        # Verifica se ci sono abbastanza domande disponibili
+        if len(questions_pool) < num_questions:
+            # Se non ci sono abbastiano domande, usa tutte quelle disponibili
+            selected_questions = questions_pool.copy()
+            num_questions = len(questions_pool)
+        else:
+            # Seleziona il numero esatto di domande senza ripetizioni
+            selected_questions = random.sample(questions_pool, num_questions)
         
         questions = []
-        for i in range(num_questions):
-            question_text = random.choice(questions_pool)
-            
+        for i, question_text in enumerate(selected_questions):
             # Generazione opzioni intelligenti
             correct_answer = self._get_correct_answer(question_text, category)
             wrong_answers = self._generate_wrong_answers(question_text, category, correct_answer)
@@ -183,7 +250,9 @@ class AISchemaGenerator:
                 'category': category,
                 'total_questions': num_questions,
                 'time_limit': self._get_time_limit(config.difficulty),
-                'generated_at': datetime.now().isoformat()
+                'generated_at': datetime.now().isoformat(),
+                'no_repetitions': True,
+                'exact_questions': num_questions
             }
         }
 

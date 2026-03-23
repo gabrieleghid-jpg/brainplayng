@@ -1,230 +1,89 @@
-<!-- Responsabile: GABRIELE - Interfaccia IA Schema Generator -->
-<!-- Interfaccia utente per generazione schemi con intelligenza artificiale -->
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generatore Schemi IA - BrainPlayNG</title>
+    <title>Generatori IA - brainplaying</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .ai-container {
-            min-height: 100vh;
+        /* Stili coerenti con la home */
+        body {
+            font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 2rem;
-        }
-        
-        /* Stili per Problemi di Logica */
-        .logic-info {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 1rem;
-            backdrop-filter: blur(10px);
-        }
-        
-        .logic-badge {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 120px;
-        }
-        
-        .badge-label {
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 0.25rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .badge-value {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .difficulty-facile .badge-value {
-            background: rgba(34, 197, 94, 0.8);
-        }
-        
-        .difficulty-medio .badge-value {
-            background: rgba(251, 146, 60, 0.8);
-        }
-        
-        .difficulty-difficile .badge-value {
-            background: rgba(239, 68, 68, 0.8);
-        }
-        
-        .logic-problem-container {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            margin: 1.5rem 0;
-        }
-        
-        .problem-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid #f3f4f6;
-        }
-        
-        .problem-icon {
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
-        }
-        
-        .problem-title {
-            color: #1f2937;
-            font-size: 1.25rem;
-            font-weight: 700;
+            min-height: 100vh;
             margin: 0;
-        }
-        
-        .problem-content {
-            background: #f9fafb;
-            border-radius: 12px;
-            padding: 1.5rem;
-            border-left: 4px solid #667eea;
-        }
-        
-        .problem-text {
-            font-size: 1.125rem;
-            line-height: 1.7;
-            color: #374151;
-            font-weight: 500;
-        }
-        
-        .solution-card {
-            background: white;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 2px solid #dcfce7;
-        }
-        
-        .solution-header {
-            background: linear-gradient(135deg, #16a34a, #22c55e);
-            color: white;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .solution-icon {
-            font-size: 2rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .solution-title {
-            margin: 0;
-            font-size: 1.125rem;
-            font-weight: 700;
-        }
-        
-        .solution-content {
             padding: 2rem;
         }
         
-        .answer-section, .explanation-section {
-            margin-bottom: 2rem;
-        }
-        
-        .answer-section h5, .explanation-section h5 {
-            color: #16a34a;
-            font-size: 0.875rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.75rem;
-        }
-        
-        .answer-value {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1f2937;
-            padding: 1rem;
-            background: #f0fdf4;
-            border-radius: 8px;
-            border: 2px solid #bbf7d0;
-            text-align: center;
-        }
-        
-        .explanation-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: #374151;
-            padding: 1rem;
-            background: #f9fafb;
-            border-radius: 8px;
-            border-left: 4px solid #22c55e;
-        }
-        
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #667eea;
-            color: #667eea;
-        }
-        
-        .btn-outline:hover {
-            background: #667eea;
-            color: white;
+        .ai-container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
         
         .ai-header {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
+            color: white;
+            margin-bottom: 3rem;
         }
         
         .ai-header h1 {
-            color: #667eea;
-            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .ai-header p {
-            color: #6b7280;
-            margin: 0;
-        }
-        
-        .generator-form {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            font-size: 1.2rem;
+            opacity: 0.9;
             margin-bottom: 2rem;
         }
         
-        .form-row {
+        .brain-icon {
+            display: inline-block;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        /* Form Generator */
+        .generator-form {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .form-header h2 {
+            color: #1f2937;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-header p {
+            color: #6b7280;
+            font-size: 1rem;
+        }
+        
+        .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
         
         .form-group {
@@ -233,19 +92,23 @@
         }
         
         .form-group label {
-            font-weight: 600;
             color: #374151;
+            font-weight: 600;
             margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         
         .form-group select,
         .form-group input,
         .form-group textarea {
-            padding: 0.75rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            background: white;
         }
         
         .form-group select:focus,
@@ -256,41 +119,17 @@
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
         
-        .custom-params {
-            background: #f9fafb;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-top: 1rem;
-        }
-        
-        .param-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .param-item input[type="checkbox"] {
-            margin-right: 0.75rem;
-            width: 20px;
-            height: 20px;
-        }
-        
-        .param-item label {
-            margin: 0;
-            font-weight: 500;
-        }
-        
-        .btn-container {
+        .form-actions {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin-top: 2rem;
+            flex-wrap: wrap;
         }
         
         .btn {
             padding: 0.75rem 2rem;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -304,102 +143,423 @@
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
         }
         
         .btn-secondary {
-            background: #6b7280;
-            color: white;
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
         }
         
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .btn:disabled {
+        .btn-secondary:hover {
             background: #e5e7eb;
-            color: #9ca3af;
-            cursor: not-allowed;
-            transform: none;
+            transform: translateY(-1px);
         }
         
-        .result-container {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: none;
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
         
-        .result-container.active {
-            display: block;
-            animation: slideIn 0.5s ease;
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
         }
         
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e5e7eb;
+        /* Schema Display */
+        .schema-display {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            min-height: 400px;
         }
         
-        .result-title {
-            color: #667eea;
+        .schema-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .schema-header h3 {
+            color: #1f2937;
             font-size: 1.5rem;
             font-weight: 700;
-        }
-        
-        .result-actions {
-            display: flex;
-            gap: 1rem;
-        }
-        
-        .schema-preview {
-            background: #f9fafb;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
         }
         
         .schema-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .info-badge {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1f2937;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* Quiz Styles */
+        .quiz-container {
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+        
+        .quiz-question {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .quiz-question h4 {
+            color: #1f2937;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .quiz-options {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .quiz-option {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .quiz-option:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .quiz-option.correct {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-color: #10b981;
+        }
+        
+        .quiz-option.incorrect {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-color: #ef4444;
+        }
+        
+        .quiz-feedback {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .quiz-feedback.correct {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #16a34a;
+        }
+        
+        .quiz-feedback.incorrect {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+        
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .quiz-counter {
+            font-weight: 700;
+            color: #1f2937;
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        /* Logic Problem Styles */
+        .logic-problem {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .logic-header {
+            display: flex;
+            align-items: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
         }
         
-        .info-item {
-            background: white;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #667eea;
+        .logic-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
-        .info-label {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 0.25rem;
-        }
-        
-        .info-value {
-            font-size: 1.125rem;
-            font-weight: 600;
+        .logic-title {
             color: #1f2937;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
         }
         
+        .logic-content {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .logic-text {
+            color: #374151;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+        
+        .logic-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        /* Puzzle Styles */
+        .puzzle-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+        
+        .puzzle-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .puzzle-header h3 {
+            color: #1f2937;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .puzzle-info {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+        
+        .puzzle-board {
+            display: grid;
+            gap: 10px;
+            justify-content: center;
+            margin: 2rem auto;
+            max-width: 400px;
+            background: #f9fafb;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .puzzle-slot {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border: 2px dashed #e5e7eb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .puzzle-slot.filled {
+            border-style: solid;
+            border-color: #10b981;
+            background: #dcfce7;
+        }
+        
+        .puzzle-slot.hover {
+            background: #dbeafe;
+            border-color: #3b82f6;
+            transform: scale(1.05);
+        }
+        
+        .position-indicator {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            background: #6b7280;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        
+        .puzzle-pieces {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .puzzle-piece {
+            width: 70px;
+            height: 70px;
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: move;
+            transition: all 0.3s ease;
+            font-size: 2rem;
+            user-select: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .puzzle-piece:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border-color: #667eea;
+        }
+        
+        .puzzle-piece.dragging {
+            opacity: 0.8;
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .puzzle-piece.selected {
+            border-color: #764ba2;
+            box-shadow: 0 4px 15px rgba(118, 75, 162, 0.3);
+        }
+        
+        .puzzle-piece.correct {
+            border-color: #10b981;
+            background: #dcfce7;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .puzzle-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .puzzle-feedback {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-weight: 600;
+        }
+        
+        .puzzle-feedback.success {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #16a34a;
+        }
+        
+        .puzzle-feedback.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+        
+        .puzzle-feedback.info {
+            background: #dbeafe;
+            color: #2563eb;
+            border: 1px solid #2563eb;
+        }
+        
+        /* Loading State */
         .loading {
             text-align: center;
-            padding: 2rem;
+            padding: 3rem;
+            color: #6b7280;
         }
         
-        .loading-spinner {
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
+        .spinner {
             width: 40px;
             height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 1rem;
         }
@@ -409,48 +569,55 @@
             100% { transform: rotate(360deg); }
         }
         
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Messages */
+        .error-message,
+        .success-message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            text-align: center;
         }
         
         .error-message {
             background: #fef2f2;
             color: #dc2626;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #ef4444;
-            margin-bottom: 1rem;
+            border: 1px solid #dc2626;
         }
         
         .success-message {
-            background: #f0fdf4;
+            background: #dcfce7;
             color: #16a34a;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            border-left: 4px solid #10b981;
-            margin-bottom: 1rem;
+            border: 1px solid #16a34a;
         }
         
+        /* Responsive */
         @media (max-width: 768px) {
-            .form-row {
+            .ai-container {
+                padding: 1rem;
+            }
+            
+            .ai-header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-grid {
                 grid-template-columns: 1fr;
             }
             
-            .btn-container {
-                flex-direction: column;
+            .generator-form,
+            .schema-display {
+                padding: 1.5rem;
             }
             
-            .result-header {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
+            .puzzle-board {
+                max-width: 300px;
+            }
+            
+            .puzzle-slot,
+            .puzzle-piece {
+                width: 60px;
+                height: 60px;
             }
         }
     </style>
@@ -458,505 +625,931 @@
 <body>
     <div class="ai-container">
         <!-- Header -->
-        <div class="ai-header">
-            <h1>🤖 Generatore di Schemi IA</h1>
-            <p>Crea schemi di apprendimento personalizzati con intelligenza artificiale avanzata</p>
-        </div>
+        <header class="ai-header">
+            <div class="brain-icon">🧠</div>
+            <h1>Generatori IA</h1>
+            <p>Crea schemi personalizzati con l'intelligenza artificiale</p>
+        </header>
         
-        <!-- Form di Generazione -->
+        <!-- Form Generator -->
         <div class="generator-form">
-            <form id="schemaForm">
-                <div class="form-row">
+            <div class="form-header">
+                <h2>🤖 Configura il Tuo Schema</h2>
+                <p>Scegli le opzioni per generare un schema personalizzato</p>
+            </div>
+            
+            <form id="generatorForm">
+                <div class="form-grid">
                     <div class="form-group">
-                        <label for="schemaType">Tipo di Schema *</label>
-                        <select id="schemaType" name="schema_type" required>
-                            <option value="">Seleziona un tipo...</option>
-                            <option value="quiz">📝 Quiz Game</option>
-                            <option value="math">🔢 Math Exercises</option>
-                            <option value="logic">🧠 Logic Problems</option>
-                            <option value="language">🌍 Language Learning</option>
-                            <option value="science">🔬 Science Learning</option>
+                        <label for="schemaType">Tipo di Schema</label>
+                        <select id="schemaType" name="schemaType" required>
+                            <option value="">Seleziona tipo...</option>
+                            <option value="quiz">📝 Quiz Interattivo</option>
+                            <option value="logic">🧠 Problemi di Logica</option>
+                            <option value="puzzle">🧩 Puzzle Game</option>
+                            <option value="memory">🎮 Memory Game</option>
+                            <option value="math">🔢 Esercizi di Matematica</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="difficulty">Difficoltà *</label>
+                        <label for="difficulty">Difficoltà</label>
                         <select id="difficulty" name="difficulty" required>
+                            <option value="">Seleziona difficoltà...</option>
                             <option value="easy">🟢 Facile</option>
-                            <option value="medium" selected>🟡 Medio</option>
+                            <option value="medium">🟡 Medio</option>
                             <option value="hard">🔴 Difficile</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="subject">Materia (Opzionale)</label>
-                        <input type="text" id="subject" name="subject" placeholder="Es: Matematica, Storia...">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="classGroup">Classe Scolastica (Opzionale)</label>
-                        <select id="classGroup" name="class_group">
-                            <option value="">Seleziona...</option>
-                            <option value="1">1°</option>
-                            <option value="2">2°</option>
-                            <option value="3">3°</option>
-                            <option value="4">4°</option>
-                            <option value="5">5°</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="schoolTrack">Indirizzo Scolastico (Opzionale)</label>
-                        <select id="schoolTrack" name="school_track">
-                            <option value="">Seleziona...</option>
-                            <option value="classico">Liceo Classico</option>
-                            <option value="scientifico">Liceo Scientifico</option>
-                            <option value="linguistico">Liceo Linguistico</option>
-                            <option value="artistico">Liceo Artistico</option>
-                            <option value="musicale">Liceo Musicale</option>
-                            <option value="tecnologico">Liceo Tecnologico</option>
-                            <option value="scienze_umane">Liceo Scienze Umane</option>
-                            <option value="economico">Istituto Tecnico Economico</option>
-                            <option value="tecnologico_industriale">Istituto Tecnico Tecnologico</option>
-                            <option value="professionale">Istituto Professionale</option>
                         </select>
                     </div>
                 </div>
                 
                 <!-- Parametri Personalizzati -->
-                <div class="custom-params">
-                    <h3>⚙️ Parametri Personalizzati</h3>
-                    <div id="customParamsContainer">
-                        <!-- I parametri verranno caricati dinamicamente -->
-                    </div>
+                <div id="customParamsContainer" style="margin-bottom: 2rem;">
+                    <!-- I parametri personalizzati verranno inseriti qui dinamicamente -->
                 </div>
                 
-                <!-- Pulsanti Azione -->
-                <div class="btn-container">
-                    <button type="button" class="btn btn-secondary" onclick="validateConfig()">
-                        <i class="fas fa-check"></i> Valida Configurazione
-                    </button>
-                    <button type="submit" class="btn btn-primary" id="generateBtn">
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
                         <i class="fas fa-magic"></i> Genera Schema
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                        <i class="fas fa-undo"></i> Reset
                     </button>
                 </div>
             </form>
         </div>
         
-        <!-- Loading State -->
-        <div id="loadingState" class="loading" style="display: none;">
-            <div class="loading-spinner"></div>
-            <p>Generazione schema in corso...</p>
+        <!-- Schema Display -->
+        <div id="schemaDisplay" class="schema-display" style="display: none;">
+            <!-- Il contenuto dello schema verrà inserito qui dinamicamente -->
         </div>
         
-        <!-- Risultato -->
-        <div id="resultContainer" class="result-container">
-            <div class="result-header">
-                <h2 class="result-title">Schema Generato</h2>
-                <div class="result-actions">
-                    <button class="btn btn-primary" onclick="downloadSchema()">
-                        <i class="fas fa-download"></i> Scarica
-                    </button>
-                    <button class="btn btn-secondary" onclick="shareSchema()">
-                        <i class="fas fa-share"></i> Condividi
-                    </button>
-                </div>
-            </div>
-            
-            <div id="schemaContent">
-                <!-- Contenuto schema generato -->
-            </div>
+        <!-- Loading State -->
+        <div id="loadingState" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>Generazione in corso...</p>
         </div>
     </div>
     
     <script>
+        // Variabili globali
         let currentSchema = null;
-        let availableThemes = {};
         let currentQuestion = 0;
         let quizAnswers = {};
+        let currentPuzzleState = null;
         
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
-            loadSchemaTypes();
-            setupEventListeners();
+            const form = document.getElementById('generatorForm');
+            const schemaType = document.getElementById('schemaType');
+            
+            form.addEventListener('submit', generateSchema);
+            schemaType.addEventListener('change', updateCustomParams);
         });
         
-        function loadSchemaTypes() {
-            fetch('/api/ai/schema-types')
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Schema types loaded:', data);
-                })
-                .catch(error => {
-                    console.error('Error loading schema types:', error);
-                });
-        }
-        
-        function setupEventListeners() {
-            document.getElementById('schemaType').addEventListener('change', loadCustomParams);
-            document.getElementById('schemaForm').addEventListener('submit', generateSchema);
-        }
-        
-        function loadCustomParams() {
+        // Aggiorna i parametri personalizzati in base al tipo di schema
+        function updateCustomParams() {
             const schemaType = document.getElementById('schemaType').value;
             const container = document.getElementById('customParamsContainer');
             
-            if (!schemaType) {
-                container.innerHTML = '<p>Seleziona un tipo di schema per vedere i parametri personalizzati</p>';
-                return;
-            }
-            
-            // Carica i temi disponibili
-            fetch(`/api/ai/themes/${schemaType}`)
-                .then(response => response.json())
-                .then(data => {
-                    availableThemes = data.themes || [];
-                    renderCustomParams(schemaType, availableThemes);
-                })
-                .catch(error => {
-                    console.error('Error loading themes:', error);
-                    renderCustomParams(schemaType, []);
-                });
-        }
-        
-        function renderCustomParams(schemaType, themes) {
-            const container = document.getElementById('customParamsContainer');
-            let html = '';
+            container.innerHTML = '';
             
             if (schemaType === 'quiz') {
-                html = `
-                    <div class="param-item">
-                        <label for="questionsParam">Numero Domande:</label>
-                        <input type="number" id="questionsParam" name="questions" min="5" max="20" value="10">
-                    </div>
-                    <div class="param-item">
-                        <label for="difficultyParam">Difficoltà:</label>
-                        <select id="difficultyParam" name="difficulty">
-                            <option value="easy">Facile</option>
-                            <option value="medium" selected>Medio</option>
-                            <option value="hard">Difficile</option>
-                        </select>
+                container.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="category">Materia</label>
+                            <select id="category" name="category">
+                                <option value="mathematics">📐 Matematica</option>
+                                <option value="science">🔬 Scienze</option>
+                                <option value="history">📚 Storia</option>
+                                <option value="geography">🌍 Geografia</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="questions">Numero Domande</label>
+                            <select id="questions" name="questions">
+                                <option value="5">5 Domande</option>
+                                <option value="10" selected>10 Domande</option>
+                                <option value="15">15 Domande</option>
+                                <option value="20">20 Domande</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="classGroup">Classe</label>
+                            <select id="classGroup" name="classGroup">
+                                <option value="">Seleziona classe...</option>
+                                <option value="1a">1ª A</option>
+                                <option value="1b">1ª B</option>
+                                <option value="1c">1ª C</option>
+                                <option value="2a">2ª A</option>
+                                <option value="2b">2ª B</option>
+                                <option value="2c">2ª C</option>
+                                <option value="3a">3ª A</option>
+                                <option value="3b">3ª B</option>
+                                <option value="3c">3ª C</option>
+                                <option value="4a">4ª A</option>
+                                <option value="4b">4ª B</option>
+                                <option value="4c">4ª C</option>
+                                <option value="5a">5ª A</option>
+                                <option value="5b">5ª B</option>
+                                <option value="5c">5ª C</option>
+                            </select>
+                        </div>
                     </div>
                 `;
-            } else {
-                html = '<p>Nessun parametro personalizzato disponibile per questo tipo di schema</p>';
+            } else if (schemaType === 'puzzle') {
+                container.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="pieces">Numero Pezzi</label>
+                            <select id="pieces" name="pieces">
+                                <option value="9">9 Pezzi (3×3)</option>
+                                <option value="12">12 Pezzi</option>
+                                <option value="16">16 Pezzi (4×4)</option>
+                                <option value="25">25 Pezzi (5×5)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="theme">Tema Puzzle</label>
+                            <select id="theme" name="theme">
+                                <option value="nature">🌿 Natura</option>
+                                <option value="animals">🐾 Animali</option>
+                                <option value="space">🚀 Spazio</option>
+                                <option value="food">🍕 Cibo</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+            } else if (schemaType === 'memory') {
+                container.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="pairs">Numero Coppie</label>
+                            <select id="pairs" name="pairs">
+                                <option value="6">6 Coppie</option>
+                                <option value="8">8 Coppie</option>
+                                <option value="12">12 Coppie</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="theme">Tema Memory</label>
+                            <select id="theme" name="theme">
+                                <option value="animals">🐾 Animali</option>
+                                <option value="food">🍕 Cibo</option>
+                                <option value="sports">⚽ Sport</option>
+                                <option value="colors">🎨 Colori</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
+            } else if (schemaType === 'math') {
+                container.innerHTML = `
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="exercises">Numero Esercizi</label>
+                            <select id="exercises" name="exercises">
+                                <option value="5">5 Esercizi</option>
+                                <option value="10" selected>10 Esercizi</option>
+                                <option value="15">15 Esercizi</option>
+                                <option value="20">20 Esercizi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="operations">Operazioni</label>
+                            <select id="operations" name="operations" multiple style="height: 80px;">
+                                <option value="+" selected>➕ Addizione</option>
+                                <option value="-" selected>➖ Sottrazione</option>
+                                <option value="×" selected>✖️ Moltiplicazione</option>
+                                <option value="÷" selected>➗ Divisione</option>
+                            </select>
+                        </div>
+                    </div>
+                `;
             }
-            
-            container.innerHTML = html;
         }
         
-        function validateConfig() {
-            const formData = new FormData(document.getElementById('schemaForm'));
-            const config = Object.fromEntries(formData);
+        // Genera schema
+        function generateSchema(e) {
+            e.preventDefault();
             
-            fetch('/api/ai/validate-config', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(config)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.valid) {
-                    showMessage('Configurazione valida! Tempo stimato: ' + data.estimated_time, 'success');
-                } else {
-                    showMessage('Errore nella configurazione: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                showMessage('Errore durante la validazione', 'error');
-            });
-        }
-        
-        function generateSchema(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(document.getElementById('schemaForm'));
-            const config = Object.fromEntries(formData);
-            
-            // Raccogli parametri personalizzati
-            config.custom_params = {};
-            // Per altri tipi, raccogli i checkbox
-            document.querySelectorAll('#customParamsContainer input:checked').forEach(input => {
-                config.custom_params[input.name] = input.value;
-            });
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
             
             // Mostra loading
             document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('resultContainer').classList.remove('active');
+            document.getElementById('schemaDisplay').style.display = 'none';
             
-            fetch('/api/ai/generate-schema', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(config)
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loadingState').style.display = 'none';
-                
-                if (data.success) {
-                    currentSchema = data.schema;
-                    displaySchema(data.schema, data.config);
-                    showMessage('Schema generato con successo!', 'success');
+            // Simula chiamata API (in produzione sarebbe una vera chiamata fetch)
+            setTimeout(() => {
+                // Genera schema demo basato sul tipo
+                let schema;
+                if (data.schemaType === 'quiz') {
+                    schema = generateQuizDemo(data);
+                } else if (data.schemaType === 'logic') {
+                    schema = generateLogicDemo(data);
+                } else if (data.schemaType === 'puzzle') {
+                    schema = generatePuzzleDemo(data);
+                } else if (data.schemaType === 'memory') {
+                    schema = generateMemoryDemo(data);
                 } else {
-                    showMessage('Errore nella generazione: ' + data.error, 'error');
+                    schema = generateMathDemo(data);
                 }
-            })
-            .catch(error => {
+                
+                currentSchema = schema;
+                displaySchema(schema);
+                
                 document.getElementById('loadingState').style.display = 'none';
-                showMessage('Errore durante la generazione', 'error');
-            });
+                document.getElementById('schemaDisplay').style.display = 'block';
+            }, 1500);
         }
         
-        function displaySchema(schema, config) {
-            const container = document.getElementById('schemaContent');
+        // Genera quiz demo
+        function generateQuizDemo(data) {
+            const category = data.category || 'mathematics';
+            const difficulty = data.difficulty;
+            const numQuestions = parseInt(data.questions) || 10;
+            
+            // Database esteso di domande per categoria e difficoltà
+            const questionDatabase = {
+                mathematics: {
+                    easy: [
+                        { question: "Quanto fa 2 + 2?", options: ["4", "3", "5", "6"], correct: 0 },
+                        { question: "Quanto fa 5 - 3?", options: ["2", "1", "3", "8"], correct: 0 },
+                        { question: "Quanto fa 4 × 2?", options: ["8", "6", "2", "10"], correct: 0 },
+                        { question: "Quanto fa 10 ÷ 2?", options: ["5", "2", "8", "12"], correct: 0 },
+                        { question: "Quanto fa 7 + 1?", options: ["8", "6", "9", "5"], correct: 0 },
+                        { question: "Quanto fa 8 - 4?", options: ["4", "2", "12", "6"], correct: 0 },
+                        { question: "Quanto fa 3 + 6?", options: ["9", "3", "8", "12"], correct: 0 },
+                        { question: "Quanto fa 9 - 5?", options: ["4", "14", "3", "8"], correct: 0 },
+                        { question: "Quanto fa 6 × 1?", options: ["6", "1", "7", "5"], correct: 0 },
+                        { question: "Quanto fa 8 ÷ 4?", options: ["2", "4", "12", "6"], correct: 0 },
+                        { question: "Quanto fa 1 + 7?", options: ["8", "6", "9", "5"], correct: 0 },
+                        { question: "Quanto fa 6 - 2?", options: ["4", "8", "3", "12"], correct: 0 },
+                        { question: "Quanto fa 5 × 3?", options: ["15", "8", "2", "20"], correct: 0 },
+                        { question: "Quanto fa 12 ÷ 3?", options: ["4", "9", "15", "6"], correct: 0 },
+                        { question: "Quanto fa 4 + 4?", options: ["8", "0", "16", "12"], correct: 0 }
+                    ],
+                    medium: [
+                        { question: "Quanto fa 15 + 23?", options: ["38", "35", "40", "33"], correct: 0 },
+                        { question: "Quanto fa 45 - 17?", options: ["28", "32", "22", "38"], correct: 0 },
+                        { question: "Quanto fa 12 × 8?", options: ["96", "20", "96", "104"], correct: 0 },
+                        { question: "Quanto fa 144 ÷ 12?", options: ["12", "14", "10", "16"], correct: 0 },
+                        { question: "Quanto fa 67 + 89?", options: ["156", "146", "166", "136"], correct: 0 },
+                        { question: "Quanto fa 156 - 78?", options: ["78", "88", "68", "98"], correct: 0 },
+                        { question: "Quanto fa 23 × 11?", options: ["253", "34", "233", "263"], correct: 0 },
+                        { question: "Quanto fa 225 ÷ 15?", options: ["15", "25", "10", "20"], correct: 0 },
+                        { question: "Quanto fa 34 + 56?", options: ["90", "80", "100", "22"], correct: 0 },
+                        { question: "Quanto fa 78 - 29?", options: ["49", "59", "39", "69"], correct: 0 },
+                        { question: "Quanto fa 18 × 7?", options: ["126", "25", "91", "161"], correct: 0 },
+                        { question: "Quanto fa 196 ÷ 14?", options: ["14", "16", "12", "18"], correct: 0 }
+                    ],
+                    hard: [
+                        { question: "Quanto fa 234 + 567?", options: ["801", "701", "901", "601"], correct: 0 },
+                        { question: "Quanto fa 891 - 234?", options: ["657", "757", "557", "857"], correct: 0 },
+                        { question: "Quanto fa 45 × 67?", options: ["3015", "2915", "3115", "2815"], correct: 0 },
+                        { question: "Quanto fa 2025 ÷ 45?", options: ["45", "55", "35", "65"], correct: 0 },
+                        { question: "Quanto fa 1234 + 5678?", options: ["6912", "5812", "8012", "4712"], correct: 0 },
+                        { question: "Quanto fa 9876 - 4321?", options: ["5555", "6555", "4555", "7555"], correct: 0 },
+                        { question: "Quanto fa 156 × 234?", options: ["36504", "35504", "37504", "34504"], correct: 0 },
+                        { question: "Quanto fa 6789 ÷ 123?", options: ["55.2", "65.2", "45.2", "75.2"], correct: 0 },
+                        { question: "Quanto fa 3456 + 7890?", options: ["11346", "10346", "12346", "9346"], correct: 0 },
+                        { question: "Quanto fa 8765 - 2345?", options: ["6420", "7420", "5420", "8420"], correct: 0 },
+                        { question: "Quanto fa 289 × 156?", options: ["45084", "44084", "46084", "43084"], correct: 0 },
+                        { question: "Quanto fa 5625 ÷ 225?", options: ["25", "35", "15", "45"], correct: 0 },
+                        { question: "Quanto fa 1234 + 8901?", options: ["10135", "9135", "11135", "8135"], correct: 0 },
+                        { question: "Quanto fa 7654 - 3210?", options: ["4444", "5544", "3344", "6644"], correct: 0 },
+                        { question: "Quanto fa 445 × 189?", options: ["84105", "83105", "85105", "82105"], correct: 0 },
+                        { question: "Quanto fa 7744 ÷ 88?", options: ["88", "98", "78", "108"], correct: 0 },
+                        { question: "Quanto fa 5678 + 2345?", options: ["8023", "7923", "8123", "7823"], correct: 0 },
+                        { question: "Quanto fa 9876 - 5432?", options: ["4444", "5544", "3344", "6644"], correct: 0 },
+                        { question: "Quanto fa 378 × 234?", options: ["88452", "87452", "89452", "86452"], correct: 0 },
+                        { question: "Quanto fa 5184 ÷ 72?", options: ["72", "82", "62", "92"], correct: 0 }
+                    ]
+                },
+                science: {
+                    easy: [
+                        { question: "Qual è la formula chimica dell'acqua?", options: ["H2O", "CO2", "O2", "H2"], correct: 0 },
+                        { question: "Cos'è il Sole?", options: ["Una stella", "Un pianeta", "Un satellite", "Una cometa"], correct: 0 },
+                        { question: "Dove viviamo?", options: ["Sulla Terra", "Su Marte", "Sulla Luna", "Sul Sole"], correct: 0 },
+                        { question: "Cos'è l'ossigeno?", options: ["Un gas", "Un liquido", "Un solido", "Un metallo"], correct: 0 },
+                        { question: "Cos'è la fotosintesi?", options: ["Processo delle piante", "Processo animale", "Processo minerale", "Processo artificiale"], correct: 0 },
+                        { question: "Cos'è un ecosistema?", options: ["Comunità di organismi", "Singolo organismo", "Habitat artificiale", "Specie estinta"], correct: 0 },
+                        { question: "Cos'è la gravità?", options: ["Forza di attrazione", "Forza di repulsione", "Forza magnetica", "Forza nucleare"], correct: 0 },
+                        { question: "Cos'è la luce?", options: ["Radiazione elettromagnetica", "Onda sonora", "Particella materia", "Energia termica"], correct: 0 },
+                        { question: "Cos'è l'energia?", options: ["Capacità di fare lavoro", "Materia in movimento", "Forza magnetica", "Calore puro"], correct: 0 },
+                        { question: "Cos'è un atomo?", options: ["Unità base della materia", "Molecola complessa", "Cellula vivente", "Composto chimico"], correct: 0 },
+                        { question: "Cos'è una molecola?", options: ["Insieme di atomi", "Atomo singolo", "Cellula", "Organo"], correct: 0 },
+                        { question: "Cos'è la materia?", options: ["Tutto ciò che ha massa", "Solo i liquidi", "Solo i solidi", "Solo i gas"], correct: 0 },
+                        { question: "Cos'è una reazione chimica?", options: ["Trasformazione sostanze", "Mescolamento fisico", "Cambio di stato", "Decomposizione"], correct: 0 },
+                        { question: "Cos'è un elemento chimico?", options: ["Sostanza pura", "Miscela", "Composto", "Soluzione"], correct: 0 },
+                        { question: "Cos'è un composto?", options: ["Combinazione elementi", "Elemento puro", "Miscela", "Soluzione"], correct: 0 },
+                        { question: "Cos'è l'evaporazione?", options: ["Passaggio liquido-gas", "Passaggio gas-liquido", "Solidificazione", "Sublimazione"], correct: 0 },
+                        { question: "Cos'è la condensazione?", options: ["Passaggio gas-liquido", "Passaggio liquido-gas", "Congelamento", "Evaporazione"], correct: 0 },
+                        { question: "Cos'è un elettromagnete?", options: ["Magnete elettrico", "Magnete permanente", "Bussola", " calamita"], correct: 0 },
+                        { question: "Cos'è l'elettricità?", options: ["Flusso di elettroni", "Flusso di acqua", "Flusso di aria", "Flusso di calore"], correct: 0 },
+                        { question: "Cos'è un circuito?", options: ["Percorso elettrico", "Percorso acqua", "Percorso aria", "Percorso luce"], correct: 0 }
+                    ],
+                    medium: [
+                        { question: "Qual è la formula chimica dell'anidride carbonica?", options: ["CO2", "H2O", "O2", "N2"], correct: 0 },
+                        { question: "Qual è la velocità della luce?", options: ["300.000 km/s", "150.000 km/s", "600.000 km/s", "75.000 km/s"], correct: 0 },
+                        { question: "Cos'è il DNA?", options: ["Codice genetico", "Proteina", "Lipide", "Carboidrato"], correct: 0 },
+                        { question: "Cos'è un atomo?", options: ["Unità base della materia", "Molecola complessa", "Cellula vivente", "Composto chimico"], correct: 0 },
+                        { question: "Cos'è la respirazione cellulare?", options: ["Produzione energia", "Digestione cibo", "Riproduzione cellulare", "Fotosintesi"], correct: 0 },
+                        { question: "Cos'è la fotosintesi clorofilliana?", options: ["Produzione glucosio", "Digestione cibo", "Respirazione animale", "Decomposizione"], correct: 0 },
+                        { question: "Cos'è la mitosi?", options: ["Divisione cellulare", "Unione cellulare", "Morte cellulare", "Riproduzione sessuale"], correct: 0 },
+                        { question: "Cos'è la meiosi?", options: ["Divisione riduzionale", "Divisione normale", "Unione cellulare", "Moltiplicazione"], correct: 0 },
+                        { question: "Cos'è la genetica?", options: ["Studio ereditarietà", "Studio chimica", "Studio fisica", "Studio geologia"], correct: 0 },
+                        { question: "Cos'è un gene?", options: ["Unità ereditaria", "Proteina", "Cellula", "Organo"], correct: 0 },
+                        { question: "Cos'è un cromosoma?", options: ["Struttura DNA", "Proteina", "Lipide", "Carboidrato"], correct: 0 },
+                        { question: "Cos'è la selezione naturale?", options: ["Sopravvivenza più adatti", "Selezione artificiale", "Estinzione massa", "Evoluzione diretta"], correct: 0 },
+                        { question: "Cos'è l'adattamento?", options: ["Adattamento ambiente", "Migrazione massa", "Mutazione casuale", "Evoluzione forzata"], correct: 0 },
+                        { question: "Cos'è l'evoluzione?", options: ["Cambiamento specie", "Creazione specie", "Estinzione specie", "Immobilismo specie"], correct: 0 },
+                        { question: "Cos'è un fossile?", options: ["Resto antico", "Roccia viva", "Piante moderne", "Animali viventi"], correct: 0 },
+                        { question: "Cos'è la geologia?", options: ["Studio Terra", "Studio stelle", "Studio oceani", "Studio atmosfera"], correct: 0 },
+                        { question: "Cos'è un minerale?", options: ["Sostanza naturale", "Sostanza artificiale", "Composto organico", "Miscela complessa"], correct: 0 },
+                        { question: "Cos'è una roccia?", options: ["Aggregato minerali", "Minerale singolo", "Composto organico", "Sostanza liquida"], correct: 0 },
+                        { question: "Cos'è il ciclo dell'acqua?", options: ["Circolazione acqua", "Produzione acqua", "Consumo acqua", "Distruzione acqua"], correct: 0 },
+                        { question: "Cos'è l'effetto serra?", options: ["Ritenimento calore", "Raffreddamento", "Produzione freddo", "Distruzione calore"], correct: 0 }
+                    ],
+                    hard: [
+                        { question: "Qual è il valore della costante di Planck?", options: ["6.626×10^-34 J·s", "3.0×10^8 m/s", "9.8 m/s²", "1.6×10^-19 C"], correct: 0 },
+                        { question: "Cos'è la relatività generale?", options: ["Teoria gravitazione", "Teoria elettromagnetismo", "Teoria quantistica", "Teoria atomica"], correct: 0 },
+                        { question: "Cos'è la meccanica quantistica?", options: ["Fisica subatomica", "Meccanica classica", "Termodinamica", "Elettrodinamica"], correct: 0 },
+                        { question: "Cos'è un buco nero?", options: ["Regione spaziotemporale", "Stella morta", "Pianeta oscuro", "Galassia lontana"], correct: 0 },
+                        { question: "Cos'è il Big Bang?", options: ["Origine universo", "Fine universo", "Espansione attuale", "Contrazione futura"], correct: 0 },
+                        { question: "Cos'è l'inflazione cosmica?", options: ["Espansione rapida", "Contrazione rapida", "Stabilità", "Oscillazione"], correct: 0 },
+                        { question: "Cos'è l'energia oscura?", options: ["Forza espansione", "Materia oscura", "Energia normale", "Antimateria"], correct: 0 },
+                        { question: "Cos'è la materia oscura?", options: ["Materia invisibile", "Energia oscura", "Materia normale", "Antimateria"], correct: 0 },
+                        { question: "Cos'è un quark?", options: ["Particella elementare", "Atomo complesso", "Molecola", "Composto"], correct: 0 },
+                        { question: "Cos'è un leptone?", options: ["Particella leggera", "Particella pesante", "Particella neutra", "Particella carica"], correct: 0 },
+                        { question: "Cos'è un bosone?", options: ["Particella forza", "Particella materia", "Particella antimateria", "Particella neutra"], correct: 0 },
+                        { question: "Cos'è un fermione?", options: ["Particella materia", "Particella forza", "Particella antimateria", "Particella neutra"], correct: 0 },
+                        { question: "Cos'è la supersimmetria?", options: ["Teoria particelle", "Teoria gravità", "Teoria elettromagnetismo", "Teoria quantistica"], correct: 0 },
+                        { question: "Cos'è la teoria delle stringhe?", options: ["Teoria unificazione", "Teoria separazione", "Teoria quantistica", "Teoria classica"], correct: 0 },
+                        { question: "Cos'è la teoria M?", options: ["Estensione stringhe", "Teoria separata", "Teoria classica", "Teoria atomica"], correct: 0 },
+                        { question: "Cos'è un multiverso?", options: ["Insieme universi", "Universo singolo", "Dimensione extra", "Spazio vuoto"], correct: 0 },
+                        { question: "Cos'è la decoerenza quantistica?", options: ["Perdita coerenza", "Aumento coerenza", "Stabilità quantistica", "Mantenimento stato"], correct: 0 },
+                        { question: "Cos'è l'entanglement quantistico?", options: ["Correlazione istantanea", "Separazione completa", "Indipendenza", "Casualità"], correct: 0 },
+                        { question: "Cos'è il principio di indeterminazione?", options: ["Limite conoscenza", "Conoscenza completa", "Prevedibilità assoluta", "Determinismo"], correct: 0 },
+                        { question: "Cos'è la dualità onda-particella?", options: ["Natura doppia", "Natura singola", "Natura tripla", "Natura assente"], correct: 0 }
+                    ]
+                },
+                history: {
+                    easy: [
+                        { question: "Cosa è successo nel 1492?", options: ["Scoperta America", "Rivoluzione Francese", "Caduta Roma", "Prima Guerra Mondiale"], correct: 0 },
+                        { question: "Chi era Leonardo da Vinci?", options: ["Artista e scienziato", "Imperatore romano", "Re d'Inghilterra", "Presidente USA"], correct: 0 },
+                        { question: "Cos'è la Monna Lisa?", options: ["Dipinto famoso", "Scultura", "Libro antico", "Monumento"], correct: 0 },
+                        { question: "Chi era Colombo?", options: ["Esploratore", "Pittore", "Musicista", "Scrittore"], correct: 0 },
+                        { question: "Cos'era l'Impero Romano?", options: ["Grande impero antico", "Regno medievale", "Repubblica moderna", "Stato contemporaneo"], correct: 0 }
+                    ],
+                    medium: [
+                        { question: "Quando è scoppiata la Prima Guerra Mondiale?", options: ["1914", "1900", "1920", "1939"], correct: 0 },
+                        { question: "Cos'è stata la Rivoluzione Francese?", options: ["Rovesciamento monarchia", "Guerra civile", "Riforma religiosa", "Crisi economica"], correct: 0 },
+                        { question: "Cos'è il Rinascimento?", options: ["Rinascita cultura", "Guerra medievale", "Crisi economica", "Riforma politica"], correct: 0 },
+                        { question: "Cos'è l'Illuminismo?", options: ["Movimento culturale", "Rivoluzione militare", "Riforma religiosa", "Crisi politica"], correct: 0 }
+                    ],
+                    hard: [
+                        { question: "Cos'è il Trattato di Versailles?", options: ["Pace dopo WWI", "Alleanza militare", "Riforma economica", "Costituzione"], correct: 0 },
+                        { question: "Quando è caduta l'Impero Romano d'Occidente?", options: ["476 d.C.", "27 d.C.", "1066 d.C.", "1453 d.C."], correct: 0 },
+                        { question: "Cos'è la Riforma Protestante?", options: ["Divisione cristianesimo", "Guerra santa", "Unificazione religione", "Concilio ecumenico"], correct: 0 }
+                    ]
+                },
+                geography: {
+                    easy: [
+                        { question: "Qual è la capitale d'Italia?", options: ["Roma", "Milano", "Napoli", "Torino"], correct: 0 },
+                        { question: "In quale continente si trova l'Asia?", options: ["Asia", "Europa", "Africa", "America"], correct: 0 },
+                        { question: "Cos'è l'Oceano Atlantico?", options: ["Grande oceano", "Fiume lungo", "Montagna alta", "Deserto grande"], correct: 0 },
+                        { question: "Dove si trova il Monte Everest?", options: ["Himalaya", "Alpi", "Ande", "Rocky Mountains"], correct: 0 },
+                        { question: "Qual è il fiume più lungo d'Italia?", options: ["Po", "Tevere", "Arno", "Adige"], correct: 0 }
+                    ],
+                    medium: [
+                        { question: "Qual è il fiume più lungo del mondo?", options: ["Nilo", "Amazon", "Mississippi", "Yangtze"], correct: 0 },
+                        { question: "Qual è il deserto più grande del mondo?", options: ["Sahara", "Gobi", "Arabico", "Kalahari"], correct: 0 },
+                        { question: "Qual è il paese più popoloso del mondo?", options: ["Cina", "India", "USA", "Indonesia"], correct: 0 },
+                        { question: "Qual è il lago più profondo del mondo?", options: ["Baikal", "Superiore", "Vittoria", "Tanganica"], correct: 0 }
+                    ],
+                    hard: [
+                        { question: "Qual è la longitudine del meridiano di Greenwich?", options: ["0°", "90°", "180°", "45°"], correct: 0 },
+                        { question: "Cos'è la linea di cambio data internazionale?", options: ["180° longitudine", "Equatore", "Tropico", "Meridiano"], correct: 0 },
+                        { question: "Cos'è la proiezione di Mercatore?", options: ["Mappa mondo", "Globo terracqueo", "Satellite", "GPS"], correct: 0 }
+                    ]
+                }
+            };
+            
+            // Seleziona il pool di domande corretto
+            const questionPool = questionDatabase[category]?.[difficulty] || questionDatabase.mathematics.easy;
+            
+            // Seleziona il numero esatto di domande richieste
+            let selectedQuestions;
+            if (questionPool.length >= numQuestions) {
+                // Se ci sono abbastanza domande, seleziona senza ripetizioni
+                selectedQuestions = [];
+                const indices = [...Array(questionPool.length).keys()];
+                for (let i = 0; i < numQuestions; i++) {
+                    const randomIndex = Math.floor(Math.random() * indices.length);
+                    selectedQuestions.push(questionPool[indices[randomIndex]]);
+                    indices.splice(randomIndex, 1);
+                }
+            } else {
+                // Se non ci sono abbastano domande, usa tutte quelle disponibili
+                selectedQuestions = [...questionPool];
+            }
+            
+            // Aggiungi ID alle domande e randomizza posizione risposta corretta
+            const questions = selectedQuestions.map((q, index) => {
+                // Crea una copia delle opzioni
+                const options = [...q.options];
+                // Mescola le opzioni in modo casuale
+                const shuffledOptions = options.sort(() => Math.random() - 0.5);
+                // Trova la nuova posizione della risposta corretta
+                const correctIndex = shuffledOptions.indexOf(q.options[q.correct]);
+                
+                return {
+                    ...q,
+                    id: index,
+                    options: shuffledOptions,
+                    correct: correctIndex
+                };
+            });
+            
+            return {
+                type: 'quiz',
+                difficulty: difficulty,
+                questions: questions,
+                metadata: {
+                    total_questions: questions.length,
+                    category: category,
+                    requested_questions: numQuestions,
+                    no_repetitions: true,
+                    exact_questions: questions.length
+                }
+            };
+        }
+        
+        // Genera problema di logica demo
+        function generateLogicDemo(data) {
+            // Database esteso di problemi di logica per ogni difficoltà
+            const logicDatabase = {
+                easy: [
+                    {
+                        question: "In una stanza ci sono 3 persone. La prima dice 'Io sono il più giovane', la seconda dice 'Io sono il più vecchio', la terza dice 'Io sono di mezzo'. Se solo uno dice la verità, chi è il più giovane?",
+                        answer: "La terza persona",
+                        explanation: "Se solo uno dice la verità, analizziamo le possibilità: se la prima dicesse la verità, sarebbe il più giovane, ma allora la terza mentirebbe dicendo di essere di mezzo. Se la seconda dicesse la verità, sarebbe il più vecchio, ma allora la prima mentirebbe. Se la terza dicesse la verità, sarebbe di mezzo, il che è coerente con le altre due che mentono."
+                    },
+                    {
+                        question: "Marco ha più libri di Laura. Laura ha più libri di Anna. Chi ha meno libri?",
+                        answer: "Anna",
+                        explanation: "Se Marco > Laura e Laura > Anna, allora Marco > Laura > Anna. Quindi Anna ha meno libri di tutti."
+                    },
+                    {
+                        question: "Tutti i gatti sono animali. Alcuni animali sono neri. Possiamo concludere che alcuni gatti sono neri?",
+                        answer: "No",
+                        explanation: "Non possiamo concludere che alcuni gatti sono neri perché non sappiamo se i gatti fanno parte del gruppo di animali neri. Potrebbero essere animali diversi."
+                    },
+                    {
+                        question: "Se oggi è venerdì, tra 3 giorni che giorno sarà?",
+                        answer: "Lunedì",
+                        explanation: "Venerdì + 1 = Sabato, Sabato + 1 = Domenica, Domenica + 1 = Lunedì"
+                    },
+                    {
+                        question: "In una fila ci sono 5 persone. Maria è prima di Anna. Anna è terza. In quale posizione è Maria?",
+                        answer: "Prima o seconda",
+                        explanation: "Se Anna è terza e Maria è prima di Anna, Maria può essere prima o seconda nella fila."
+                    }
+                ],
+                medium: [
+                    {
+                        question: "Tre amici - Marco, Luca e Sara - hanno hobby diversi: pittura, musica e sport. Marco non fa pittura. La persona che fa musica non è Luca. Sara fa sport. Chi fa musica?",
+                        answer: "Marco",
+                        explanation: "Sara fa sport. Marco non fa pittura, quindi fa musica. Luca rimane con la pittura."
+                    },
+                    {
+                        question: "In un ufficio ci sono 4 persone: un manager, un programmatore, un designer e un revisore. Il programmatore è più giovane del manager. Il designer è più vecchio del revisore. Il manager non è il più vecchio. Chi è il più vecchio?",
+                        answer: "Il designer",
+                        explanation: "Il manager non è il più vecchio. Il designer è più vecchio del revisore. Il programmatore è più giovane del manager. Quindi il designer è il più vecchio."
+                    },
+                    {
+                        question: "Quattro numeri: 2, 4, 6, 8. Se moltiplico il primo per il terzo e aggiungo il secondo, ottengo 20. Qual è il quarto numero?",
+                        answer: "8",
+                        explanation: "2 × 6 = 12. 12 + 4 = 16. Il quarto numero è 8, che completa la sequenza di numeri pari."
+                    },
+                    {
+                        question: "In una famiglia, il padre ha il doppio dell'età del figlio. Tra 10 anni, il padre avrà 1.5 volte l'età del figlio. Quanti anni ha il figlio ora?",
+                        answer: "20 anni",
+                        explanation: "Sia x l'età del figlio. Padre = 2x. Tra 10 anni: 2x + 10 = 1.5(x + 10). Risolvendo: 2x + 10 = 1.5x + 15 → 0.5x = 5 → x = 10. Attenzione! Ricontrollando: 2x + 10 = 1.5(x + 10) → 2x + 10 = 1.5x + 15 → 0.5x = 5 → x = 10. Il figlio ha 10 anni."
+                    },
+                    {
+                        question: "Cinque libri sono ordinati per altezza. Il libro A è più alto del B ma più basso del C. Il libro D è più basso del B. Il libro E è più alto del C. Qual è l'ordine dal più basso al più alto?",
+                        answer: "D, B, A, C, E",
+                        explanation: "D è il più basso. B è sopra D. A è sopra B ma sotto C. C è sopra A. E è il più alto sopra C."
+                    }
+                ],
+                hard: [
+                    {
+                        question: "In una fabbrica, 3 macchine A, B, C producono rispettivamente 100, 150, 200 pezzi/ora. Se A lavora per 2 ore, B per 3 ore e C per 1.5 ore, ma ogni macchina ha un tasso di difetti del 2%, 3% e 1.5% rispettivamente, quanti pezzi perfetti vengono prodotti in totale?",
+                        answer: "927",
+                        explanation: "A: 100×2=200 pezzi, 2% difetti = 4 difetti, 196 perfetti. B: 150×3=450 pezzi, 3% difetti = 13.5≈14 difetti, 436 perfetti. C: 200×1.5=300 pezzi, 1.5% difetti = 4.5≈5 difetti, 295 perfetti. Totale: 196+436+295=927 pezzi perfetti"
+                    },
+                    {
+                        question: "Un investitore deposita €10.000 con interesse composto al 5% annuale. Dopo 3 anni, preleva il 20% e reinveste il resto al 7% per altri 2 anni. Quanto ha alla fine?",
+                        answer: "€10.603,47",
+                        explanation: "Anno 1-3: 10.000×1.05³=11.576,25. Prelievo: 11.576,25×0,20=2.315,25. Rimane: 9.260,99. Anno 4-5: 9.260,99×1.07²=10.603,47"
+                    },
+                    {
+                        question: "In una città, tutti i bibliotecari amano i libri. Alcune persone che amano i libri non sono bibliotecari. Tutti i professori sono persone che amano i libri. Nessun bibliotecario è professore. Quale conclusione è necessariamente vera?",
+                        answer: "Esistono professori che non sono bibliotecari",
+                        explanation: "Se tutti i professori amano i libri e nessun bibliotecario è professore, allora tutti i professori sono persone che amano i libri ma non sono bibliotecari"
+                    },
+                    {
+                        question: "12 persone siedono attorno a un tavolo rotondo. Ogni persona stringe la mano solo alle persone non adiacenti. Quanti strette di mano ci sono in totale?",
+                        answer: "54",
+                        explanation: "Ogni persona può stringere la mano a 12-3=9 persone (esclusa sé stessa e i 2 vicini). 12×9/2=54 (diviso per 2 perché ogni stretta conta due volte)"
+                    },
+                    {
+                        question: "In un torneo a eliminazione diretta con 64 giocatori, ogni partita ha un vincitore. Quante partite sono necessarie per determinare il campione?",
+                        answer: "63",
+                        explanation: "In ogni partita viene eliminato un giocatore. Per passare da 64 a 1 giocatore, devono essere eliminati 63 giocatori, quindi servono 63 partite"
+                    }
+                ]
+            };
+            
+            // Seleziona il pool corretto in base alla difficoltà
+            const problemPool = logicDatabase[data.difficulty] || logicDatabase.easy;
+            
+            // Seleziona un problema casuale dal pool
+            const randomIndex = Math.floor(Math.random() * problemPool.length);
+            const selectedProblem = problemPool[randomIndex];
+            
+            return {
+                type: 'logic',
+                difficulty: data.difficulty,
+                question: selectedProblem.question,
+                answer: selectedProblem.answer,
+                explanation: selectedProblem.explanation,
+                category: 'logica',
+                metadata: {
+                    generated_at: new Date().toISOString(),
+                    problem_index: randomIndex,
+                    total_problems_in_pool: problemPool.length
+                }
+            };
+        }
+        
+        // Genera puzzle demo
+        function generatePuzzleDemo(data) {
+            return {
+                type: 'puzzle',
+                difficulty: data.difficulty,
+                pieces: 9,
+                gridSize: { cols: 3, rows: 3 },
+                theme: data.theme || 'nature',
+                metadata: {
+                    total_pieces: 9,
+                    theme: data.theme || 'nature'
+                }
+            };
+        }
+        
+        // Genera memory demo
+        function generateMemoryDemo(data) {
+            return {
+                type: 'memory',
+                difficulty: data.difficulty,
+                pairs: parseInt(data.pairs) || 8,
+                theme: data.theme || 'animals',
+                metadata: {
+                    total_pairs: parseInt(data.pairs) || 8,
+                    theme: data.theme || 'animals'
+                }
+            };
+        }
+        
+        // Genera math demo
+        function generateMathDemo(data) {
+            const difficulty = data.difficulty;
+            const numExercises = parseInt(data.exercises) || 10;
+            
+            // Ottieni le operazioni selezionate dal form
+            const selectedOperations = Array.isArray(data.operations) ? data.operations : 
+                                    (data.operations ? [data.operations] : ['+', '-', '×', '÷']);
+            
+            // Range di numeri per difficoltà
+            const difficultyRanges = {
+                easy: { min: 1, max: 20 },
+                medium: { min: 10, max: 100 },
+                hard: { min: 50, max: 500 }
+            };
+            
+            const range = difficultyRanges[difficulty] || difficultyRanges.easy;
+            
+            // Genera esercizi completamente diversi ogni volta
+            const exercises = [];
+            const usedExercises = new Set(); // Per evitare duplicati
+            
+            for (let i = 0; i < numExercises; i++) {
+                let attempts = 0;
+                let exercise;
+                
+                // Genera esercizi unici fino a quando non ne trova uno nuovo
+                do {
+                    const op = selectedOperations[Math.floor(Math.random() * selectedOperations.length)];
+                    let a, b, result, exerciseText;
+                    
+                    if (op === '+') {
+                        a = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                        b = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                        result = a + b;
+                        exerciseText = `${a} + ${b} = ?`;
+                    } else if (op === '-') {
+                        a = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                        b = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                        // Assicura che il risultato sia positivo
+                        if (a < b) [a, b] = [b, a];
+                        result = a - b;
+                        exerciseText = `${a} - ${b} = ?`;
+                    } else if (op === '×') {
+                        a = Math.floor(Math.random() * (range.max / 10 - range.min / 10 + 1)) + Math.max(1, range.min / 10);
+                        b = Math.floor(Math.random() * (range.max / 10 - range.min / 10 + 1)) + Math.max(1, range.min / 10);
+                        result = a * b;
+                        exerciseText = `${a} × ${b} = ?`;
+                    } else if (op === '÷') {
+                        // Genera divisioni con risultato esatto
+                        b = Math.floor(Math.random() * (Math.min(10, range.max / 10) - 1)) + 1;
+                        result = Math.floor(Math.random() * (range.max / 10 - range.min / 10 + 1)) + Math.max(1, range.min / 10);
+                        a = b * result;
+                        exerciseText = `${a} ÷ ${b} = ?`;
+                    }
+                    
+                    exercise = {
+                        exercise: exerciseText,
+                        answer: result,
+                        operation: op,
+                        difficulty: difficulty
+                    };
+                    
+                    attempts++;
+                    
+                    // Se dopo molti tentativi non trova esercizi unici, usa quello generato
+                    if (attempts > 100) {
+                        break;
+                    }
+                    
+                } while (usedExercises.has(exercise.exercise));
+                
+                exercises.push({
+                    id: i,
+                    ...exercise
+                });
+                
+                usedExercises.add(exercise.exercise);
+            }
+            
+            return {
+                type: 'math',
+                difficulty: difficulty,
+                exercises: exercises,
+                metadata: {
+                    operations: selectedOperations,
+                    range: [range.min, range.max],
+                    generated_at: new Date().toISOString(),
+                    total_exercises: exercises.length,
+                    requested_exercises: numExercises,
+                    unique_exercises: true,
+                    all_different: true
+                }
+            };
+        }
+        
+        // Display schema
+        function displaySchema(schema) {
+            const container = document.getElementById('schemaDisplay');
             let html = '';
             
-            // Informazioni schema
+            // Header schema
             html += `
-                <div class="schema-info">
-                    <div class="info-item">
-                        <div class="info-label">Tipo</div>
-                        <div class="info-value">${schema.type}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Difficoltà</div>
-                        <div class="info-value">${schema.difficulty}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Complessità</div>
-                        <div class="info-value">${schema.metadata?.complexity_score || 'N/A'}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Generato</div>
-                        <div class="info-value">${new Date(schema.metadata?.generated_at).toLocaleString()}</div>
+                <div class="schema-header">
+                    <h3>${getSchemaTitle(schema.type)}</h3>
+                    <div class="schema-info">
+                        <span class="info-badge">📊 ${schema.type}</span>
+                        <span class="info-badge">🎯 ${schema.difficulty}</span>
+                        ${schema.metadata?.category ? `<span class="info-badge">📚 ${schema.metadata.category}</span>` : ''}
                     </div>
                 </div>
             `;
             
-            // Anteprima schema specifica
+            // Contenuto specifico per tipo
             if (schema.type === 'quiz') {
-                html += `
-                    <div class="schema-preview">
-                        <h3>📝 Quiz Interattivo</h3>
-                        <p><strong>Domande:</strong> ${schema.metadata.total_questions}</p>
-                        <p><strong>Categoria:</strong> ${schema.metadata.category}</p>
-                        <p><strong>Tempo limite:</strong> ${schema.metadata.time_limit}s</p>
-                        <div id="quizContainer" style="margin-top: 1rem;">
-                            ${schema.questions.map((q, index) => 
-                                `<div class="quiz-question" data-question="${index}" style="display: ${index === 0 ? 'block' : 'none'}; background: #f9fafb; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-                                    <h4>Domanda ${index + 1}: ${q.question}</h4>
-                                    <div class="quiz-options" style="margin-top: 1rem;">
-                                        ${q.options.map((option, optIndex) => 
-                                            `<div class="quiz-option" data-option="${optIndex}" onclick="selectQuizOption(${index}, ${optIndex})" style="background: white; border: 2px solid #e5e7eb; border-radius: 8px; padding: 1rem; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.3s ease;">
-                                                ${option}
-                                            </div>`
-                                        ).join('')}
-                                    </div>
-                                    <div id="feedback-${index}" style="margin-top: 1rem; font-weight: 600; display: none;"></div>
-                                    <div style="margin-top: 1rem; display: flex; gap: 1rem;">
-                                        ${index > 0 ? `<button class="btn btn-secondary" onclick="previousQuestion(${index})">← Precedente</button>` : ''}
-                                        ${index < schema.questions.length - 1 ? `<button class="btn btn-primary" onclick="nextQuestion(${index})">Successivo →</button>` : `<button class="btn btn-success" onclick="showQuizResults()">🏆 Vedi Risultati</button>`}
-                                    </div>
-                                </div>`
-                            ).join('')}
-                        </div>
-                    </div>
-                `;
+                html += displayQuiz(schema);
             } else if (schema.type === 'logic') {
-                html += `
-                    <div class="schema-preview">
-                        <h3>🧠 Problema di Logica</h3>
-                        <div class="logic-info" style="display: flex; gap: 2rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
-                            <div class="logic-badge">
-                                <span class="badge-label">Categoria:</span>
-                                <span class="badge-value">${schema.category || 'Logica'}</span>
-                            </div>
-                            <div class="logic-badge">
-                                <span class="badge-label">Difficoltà:</span>
-                                <span class="badge-value difficulty-${schema.difficulty}">${schema.difficulty}</span>
-                            </div>
-                            <div class="logic-badge">
-                                <span class="badge-label">Tipo:</span>
-                                <span class="badge-value">${schema.metadata?.logic_type || 'classico'}</span>
-                            </div>
-                        </div>
-                        <div class="logic-problem-container">
-                            <div class="problem-header">
-                                <div class="problem-icon">🤔</div>
-                                <h4 class="problem-title">Risolvi questo problema di logica:</h4>
-                            </div>
-                            <div class="problem-content">
-                                <div class="problem-text">
-                                    ${schema.question}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="logic-controls" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
-                            <button class="btn btn-primary" onclick="showLogicAnswer()">
-                                <i class="fas fa-lightbulb"></i> Mostra Soluzione
-                            </button>
-                            <button class="btn btn-secondary" onclick="hideLogicAnswer()">
-                                <i class="fas fa-eye-slash"></i> Nascondi
-                            </button>
-                            <button class="btn btn-outline" onclick="generateNewLogicProblem()">
-                                <i class="fas fa-sync"></i> Nuovo Problema
-                            </button>
-                        </div>
-                        <div id="logicAnswer" style="display: none; margin-top: 2rem;">
-                            <div class="solution-card">
-                                <div class="solution-header">
-                                    <div class="solution-icon">✅</div>
-                                    <h4 class="solution-title">Soluzione e Spiegazione</h4>
-                                </div>
-                                <div class="solution-content">
-                                    <div class="answer-section">
-                                        <h5>Risposta Corretta:</h5>
-                                        <div class="answer-value">${schema.answer}</div>
-                                    </div>
-                                    <div class="explanation-section">
-                                        <h5>Spiegazione Dettagliata:</h5>
-                                        <div class="explanation-text">${schema.explanation}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                html += displayLogic(schema);
+            } else if (schema.type === 'puzzle') {
+                html += displayPuzzle(schema);
+            } else if (schema.type === 'memory') {
+                html += displayMemory(schema);
+            } else if (schema.type === 'math') {
+                html += displayMath(schema);
             }
             
             container.innerHTML = html;
-            document.getElementById('resultContainer').classList.add('active');
             
-            // Resetta stato interattivo
+            // Inizializza funzionalità specifiche
+            if (schema.type === 'quiz') {
+                initializeQuiz();
+            } else if (schema.type === 'puzzle') {
+                initializePuzzle(schema);
+            }
+        }
+        
+        // Get schema title
+        function getSchemaTitle(type) {
+            const titles = {
+                'quiz': '📝 Quiz Interattivo',
+                'logic': '🧠 Problema di Logica',
+                'puzzle': '🧩 Puzzle Game',
+                'memory': '🎮 Memory Game',
+                'math': '🔢 Esercizi di Matematica'
+            };
+            return titles[type] || 'Schema';
+        }
+        
+        // Display quiz
+        function displayQuiz(schema) {
+            let html = `
+                <div class="quiz-container">
+                    ${schema.questions.map((q, index) => `
+                        <div class="quiz-question" data-question="${index}" style="display: ${index === 0 ? 'block' : 'none'};">
+                            <h4>Domanda ${index + 1}: ${q.question}</h4>
+                            <div class="quiz-options">
+                                ${q.options.map((option, optIndex) => `
+                                    <div class="quiz-option" onclick="selectQuizOption(${index}, ${optIndex})">
+                                        ${option}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div id="feedback-${index}" class="quiz-feedback"></div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="quiz-navigation">
+                    <div class="quiz-counter">Domanda <span id="questionCounter">1/${schema.questions.length}</span></div>
+                    <div class="quiz-controls">
+                        <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>← Precedente</button>
+                        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Successivo →</button>
+                    </div>
+                </div>
+            `;
+            return html;
+        }
+        
+        // Display logic
+        function displayLogic(schema) {
+            return `
+                <div class="logic-problem">
+                    <div class="logic-header">
+                        <div class="logic-icon">🤔</div>
+                        <h3 class="logic-title">Problema di Logica</h3>
+                    </div>
+                    <div class="logic-content">
+                        <div class="logic-text">${schema.question}</div>
+                    </div>
+                    <div class="logic-answer-section">
+                        <div class="form-group">
+                            <label for="userLogicAnswer">La tua risposta:</label>
+                            <input type="text" id="userLogicAnswer" class="form-control" placeholder="Scrivi qui la tua risposta..." style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem;">
+                        </div>
+                        <div id="logicFeedback" class="quiz-feedback"></div>
+                    </div>
+                    <div class="logic-controls">
+                        <button class="btn btn-primary" onclick="checkLogicAnswer()">
+                            <i class="fas fa-check"></i> Verifica Risposta
+                        </button>
+                        <button class="btn btn-secondary" onclick="showLogicAnswer()">
+                            <i class="fas fa-lightbulb"></i> Mostra Soluzione
+                        </button>
+                        <button class="btn btn-success" onclick="generateNewLogicProblem()">
+                            <i class="fas fa-sync"></i> Nuovo Problema
+                        </button>
+                    </div>
+                    <div id="logicSolution" style="display: none; margin-top: 2rem;">
+                        <div class="logic-content">
+                            <h4 style="color: #10b981; margin-bottom: 1rem;">✅ Soluzione Corretta</h4>
+                            <p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 1rem;">${schema.answer}</p>
+                            <h5 style="color: #667eea; margin-bottom: 0.5rem;">Spiegazione:</h5>
+                            <p>${schema.explanation}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Display puzzle
+        function displayPuzzle(schema) {
+            return `
+                <div class="puzzle-content">
+                    <div class="puzzle-header">
+                        <h3>🧩 Puzzle Game</h3>
+                        <div class="puzzle-info">
+                            <span class="info-badge">📏 ${schema.gridSize.cols}×${schema.gridSize.rows}</span>
+                            <span class="info-badge">🧩 ${schema.pieces} pezzi</span>
+                            <span class="info-badge">🎨 ${schema.theme}</span>
+                        </div>
+                    </div>
+                    <div class="puzzle-board" id="puzzleBoard">
+                        <!-- La griglia verrà generata da JavaScript -->
+                    </div>
+                    <div class="puzzle-pieces" id="puzzlePieces">
+                        <!-- I pezzi verranno generati da JavaScript -->
+                    </div>
+                    <div class="puzzle-controls">
+                        <button class="btn btn-primary" onclick="checkPuzzle()">
+                            <i class="fas fa-check"></i> Verifica Puzzle
+                        </button>
+                        <button class="btn btn-secondary" onclick="shufflePuzzle()">
+                            <i class="fas fa-random"></i> Mescola
+                        </button>
+                    </div>
+                    <div id="puzzleFeedback" class="puzzle-feedback"></div>
+                </div>
+            `;
+        }
+        
+        // Display memory
+        function displayMemory(schema) {
+            return `
+                <div class="puzzle-content">
+                    <div class="puzzle-header">
+                        <h3>🎮 Memory Game</h3>
+                        <div class="puzzle-info">
+                            <span class="info-badge">👥 ${schema.pairs} coppie</span>
+                            <span class="info-badge">🎨 ${schema.theme}</span>
+                        </div>
+                    </div>
+                    <div class="puzzle-board" id="memoryBoard">
+                        <!-- Le carte verranno generate da JavaScript -->
+                    </div>
+                    <div class="puzzle-controls">
+                        <button class="btn btn-primary" onclick="startMemoryGame()">
+                            <i class="fas fa-play"></i> Inizia Gioco
+                        </button>
+                        <button class="btn btn-secondary" onclick="resetMemoryGame()">
+                            <i class="fas fa-redo"></i> Reset
+                        </button>
+                    </div>
+                    <div id="memoryFeedback" class="puzzle-feedback"></div>
+                </div>
+            `;
+        }
+        
+        // Display math
+        function displayMath(schema) {
+            return `
+                <div class="quiz-container">
+                    ${schema.exercises.map((ex, index) => `
+                        <div class="quiz-question">
+                            <h4>Esercizio ${index + 1}: ${ex.exercise}</h4>
+                            <div class="quiz-options">
+                                <input type="number" class="form-control" placeholder="Inserisci la risposta" id="math-answer-${index}">
+                            </div>
+                            <button class="btn btn-primary" onclick="checkMathAnswer(${index}, ${ex.answer})">Verifica</button>
+                            <div id="math-feedback-${index}" class="quiz-feedback"></div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Funzioni Quiz
+        function initializeQuiz() {
             currentQuestion = 0;
             quizAnswers = {};
-            
-            // Se è un problema di logica, aggiungi il pulsante "Ho risolto da solo"
-            if (schema.type === 'logic') {
-                setTimeout(addSolveButton, 100);
-            }
         }
         
-        // Funzioni per Problemi di Logica
-        function showLogicAnswer() {
-            const answerDiv = document.getElementById('logicAnswer');
-            if (answerDiv) {
-                answerDiv.style.display = 'block';
-                answerDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                
-                // Salva che l'utente ha visualizzato la soluzione
-                if (currentSchema && currentSchema.type === 'logic') {
-                    saveLogicProblem(false); // Non risolto autonomamente
-                }
-            }
-        }
-        
-        function hideLogicAnswer() {
-            const answerDiv = document.getElementById('logicAnswer');
-            if (answerDiv) {
-                answerDiv.style.display = 'none';
-            }
-        }
-        
-        // Funzione per salvare il problema di logica risolto
-        async function saveLogicProblem(solved = true) {
-            try {
-                const gameData = {
-                    category: currentSchema.category || 'logica',
-                    difficulty: currentSchema.difficulty || 'medio',
-                    solved: solved,
-                    question: currentSchema.question,
-                    answer: currentSchema.answer,
-                    explanation: currentSchema.explanation
-                };
-                
-                const response = await fetch('/auth/api/user/add-game', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        type: 'logic',
-                        data: gameData
-                    })
-                });
-                
-                if (response.ok) {
-                    console.log('Problema di logica salvato nello storico');
-                }
-            } catch (error) {
-                console.error('Errore nel salvare il problema di logica:', error);
-            }
-        }
-        
-        // Aggiungi pulsante "Ho risolto da solo"
-        function addSolveButton() {
-            const controls = document.querySelector('.logic-controls');
-            if (controls && !controls.querySelector('.solve-btn')) {
-                const solveBtn = document.createElement('button');
-                solveBtn.className = 'btn btn-success solve-btn';
-                solveBtn.innerHTML = '<i class="fas fa-check"></i> Ho risolto da solo';
-                solveBtn.onclick = () => {
-                    saveLogicProblem(true); // Risolto autonomamente
-                    alert('Ottimo lavoro! Problema segnato come risolto autonomamente.');
-                };
-                controls.appendChild(solveBtn);
-            }
-        }
-        
-        function generateNewLogicProblem() {
-            // Nascondi la soluzione corrente
-            hideLogicAnswer();
-            
-            // Mostra loading
-            const container = document.getElementById('schemaContent');
-            container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generazione nuovo problema...</p></div>';
-            
-            // Ricarica il form e genera nuovo schema
-            setTimeout(() => {
-                generateSchema();
-            }, 1000);
-        }
-        
-        // Funzioni per Quiz
         function selectQuizOption(questionIndex, optionIndex) {
-            if (!currentSchema || currentSchema.type !== 'quiz') return;
-            
             const question = currentSchema.questions[questionIndex];
             const isCorrect = optionIndex === question.correct;
             
             // Salva risposta
             quizAnswers[questionIndex] = optionIndex;
             
-            // Visualizza feedback
+            // Disabilita opzioni
             const options = document.querySelectorAll(`[data-question="${questionIndex}"] .quiz-option`);
             options.forEach((opt, idx) => {
                 opt.style.pointerEvents = 'none';
                 if (idx === question.correct) {
-                    opt.style.background = '#dcfce7';
-                    opt.style.borderColor = '#16a34a';
+                    opt.classList.add('correct');
                 } else if (idx === optionIndex && !isCorrect) {
-                    opt.style.background = '#fef2f2';
-                    opt.style.borderColor = '#dc2626';
+                    opt.classList.add('incorrect');
                 }
             });
             
             // Mostra feedback
             const feedback = document.getElementById(`feedback-${questionIndex}`);
-            feedback.style.display = 'block';
-            feedback.innerHTML = isCorrect ? 
-                '✅ Risposta Corretta!' : 
-                `❌ Risposta Sbagliata. La risposta corretta è: ${question.options[question.correct]}`;
-            feedback.style.color = isCorrect ? '#16a34a' : '#dc2626';
+            feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
+            feedback.innerHTML = isCorrect ? '✅ Risposta Corretta!' : `❌ Risposta Sbagliata. La risposta corretta è: ${question.options[question.correct]}`;
         }
         
         function nextQuestion() {
-            if (!currentSchema || currentSchema.type !== 'quiz') return;
-            
             if (currentQuestion < currentSchema.questions.length - 1) {
                 document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'none';
                 currentQuestion++;
@@ -966,8 +1559,6 @@
         }
         
         function previousQuestion() {
-            if (!currentSchema || currentSchema.type !== 'quiz') return;
-            
             if (currentQuestion > 0) {
                 document.querySelector(`[data-question="${currentQuestion}"]`).style.display = 'none';
                 currentQuestion--;
@@ -982,74 +1573,283 @@
             document.getElementById('nextBtn').disabled = currentQuestion === currentSchema.questions.length - 1;
         }
         
-        function showQuizSolution() {
-            if (!currentSchema || currentSchema.type !== 'quiz') return;
+        // Funzioni Logica
+        function checkLogicAnswer() {
+            const userAnswer = document.getElementById('userLogicAnswer').value.trim();
+            const correctAnswer = currentSchema.answer.toLowerCase();
+            const feedback = document.getElementById('logicFeedback');
             
-            currentSchema.questions.forEach((q, index) => {
-                const options = document.querySelectorAll(`[data-question="${index}"] .quiz-option`);
-                options.forEach((opt, idx) => {
-                    opt.style.pointerEvents = 'none';
-                    if (idx === q.correct) {
-                        opt.style.background = '#dcfce7';
-                        opt.style.borderColor = '#16a34a';
-                    }
-                });
-                
-                const feedback = document.getElementById(`feedback-${index}`);
-                feedback.style.display = 'block';
-                feedback.innerHTML = `✅ Risposta Corretta: ${q.options[q.correct]}`;
-                feedback.style.color = '#16a34a';
-            });
-        }
-        
-        function downloadSchema() {
-            if (!currentSchema) return;
+            if (!userAnswer) {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = '❌ Per favore inserisci una risposta!';
+                return;
+            }
             
-            const dataStr = JSON.stringify(currentSchema, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
+            // Confronto molto flessibile della risposta
+            const userAnswerLower = userAnswer.toLowerCase();
             
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `schema_${currentSchema.type}_${Date.now()}.json`;
-            link.click();
+            // Rimuovi articoli e preposizioni per confronto più flessibile
+            const cleanUserAnswer = userAnswerLower.replace(/^(il|la|lo|l'|i|gli|le|un|uno|una|un'|dei|degli|delle|del|dell'|da|a|su|per|con|in|tra|fra)\s+/gi, '').trim();
+            const cleanCorrectAnswer = correctAnswer.replace(/^(il|la|lo|l'|i|gli|le|un|uno|una|un'|dei|degli|delle|del|dell'|da|a|su|per|con|in|tra|fra)\s+/gi, '').trim();
             
-            URL.revokeObjectURL(url);
-        }
-        
-        function shareSchema() {
-            if (!currentSchema) return;
+            // Verifica multiple condizioni per massima flessibilità
+            const isCorrect = 
+                // Corrispondenza esatta
+                userAnswerLower === correctAnswer ||
+                // Contiene la risposta corretta
+                userAnswerLower.includes(correctAnswer) ||
+                correctAnswer.includes(userAnswerLower) ||
+                // Corrispondenza con testo pulito
+                cleanUserAnswer === cleanCorrectAnswer ||
+                cleanUserAnswer.includes(cleanCorrectAnswer) ||
+                cleanCorrectAnswer.includes(cleanUserAnswer) ||
+                // Corrispondenza parziale significativa (almeno 3 caratteri)
+                (cleanUserAnswer.length >= 3 && cleanCorrectAnswer.includes(cleanUserAnswer)) ||
+                (cleanCorrectAnswer.length >= 3 && cleanUserAnswer.includes(cleanCorrectAnswer));
             
-            // Implementa condivisione (es. copia link, email, etc.)
-            const shareText = `Ho generato uno schema ${currentSchema.type} con BrainPlayNG!`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Schema BrainPlayNG',
-                    text: shareText
-                });
+            if (isCorrect) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent = '✅ Risposta Corretta! Ottimo lavoro!';
+                document.getElementById('userLogicAnswer').disabled = true;
             } else {
-                navigator.clipboard.writeText(shareText);
-                showMessage('Link copiato negli appunti!', 'success');
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = '❌ Risposta Sbagliata. Riprova o usa "Mostra Soluzione"!';
             }
         }
         
-        function showMessage(message, type) {
-            // Rimuovi messaggi esistenti
-            const existingMessages = document.querySelectorAll('.error-message, .success-message');
-            existingMessages.forEach(msg => msg.remove());
+        function showLogicAnswer() {
+            document.getElementById('logicSolution').style.display = 'block';
+        }
+        
+        function generateNewLogicProblem() {
+            generateSchema(new Event('submit'));
+        }
+        
+        // Funzioni Puzzle
+        function initializePuzzle(schema) {
+            const board = document.getElementById('puzzleBoard');
+            const pieces = document.getElementById('puzzlePieces');
             
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `${type}-message`;
-            messageDiv.textContent = message;
+            // Crea griglia
+            board.innerHTML = '';
+            board.style.gridTemplateColumns = `repeat(${schema.gridSize.cols}, 1fr)`;
             
-            const form = document.querySelector('.generator-form');
-            form.insertBefore(messageDiv, form.firstChild);
+            for (let i = 0; i < schema.pieces; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'puzzle-slot';
+                slot.innerHTML = `<span class="position-indicator">${i + 1}</span>`;
+                slot.dataset.position = i;
+                board.appendChild(slot);
+            }
             
-            // Rimuovi dopo 5 secondi
-            setTimeout(() => {
-                messageDiv.remove();
-            }, 5000);
+            // Crea pezzi
+            pieces.innerHTML = '';
+            const emojis = ['🧩', '🎯', '🎨', '🎭', '🎪', '🎯', '🎲', '🎸', '🎺'];
+            
+            for (let i = 0; i < schema.pieces; i++) {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.textContent = emojis[i % emojis.length];
+                piece.draggable = true;
+                piece.dataset.pieceId = i;
+                
+                // Drag events
+                piece.addEventListener('dragstart', handleDragStart);
+                piece.addEventListener('dragend', handleDragEnd);
+                
+                pieces.appendChild(piece);
+            }
+            
+            // Drop events per gli slot
+            document.querySelectorAll('.puzzle-slot').forEach(slot => {
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('drop', handleDrop);
+                slot.addEventListener('dragleave', handleDragLeave);
+            });
+        }
+        
+        let draggedPiece = null;
+        
+        function handleDragStart(e) {
+            draggedPiece = e.target;
+            e.target.classList.add('dragging');
+        }
+        
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('hover');
+        }
+        
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('hover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const slot = e.currentTarget;
+            slot.classList.remove('hover');
+            
+            if (draggedPiece && !slot.classList.contains('filled')) {
+                slot.appendChild(draggedPiece);
+                slot.classList.add('filled');
+                draggedPiece = null;
+            }
+        }
+        
+        function checkPuzzle() {
+            const slots = document.querySelectorAll('.puzzle-slot');
+            let correct = 0;
+            
+            slots.forEach((slot, index) => {
+                const piece = slot.querySelector('.puzzle-piece');
+                if (piece && parseInt(piece.dataset.pieceId) === index) {
+                    piece.classList.add('correct');
+                    correct++;
+                }
+            });
+            
+            const feedback = document.getElementById('puzzleFeedback');
+            if (correct === slots.length) {
+                feedback.className = 'puzzle-feedback success';
+                feedback.textContent = '🎉 Complimenti! Hai completato il puzzle!';
+            } else {
+                feedback.className = 'puzzle-feedback info';
+                feedback.textContent = `Hai posizionato correttamente ${correct}/${slots.length} pezzi. Continua a provare!`;
+            }
+        }
+        
+        function shufflePuzzle() {
+            const pieces = document.getElementById('puzzlePieces');
+            const allPieces = Array.from(pieces.children);
+            
+            // Mescola pezzi
+            allPieces.sort(() => Math.random() - 0.5);
+            
+            // Svuota e riaggiungi pezzi mescolati
+            pieces.innerHTML = '';
+            allPieces.forEach(piece => {
+                piece.addEventListener('dragstart', handleDragStart);
+                piece.addEventListener('dragend', handleDragEnd);
+                pieces.appendChild(piece);
+            });
+            
+            // Svuota gli slot
+            document.querySelectorAll('.puzzle-slot').forEach(slot => {
+                slot.innerHTML = `<span class="position-indicator">${parseInt(slot.dataset.position) + 1}</span>`;
+                slot.classList.remove('filled');
+            });
+        }
+        
+        // Funzioni Memory
+        function startMemoryGame() {
+            const board = document.getElementById('memoryBoard');
+            const pairs = currentSchema.pairs;
+            const theme = currentSchema.theme;
+            
+            // Emoji per tema
+            const themeEmojis = {
+                'animals': ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'],
+                'food': ['🍎', '🍊', '🍋', '🍌', '🍉', '🍇', '🍓', '🫐'],
+                'sports': ['⚽', '🏀', '🏈', '⚾', '🎾', '🏐', '🏉', '🎱'],
+                'colors': ['🔴', '🔵', '🟢', '🟡', '🟣', '🟠', '⚫', '⚪']
+            };
+            
+            const emojis = themeEmojis[theme] || themeEmojis['animals'];
+            const cards = [];
+            
+            // Crea coppie
+            for (let i = 0; i < pairs; i++) {
+                cards.push(emojis[i % emojis.length], emojis[i % emojis.length]);
+            }
+            
+            // Mescola carte
+            cards.sort(() => Math.random() - 0.5);
+            
+            // Crea griglia
+            board.innerHTML = '';
+            board.style.gridTemplateColumns = `repeat(${Math.ceil(Math.sqrt(cards.length))}, 1fr)`;
+            
+            cards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'puzzle-piece';
+                card.textContent = '?';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.style.fontSize = '1.5rem';
+                card.addEventListener('click', flipMemoryCard);
+                board.appendChild(card);
+            });
+        }
+        
+        let flippedCards = [];
+        let matchedPairs = 0;
+        
+        function flipMemoryCard(e) {
+            const card = e.target;
+            
+            if (flippedCards.length >= 2 || card.classList.contains('matched')) {
+                return;
+            }
+            
+            card.textContent = card.dataset.emoji;
+            card.classList.add('selected');
+            flippedCards.push(card);
+            
+            if (flippedCards.length === 2) {
+                setTimeout(() => {
+                    if (flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
+                        flippedCards[0].classList.add('matched');
+                        flippedCards[1].classList.add('matched');
+                        matchedPairs++;
+                        
+                        if (matchedPairs === currentSchema.pairs) {
+                            const feedback = document.getElementById('memoryFeedback');
+                            feedback.className = 'puzzle-feedback success';
+                            feedback.textContent = '🎉 Complimenti! Hai trovato tutte le coppie!';
+                        }
+                    } else {
+                        flippedCards[0].textContent = '?';
+                        flippedCards[1].textContent = '?';
+                        flippedCards[0].classList.remove('selected');
+                        flippedCards[1].classList.remove('selected');
+                    }
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+        
+        function resetMemoryGame() {
+            matchedPairs = 0;
+            flippedCards = [];
+            document.getElementById('memoryFeedback').innerHTML = '';
+            startMemoryGame();
+        }
+        
+        // Funzioni Math
+        function checkMathAnswer(index, correctAnswer) {
+            const input = document.getElementById(`math-answer-${index}`);
+            const feedback = document.getElementById(`math-feedback-${index}`);
+            const userAnswer = parseInt(input.value);
+            
+            if (userAnswer === correctAnswer) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent = '✅ Risposta Corretta!';
+                input.disabled = true;
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = `❌ Risposta Sbagliata. La risposta corretta è: ${correctAnswer}`;
+            }
+        }
+        
+        // Reset form
+        function resetForm() {
+            document.getElementById('generatorForm').reset();
+            document.getElementById('customParamsContainer').innerHTML = '';
+            document.getElementById('schemaDisplay').style.display = 'none';
         }
     </script>
 </body>
