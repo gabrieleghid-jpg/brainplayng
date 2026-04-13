@@ -44,5 +44,12 @@ def schemi():
         return redirect(url_for('auth.login'))
     return render_template('ai/schema_generator.html')
 
+@app.route('/ai/schemi-testuali')
+def schemi_testuali():
+    """Pagina generatore schemi testuali IA - richiede autenticazione"""
+    if 'user_id' not in session:
+        return redirect(url_for('auth.login'))
+    return render_template('ai/text_schema_generator.html')
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
