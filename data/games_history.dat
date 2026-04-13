@@ -1,1 +1,15 @@
-{}
+{
+  "abifni": [
+    {
+      "id": 1,
+      "type": "logic",
+      "date": "2026-04-13T17:10:35.540503",
+      "category": "ricorrenza",
+      "difficulty": "medium",
+      "solved": true,
+      "question": "Una funzione f(x) soddisfa f(x+1)=f(x)+2x+1 e f(0)=1. Trova f(10).",
+      "answer": 101,
+      "explanation": "La ricorrenza suggerisce f(x)=x²+1. Verifichiamo: f(x+1)=(x+1)²+1=x²+2x+2, f(x)+2x+1=x²+1+2x+1=x²+2x+2. Quindi f(10)=10²+1=101"
+    }
+  ]
+}

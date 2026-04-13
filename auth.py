@@ -213,8 +213,19 @@ def logout():
 @auth_bp.route('/profile')
 def profile():
     """Profilo utente - può mostrare il proprio profilo o quello di altri utenti"""
+    # Se l'utente non è loggato, crea un profilo ospite
     if 'user_id' not in session:
-        return redirect(url_for('auth.login'))
+        # Crea un utente ospite
+        guest_user = {
+            'username': 'Ospite',
+            'email': 'ospite@brainplayng.com',
+            'created_at': datetime.datetime.now().isoformat(),
+            'last_login': datetime.datetime.now().isoformat(),
+            'high_score': 0,
+            'games_played': 0,
+            'is_guest': True
+        }
+        return render_template('auth/profile.html', user=guest_user, is_own_profile=True)
     
     # Verifica se si sta visualizzando il profilo di un altro utente
     target_username = request.args.get('user')
@@ -236,6 +247,40 @@ def profile():
             return redirect(url_for('leaderboard'))
     
     return render_template('auth/profile.html', user=user_data, is_own_profile=is_own_profile)
+
+@auth_bp.route('/api/user/stats')
+def api_user_stats():
+    """API per ottenere le statistiche dell'utente corrente"""
+    if 'user_id' not in session:
+        # Ritorna statistiche vuote per ospiti
+        return jsonify({
+            'success': True,
+            'stats': {
+                'games_played': 0,
+                'high_score': 0,
+                'total_time': '--',
+                'achievements': 0
+            },
+            'games': []
+        })
+    
+    users = load_users()
+    user_data = users.get(session['user_id'], {})
+    
+    # Carica lo storico dei giochi
+    games_history = load_games_history()
+    user_games = games_history.get(session['user_id'], [])
+    
+    return jsonify({
+        'success': True,
+        'stats': {
+            'games_played': user_data.get('games_played', 0),
+            'high_score': user_data.get('high_score', 0),
+            'total_time': '--',  # Da implementare
+            'achievements': 0  # Da implementare
+        },
+        'games': user_games[-10:]  # Ultimi 10 giochi
+    })
 
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():

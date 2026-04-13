@@ -12,16 +12,46 @@
     <style>
         .profile-container {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(180deg, #000 0%, #0a0a0a 100%);
             padding: 2rem;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+        }
+        
+        .profile-container::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            z-index: 1;
         }
         
         .profile-header {
-            background: white;
-            border-radius: 1rem;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
             padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .profile-header:hover {
+            transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(120, 119, 198, 0.2);
+            border-color: rgba(120, 119, 198, 0.5);
         }
         
         .profile-info {
@@ -32,27 +62,50 @@
         }
         
         .profile-avatar {
-            width: 80px;
-            height: 80px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #7877c6, #ff77c6);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 2rem;
+            font-size: 3rem;
             font-weight: bold;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 12px 30px rgba(120, 119, 198, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .profile-avatar .avatar-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         
         .profile-details h1 {
             margin: 0 0 0.5rem 0;
-            color: #1f2937;
+            color: #fff;
             font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .profile-details p {
             margin: 0.25rem 0;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .stats-grid {
@@ -63,15 +116,21 @@
         }
         
         .stat-card {
-            background: white;
-            border-radius: 1rem;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
         }
         
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(120, 119, 198, 0.2);
+            border-color: rgba(120, 119, 198, 0.5);
         }
         
         .stat-header {
@@ -114,37 +173,56 @@
         .stat-title {
             font-size: 1.25rem;
             font-weight: 600;
-            color: #1f2937;
+            color: rgba(255, 255, 255, 0.9);
             margin: 0;
         }
         
         .stat-value {
             font-size: 3rem;
             font-weight: 800;
-            color: #1f2937;
+            color: #fff;
             margin: 1rem 0;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .stat-description {
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.7);
             line-height: 1.6;
         }
         
         .games-history {
-            background: white;
-            border-radius: 1rem;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
             padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .games-history:hover {
+            transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(120, 119, 198, 0.2);
+            border-color: rgba(120, 119, 198, 0.5);
         }
         
         .section-title {
             font-size: 1.5rem;
             font-weight: 700;
-            color: #1f2937;
+            color: #fff;
             margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
         .game-item {
@@ -152,12 +230,15 @@
             align-items: center;
             justify-content: space-between;
             padding: 1rem;
-            border-bottom: 1px solid #e5e7eb;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             transition: background 0.3s ease;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
         }
         
         .game-item:hover {
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
         }
         
         .game-item:last-child {
@@ -178,17 +259,19 @@
             align-items: center;
             justify-content: center;
             font-size: 1.25rem;
+            background: linear-gradient(135deg, #7877c6, #ff77c6);
+            color: white;
         }
         
         .game-details h4 {
             margin: 0 0 0.25rem 0;
-            color: #1f2937;
+            color: #fff;
             font-weight: 600;
         }
         
         .game-details p {
             margin: 0;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.875rem;
         }
         
@@ -199,40 +282,53 @@
         .score-value {
             font-size: 1.25rem;
             font-weight: 700;
-            color: #059669;
+            color: #10b981;
         }
         
         .score-date {
             font-size: 0.75rem;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.6);
         }
         
         .empty-state {
             text-align: center;
             padding: 3rem;
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.7);
         }
         
         .empty-state i {
             font-size: 3rem;
             margin-bottom: 1rem;
             opacity: 0.5;
+            color: rgba(255, 255, 255, 0.5);
         }
         
         .challenges-details {
-            background: white;
-            border-radius: 1rem;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
             padding: 2rem;
             margin-bottom: 2rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .challenges-details:hover {
+            transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(120, 119, 198, 0.2);
+            border-color: rgba(120, 119, 198, 0.5);
         }
         
         .challenge-item {
-            background: #f8fafc;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 0.5rem;
             padding: 1.5rem;
             margin-bottom: 1rem;
-            border-left: 4px solid #6366f1;
+            border-left: 4px solid #7877c6;
+            backdrop-filter: blur(5px);
         }
         
         .challenge-header {
@@ -245,7 +341,7 @@
         .challenge-title {
             font-size: 1.1rem;
             font-weight: 600;
-            color: #1f2937;
+            color: #fff;
         }
         
         .challenge-score {
@@ -286,18 +382,58 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 0.5rem;
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
         
         .back-button:hover {
-            background: #667eea;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #7877c6, #ff77c6);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(120, 119, 198, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
         }
         
         @media (max-width: 768px) {
@@ -327,23 +463,44 @@
         <div class="profile-header">
             <div class="profile-info">
                 <div class="profile-avatar">
-                    {{ user.username[0]|upper }}
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image }}" alt="Profile Image">
+                    {% else %}
+                        <div class="avatar-text">{{ user.username[0]|upper }}</div>
+                    {% endif %}
                 </div>
                 <div class="profile-details">
                     <h1>{{ user.username|title }}</h1>
-                    <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
+                    <p><i class="fas fa-envelope"></i> {{ user.email if user.email else 'N/A' }}</p>
                     <p><i class="fas fa-calendar"></i> Membro dal: {{ user.created_at[:10] if user.created_at else 'N/A' }}</p>
                     <p><i class="fas fa-clock"></i> Ultimo accesso: {{ user.last_login[:10] if user.last_login else 'N/A' }}</p>
+                    <p><i class="fas fa-trophy"></i> Punteggio: {{ user.high_score or 0 }}</p>
+                    <p><i class="fas fa-gamepad"></i> Giochi giocati: {{ user.games_played or 0 }}</p>
                     {% if not is_own_profile %}
                         <p style="color: #6366f1; font-weight: 600;"><i class="fas fa-eye"></i> Stai visualizzando il profilo di un altro utente</p>
                     {% endif %}
                 </div>
             </div>
             {% if is_own_profile %}
-                <a href="/" class="back-button">
-                    <i class="fas fa-arrow-left"></i>
-                    Torna alla Home
-                </a>
+                {% if user.is_guest %}
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <a href="/auth/login" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Accedi
+                        </a>
+                        <a href="/auth/register" class="btn btn-secondary">
+                            <i class="fas fa-user-plus"></i> Registrati
+                        </a>
+                        <a href="/" class="back-button">
+                            <i class="fas fa-arrow-left"></i>
+                            Torna alla Home
+                        </a>
+                    </div>
+                {% else %}
+                    <a href="/" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                        Torna alla Home
+                    </a>
+                {% endif %}
             {% else %}
                 <a href="/leaderboard" class="back-button">
                     <i class="fas fa-arrow-left"></i>
@@ -457,195 +614,10 @@
     </div>
 
     <script>
-        // Dati di esempio per le sfide completate
-        const sampleChallenges = [
-            {
-                type: "Schemi",
-                title: "Schemi di Matematica - Algebra",
-                score: 95,
-                date: "2024-04-10",
-                details: {
-                    "Esercizi": 15,
-                    "Accuracy": "95%",
-                    "Tempo": "12min"
-                }
-            },
-            {
-                type: "Quiz",
-                title: "Quiz di Logica - Problemi Complessi",
-                score: 88,
-                date: "2024-04-09",
-                details: {
-                    "Domande": 20,
-                    "Corrette": 18,
-                    "Tempo": "8min"
-                }
-            },
-            {
-                type: "Matematica",
-                title: "Esercizi di Geometria",
-                score: 92,
-                date: "2024-04-08",
-                details: {
-                    "Problemi": 10,
-                    "Risolti": 9,
-                    "Accuracy": "90%"
-                }
-            },
-            {
-                type: "Logica",
-                title: "Puzzle di Ragionamento",
-                score: 85,
-                date: "2024-04-07",
-                details: {
-                    "Puzzle": 8,
-                    "Completati": 7,
-                    "Tempo": "15min"
-                }
-            }
-        ];
-        
-        // Carica le sfide completate
-        async function loadChallengesHistory() {
-            const container = document.getElementById('gamesHistory');
-            const challengesContainer = document.getElementById('challengesDetails');
-            
-            // Simula caricamento dati (in futuro verrà da API)
-            const challenges = sampleChallenges;
-            
-            if (challenges.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-gamepad"></i>
-                        <h3>{% if is_own_profile %}Nessuna sfida completata{% else %}Nessuna sfida completata{% endif %}</h3>
-                        <p>{% if is_own_profile %}Inizia a giocare per vedere qui le tue sfide completate!{% else %}Questo utente non ha ancora completato nessuna sfida.{% endif %}</p>
-                        {% if is_own_profile %}
-                        <div style="margin-top: 2rem;">
-                            <a href="/ai/schemi" class="btn btn-primary" style="margin-right: 1rem;">
-                                <i class="fas fa-robot"></i> Crea Schemi
-                            </a>
-                            <a href="/leaderboard" class="btn btn-secondary">
-                                <i class="fas fa-trophy"></i> Vedi Classifiche
-                            </a>
-                        </div>
-                        {% endif %}
-                    </div>
-                `;
-                return;
-            }
-            
-            // Renderizza le sfide
-            let challengesHTML = '';
-            challenges.forEach(challenge => {
-                challengesHTML += `
-                    <div class="challenge-item">
-                        <div class="challenge-header">
-                            <div>
-                                <div class="challenge-title">${challenge.title}</div>
-                                <small style="color: #6b7280;">${challenge.date}</small>
-                            </div>
-                            <div class="challenge-score">${challenge.score}%</div>
-                        </div>
-                        <div class="challenge-details">
-                            ${Object.entries(challenge.details).map(([key, value]) => `
-                                <div class="challenge-stat">
-                                    <span class="challenge-stat-value">${value}</span>
-                                    <span class="challenge-stat-label">${key}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = challengesHTML;
-            
-            // Se stiamo visualizzando il profilo di un altro utente, mostra anche i dettagli
-            if (challengesContainer) {
-                const stats = calculateStats(challenges);
-                challengesContainer.innerHTML = `
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
-                        <div class="challenge-item">
-                            <h4 style="color: #6366f1; margin-bottom: 1rem;">? Performance Generale</h4>
-                            <div class="challenge-details">
-                                <div class="challenge-stat">
-                                    <span class="challenge-stat-value">${stats.averageScore}%</span>
-                                    <span class="challenge-stat-label">Punteggio Medio</span>
-                                </div>
-                                <div class="challenge-stat">
-                                    <span class="challenge-stat-value">${stats.totalChallenges}</span>
-                                    <span class="challenge-stat-label">Sfide Totali</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="challenge-item">
-                            <h4 style="color: #10b981; margin-bottom: 1rem;">? Specializzazione</h4>
-                            <div class="challenge-details">
-                                <div class="challenge-stat">
-                                    <span class="challenge-stat-value">${stats.bestType}</span>
-                                    <span class="challenge-stat-label">Miglior Categoria</span>
-                                </div>
-                                <div class="challenge-stat">
-                                    <span class="challenge-stat-value">${stats.bestScore}%</span>
-                                    <span class="challenge-stat-label">Miglior Punteggio</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="challenge-item">
-                            <h4 style="color: #f59e0b; margin-bottom: 1rem;">? Attività</h4>
-                            <div class="challenge-details">
-                                <div class="challenge-stat">
-                                    <span class="challenge-stat-value">${stats.lastActive}</span>
-                                    <span class="challenge-stat-label">Ultima Attività</span>
-                                </div>
-                                <div class="challenge-stat">
-                                    <span class="challenge-stat-value">${stats.streak}</span>
-                                    <span class="challenge-stat-label">Serie Attiva</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        
-        // Calcola statistiche dalle sfide
-        function calculateStats(challenges) {
-            const totalChallenges = challenges.length;
-            const averageScore = Math.round(challenges.reduce((sum, c) => sum + c.score, 0) / totalChallenges);
-            const bestChallenge = challenges.reduce((best, current) => current.score > best.score ? current : best);
-            const bestScore = bestChallenge.score;
-            const bestType = bestChallenge.type;
-            const lastActive = challenges[0]?.date || 'N/A';
-            const streak = calculateStreak(challenges);
-            
-            return {
-                totalChallenges,
-                averageScore,
-                bestScore,
-                bestType,
-                lastActive,
-                streak
-            };
-        }
-        
-        // Calcola la serie di sfide consecutive
-        function calculateStreak(challenges) {
-            // Logica semplificata per la streak
-            const today = new Date();
-            const lastChallenge = new Date(challenges[0]?.date);
-            const daysDiff = Math.floor((today - lastChallenge) / (1000 * 60 * 60 * 24));
-            
-            if (daysDiff <= 1) return "1 giorno";
-            if (daysDiff <= 7) return `${daysDiff} giorni`;
-            return "Inattivo";
-        }
-        
-        // Carica i dati quando la pagina è pronta
+        // JavaScript semplificato - nessun caricamento dinamico per evitare errori
         document.addEventListener('DOMContentLoaded', function() {
-            loadChallengesHistory();
+            // Nessuna operazione complessa - pagina statica
+            console.log('Profilo caricato correttamente');
         });
     </script>
 </body>
