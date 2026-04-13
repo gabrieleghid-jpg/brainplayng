@@ -15,11 +15,23 @@ USERS_FILE = 'data/users.dat'
 GAMES_HISTORY_FILE = 'data/games_history.dat'
 
 def login_required(f):
-    """Decorator per richiedere l'autenticazione"""
+    """Decorator per richiedere l'autenticazione (utente o ospite)"""
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
             return redirect(url_for('auth.login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def user_login_required(f):
+    """Decorator per richiedere l'autenticazione solo per utenti registrati (non ospiti)"""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('auth.login'))
+        if session.get('is_guest', False):
+            flash('Questa funzionalità richiede un account registrato.', 'error')
+            return redirect(url_for('auth.register'))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -179,6 +191,18 @@ def register():
     
     return render_template('auth/register.html')
 
+@auth_bp.route('/guest_login')
+def guest_login():
+    """Login come ospite senza account"""
+    # Crea una sessione per l'ospite
+    session['user_id'] = 'guest'
+    session['username'] = 'Ospite'
+    session['email'] = 'guest@brainplaying.local'
+    session['is_guest'] = True
+    
+    flash('Sei entrato come ospite! Puoi usare tutte le funzionalità.', 'success')
+    return redirect(url_for('index'))
+
 @auth_bp.route('/logout')
 def logout():
     """Logout dell'utente"""
@@ -188,14 +212,30 @@ def logout():
 
 @auth_bp.route('/profile')
 def profile():
-    """Profilo utente"""
+    """Profilo utente - può mostrare il proprio profilo o quello di altri utenti"""
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
     
-    users = load_users()
-    user_data = users.get(session['user_id'], {})
+    # Verifica se si sta visualizzando il profilo di un altro utente
+    target_username = request.args.get('user')
     
-    return render_template('auth/profile.html', user=user_data)
+    users = load_users()
+    
+    # Se non è specificato un utente, mostra il proprio profilo
+    if not target_username:
+        user_data = users.get(session['user_id'], {})
+        is_own_profile = True
+    else:
+        # Mostra il profilo dell'utente specificato
+        user_data = users.get(target_username)
+        is_own_profile = (target_username == session['user_id'])
+        
+        # Se l'utente non esiste, mostra errore
+        if not user_data:
+            flash('Utente non trovato.', 'error')
+            return redirect(url_for('leaderboard'))
+    
+    return render_template('auth/profile.html', user=user_data, is_own_profile=is_own_profile)
 
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
 def forgot_password():

@@ -1,6 +1,3 @@
-<!-- Responsabile: COLLABORATORE 2 - Home & Estetica -->
-<!-- Pagina dedicata alle Classifiche con layout della home -->
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -8,470 +5,739 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classifiche - BrainPlayNG</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/home.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/leaderboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/layout-new.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/leaderboard-page.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Layout Rivoluzionario della Classifica */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+        
+        /* Header Futuristico */
+        .futuristic-header {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+            overflow: hidden;
+        }
+        
+        .particles-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            animation: heroGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes heroGlow {
+            0% {
+                filter: drop-shadow(0 0 20px rgba(120, 119, 198, 0.5));
+            }
+            100% {
+                filter: drop-shadow(0 0 40px rgba(255, 119, 198, 0.8));
+            }
+        }
+        
+        .hero-title {
+            font-size: 6rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: titleShift 4s ease-in-out infinite;
+        }
+        
+        @keyframes titleShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            z-index: 10;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-20px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+        
+        /* Leaderboard 3D Container */
+        .leaderboard-3d {
+            min-height: 100vh;
+            padding: 4rem 2rem;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a0a 0%, #000 100%);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        
+        .leaderboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+        
+        /* Top 3 Podium 3D */
+        .podium-3d {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 500px;
+            margin-bottom: 4rem;
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+        
+        .podium-item {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        
+        .podium-item:hover {
+            transform: translateY(-20px) rotateY(10deg);
+        }
+        
+        .podium-1 {
+            height: 400px;
+            width: 300px;
+            margin: 0 2rem;
+            animation: podiumGlow 3s ease-in-out infinite alternate;
+        }
+        
+        .podium-2 {
+            height: 320px;
+            width: 250px;
+            margin: 0 1rem;
+            animation: podiumGlow 3s ease-in-out infinite alternate 0.5s;
+        }
+        
+        .podium-3 {
+            height: 250px;
+            width: 200px;
+            margin: 0 1rem;
+            animation: podiumGlow 3s ease-in-out infinite alternate 1s;
+        }
+        
+        @keyframes podiumGlow {
+            0% {
+                filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.3));
+            }
+            100% {
+                filter: drop-shadow(0 0 60px rgba(255, 215, 0, 0.8));
+            }
+        }
+        
+        .podium-base {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transform: rotateX(-10deg);
+            transform-origin: bottom;
+        }
+        
+        .podium-1 .podium-base {
+            background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            border-color: rgba(255, 215, 0, 0.5);
+        }
+        
+        .podium-2 .podium-base {
+            background: linear-gradient(45deg, rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.1));
+            border-color: rgba(192, 192, 192, 0.5);
+        }
+        
+        .podium-3 .podium-base {
+            background: linear-gradient(45deg, rgba(205, 127, 50, 0.2), rgba(205, 127, 50, 0.1));
+            border-color: rgba(205, 127, 50, 0.5);
+        }
+        
+        .podium-content {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .podium-rank {
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px currentColor;
+        }
+        
+        .podium-1 .podium-rank {
+            color: #ffd700;
+        }
+        
+        .podium-2 .podium-rank {
+            color: #c0c0c0;
+        }
+        
+        .podium-3 .podium-rank {
+            color: #cd7f32;
+        }
+        
+        .podium-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7877c6, #ff77c6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 40px rgba(120, 119, 198, 0.5);
+            animation: avatarRotate 10s linear infinite;
+        }
+        
+        @keyframes avatarRotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .podium-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        
+        .podium-score {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #78dbff;
+            text-shadow: 0 0 20px rgba(120, 219, 255, 0.5);
+        }
+        
+        /* Players Grid 3D */
+        .players-grid-3d {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+            transform-style: preserve-3d;
+        }
+        
+        .player-card-3d {
+            position: relative;
+            height: 200px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .player-card-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .player-card-3d:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .player-card-3d:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 30px 60px rgba(120, 119, 198, 0.3);
+            border-color: rgba(120, 119, 198, 0.5);
+        }
+        
+        .player-card-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 5;
+        }
+        
+        .player-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .player-rank {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #7877c6;
+            text-shadow: 0 0 20px rgba(120, 119, 198, 0.5);
+        }
+        
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .player-avatar-small {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7877c6, #ff77c6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 0 20px rgba(120, 119, 198, 0.3);
+        }
+        
+        .player-details h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+        
+        .player-details p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .player-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .player-score {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #78dbff;
+            text-shadow: 0 0 20px rgba(120, 219, 255, 0.5);
+        }
+        
+        .player-level {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(45deg, rgba(120, 119, 198, 0.3), rgba(255, 119, 198, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* Floating Action Button */
+        .fab-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        
+        .fab {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7877c6, #ff77c6);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(120, 119, 198, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 20px 40px rgba(120, 119, 198, 0.8);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .podium-3d {
+                height: 400px;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .podium-item {
+                width: 250px !important;
+                margin: 1rem 0;
+            }
+            
+            .podium-1 {
+                height: 150px;
+            }
+            
+            .podium-2 {
+                height: 120px;
+            }
+            
+            .podium-3 {
+                height: 100px;
+            }
+            
+            .players-grid-3d {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Messaggi Flash -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash-message flash-{{ 'error' if category == 'error' else 'success' }}">
-                        {{ message }}
-                        <span class="close-btn" onclick="this.parentElement.style.display='none'">&times;</span>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
-
-    <!-- Sidebar Overlay -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar collapsed" id="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <h1>🧠 BrainPlayNG</h1>
-            </div>
+    <!-- Header Futuristico -->
+    <section class="futuristic-header">
+        <div class="particles-bg" id="particlesBg"></div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">Classifiche</h1>
+            <p class="hero-subtitle">I campioni di BrainPlayNG in un universo digitale</p>
         </div>
-        <nav class="sidebar-nav">
-            <ul class="nav-list">
-                <li><a href="/" class="nav-link">🏠 Home</a></li>
-                <li><a href="#games" class="nav-link">🎮 Giochi</a></li>
-                <li><a href="#ai-tools" class="nav-link">🤖 Strumenti IA</a></li>
-                <li><a href="#progress" class="nav-link">📊 Progressi</a></li>
-                <li><a href="#community" class="nav-link">👥 Community</a></li>
-                <li><a href="/leaderboard" class="nav-link active">🏆 Classifiche</a></li>
-                {% if 'user_id' in session %}
-                <li><a href="/auth/profile" class="nav-link">👤 Il Mio Profilo</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-        <div class="sidebar-footer">
-            {% if 'user_id' in session %}
-                <div class="user-profile">
-                    <div class="user-avatar">👤</div>
-                    <div class="user-info">
-                        <span class="user-name">{{ session.username }}</span>
-                        <span class="user-status">Online</span>
-                    </div>
-                </div>
-                <a href="/auth/logout" class="btn btn-secondary btn-block">Logout</a>
-            {% else %}
-                <a href="/auth/login" class="btn btn-primary btn-block">Accedi</a>
-                <a href="/auth/register" class="btn btn-outline btn-block">Registrati</a>
-            {% endif %}
+        
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down" style="font-size: 2rem; color: rgba(255, 255, 255, 0.5);"></i>
         </div>
-    </aside>
+    </section>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Top Bar -->
-        <header class="top-bar">
-            <div class="top-bar-left">
-                <button class="menu-toggle" id="menuToggle">🏠</button>
-                <div class="breadcrumb">
-                    <span>🏆 Classifiche</span>
-                </div>
-            </div>
-            <div class="top-bar-right">
-                <div class="search-bar">
-                    <input type="text" placeholder="Cerca giocatori..." id="playerSearch">
-                    <button class="search-btn">🔍</button>
-                </div>
-                <div class="notifications">
-                    <button class="notification-btn">🔔</button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Hero Section Classifiche -->
-        <section id="home" class="hero-new">
-            <div class="hero-grid">
-                <div class="hero-left">
-                    <div class="hero-badge">🏆 Classifiche Globali</div>
-                    <h1 class="hero-title-new">Scopri i Campioni di BrainPlayNG</h1>
-                    <p class="hero-subtitle-new">
-                        Visualizza le classifiche dei migliori giocatori, confronta i tuoi punteggi 
-                        e sfida te stesso a raggiungere la vetta della classifica globale.
-                    </p>
-                    <div class="hero-stats">
-                        <div class="stat">
-                            <span class="stat-number">10K+</span>
-                            <span class="stat-label">Giocatori</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">50+</span>
-                            <span class="stat-label">Giochi</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">100K+</span>
-                            <span class="stat-label">Partite</span>
-                        </div>
-                    </div>
-                    <div class="hero-actions">
-                        <a href="/" class="btn btn-secondary btn-large">🏠 Torna Home</a>
+    <!-- Leaderboard 3D -->
+    <section class="leaderboard-3d">
+        <div class="leaderboard-container">
+            <!-- Podium 3D -->
+            <div class="podium-3d">
+                <div class="podium-item podium-2">
+                    <div class="podium-base"></div>
+                    <div class="podium-content">
+                        <div class="podium-rank">#2</div>
+                        <div class="podium-avatar">?</div>
+                        <div class="podium-name">BetaGamer</div>
+                        <div class="podium-score">9,720</div>
                     </div>
                 </div>
-                <div class="hero-right">
-                    <div class="hero-visual">
-                        <div class="floating-elements">
-                            <div class="float-element float-1">🏆</div>
-                            <div class="float-element float-2">🥇</div>
-                            <div class="float-element float-3">🥈</div>
-                            <div class="float-element float-4">🥉</div>
-                            <div class="float-element float-5">⭐</div>
-                            <div class="float-element float-6">🎯</div>
-                        </div>
-                        <div class="hero-card">
-                            <div class="card-header">
-                                <span class="card-title">Top Player</span>
-                                <span class="card-badge">Legend</span>
-                            </div>
-                            <div class="card-content">
-                                <div class="game-preview">
-                                    <div class="mini-card">🏆</div>
-                                    <div class="mini-card">⭐</div>
-                                    <div class="mini-card">🎯</div>
-                                    <div class="mini-card">👑</div>
-                                </div>
-                                <div class="game-info">
-                                    <span class="difficulty">Master</span>
-                                    <span class="players">Score: 9,999</span>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <button class="btn btn-primary btn-small">Vedi Profilo</button>
-                            </div>
-                        </div>
+                
+                <div class="podium-item podium-1">
+                    <div class="podium-base"></div>
+                    <div class="podium-content">
+                        <div class="podium-rank">#1</div>
+                        <div class="podium-avatar">?</div>
+                        <div class="podium-name">AlphaPlayer</div>
+                        <div class="podium-score">9,850</div>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- Leaderboard Section -->
-        <section class="leaderboard-full-section">
-            <div class="section-header">
-                <h2 class="section-title-new">Classifica Globale</h2>
-                <p class="section-subtitle">I migliori giocatori di tutte le categorie</p>
+                
+                <div class="podium-item podium-3">
+                    <div class="podium-base"></div>
+                    <div class="podium-content">
+                        <div class="podium-rank">#3</div>
+                        <div class="podium-avatar">?</div>
+                        <div class="podium-name">GammaMaster</div>
+                        <div class="podium-score">9,650</div>
+                    </div>
+                </div>
             </div>
             
-            <!-- Leaderboard Container -->
-            <div class="leaderboard-container">
-                <div class="leaderboard-content">
-                    <!-- Header Classifiche -->
-                    <div class="leaderboard-header">
-                        <h2>🏆 Classifica Globale</h2>
-                        <div class="leaderboard-filters">
-                            <button class="filter-btn active" data-filter="all">Tutti</button>
-                            <button class="filter-btn" data-filter="memory">Memory</button>
-                            <button class="filter-btn" data-filter="quiz">Quiz</button>
-                            <button class="filter-btn" data-filter="puzzle">Puzzle</button>
-                        </div>
-                    </div>
-
-                    <!-- Statistiche Classifiche -->
-                    <div class="leaderboard-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">1,234</span>
-                            <span class="stat-label">Giocatori Totali</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">15,678</span>
-                            <span class="stat-label">Partite Giocate</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">89.5K</span>
-                            <span class="stat-label">Punti Totali</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">156</span>
-                            <span class="stat-label">Online Ora</span>
-                        </div>
-                    </div>
-
-                    <!-- Tabella Classifiche -->
-                    <div class="leaderboard-table-container">
-                        <table class="leaderboard-table">
-                            <thead>
-                                <tr>
-                                    <th>Posizione</th>
-                                    <th>Giocatore</th>
-                                    <th>Punteggio</th>
-                                    <th>Partite</th>
-                                    <th>Miglior Gioco</th>
-                                    <th>Livello</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboardBody">
-                                <!-- Le righe saranno generate dinamicamente -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Paginazione -->
-                    <div class="leaderboard-pagination">
-                        <div class="pagination-controls">
-                            <button class="pagination-btn" id="prevBtn" disabled>‹</button>
-                            <div class="page-info">
-                                <span id="currentPage">1</span> / <span id="totalPages">10</span>
+            <!-- Players Grid 3D -->
+            <div class="players-grid-3d">
+                <div class="player-card-3d">
+                    <div class="player-card-content">
+                        <div class="player-header">
+                            <div class="player-rank">#4</div>
+                            <div class="player-info">
+                                <div class="player-avatar-small">?</div>
+                                <div class="player-details">
+                                    <h3>DeltaPro</h3>
+                                    <p>Giocatore avanzato</p>
+                                </div>
                             </div>
-                            <button class="pagination-btn" id="nextBtn">›</button>
                         </div>
-                        <div class="pagination-info">
-                            <span>Mostrando <span id="showingStart">1</span>-<span id="showingEnd">10</span> di <span id="totalPlayers">100</span> giocatori</span>
+                        <div class="player-stats">
+                            <div class="player-score">9,450</div>
+                            <div class="player-level">Avanzato</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-card-3d">
+                    <div class="player-card-content">
+                        <div class="player-header">
+                            <div class="player-rank">#5</div>
+                            <div class="player-info">
+                                <div class="player-avatar-small">?</div>
+                                <div class="player-details">
+                                    <h3>EpsilonKing</h3>
+                                    <p>Giocatore avanzato</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="player-score">9,320</div>
+                            <div class="player-level">Avanzato</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-card-3d">
+                    <div class="player-card-content">
+                        <div class="player-header">
+                            <div class="player-rank">#6</div>
+                            <div class="player-info">
+                                <div class="player-avatar-small">?</div>
+                                <div class="player-details">
+                                    <h3>ZetaLegend</h3>
+                                    <p>Giocatore intermedio</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="player-score">9,180</div>
+                            <div class="player-level">Intermedio</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-card-3d">
+                    <div class="player-card-content">
+                        <div class="player-header">
+                            <div class="player-rank">#7</div>
+                            <div class="player-info">
+                                <div class="player-avatar-small">?</div>
+                                <div class="player-details">
+                                    <h3>EtaHero</h3>
+                                    <p>Giocatore intermedio</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="player-score">9,050</div>
+                            <div class="player-level">Intermedio</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-card-3d">
+                    <div class="player-card-content">
+                        <div class="player-header">
+                            <div class="player-rank">#8</div>
+                            <div class="player-info">
+                                <div class="player-avatar-small">?</div>
+                                <div class="player-details">
+                                    <h3>ThetaStar</h3>
+                                    <p>Giocatore intermedio</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="player-score">8,920</div>
+                            <div class="player-level">Intermedio</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-card-3d">
+                    <div class="player-card-content">
+                        <div class="player-header">
+                            <div class="player-rank">#9</div>
+                            <div class="player-info">
+                                <div class="player-avatar-small">?</div>
+                                <div class="player-details">
+                                    <h3>IotaChamp</h3>
+                                    <p>Giocatore intermedio</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="player-score">8,780</div>
+                            <div class="player-level">Intermedio</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="player-card-3d">
+                    <div class="player-card-content">
+                        <div class="player-header">
+                            <div class="player-rank">#10</div>
+                            <div class="player-info">
+                                <div class="player-avatar-small">?</div>
+                                <div class="player-details">
+                                    <h3>KappaAce</h3>
+                                    <p>Giocatore principiante</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="player-stats">
+                            <div class="player-score">8,650</div>
+                            <div class="player-level">Principiante</div>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-
-        <!-- Quick Actions -->
-        <section class="quick-actions">
-            <div class="actions-grid">
-                <div class="action-card">
-                    <div class="action-icon">🎮</div>
-                    <h3>Giochi Rapidi</h3>
-                    <p>Accedi subito ai giochi più popolari</p>
-                    <a href="/game/memory-game" class="action-link">Gioca →</a>
-                </div>
-                <div class="action-card">
-                    <div class="action-icon">🤖</div>
-                    <h3>Generatore IA</h3>
-                    <p>Crea schemi personalizzati con l'IA</p>
-                    <a href="/ai/schema-generator" class="action-link">Prova →</a>
-                </div>
-                <div class="action-card">
-                    <div class="action-icon">📊</div>
-                    <h3>I Tuoi Progressi</h3>
-                    <p>Visualizza statistiche e achievement</p>
-                    <a href="#progress" class="action-link">Scopri →</a>
-                </div>
-                <div class="action-card">
-                    <div class="action-icon">👥</div>
-                    <h3>Community</h3>
-                    <p>Connettiti con altri studenti</p>
-                    <a href="#community" class="action-link">Entra →</a>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer-new">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>BrainPlayNG</h4>
-                <p>Piattaforma innovativa di apprendimento con intelligenza artificiale</p>
-            </div>
-            <div class="footer-section">
-                <h4>Link Rapidi</h4>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/game/memory-game">Giochi</a></li>
-                    <li><a href="/ai/schema-generator">Strumenti IA</a></li>
-                    <li><a href="/leaderboard">Classifiche</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Supporto</h4>
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contatti</a></li>
-                    <li><a href="#">Privacy</a></li>
-                    <li><a href="#">Termini</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Seguici</h4>
-                <div class="social-links">
-                    <a href="#">📘</a>
-                    <a href="#">📷</a>
-                    <a href="#">🐦</a>
-                    <a href="#">💼</a>
-                </div>
-            </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 BrainPlayNG. Tutti i diritti riservati.</p>
-        </div>
-    </footer>
+    </section>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/home.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/leaderboard.js') }}"></script>
+    <!-- Floating Action Button -->
+    <div class="fab-container">
+        <a href="/" class="fab">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+
     <script>
-        // Gestione Sidebar Toggle
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebar = document.getElementById('sidebar');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        
-        // Funzione per aprire la sidebar
-        function openSidebar() {
-            sidebar.classList.remove('collapsed');
-            sidebar.classList.add('expanded');
-            sidebarOverlay.classList.add('active');
-            menuToggle.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-        
-        // Funzione per chiudere la sidebar
-        function closeSidebar() {
-            sidebar.classList.remove('expanded');
-            sidebar.classList.add('collapsed');
-            sidebarOverlay.classList.remove('active');
-            menuToggle.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-        
-        // Toggle sidebar al click sul pulsante menu
-        menuToggle.addEventListener('click', function() {
-            if (sidebar.classList.contains('collapsed')) {
-                openSidebar();
-            } else {
-                closeSidebar();
+        // Genera particelle animate
+        function createParticles() {
+            const particlesBg = document.getElementById('particlesBg');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesBg.appendChild(particle);
             }
-        });
-
-        // Chiudi sidebar quando si clicca sull'overlay
-        sidebarOverlay.addEventListener('click', closeSidebar);
-
-        // Chiudi sidebar quando si clicca su un link di navigazione
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', function() {
-                closeSidebar();
+        }
+        
+        // Effetto parallasso al mouse move
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.player-card-3d');
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            
+            cards.forEach((card, index) => {
+                const delay = index * 0.1;
+                setTimeout(() => {
+                    card.style.transform = `translateY(-10px) rotateX(${-y}deg) rotateY(${x}deg)`;
+                }, delay * 1000);
             });
         });
-
-        // Chiudi sidebar con tasto ESC
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && !sidebar.classList.contains('collapsed')) {
-                closeSidebar();
-            }
+        
+        // Click handler per le card
+        document.querySelectorAll('.player-card-3d, .podium-item').forEach(card => {
+            card.addEventListener('click', function() {
+                const playerName = this.querySelector('.podium-name, .player-details h3')?.textContent;
+                if (playerName) {
+                    // Simula navigazione al profilo
+                    console.log(`Navigazione al profilo di: ${playerName}`);
+                    // In futuro: window.location.href = `/auth/profile?user=${playerName}`;
+                }
+            });
         });
-
-        // Inizializzazione leaderboard
+        
+        // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
-            // Carica i dati della leaderboard
-            loadLeaderboardData();
+            createParticles();
             
-            // Setup filtri
-            setupFilters();
-            
-            // Setup paginazione
-            setupPagination();
-            
-            // Setup ricerca
-            setupSearch();
-        });
-
-        function loadLeaderboardData(filter = 'all') {
-            // Dati di esempio per la leaderboard
-            const leaderboardData = [
-                { position: 1, name: "AlphaPlayer", avatar: "👤", score: 9850, games: 342, bestGame: "Memory", level: "esperto" },
-                { position: 2, name: "BetaGamer", avatar: "🎮", score: 9720, games: 298, bestGame: "Quiz", level: "esperto" },
-                { position: 3, name: "GammaMaster", avatar: "🏆", score: 9650, games: 276, bestGame: "Puzzle", level: "avanzato" },
-                { position: 4, name: "DeltaPro", avatar: "⭐", score: 9450, games: 254, bestGame: "Memory", level: "avanzato" },
-                { position: 5, name: "EpsilonKing", avatar: "👑", score: 9320, games: 231, bestGame: "Quiz", level: "avanzato" },
-                { position: 6, name: "ZetaLegend", avatar: "🎯", score: 9180, games: 209, bestGame: "Puzzle", level: "intermedio" },
-                { position: 7, name: "EtaHero", avatar: "🦸", score: 9050, games: 187, bestGame: "Memory", level: "intermedio" },
-                { position: 8, name: "ThetaStar", avatar: "⭐", score: 8920, games: 165, bestGame: "Quiz", level: "intermedio" },
-                { position: 9, name: "IotaChamp", avatar: "🏆", score: 8780, games: 143, bestGame: "Puzzle", level: "intermedio" },
-                { position: 10, name: "KappaAce", avatar: "🎯", score: 8650, games: 121, bestGame: "Memory", level: "principiante" }
-            ];
-
-            renderLeaderboard(leaderboardData);
-        }
-
-        function renderLeaderboard(data) {
-            const tbody = document.getElementById('leaderboardBody');
-            tbody.innerHTML = '';
-
-            data.forEach(player => {
-                const row = document.createElement('tr');
-                row.className = `leaderboard-row ${player.position <= 3 ? 'top-' + player.position : ''}`;
-                
-                row.innerHTML = `
-                    <td class="position-cell ${player.position <= 3 ? 'top-' + player.position : ''}">
-                        ${player.position <= 3 ? ['🥇', '🥈', '🥉'][player.position - 1] : player.position}
-                    </td>
-                    <td class="player-cell">
-                        <div class="player-info">
-                            <div class="player-avatar">${player.avatar}</div>
-                            <span class="player-name">${player.name}</span>
-                        </div>
-                    </td>
-                    <td class="score-cell">
-                        <span class="score-value">${player.score.toLocaleString()}</span>
-                        <span class="score-label">punti</span>
-                    </td>
-                    <td class="games-cell">${player.games}</td>
-                    <td class="best-game-cell">${player.bestGame}</td>
-                    <td class="level-cell">
-                        <span class="level-badge ${player.level}">${player.level}</span>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        function setupFilters() {
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Rimuovi active da tutti i pulsanti
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    // Aggiungi active al pulsante cliccato
-                    this.classList.add('active');
-                    
-                    // Ricarica i dati con il filtro
-                    const filter = this.dataset.filter;
-                    loadLeaderboardData(filter);
+            // Smooth scroll
+            document.querySelector('.scroll-indicator').addEventListener('click', () => {
+                document.querySelector('.leaderboard-3d').scrollIntoView({ 
+                    behavior: 'smooth' 
                 });
             });
-        }
-
-        function setupPagination() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            prevBtn.addEventListener('click', function() {
-                if (!this.disabled) {
-                    // Logica per pagina precedente
-                    console.log('Pagina precedente');
-                }
-            });
-            
-            nextBtn.addEventListener('click', function() {
-                if (!this.disabled) {
-                    // Logica per pagina successiva
-                    console.log('Pagina successiva');
-                }
-            });
-        }
-
-        function setupSearch() {
-            const searchInput = document.getElementById('playerSearch');
-            const searchBtn = document.querySelector('.search-btn');
-            
-            searchInput.addEventListener('input', function() {
-                const query = this.value.toLowerCase();
-                // Logica di ricerca
-                console.log('Ricerca:', query);
-            });
-            
-            searchBtn.addEventListener('click', function() {
-                const query = searchInput.value.toLowerCase();
-                console.log('Ricerca cliccata:', query);
-            });
-        }
+        });
     </script>
 </body>
 </html>

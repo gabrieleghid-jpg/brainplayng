@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il Mio Profilo - BrainPlayNG</title>
+    <title>{% if is_own_profile %}Il Mio Profilo{% else %}Profilo di {{ user.username }}{% endif %} - BrainPlayNG</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -219,6 +219,68 @@
             opacity: 0.5;
         }
         
+        .challenges-details {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .challenge-item {
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .challenge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .challenge-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .challenge-score {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #10b981;
+        }
+        
+        .challenge-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .challenge-stat {
+            text-align: center;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 0.5rem;
+        }
+        
+        .challenge-stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #6366f1;
+            display: block;
+        }
+        
+        .challenge-stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+        }
+        
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -272,12 +334,22 @@
                     <p><i class="fas fa-envelope"></i> {{ user.email }}</p>
                     <p><i class="fas fa-calendar"></i> Membro dal: {{ user.created_at[:10] if user.created_at else 'N/A' }}</p>
                     <p><i class="fas fa-clock"></i> Ultimo accesso: {{ user.last_login[:10] if user.last_login else 'N/A' }}</p>
+                    {% if not is_own_profile %}
+                        <p style="color: #6366f1; font-weight: 600;"><i class="fas fa-eye"></i> Stai visualizzando il profilo di un altro utente</p>
+                    {% endif %}
                 </div>
             </div>
-            <a href="/" class="back-button">
-                <i class="fas fa-arrow-left"></i>
-                Torna alla Home
-            </a>
+            {% if is_own_profile %}
+                <a href="/" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Torna alla Home
+                </a>
+            {% else %}
+                <a href="/leaderboard" class="back-button">
+                    <i class="fas fa-arrow-left"></i>
+                    Torna alla Classifica
+                </a>
+            {% endif %}
         </div>
 
         <!-- Statistiche Principali -->
@@ -339,129 +411,242 @@
         <div class="games-history">
             <h2 class="section-title">
                 <i class="fas fa-history"></i>
-                Storico Partite Recenti
+                {% if is_own_profile %}
+                    Le Tue Sfide Completate
+                {% else %}
+                    Sfide Completate da {{ user.username|title }}
+                {% endif %}
             </h2>
             
             <div id="gamesHistory">
                 <div class="empty-state">
                     <i class="fas fa-gamepad"></i>
-                    <h3>Nessuna partita giocata</h3>
-                    <p>Inizia a giocare per vedere qui le tue statistiche dettagliate!</p>
+                    <h3>{% if is_own_profile %}Nessuna sfida completata{% else %}Nessuna sfida completata{% endif %}</h3>
+                    <p>{% if is_own_profile %}Inizia a giocare per vedere qui le tue sfide completate!{% else %}Questo utente non ha ancora completato nessuna sfida.{% endif %}</p>
+                    {% if is_own_profile %}
                     <div style="margin-top: 2rem;">
-                        <a href="/game/memory-ia" class="btn btn-primary" style="margin-right: 1rem;">
-                            <i class="fas fa-brain"></i> Gioca al Memory
+                        <a href="/ai/schemi" class="btn btn-primary" style="margin-right: 1rem;">
+                            <i class="fas fa-robot"></i> Crea Schemi
                         </a>
-                        <a href="/ai/schema-generator" class="btn btn-secondary">
-                            <i class="fas fa-puzzle"></i> Risolvi Problemi Logici
+                        <a href="/leaderboard" class="btn btn-secondary">
+                            <i class="fas fa-trophy"></i> Vedi Classifiche
                         </a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
+        
+        <!-- Dettagli Sfide per Altri Utenti -->
+        {% if not is_own_profile %}
+        <div class="challenges-details">
+            <h2 class="section-title">
+                <i class="fas fa-tasks"></i>
+                Dettagli Sfide di {{ user.username|title }}
+            </h2>
+            
+            <div id="challengesDetails">
+                <div class="empty-state">
+                    <i class="fas fa-trophy"></i>
+                    <h3>Analisi Performance</h3>
+                    <p>Scopri le statistiche dettagliate delle sfide completate da questo giocatore</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <script>
-        // Carica lo storico dei giochi dall'API
-        async function loadGamesHistory() {
-            try {
-                const response = await fetch('/api/user/games-history');
-                const games = await response.json();
-                
-                const container = document.getElementById('gamesHistory');
-                
-                if (games.length === 0) {
-                    container.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-gamepad"></i>
-                            <h3>Nessuna partita giocata</h3>
-                            <p>Inizia a giocare per vedere qui le tue statistiche dettagliate!</p>
-                            <div style="margin-top: 2rem;">
-                                <a href="/game/memory-ia" class="btn btn-primary" style="margin-right: 1rem;">
-                                    <i class="fas fa-brain"></i> Gioca al Memory
-                                </a>
-                                <a href="/ai/schema-generator" class="btn btn-secondary">
-                                    <i class="fas fa-puzzle"></i> Risolvi Problemi Logici
-                                </a>
-                            </div>
-                        </div>
-                    `;
-                    return;
+        // Dati di esempio per le sfide completate
+        const sampleChallenges = [
+            {
+                type: "Schemi",
+                title: "Schemi di Matematica - Algebra",
+                score: 95,
+                date: "2024-04-10",
+                details: {
+                    "Esercizi": 15,
+                    "Accuracy": "95%",
+                    "Tempo": "12min"
                 }
-                
-                // Raggruppa i giochi per tipo
-                const gamesByType = {};
-                games.forEach(game => {
-                    if (!gamesByType[game.type]) {
-                        gamesByType[game.type] = [];
-                    }
-                    gamesByType[game.type].push(game);
-                });
-                
-                let html = '';
-                
-                // Memory Games
-                if (gamesByType.memory) {
-                    html += '<h3 style="margin: 2rem 0 1rem 0; color: #1f2937;"><i class="fas fa-brain"></i> Memory Game</h3>';
-                    gamesByType.memory.forEach(game => {
-                        html += `
-                            <div class="game-item">
-                                <div class="game-info">
-                                    <div class="game-icon" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white;">
-                                        🧠
-                                    </div>
-                                    <div class="game-details">
-                                        <h4>Memory Game</h4>
-                                        <p>Difficoltà: ${game.difficulty || 'Medio'} | Mosse: ${game.moves || 'N/A'}</p>
-                                    </div>
-                                </div>
-                                <div class="game-score">
-                                    <div class="score-value">${game.score || 0} pts</div>
-                                    <div class="score-date">${new Date(game.date).toLocaleDateString()}</div>
-                                </div>
-                            </div>
-                        `;
-                    });
+            },
+            {
+                type: "Quiz",
+                title: "Quiz di Logica - Problemi Complessi",
+                score: 88,
+                date: "2024-04-09",
+                details: {
+                    "Domande": 20,
+                    "Corrette": 18,
+                    "Tempo": "8min"
                 }
-                
-                // Logic Problems
-                if (gamesByType.logic) {
-                    html += '<h3 style="margin: 2rem 0 1rem 0; color: #1f2937;"><i class="fas fa-puzzle"></i> Problemi Logici</h3>';
-                    gamesByType.logic.forEach(game => {
-                        html += `
-                            <div class="game-item">
-                                <div class="game-info">
-                                    <div class="game-icon" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
-                                        🧩
-                                    </div>
-                                    <div class="game-details">
-                                        <h4>Problema di Logica</h4>
-                                        <p>Categoria: ${game.category || 'Logica'} | Difficoltà: ${game.difficulty || 'Medio'}</p>
-                                    </div>
-                                </div>
-                                <div class="game-score">
-                                    <div class="score-value">${game.solved ? '✅ Risolto' : '❌ Non risolto'}</div>
-                                    <div class="score-date">${new Date(game.date).toLocaleDateString()}</div>
-                                </div>
-                            </div>
-                        `;
-                    });
+            },
+            {
+                type: "Matematica",
+                title: "Esercizi di Geometria",
+                score: 92,
+                date: "2024-04-08",
+                details: {
+                    "Problemi": 10,
+                    "Risolti": 9,
+                    "Accuracy": "90%"
                 }
-                
-                container.innerHTML = html || `
+            },
+            {
+                type: "Logica",
+                title: "Puzzle di Ragionamento",
+                score: 85,
+                date: "2024-04-07",
+                details: {
+                    "Puzzle": 8,
+                    "Completati": 7,
+                    "Tempo": "15min"
+                }
+            }
+        ];
+        
+        // Carica le sfide completate
+        async function loadChallengesHistory() {
+            const container = document.getElementById('gamesHistory');
+            const challengesContainer = document.getElementById('challengesDetails');
+            
+            // Simula caricamento dati (in futuro verrà da API)
+            const challenges = sampleChallenges;
+            
+            if (challenges.length === 0) {
+                container.innerHTML = `
                     <div class="empty-state">
                         <i class="fas fa-gamepad"></i>
-                        <h3>Nessuna partita giocata</h3>
-                        <p>Inizia a giocare per vedere qui le tue statistiche dettagliate!</p>
+                        <h3>{% if is_own_profile %}Nessuna sfida completata{% else %}Nessuna sfida completata{% endif %}</h3>
+                        <p>{% if is_own_profile %}Inizia a giocare per vedere qui le tue sfide completate!{% else %}Questo utente non ha ancora completato nessuna sfida.{% endif %}</p>
+                        {% if is_own_profile %}
+                        <div style="margin-top: 2rem;">
+                            <a href="/ai/schemi" class="btn btn-primary" style="margin-right: 1rem;">
+                                <i class="fas fa-robot"></i> Crea Schemi
+                            </a>
+                            <a href="/leaderboard" class="btn btn-secondary">
+                                <i class="fas fa-trophy"></i> Vedi Classifiche
+                            </a>
+                        </div>
+                        {% endif %}
                     </div>
                 `;
-                
-            } catch (error) {
-                console.error('Errore nel caricare lo storico:', error);
+                return;
+            }
+            
+            // Renderizza le sfide
+            let challengesHTML = '';
+            challenges.forEach(challenge => {
+                challengesHTML += `
+                    <div class="challenge-item">
+                        <div class="challenge-header">
+                            <div>
+                                <div class="challenge-title">${challenge.title}</div>
+                                <small style="color: #6b7280;">${challenge.date}</small>
+                            </div>
+                            <div class="challenge-score">${challenge.score}%</div>
+                        </div>
+                        <div class="challenge-details">
+                            ${Object.entries(challenge.details).map(([key, value]) => `
+                                <div class="challenge-stat">
+                                    <span class="challenge-stat-value">${value}</span>
+                                    <span class="challenge-stat-label">${key}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = challengesHTML;
+            
+            // Se stiamo visualizzando il profilo di un altro utente, mostra anche i dettagli
+            if (challengesContainer) {
+                const stats = calculateStats(challenges);
+                challengesContainer.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                        <div class="challenge-item">
+                            <h4 style="color: #6366f1; margin-bottom: 1rem;">? Performance Generale</h4>
+                            <div class="challenge-details">
+                                <div class="challenge-stat">
+                                    <span class="challenge-stat-value">${stats.averageScore}%</span>
+                                    <span class="challenge-stat-label">Punteggio Medio</span>
+                                </div>
+                                <div class="challenge-stat">
+                                    <span class="challenge-stat-value">${stats.totalChallenges}</span>
+                                    <span class="challenge-stat-label">Sfide Totali</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="challenge-item">
+                            <h4 style="color: #10b981; margin-bottom: 1rem;">? Specializzazione</h4>
+                            <div class="challenge-details">
+                                <div class="challenge-stat">
+                                    <span class="challenge-stat-value">${stats.bestType}</span>
+                                    <span class="challenge-stat-label">Miglior Categoria</span>
+                                </div>
+                                <div class="challenge-stat">
+                                    <span class="challenge-stat-value">${stats.bestScore}%</span>
+                                    <span class="challenge-stat-label">Miglior Punteggio</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="challenge-item">
+                            <h4 style="color: #f59e0b; margin-bottom: 1rem;">? Attività</h4>
+                            <div class="challenge-details">
+                                <div class="challenge-stat">
+                                    <span class="challenge-stat-value">${stats.lastActive}</span>
+                                    <span class="challenge-stat-label">Ultima Attività</span>
+                                </div>
+                                <div class="challenge-stat">
+                                    <span class="challenge-stat-value">${stats.streak}</span>
+                                    <span class="challenge-stat-label">Serie Attiva</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
         }
         
+        // Calcola statistiche dalle sfide
+        function calculateStats(challenges) {
+            const totalChallenges = challenges.length;
+            const averageScore = Math.round(challenges.reduce((sum, c) => sum + c.score, 0) / totalChallenges);
+            const bestChallenge = challenges.reduce((best, current) => current.score > best.score ? current : best);
+            const bestScore = bestChallenge.score;
+            const bestType = bestChallenge.type;
+            const lastActive = challenges[0]?.date || 'N/A';
+            const streak = calculateStreak(challenges);
+            
+            return {
+                totalChallenges,
+                averageScore,
+                bestScore,
+                bestType,
+                lastActive,
+                streak
+            };
+        }
+        
+        // Calcola la serie di sfide consecutive
+        function calculateStreak(challenges) {
+            // Logica semplificata per la streak
+            const today = new Date();
+            const lastChallenge = new Date(challenges[0]?.date);
+            const daysDiff = Math.floor((today - lastChallenge) / (1000 * 60 * 60 * 24));
+            
+            if (daysDiff <= 1) return "1 giorno";
+            if (daysDiff <= 7) return `${daysDiff} giorni`;
+            return "Inattivo";
+        }
+        
         // Carica i dati quando la pagina è pronta
-        document.addEventListener('DOMContentLoaded', loadGamesHistory);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadChallengesHistory();
+        });
     </script>
 </body>
 </html>

@@ -10,115 +10,1211 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Stile Futuristico Rivoluzionario */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+        
+        /* Header Futuristico */
+        .futuristic-header {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.2) 0%, transparent 50%),
+                linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+            overflow: hidden;
+        }
+        
+        .particles-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100px) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            animation: heroGlow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes heroGlow {
+            0% {
+                filter: drop-shadow(0 0 20px rgba(120, 119, 198, 0.5));
+            }
+            100% {
+                filter: drop-shadow(0 0 40px rgba(255, 119, 198, 0.8));
+            }
+        }
+        
+        .hero-title {
+            font-size: 6rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            animation: titleShift 4s ease-in-out infinite;
+        }
+        
+        @keyframes titleShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 3rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background: rgba(120, 119, 198, 0.2);
+            color: white;
+            border-color: rgba(120, 119, 198, 0.5);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(120, 119, 198, 0.3);
+            background: rgba(120, 119, 198, 0.3);
+        }
+        
+        .btn-large {
+            padding: 1.5rem 3rem;
+            font-size: 1.1rem;
+        }
+        
+        /* Sezioni Futuristiche */
+        .futuristic-section {
+            padding: 4rem 2rem;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a0a 0%, #000 100%);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        
+        .section-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleShift 4s ease-in-out infinite;
+        }
+        
+        /* Quick Actions Futuristiche */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .action-card {
+            position: relative;
+            height: 250px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .action-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .action-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 30px 60px rgba(120, 119, 198, 0.3);
+            border-color: rgba(120, 119, 198, 0.5);
+        }
+        
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes iconFloat {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .action-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .action-card p {
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .action-arrow {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            font-size: 1.5rem;
+            color: #78dbff;
+            font-weight: bold;
+        }
+        
+        /* Progress Section Futuristica */
+        .progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .progress-card {
+            position: relative;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .progress-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .progress-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .progress-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 30px 60px rgba(120, 119, 198, 0.3);
+            border-color: rgba(120, 119, 198, 0.5);
+        }
+        
+        .progress-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        
+        .progress-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        
+        .progress-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #78dbff;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(120, 219, 255, 0.5);
+        }
+        
+        .progress-card p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        .progress-details {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .progress-details:hover {
+            transform: translateY(-5px) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 20px 40px rgba(120, 119, 198, 0.2);
+        }
+        
+        .progress-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+            text-align: center;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(120, 119, 198, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .stat-label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #78dbff;
+            text-shadow: 0 0 20px rgba(120, 219, 255, 0.5);
+        }
+        
+        /* Coming Soon Section Futuristica */
+        .coming-soon-section {
+            padding: 4rem 2rem;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a0a 0%, #000 100%);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        
+        .coming-soon-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .coming-soon-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .coming-soon-header h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleShift 4s ease-in-out infinite;
+        }
+        
+        .coming-soon-header p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .games-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .game-preview-card {
+            position: relative;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .game-preview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .game-preview-card:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .game-preview-card:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 30px 60px rgba(120, 119, 198, 0.3);
+            border-color: rgba(120, 119, 198, 0.5);
+        }
+        
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        
+        .game-preview-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+        
+        .game-preview-card p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+        }
+        
+        .game-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .game-features li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        .game-features li::before {
+            content: "?";
+            margin-right: 0.5rem;
+            color: #78dbff;
+            font-weight: bold;
+        }
+        
+        /* Stats Section Futuristica */
+        .stats-section {
+            padding: 4rem 2rem;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a0a 0%, #000 100%);
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat {
+            position: relative;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transform-style: preserve-3d;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2rem;
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .stat:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .stat:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 30px 60px rgba(120, 119, 198, 0.3);
+            border-color: rgba(120, 119, 198, 0.5);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #78dbff;
+            text-shadow: 0 0 30px rgba(120, 219, 255, 0.5);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        /* CTA Section Futuristica */
+        .cta-section {
+            padding: 4rem 2rem;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a0a 0%, #000 100%);
+            text-align: center;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+        
+        .cta-content {
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .cta-title {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleShift 4s ease-in-out infinite;
+        }
+        
+        .cta-subtitle {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+        }
+        
+        /* Floating Elements */
+        .floating-element {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #7877c6, #ff77c6);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(120, 119, 198, 0.5);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            z-index: 1000;
+        }
+        
+        .floating-element:hover {
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 20px 40px rgba(120, 119, 198, 0.8);
+        }
+        
+        .fab-home {
+            bottom: 2rem;
+            right: 2rem;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .progress-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .games-showcase {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+        
+        /* Stili per ospiti */
+        .progress-guest {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .guest-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-guest h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        
+        .progress-guest p {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+        
+        .guest-benefits {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+        
+        .guest-benefits h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+            text-align: center;
+        }
+        
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .benefits-list li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: #4b5563;
+        }
+        
+        .benefit-icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .guest-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-large {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background: #6366f1;
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: #4f46e5;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .progress-section {
+                padding: 2rem 0;
+            }
+            
+            .progress-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+            
+            .progress-card {
+                padding: 1.5rem;
+            }
+            
+            .progress-value {
+                font-size: 2rem;
+            }
+            
+            .guest-actions {
+                flex-direction: column;
+            }
+            
+            .btn-large {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        /* Stili per la card Giochi */
+        .action-card[href="#coming-soon"] {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid #6366f1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .action-card[href="#coming-soon"]:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+            border-color: #4f46e5;
+        }
+        
+        .coming-soon-section {
+            padding: 4rem 0;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .coming-soon-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        .coming-soon-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .coming-soon-header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .coming-soon-header p {
+            font-size: 1.2rem;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .games-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .game-preview-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-preview-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .game-preview-card::after {
+            content: "IN SVILUPPO";
+            position: absolute;
+            top: 15px;
+            right: -25px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 0.25rem 2.5rem;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transform: rotate(45deg);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            text-align: center;
+        }
+        
+        .game-preview-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .game-preview-card p {
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .game-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .game-features li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+            font-size: 0.9rem;
+        }
+        
+        .game-features li::before {
+            content: "?";
+            margin-right: 0.5rem;
+            color: #6366f1;
+            font-weight: bold;
+        }
+        
+        .release-timeline {
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .timeline-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .timeline-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        
+        .timeline-step {
+            text-align: center;
+            position: relative;
+        }
+        
+        .timeline-step::before {
+            content: attr(data-step);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .timeline-step h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-step p {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .coming-soon-section {
+                padding: 2rem 0;
+            }
+            
+            .coming-soon-header h2 {
+                font-size: 2rem;
+            }
+            
+            .games-showcase {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .timeline-steps {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Flash Messages -->
-    {% include 'components/flash-messages.html' %}
-
-    <!-- Header -->
-    {% include 'components/header.html' %}
-
-    <!-- Hero Section Semplice e Chiaro -->
-    <section class="hero-simple">
-        <div class="container">
-            <div class="hero-simple-content">
-                <div class="hero-badge">
-                    <span class="badge-text">🎓 Apprendimento Intelligente</span>
-                </div>
-                <h1 class="hero-simple-title">Studia Meglio con l'IA</h1>
-                <p class="hero-simple-subtitle">
-                    BrainPlayNG trasforma lo studio in un'esperienza interattiva e personalizzata. 
-                    Crea schemi unici, gioca e impara in modo efficace.
-                </p>
-                <div class="hero-simple-buttons">
-                    <a href="#quick-actions" class="btn btn-primary btn-large">
-                        <i class="fas fa-robot"></i> Scopri Tutte le Opzioni
-                    </a>
-                </div>
+    <!-- Header Futuristico -->
+    <section class="futuristic-header">
+        <div class="particles-bg" id="particlesBg"></div>
+        
+        <div class="hero-content">
+            <h1 class="hero-title">BrainPlayNG</h1>
+            <p class="hero-subtitle">Studia Meglio con l'IA - Piattaforma Rivoluzionaria</p>
+            <div class="hero-buttons">
+                <a href="#quick-actions" class="btn btn-primary btn-large">
+                    <i class="fas fa-robot"></i> Scopri Tutte le Opzioni
+                </a>
             </div>
-            <div class="hero-simple-visual">
-                <div class="brain-icon">
-                    <div class="brain-core">
-                        <div class="brain-emoji">🧠</div>
-                    </div>
-                    <div class="brain-particles">
-                        <div class="particle particle-1">✨</div>
-                        <div class="particle particle-2">⚡</div>
-                        <div class="particle particle-3">🎯</div>
-                        <div class="particle particle-4">📚</div>
-                    </div>
-                </div>
-            </div>
+        </div>
+        
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down" style="font-size: 2rem; color: rgba(255, 255, 255, 0.5);"></i>
         </div>
     </section>
 
-    <!-- Quick Actions -->
-    <section id="quick-actions" class="quick-actions">
-        <div class="container">
+    <!-- Quick Actions Futuristiche -->
+    <section id="quick-actions" class="futuristic-section">
+        <div class="section-container">
+            <h2 class="section-title">Funzionalità Principali</h2>
             <div class="quick-actions-grid">
-                <a href="/ai/schema-generator" class="action-card">
-                    <div class="action-icon">🤖</div>
-                    <h3>Generatore IA</h3>
+                <a href="/ai/schemi" class="action-card">
+                    <div class="action-icon">?</div>
+                    <h3>Schemi</h3>
                     <p>Crea schemi personalizzati con intelligenza artificiale</p>
-                    <div class="action-arrow">→</div>
-                </a>
-                <a href="/game/memory-ia" class="action-card">
-                    <div class="action-icon">🧠</div>
-                    <h3>Memory</h3>
-                    <p>Genera un memory game personalizzato con l'IA</p>
-                    <div class="action-arrow">→</div>
+                    <div class="action-arrow">></div>
                 </a>
                 <a href="/leaderboard" class="action-card">
-                    <div class="action-icon">🏆</div>
+                    <div class="action-icon">?</div>
                     <h3>Classifiche</h3>
                     <p>Scopri i migliori giocatori e i tuoi progressi</p>
-                    <div class="action-arrow">→</div>
+                    <div class="action-arrow">></div>
+                </a>
+                <a href="#coming-soon" class="action-card">
+                    <div class="action-icon">?</div>
+                    <h3>Giochi</h3>
+                    <p>Scopri i nuovi giochi in arrivo su BrainPlayNG</p>
+                    <div class="action-arrow">></div>
                 </a>
                 <a href="/auth/login" class="action-card">
-                    <div class="action-icon">👤</div>
+                    <div class="action-icon">?</div>
                     <h3>Il Tuo Profilo</h3>
                     <p>Traccia i tuoi progressi e achievements</p>
-                    <div class="action-arrow">→</div>
+                    <div class="action-arrow">></div>
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Features Semplici -->
-    <section id="features" class="features-simple">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Perché Scegliere BrainPlayNG?</h2>
-                <p class="section-subtitle">Strumenti semplici ma potenti per il tuo successo</p>
+    <!-- Progress Section Futuristica -->
+    <section id="progress" class="futuristic-section">
+        <div class="section-container">
+            <h2 class="section-title">I Tuoi Progressi</h2>
+            <div class="progress-grid">
+                <div class="progress-card">
+                    <div class="progress-icon">?</div>
+                    <h3>Punteggio Totale</h3>
+                    <div class="progress-value">2,450</div>
+                    <p>Punti accumulati</p>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-icon">?</div>
+                    <h3>Schemi Creati</h3>
+                    <div class="progress-value">23</div>
+                    <p>Schemi generati</p>
+                </div>
+                <div class="progress-card">
+                    <div class="progress-icon">?</div>
+                    <h3>Quiz Completati</h3>
+                    <div class="progress-value">18</div>
+                    <p>Quiz superati</p>
+                </div>
             </div>
-            <div class="features-simple-grid">
-                <div class="feature-simple">
-                    <div class="feature-number">01</div>
-                    <h3>IA Intelligente</h3>
-                    <p>Schemi generati da intelligenza artificiale che si adattano a te</p>
-                </div>
-                <div class="feature-simple">
-                    <div class="feature-number">02</div>
-                    <h3>Giochi Educativi</h3>
-                    <p>Impara divertendoti con memory, quiz e puzzle interattivi</p>
-                </div>
-                <div class="feature-simple">
-                    <div class="feature-number">03</div>
-                    <h3>Progressi Visibili</h3>
-                    <p>Monitora i tuoi risultati e celebra ogni successo</p>
-                </div>
-                <div class="feature-simple">
-                    <div class="feature-number">04</div>
-                    <h3>Accesso Facile</h3>
-                    <p>Studia dove e quando vuoi, da qualsiasi dispositivo</p>
+            
+            <div class="progress-details">
+                <h3>Analisi Dettagliata</h3>
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <span class="stat-label">Accuracy Media</span>
+                        <span class="stat-value">87%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Tempo Studio</span>
+                        <span class="stat-value">45h</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Giorni Attivi</span>
+                        <span class="stat-value">12</span>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Stats Section -->
+    <!-- Coming Soon Section Futuristica -->
+    <section id="coming-soon" class="coming-soon-section">
+        <div class="coming-soon-container">
+            <div class="coming-soon-header">
+                <h2> Giochi in Arrivo</h2>
+                <p>Scopri i nuovi giochi educativi che stiamo sviluppando per rendere l'apprendimento ancora più divertente</p>
+            </div>
+            
+            <div class="games-showcase">
+                <div class="game-preview-card">
+                    <div class="game-icon">?</div>
+                    <h3>Word Challenge</h3>
+                    <p>Metti alla prova il tuo vocabolario con sfide di parole sempre nuove</p>
+                    <ul class="game-features">
+                        <li>Quiz di vocabolario personalizzati</li>
+                        <li>Livelli di difficoltà progressivi</li>
+                        <li>Sistema di punteggio competitivo</li>
+                        <li>Tracciamento dei progressi</li>
+                    </ul>
+                </div>
+                
+                <div class="game-preview-card">
+                    <div class="game-icon">?</div>
+                    <h3>Math Racing</h3>
+                    <p>Gareggi contro il tempo risolvendo problemi matematici in una corsa avvincente</p>
+                    <ul class="game-features">
+                        <li>Problemi matematici adatti all'età</li>
+                        <li>Grafica 3D coinvolgente</li>
+                        <li>Classifiche globali</li>
+                        <li>Premi e achievement</li>
+                    </ul>
+                </div>
+                
+                <div class="game-preview-card">
+                    <div class="game-icon">?</div>
+                    <h3>Science Lab</h3>
+                    <p>Conduci esperimenti virtuali e scopri le meraviglie della scienza</p>
+                    <ul class="game-features">
+                        <li>Simulazioni interattive</li>
+                        <li>Esperimenti di chimica e fisica</li>
+                        <li>Tutorial guidati</li>
+                        <li>Certificati di completamento</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="release-timeline">
+                <div class="timeline-header">
+                    <h3>Timeline di Lancio</h3>
+                    <p>I nostri giochi saranno disponibili gradualmente nei prossimi mesi</p>
+                </div>
+                
+                <div class="timeline-steps">
+                    <div class="timeline-step" data-step="1">
+                        <h4>Word Challenge</h4>
+                        <p>Disponibile da Giugno 2024</p>
+                    </div>
+                    
+                    <div class="timeline-step" data-step="2">
+                        <h4>Math Racing</h4>
+                        <p>Disponibile da Luglio 2024</p>
+                    </div>
+                    
+                    <div class="timeline-step" data-step="3">
+                        <h4>Science Lab</h4>
+                        <p>Disponibile da Agosto 2024</p>
+                    </div>
+                    
+                    <div class="timeline-step" data-step="?">
+                        <h4>Altri Giochi</h4>
+                        <p>In continuo sviluppo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section Futuristica -->
     <section class="stats-section">
-        <div class="container">
+        <div class="section-container">
+            <h2 class="section-title">Statistiche Globali</h2>
             <div class="stats-grid">
                 <div class="stat">
                     <div class="stat-number">10K+</div>
@@ -129,51 +1225,81 @@
                     <div class="stat-label">Schemi Creati</div>
                 </div>
                 <div class="stat">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Quiz Completati</div>
+                </div>
+                <div class="stat">
                     <div class="stat-number">95%</div>
                     <div class="stat-label">Soddisfazione</div>
                 </div>
-                <div class="stat">
-                    <div class="stat-number">24/7</div>
-                    <div class="stat-label">Disponibilità</div>
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- CTA Simple -->
-    <section class="cta-simple">
-        <div class="container">
-            <div class="cta-content">
-                <h2>Pronto a Iniziare?</h2>
-                <p>Unisciti a migliaia di studenti che già usano BrainPlayNG</p>
-                <div class="cta-buttons">
-                    {% if 'user_id' in session %}
-                        <a href="/ai/schema-generator" class="btn btn-primary btn-large">
-                            <i class="fas fa-robot"></i> Crea Schemi Ora
-                        </a>
-                        <a href="/game/memory-game" class="btn btn-secondary btn-large">
-                            <i class="fas fa-gamepad"></i> Gioca Subito
-                        </a>
-                    {% else %}
-                        <a href="/auth/register" class="btn btn-primary btn-large">
-                            <i class="fas fa-user-plus"></i> Registrati Gratis
-                        </a>
-                        <a href="/auth/login" class="btn btn-secondary btn-large">
-                            <i class="fas fa-sign-in-alt"></i> Accedi
-                        </a>
-                    {% endif %}
-                </div>
+    <!-- CTA Section Futuristica -->
+    <section class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Inizia Oggi Stile Futuristico</h2>
+            <p class="cta-subtitle">Unisciti alla piattaforma rivoluzionaria che sta trasformando il modo di studiare</p>
+            <div class="hero-buttons">
+                <a href="/auth/register" class="btn btn-primary btn-large">
+                    <i class="fas fa-rocket"></i> Inizia Ora
+                </a>
+                <a href="/auth/login" class="btn btn-secondary btn-large">
+                    <i class="fas fa-sign-in-alt"></i> Accedi
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    {% include 'components/footer.html' %}
+    <!-- Floating Action Button -->
+    <div class="fab-container">
+        <a href="/auth/profile" class="floating-element fab-home">
+            <i class="fas fa-user"></i>
+        </a>
+    </div>
 
-    <!-- Scripts -->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <script src="{{ url_for('static', filename='leaderboard.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/home.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/leaderboard.js') }}"></script>
+    <script>
+        // Genera particelle animate
+        function createParticles() {
+            const particlesBg = document.getElementById('particlesBg');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+                particlesBg.appendChild(particle);
+            }
+        }
+        
+        // Effetto parallasso al mouse move
+        document.addEventListener('mousemove', (e) => {
+            const cards = document.querySelectorAll('.action-card, .progress-card, .game-preview-card, .stat');
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            
+            cards.forEach((card, index) => {
+                const delay = index * 0.1;
+                setTimeout(() => {
+                    card.style.transform = `translateY(-10px) rotateX(${-y}deg) rotateY(${x}deg)`;
+                }, delay * 1000);
+            });
+        });
+        
+        // Smooth scroll
+        document.querySelector('.scroll-indicator').addEventListener('click', () => {
+            document.querySelector('#quick-actions').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+        
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            createParticles();
+        });
+    </script>
 </body>
 </html>

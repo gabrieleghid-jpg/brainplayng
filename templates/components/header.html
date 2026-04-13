@@ -10,8 +10,19 @@
                 <a href="#about">Chi Siamo</a>
                 <a href="/leaderboard">🏆 Classifiche</a>
                 {% if 'user_id' in session %}
-                    <span class="user-welcome">👋 Ciao, {{ session.username }}!</span>
-                    <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    <span class="user-welcome">
+                        {% if session.get('is_guest', False) %}
+                            ? Ciao, Ospite! 
+                        {% else %}
+                            ? Ciao, {{ session.username }}!
+                        {% endif %}
+                    </span>
+                    {% if session.get('is_guest', False) %}
+                        <a href="/auth/register" class="btn btn-primary">Crea Account</a>
+                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    {% else %}
+                        <a href="/auth/logout" class="btn btn-secondary">Logout</a>
+                    {% endif %}
                 {% else %}
                     <a href="/auth/login" class="btn btn-primary">Accedi</a>
                     <a href="/auth/register" class="btn btn-secondary">Registrati</a>

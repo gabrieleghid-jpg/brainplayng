@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generatori IA - brainplaying</title>
+    <title>Schemi - brainplaying</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -569,6 +569,146 @@
             100% { transform: rotate(360deg); }
         }
         
+        /* Stili per i risultati del quiz */
+        .quiz-results-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .quiz-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .score-details h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.5rem;
+        }
+        
+        .score-details p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .quiz-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 15px;
+            min-width: 80px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-value.correct {
+            color: #10b981;
+        }
+        
+        .stat-value.incorrect {
+            color: #ef4444;
+        }
+        
+        .stat-value.total {
+            color: #f59e0b;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .quiz-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .quiz-answers-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .answer-review {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+        
+        .answer-review.correct {
+            border-left: 4px solid #10b981;
+        }
+        
+        .answer-review.incorrect {
+            border-left: 4px solid #ef4444;
+        }
+        
+        .answer-question {
+            margin-bottom: 0.5rem;
+        }
+        
+        .answer-user {
+            color: #fbbf24;
+            margin-bottom: 0.25rem;
+        }
+        
+        .answer-correct {
+            color: #10b981;
+            margin-bottom: 0.25rem;
+        }
+        
+        .answer-status {
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        
+        .answer-review.correct .answer-status {
+            color: #10b981;
+        }
+        
+        .answer-review.incorrect .answer-status {
+            color: #ef4444;
+        }
+        
         /* Messages */
         .error-message,
         .success-message {
@@ -626,15 +766,15 @@
     <div class="ai-container">
         <!-- Header -->
         <header class="ai-header">
-            <div class="brain-icon">🧠</div>
-            <h1>Generatori IA</h1>
+            <div class="brain-icon">?</div>
+            <h1>Schemi</h1>
             <p>Crea schemi personalizzati con l'intelligenza artificiale</p>
         </header>
         
         <!-- Form Generator -->
         <div class="generator-form">
             <div class="form-header">
-                <h2>🤖 Configura il Tuo Schema</h2>
+                <h2> Configura il Tuo Schema</h2>
                 <p>Scegli le opzioni per generare un schema personalizzato</p>
             </div>
             
@@ -670,10 +810,7 @@
                 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-magic"></i> Genera Schema
-                    </button>
-                    <button type="button" class="btn btn-secondary" onclick="resetForm()">
-                        <i class="fas fa-undo"></i> Reset
+                        <i class="fas fa-magic"></i> Crea Schema
                     </button>
                 </div>
             </form>
@@ -695,8 +832,11 @@
         // Variabili globali
         let currentSchema = null;
         let currentQuestion = 0;
-        let quizAnswers = {};
+        let quizAnswers = [];
+        let quizScore = 0;
         let currentPuzzleState = null;
+        let mathAnswers = [];
+        let mathScore = 0;
         
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
@@ -1394,8 +1534,41 @@
                 <div class="quiz-navigation">
                     <div class="quiz-counter">Domanda <span id="questionCounter">1/${schema.questions.length}</span></div>
                     <div class="quiz-controls">
-                        <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>← Precedente</button>
-                        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Successivo →</button>
+                        <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>Precedente</button>
+                        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Successivo</button>
+                        <button class="btn btn-success" id="finishBtn" onclick="finishQuiz()" style="display: none;">Termina Quiz</button>
+                    </div>
+                </div>
+                <div id="quizResults" style="display: none; margin-top: 2rem;">
+                    <div class="quiz-results-container">
+                        <h3 style="text-align: center; margin-bottom: 1.5rem;">Risultati Quiz</h3>
+                        <div class="quiz-score">
+                            <div class="score-circle">
+                                <span id="scorePercentage">0%</span>
+                            </div>
+                            <div class="score-details">
+                                <h4 id="scoreMessage">Ottimo lavoro!</h4>
+                                <p id="scoreSummary">Hai risposto correttamente a 0 domande su 0</p>
+                            </div>
+                        </div>
+                        <div class="quiz-stats">
+                            <div class="stat-item">
+                                <div class="stat-value correct" id="correctAnswers">0</div>
+                                <div class="stat-label">Corrette</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value incorrect" id="wrongAnswers">0</div>
+                                <div class="stat-label">Sbagliate</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value total" id="totalQuestions">0</div>
+                                <div class="stat-label">Totali</div>
+                            </div>
+                        </div>
+                        <div class="quiz-actions">
+                            <button class="btn btn-primary" onclick="showQuizAnswers()">Mostra Risposte</button>
+                            <button class="btn btn-success" onclick="generateNewQuiz()">Nuovo Quiz</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -1439,6 +1612,38 @@
                             <p>${schema.explanation}</p>
                         </div>
                     </div>
+                    <div id="logicResults" style="display: none; margin-top: 2rem;">
+                        <div class="quiz-results-container">
+                            <h3 style="text-align: center; margin-bottom: 1.5rem;">Risultato Problema</h3>
+                            <div class="quiz-score">
+                                <div class="score-circle">
+                                    <span id="logicScorePercentage">0%</span>
+                                </div>
+                                <div class="score-details">
+                                    <h4 id="logicScoreMessage">Ottimo lavoro!</h4>
+                                    <p id="logicScoreSummary">Hai risposto correttamente al problema</p>
+                                </div>
+                            </div>
+                            <div class="quiz-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value correct" id="logicCorrectAnswers">0</div>
+                                    <div class="stat-label">Corretto</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value incorrect" id="logicWrongAnswers">0</div>
+                                    <div class="stat-label">Sbagliato</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value total" id="logicTotalQuestions">1</div>
+                                    <div class="stat-label">Totali</div>
+                                </div>
+                            </div>
+                            <div class="quiz-actions">
+                                <button class="btn btn-primary" onclick="showLogicSolution()">Mostra Soluzione</button>
+                                <button class="btn btn-success" onclick="generateNewLogicProblem()">Nuovo Problema</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -1470,6 +1675,38 @@
                         </button>
                     </div>
                     <div id="puzzleFeedback" class="puzzle-feedback"></div>
+                    <div id="puzzleResults" style="display: none; margin-top: 2rem;">
+                        <div class="quiz-results-container">
+                            <h3 style="text-align: center; margin-bottom: 1.5rem;">Risultato Puzzle</h3>
+                            <div class="quiz-score">
+                                <div class="score-circle">
+                                    <span id="puzzleScorePercentage">0%</span>
+                                </div>
+                                <div class="score-details">
+                                    <h4 id="puzzleScoreMessage">Ottimo lavoro!</h4>
+                                    <p id="puzzleScoreSummary">Hai completato il puzzle</p>
+                                </div>
+                            </div>
+                            <div class="quiz-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value correct" id="puzzleCorrectPieces">0</div>
+                                    <div class="stat-label">Corretti</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value incorrect" id="puzzleWrongPieces">0</div>
+                                    <div class="stat-label">Sbagliati</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value total" id="puzzleTotalPieces">0</div>
+                                    <div class="stat-label">Totali</div>
+                                </div>
+                            </div>
+                            <div class="quiz-actions">
+                                <button class="btn btn-primary" onclick="showPuzzleSolution()">Mostra Soluzione</button>
+                                <button class="btn btn-success" onclick="generateNewPuzzle()">Nuovo Puzzle</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             `;
         }
@@ -1479,22 +1716,16 @@
             return `
                 <div class="puzzle-content">
                     <div class="puzzle-header">
-                        <h3>🎮 Memory Game</h3>
+                        <h3>Memory Game</h3>
                         <div class="puzzle-info">
-                            <span class="info-badge">👥 ${schema.pairs} coppie</span>
-                            <span class="info-badge">🎨 ${schema.theme}</span>
+                            <span class="puzzle-pairs">${schema.pairs} coppie</span>
+                            <span class="puzzle-grid">${schema.gridSize.cols}×${schema.gridSize.rows}</span>
                         </div>
                     </div>
-                    <div class="puzzle-board" id="memoryBoard">
-                        <!-- Le carte verranno generate da JavaScript -->
-                    </div>
+                    <div class="puzzle-board" id="memoryBoard"></div>
                     <div class="puzzle-controls">
-                        <button class="btn btn-primary" onclick="startMemoryGame()">
-                            <i class="fas fa-play"></i> Inizia Gioco
-                        </button>
-                        <button class="btn btn-secondary" onclick="resetMemoryGame()">
-                            <i class="fas fa-redo"></i> Reset
-                        </button>
+                        <button class="btn btn-primary" onclick="startMemoryGame()">Inizia Gioco</button>
+                        <button class="btn btn-secondary" onclick="resetMemoryGame()">Reset</button>
                     </div>
                     <div id="memoryFeedback" class="puzzle-feedback"></div>
                 </div>
@@ -1503,50 +1734,96 @@
         
         // Display math
         function displayMath(schema) {
-            return `
-                <div class="quiz-container">
+            let html = `
+                <div class="math-container">
                     ${schema.exercises.map((ex, index) => `
-                        <div class="quiz-question">
-                            <h4>Esercizio ${index + 1}: ${ex.exercise}</h4>
-                            <div class="quiz-options">
-                                <input type="number" class="form-control" placeholder="Inserisci la risposta" id="math-answer-${index}">
+                        <div class="math-exercise" data-exercise="${index}">
+                            <h4>Esercizio ${index + 1}:</h4>
+                            <div class="math-question">${ex.exercise}</div>
+                            <div class="math-input-section">
+                                <input type="number" id="mathAnswer-${index}" class="form-control" placeholder="Inserisci la tua risposta..." style="width: 200px; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 1rem;">
+                                <button class="btn btn-primary" onclick="checkMathAnswer(${index})">Verifica</button>
                             </div>
-                            <button class="btn btn-primary" onclick="checkMathAnswer(${index}, ${ex.answer})">Verifica</button>
                             <div id="math-feedback-${index}" class="quiz-feedback"></div>
                         </div>
                     `).join('')}
                 </div>
+                <div class="math-controls">
+                    <button class="btn btn-success" onclick="finishMath()">Termina Esercizi</button>
+                    <button class="btn btn-secondary" onclick="showMathAnswers()">Mostra Soluzioni</button>
+                    <button class="btn btn-info" onclick="generateNewMath()">Nuovi Esercizi</button>
+                </div>
+                <div id="mathResults" style="display: none; margin-top: 2rem;">
+                    <div class="quiz-results-container">
+                        <h3 style="text-align: center; margin-bottom: 1.5rem;">Risultati Esercizi</h3>
+                        <div class="quiz-score">
+                            <div class="score-circle">
+                                <span id="mathScorePercentage">0%</span>
+                            </div>
+                            <div class="score-details">
+                                <h4 id="mathScoreMessage">Ottimo lavoro!</h4>
+                                <p id="mathScoreSummary">Hai completato gli esercizi</p>
+                            </div>
+                        </div>
+                        <div class="quiz-stats">
+                            <div class="stat-item">
+                                <div class="stat-value correct" id="mathCorrectAnswers">0</div>
+                                <div class="stat-label">Corretti</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value incorrect" id="mathWrongAnswers">0</div>
+                                <div class="stat-label">Sbagliati</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value total" id="mathTotalQuestions">0</div>
+                                <div class="stat-label">Totali</div>
+                            </div>
+                        </div>
+                        <div class="quiz-actions">
+                            <button class="btn btn-primary" onclick="showMathSolutions()">Mostra Soluzioni</button>
+                            <button class="btn btn-success" onclick="generateNewMath()">Nuovi Esercizi</button>
+                        </div>
+                    </div>
+                </div>
             `;
+            return html;
         }
         
         // Funzioni Quiz
         function initializeQuiz() {
             currentQuestion = 0;
-            quizAnswers = {};
+            quizAnswers = [];
+            quizScore = 0;
         }
         
         function selectQuizOption(questionIndex, optionIndex) {
-            const question = currentSchema.questions[questionIndex];
-            const isCorrect = optionIndex === question.correct;
+            // Rimuovi selezione precedente
+            document.querySelectorAll(`[data-question="${questionIndex}"] .quiz-option`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Aggiungi selezione corrente
+            document.querySelectorAll(`[data-question="${questionIndex}"] .quiz-option`)[optionIndex].classList.add('selected');
             
             // Salva risposta
             quizAnswers[questionIndex] = optionIndex;
             
-            // Disabilita opzioni
-            const options = document.querySelectorAll(`[data-question="${questionIndex}"] .quiz-option`);
-            options.forEach((opt, idx) => {
-                opt.style.pointerEvents = 'none';
-                if (idx === question.correct) {
-                    opt.classList.add('correct');
-                } else if (idx === optionIndex && !isCorrect) {
-                    opt.classList.add('incorrect');
-                }
-            });
+            // Verifica se la risposta è corretta
+            const question = currentSchema.questions[questionIndex];
+            const isCorrect = optionIndex === question.correct;
             
             // Mostra feedback
             const feedback = document.getElementById(`feedback-${questionIndex}`);
-            feedback.className = 'quiz-feedback ' + (isCorrect ? 'correct' : 'incorrect');
-            feedback.innerHTML = isCorrect ? '✅ Risposta Corretta!' : `❌ Risposta Sbagliata. La risposta corretta è: ${question.options[question.correct]}`;
+            if (isCorrect) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent = 'Risposta Corretta!';
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = 'Risposta Sbagliata!';
+            }
+            
+            // Aggiorna punteggio
+            updateQuizScore();
         }
         
         function nextQuestion() {
@@ -1571,6 +1848,135 @@
             document.getElementById('questionCounter').textContent = `Domanda ${currentQuestion + 1}/${currentSchema.questions.length}`;
             document.getElementById('prevBtn').disabled = currentQuestion === 0;
             document.getElementById('nextBtn').disabled = currentQuestion === currentSchema.questions.length - 1;
+            
+            // Mostra pulsante termina quiz all'ultima domanda
+            const finishBtn = document.getElementById('finishBtn');
+            if (currentQuestion === currentSchema.questions.length - 1) {
+                finishBtn.style.display = 'inline-block';
+                document.getElementById('nextBtn').style.display = 'none';
+            } else {
+                finishBtn.style.display = 'none';
+                document.getElementById('nextBtn').style.display = 'inline-block';
+            }
+        }
+        
+        function updateQuizScore() {
+            quizScore = 0;
+            for (let i = 0; i < currentSchema.questions.length; i++) {
+                if (quizAnswers[i] === currentSchema.questions[i].correct) {
+                    quizScore++;
+                }
+            }
+        }
+        
+        function finishQuiz() {
+            updateQuizScore();
+            
+            // Calcola statistiche
+            const totalQuestions = currentSchema.questions.length;
+            const correctAnswers = quizScore;
+            const wrongAnswers = totalQuestions - correctAnswers;
+            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            
+            // Determina messaggio in base al punteggio
+            let message = '';
+            if (percentage >= 90) {
+                message = 'Eccellente! Sei un campione!';
+            } else if (percentage >= 70) {
+                message = 'Ottimo lavoro! Continua così!';
+            } else if (percentage >= 50) {
+                message = 'Buon risultato! Puoi fare meglio!';
+            } else {
+                message = 'Continua a esercitarti!';
+            }
+            
+            // Aggiorna UI risultati
+            document.getElementById('scorePercentage').textContent = `${percentage}%`;
+            document.getElementById('scoreMessage').textContent = message;
+            document.getElementById('scoreSummary').textContent = `Hai risposto correttamente a ${correctAnswers} domande su ${totalQuestions}`;
+            document.getElementById('correctAnswers').textContent = correctAnswers;
+            document.getElementById('wrongAnswers').textContent = wrongAnswers;
+            document.getElementById('totalQuestions').textContent = totalQuestions;
+            
+            // Nascondi quiz e mostra risultati
+            document.querySelector('.quiz-container').style.display = 'none';
+            document.querySelector('.quiz-navigation').style.display = 'none';
+            document.getElementById('quizResults').style.display = 'block';
+            
+            // Salva punteggio nel localStorage (simulazione salvataggio dati utente)
+            saveQuizScore(percentage, correctAnswers, totalQuestions);
+        }
+        
+        function saveQuizScore(percentage, correct, total) {
+            // Recupera punteggi esistenti
+            let scores = JSON.parse(localStorage.getItem('quizScores') || '[]');
+            
+            // Aggiungi nuovo punteggio
+            scores.push({
+                percentage: percentage,
+                correct: correct,
+                total: total,
+                category: currentSchema.metadata.category || 'general',
+                difficulty: currentSchema.difficulty,
+                date: new Date().toISOString()
+            });
+            
+            // Mantieni solo ultimi 50 punteggi
+            if (scores.length > 50) {
+                scores = scores.slice(-50);
+            }
+            
+            // Salva nel localStorage
+            localStorage.setItem('quizScores', JSON.stringify(scores));
+            
+            console.log('Punteggio salvato:', { percentage, correct, total });
+        }
+        
+        function showQuizAnswers() {
+            // Mostra tutte le domande con le risposte corrette
+            let answersHtml = '<div class="quiz-answers-container">';
+            answersHtml += '<h4>Risposte Corrette:</h4>';
+            
+            currentSchema.questions.forEach((q, index) => {
+                const userAnswer = quizAnswers[index];
+                const isCorrect = userAnswer === q.correct;
+                const userAnswerText = userAnswer !== undefined ? q.options[userAnswer] : 'Non risposto';
+                const correctAnswerText = q.options[q.correct];
+                
+                answersHtml += `
+                    <div class="answer-review ${isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="answer-question"><strong>Domanda ${index + 1}:</strong> ${q.question}</div>
+                        <div class="answer-user">La tua risposta: ${userAnswerText}</div>
+                        <div class="answer-correct">Risposta corretta: ${correctAnswerText}</div>
+                        <div class="answer-status">${isCorrect ? 'Correct' : 'Incorrect'}</div>
+                    </div>
+                `;
+            });
+            
+            answersHtml += '</div>';
+            answersHtml += '<button class="btn btn-secondary" onclick="hideQuizAnswers()">Nascondi Risposte</button>';
+            
+            // Inserisci dopo i risultati
+            const resultsContainer = document.getElementById('quizResults');
+            const existingAnswers = resultsContainer.querySelector('.quiz-answers-container');
+            if (existingAnswers) {
+                existingAnswers.remove();
+            }
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = answersHtml;
+            resultsContainer.appendChild(tempDiv.firstElementChild);
+        }
+        
+        function hideQuizAnswers() {
+            const answersContainer = document.querySelector('.quiz-answers-container');
+            if (answersContainer) {
+                answersContainer.remove();
+            }
+        }
+        
+        function generateNewQuiz() {
+            generateSchema(new Event('submit'));
         }
         
         // Funzioni Logica
@@ -1581,7 +1987,7 @@
             
             if (!userAnswer) {
                 feedback.className = 'quiz-feedback incorrect';
-                feedback.textContent = '❌ Per favore inserisci una risposta!';
+                feedback.textContent = 'Per favore inserisci una risposta!';
                 return;
             }
             
@@ -1609,12 +2015,76 @@
             
             if (isCorrect) {
                 feedback.className = 'quiz-feedback correct';
-                feedback.textContent = '✅ Risposta Corretta! Ottimo lavoro!';
+                feedback.textContent = 'Risposta Corretta! Ottimo lavoro!';
                 document.getElementById('userLogicAnswer').disabled = true;
+                
+                // Mostra risultati
+                showLogicResults(true);
             } else {
                 feedback.className = 'quiz-feedback incorrect';
-                feedback.textContent = '❌ Risposta Sbagliata. Riprova o usa "Mostra Soluzione"!';
+                feedback.textContent = 'Risposta Sbagliata. Riprova o usa "Mostra Soluzione"!';
+                
+                // Mostra risultati dopo risposta sbagliata
+                showLogicResults(false);
             }
+        }
+        
+        function showLogicResults(isCorrect) {
+            // Calcola statistiche
+            const totalQuestions = 1;
+            const correctAnswers = isCorrect ? 1 : 0;
+            const wrongAnswers = isCorrect ? 0 : 1;
+            const percentage = isCorrect ? 100 : 0;
+            
+            // Determina messaggio in base al risultato
+            let message = '';
+            if (isCorrect) {
+                message = 'Eccellente! Hai risolto il problema!';
+            } else {
+                message = 'Non preoccuparti, riprova con il prossimo!';
+            }
+            
+            // Aggiorna UI risultati
+            document.getElementById('logicScorePercentage').textContent = `${percentage}%`;
+            document.getElementById('logicScoreMessage').textContent = message;
+            document.getElementById('logicScoreSummary').textContent = isCorrect ? 'Hai risposto correttamente al problema' : 'Risposta non corretta, studia la soluzione';
+            document.getElementById('logicCorrectAnswers').textContent = correctAnswers;
+            document.getElementById('logicWrongAnswers').textContent = wrongAnswers;
+            document.getElementById('logicTotalQuestions').textContent = totalQuestions;
+            
+            // Mostra risultati
+            document.getElementById('logicResults').style.display = 'block';
+            
+            // Salva punteggio nel localStorage
+            saveLogicScore(percentage, correctAnswers, totalQuestions);
+        }
+        
+        function saveLogicScore(percentage, correct, total) {
+            // Recupera punteggi esistenti
+            let scores = JSON.parse(localStorage.getItem('logicScores') || '[]');
+            
+            // Aggiungi nuovo punteggio
+            scores.push({
+                percentage: percentage,
+                correct: correct,
+                total: total,
+                difficulty: currentSchema.difficulty,
+                date: new Date().toISOString()
+            });
+            
+            // Mantieni solo ultimi 50 punteggi
+            if (scores.length > 50) {
+                scores = scores.slice(-50);
+            }
+            
+            // Salva nel localStorage
+            localStorage.setItem('logicScores', JSON.stringify(scores));
+            
+            console.log('Punteggio logica salvato:', { percentage, correct, total });
+        }
+        
+        function showLogicSolution() {
+            document.getElementById('logicSolution').style.display = 'block';
         }
         
         function showLogicAnswer() {
@@ -1622,6 +2092,162 @@
         }
         
         function generateNewLogicProblem() {
+            generateSchema(new Event('submit'));
+        }
+        
+        // Funzioni Math
+        function initializeMath() {
+            mathAnswers = [];
+            mathScore = 0;
+        }
+        
+        function checkMathAnswer(exerciseIndex) {
+            const userAnswer = document.getElementById(`mathAnswer-${exerciseIndex}`).value.trim();
+            const exercise = currentSchema.exercises[exerciseIndex];
+            const correctAnswer = exercise.answer;
+            const feedback = document.getElementById(`math-feedback-${exerciseIndex}`);
+            
+            if (!userAnswer) {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = 'Per favore inserisci una risposta!';
+                return;
+            }
+            
+            const isCorrect = parseFloat(userAnswer) === correctAnswer;
+            
+            if (isCorrect) {
+                feedback.className = 'quiz-feedback correct';
+                feedback.textContent = 'Risposta Corretta!';
+                document.getElementById(`mathAnswer-${exerciseIndex}`).disabled = true;
+                mathAnswers[exerciseIndex] = true;
+            } else {
+                feedback.className = 'quiz-feedback incorrect';
+                feedback.textContent = 'Risposta Sbagliata. Riprova!';
+                mathAnswers[exerciseIndex] = false;
+            }
+            
+            updateMathScore();
+        }
+        
+        function updateMathScore() {
+            mathScore = 0;
+            for (let i = 0; i < currentSchema.exercises.length; i++) {
+                if (mathAnswers[i] === true) {
+                    mathScore++;
+                }
+            }
+        }
+        
+        function finishMath() {
+            updateMathScore();
+            
+            // Calcola statistiche
+            const totalExercises = currentSchema.exercises.length;
+            const correctAnswers = mathScore;
+            const wrongAnswers = totalExercises - correctAnswers;
+            const percentage = Math.round((correctAnswers / totalExercises) * 100);
+            
+            // Determina messaggio in base al punteggio
+            let message = '';
+            if (percentage >= 90) {
+                message = 'Eccellente! Sei un campione della matematica!';
+            } else if (percentage >= 70) {
+                message = 'Ottimo lavoro! Continua così!';
+            } else if (percentage >= 50) {
+                message = 'Buon risultato! Puoi fare meglio!';
+            } else {
+                message = 'Continua a esercitarti con la matematica!';
+            }
+            
+            // Aggiorna UI risultati
+            document.getElementById('mathScorePercentage').textContent = `${percentage}%`;
+            document.getElementById('mathScoreMessage').textContent = message;
+            document.getElementById('mathScoreSummary').textContent = `Hai completato correttamente ${correctAnswers} esercizi su ${totalExercises}`;
+            document.getElementById('mathCorrectAnswers').textContent = correctAnswers;
+            document.getElementById('mathWrongAnswers').textContent = wrongAnswers;
+            document.getElementById('mathTotalQuestions').textContent = totalExercises;
+            
+            // Nascondi esercizi e mostra risultati
+            document.querySelector('.math-container').style.display = 'none';
+            document.querySelector('.math-controls').style.display = 'none';
+            document.getElementById('mathResults').style.display = 'block';
+            
+            // Salva punteggio nel localStorage
+            saveMathScore(percentage, correctAnswers, totalExercises);
+        }
+        
+        function saveMathScore(percentage, correct, total) {
+            // Recupera punteggi esistenti
+            let scores = JSON.parse(localStorage.getItem('mathScores') || '[]');
+            
+            // Aggiungi nuovo punteggio
+            scores.push({
+                percentage: percentage,
+                correct: correct,
+                total: total,
+                operations: currentSchema.metadata.operations,
+                difficulty: currentSchema.difficulty,
+                date: new Date().toISOString()
+            });
+            
+            // Mantieni solo ultimi 50 punteggi
+            if (scores.length > 50) {
+                scores = scores.slice(-50);
+            }
+            
+            // Salva nel localStorage
+            localStorage.setItem('mathScores', JSON.stringify(scores));
+            
+            console.log('Punteggio matematica salvato:', { percentage, correct, total });
+        }
+        
+        function showMathSolutions() {
+            // Mostra tutti gli esercizi con le soluzioni
+            let solutionsHtml = '<div class="quiz-answers-container">';
+            solutionsHtml += '<h4>Soluzioni Corrette:</h4>';
+            
+            currentSchema.exercises.forEach((ex, index) => {
+                const userAnswer = document.getElementById(`mathAnswer-${index}`)?.value;
+                const isCorrect = mathAnswers[index] === true;
+                const userAnswerText = userAnswer || 'Non risposto';
+                
+                solutionsHtml += `
+                    <div class="answer-review ${isCorrect ? 'correct' : 'incorrect'}">
+                        <div class="answer-question"><strong>Esercizio ${index + 1}:</strong> ${ex.exercise}</div>
+                        <div class="answer-user">La tua risposta: ${userAnswerText}</div>
+                        <div class="answer-correct">Soluzione corretta: ${ex.answer}</div>
+                        <div class="answer-status">${isCorrect ? 'Correct' : 'Incorrect'}</div>
+                    </div>
+                `;
+            });
+            
+            solutionsHtml += '</div>';
+            solutionsHtml += '<button class="btn btn-secondary" onclick="hideMathSolutions()">Nascondi Soluzioni</button>';
+            
+            // Inserisci dopo i risultati
+            const resultsContainer = document.getElementById('mathResults');
+            const existingSolutions = resultsContainer.querySelector('.quiz-answers-container');
+            if (existingSolutions) {
+                existingSolutions.remove();
+            }
+            
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = solutionsHtml;
+            resultsContainer.appendChild(tempDiv.firstElementChild);
+        }
+        
+        function hideMathSolutions() {
+            const solutionsContainer = document.querySelector('.quiz-answers-container');
+            if (solutionsContainer) {
+                solutionsContainer.remove();
+            }
+        }
+        
+        function showMathAnswers() {
+            showMathSolutions();
+        }
+        
+        function generateNewMath() {
             generateSchema(new Event('submit'));
         }
         
@@ -1644,19 +2270,16 @@
             
             // Crea pezzi
             pieces.innerHTML = '';
-            const emojis = ['🧩', '🎯', '🎨', '🎭', '🎪', '🎯', '🎲', '🎸', '🎺'];
+            const emojis = ['', '', '', '', '', '', '', '', ''];
             
             for (let i = 0; i < schema.pieces; i++) {
                 const piece = document.createElement('div');
                 piece.className = 'puzzle-piece';
-                piece.textContent = emojis[i % emojis.length];
                 piece.draggable = true;
                 piece.dataset.pieceId = i;
-                
-                // Drag events
+                piece.innerHTML = emojis[i];
                 piece.addEventListener('dragstart', handleDragStart);
                 piece.addEventListener('dragend', handleDragEnd);
-                
                 pieces.appendChild(piece);
             }
             

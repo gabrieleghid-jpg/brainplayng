@@ -37,9 +37,9 @@ def memory_ia():
         return redirect(url_for('auth.login'))
     return render_template('game/memory-ia.html')
 
-@app.route('/ai/schema-generator')
-def schema_generator():
-    """Pagina generatore schemi IA - richiede autenticazione"""
+@app.route('/ai/schemi')
+def schemi():
+    """Pagina schemi IA - richiede autenticazione"""
     if 'user_id' not in session:
         return redirect(url_for('auth.login'))
     return render_template('ai/schema_generator.html')
