@@ -1115,6 +1115,235 @@
                 padding: 1.5rem 2rem;
             }
         }
+        
+        /* ===== DIALOG STYLES ===== */
+        .dialog-container {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #fff;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dialog-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dialog-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dialog-header p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .dialog-conversation {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+            padding-right: 1rem;
+            max-height: 400px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .dialog-conversation::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .dialog-conversation::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .dialog-conversation::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .dialog-message {
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.4s ease;
+        }
+        
+        .dialog-message.ai {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-start;
+        }
+        
+        .dialog-message.user {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .dialog-bubble {
+            max-width: 70%;
+            padding: 1rem;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+        
+        .dialog-message.ai .dialog-bubble {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .dialog-message.user .dialog-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .dialog-input-area {
+            margin-bottom: 1.5rem;
+        }
+        
+        #questionContainer {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .option-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        .option-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateX(5px);
+        }
+        
+        .option-button.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+        
+        .text-input-area {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .text-input-area input {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #000;
+        }
+        
+        .text-input-area input:focus {
+            outline: none;
+            border-color: rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 20px rgba(120, 119, 198, 0.3);
+        }
+        
+        .text-input-area button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .text-input-area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dialog-progress {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .dialog-container {
+                padding: 1rem;
+                min-height: auto;
+            }
+            
+            .dialog-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .dialog-conversation {
+                max-height: 300px;
+            }
+            
+            .dialog-bubble {
+                max-width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1208,6 +1437,33 @@
         <div id="loadingState" class="loading" style="display: none;">
             <div class="loading-spinner"></div>
             <p>Generazione schema in corso...</p>
+        </div>
+        
+        <!-- Dialog State -->
+        <div id="dialogState" style="display: none;">
+            <div class="dialog-container">
+                <div class="dialog-header">
+                    <h2>🤖 Assistente IA - Creazione Schema Personalizzato</h2>
+                    <p id="progressMessage">Iniziamo a creare il tuo schema...</p>
+                </div>
+                
+                <div class="dialog-conversation" id="dialogConversation">
+                    <!-- Le domande e risposte appariranno qui -->
+                </div>
+                
+                <div class="dialog-input-area">
+                    <div id="questionContainer">
+                        <!-- Il container per la domanda e le opzioni di risposta -->
+                    </div>
+                </div>
+                
+                <div class="dialog-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Fase 1 di 5: Informazioni Base</p>
+                </div>
+            </div>
         </div>
         
         <!-- Risultato -->
@@ -1347,7 +1603,6 @@
             
             // Raccogli parametri personalizzati
             config.custom_params = {};
-            // Per altri tipi, raccogli i checkbox
             document.querySelectorAll('#customParamsContainer input:checked').forEach(input => {
                 config.custom_params[input.name] = input.value;
             });
@@ -1356,38 +1611,14 @@
             config.timestamp = Date.now();
             config.session_id = Math.random().toString(36).substr(2, 9);
             
-            // Mostra loading
-            document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('resultContainer').classList.remove('active');
+            // Valida che materia e tipo schema siano selezionati
+            if (!config.subject || !config.schema_type) {
+                showMessage('Per favore seleziona materia e tipo di schema', 'error');
+                return;
+            }
             
-            // Simula generazione dinamica se l'API non è disponibile
-            setTimeout(() => {
-                generateDynamicSchema(config);
-            }, 1500);
-            
-            fetch('/api/ai/generate-schema', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(config)
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loadingState').style.display = 'none';
-                
-                if (data.success) {
-                    currentSchema = data.schema;
-                    displaySchema(data.schema, data.config);
-                    showMessage('Schema generato con successo!', 'success');
-                } else {
-                    showMessage('Errore nella generazione: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                document.getElementById('loadingState').style.display = 'none';
-                showMessage('Errore durante la generazione', 'error');
-            });
+            // ✨ AVVIA IL DIALOGO INTERATTIVO AVANZATO ✨
+            startAdvancedDialog(config);
         }
         
         function displaySchema(schema, config) {
@@ -2371,6 +2602,366 @@
             setTimeout(() => {
                 messageDiv.remove();
             }, 5000);
+        }
+        
+        // ===== SISTEMA DI DIALOGO AVANZATO =====
+        
+        let dialogContext = null;
+        let dialogPhases = ['initial', 'discovery', 'assessment', 'customization', 'generation', 'complete'];
+        let currentPhaseIndex = 0;
+        
+        const dialogQuestions = {
+            initial: [
+                {
+                    id: "subject_detail",
+                    type: "text",
+                    question: "Perfetto! Dimmi di più su '{subject}'. Quali aspetti specifici vuoi approfondire?",
+                    placeholder: "Es: Storia della Rivoluzione Francese, Fotosintesi, Grammatica italiana...",
+                    importance: 3
+                },
+                {
+                    id: "current_knowledge",
+                    type: "multiple_choice",
+                    question: "Quale è il tuo attuale livello di conoscenza su questo argomento?",
+                    options: ["Non so nulla", "Ho nozioni base", "Ho buone conoscenze", "Sono esperto"],
+                    importance: 2
+                }
+            ],
+            discovery: [
+                {
+                    id: "learning_goal",
+                    type: "text",
+                    question: "Cosa vorresti essere in grado di fare/spiegare dopo aver usato questo schema?",
+                    placeholder: "Es: Comprendere i principali eventi, Saper risolvere esercizi...",
+                    importance: 3
+                },
+                {
+                    id: "learning_context",
+                    type: "multiple_choice",
+                    question: "In quale contesto studi questo argomento?",
+                    options: ["Scuola/Università", "Auto-apprendimento", "Preparazione esame", "Curiosità personale"],
+                    importance: 2
+                }
+            ],
+            assessment: [
+                {
+                    id: "learning_style",
+                    type: "multiple_choice",
+                    question: "Quale metodo ti aiuta maggiormente ad imparare?",
+                    options: ["Schemi e diagrammi visuali", "Note e testo scritto", "Discussioni e spiegazioni", "Pratica e esercizi"],
+                    importance: 3
+                }
+            ],
+            customization: [
+                {
+                    id: "schema_type",
+                    type: "multiple_choice",
+                    question: "Quale formato di schema preferisci?",
+                    options: ["Mappa mentale", "Quiz progressivi", "Schemi sinottici", "Flashcard", "Timeline", "Comparazioni"],
+                    importance: 3
+                }
+            ]
+        };
+        
+        function startAdvancedDialog(config) {
+            // Inizializza il contesto del dialogo
+            dialogContext = {
+                subject: document.getElementById('subject').value || 'Argomento',
+                config: config,
+                answers: {},
+                currentPhase: 0
+            };
+            
+            // Nascondi form e mostra dialogo
+            document.getElementById('schemaForm').parentElement.style.display = 'none';
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('dialogState').style.display = 'block';
+            
+            // Inizia con la prima domanda
+            showNextQuestion();
+        }
+        
+        function showNextQuestion() {
+            const phaseKey = dialogPhases[currentPhaseIndex];
+            const questions = dialogQuestions[phaseKey] || [];
+            
+            if (questions.length === 0) {
+                // Completa il dialogo e genera lo schema
+                completeDialog();
+                return;
+            }
+            
+            // Filtra le domande già fatte
+            const askedIds = Object.keys(dialogContext.answers);
+            const nextQuestion = questions.find(q => !askedIds.includes(q.id));
+            
+            if (!nextQuestion) {
+                // Passa alla fase successiva
+                currentPhaseIndex++;
+                if (currentPhaseIndex < dialogPhases.length) {
+                    showNextQuestion();
+                } else {
+                    completeDialog();
+                }
+                return;
+            }
+            
+            renderQuestion(nextQuestion, phaseKey);
+        }
+        
+        function renderQuestion(question, phase) {
+            const container = document.getElementById('questionContainer');
+            const subject = dialogContext.subject || 'argomento';
+            const questionText = question.question.replace('{subject}', subject);
+            
+            // Aggiungi il messaggio dell'IA nella conversazione
+            addDialogMessage('ai', questionText);
+            
+            // Aggiorna la barra di progresso
+            updateProgressBar();
+            
+            // Crea il container della risposta
+            let html = `<div class="question-text">${questionText}</div>`;
+            
+            if (question.type === 'multiple_choice') {
+                html += '<div class="question-options">';
+                question.options.forEach((option, index) => {
+                    html += `<button class="option-button" onclick="selectOption(this, '${question.id}', '${option}')">
+                        ${option}
+                    </button>`;
+                });
+                html += '</div>';
+            } else if (question.type === 'text') {
+                html += `<div class="text-input-area">
+                    <input type="text" id="textInput" placeholder="${question.placeholder || ''}" />
+                    <button type="button" onclick="submitTextAnswer('${question.id}')">Continua</button>
+                </div>`;
+            }
+            
+            container.innerHTML = html;
+            
+            // Focus sull'input di testo se presente
+            const textInput = document.getElementById('textInput');
+            if (textInput) {
+                textInput.focus();
+                textInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        submitTextAnswer(question.id);
+                    }
+                });
+            }
+        }
+        
+        function selectOption(button, questionId, answer) {
+            // Marca il bottone come selezionato
+            const allButtons = button.parentElement.querySelectorAll('.option-button');
+            allButtons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            
+            // Registra la risposta
+            dialogContext.answers[questionId] = answer;
+            
+            // Aggiungi nella conversazione
+            addDialogMessage('user', answer);
+            
+            // Mostra messaggio di feedback
+            setTimeout(() => {
+                showFeedbackMessage(questionId, answer);
+                setTimeout(() => {
+                    showNextQuestion();
+                }, 1500);
+            }, 500);
+        }
+        
+        function submitTextAnswer(questionId) {
+            const input = document.getElementById('textInput');
+            const answer = input.value.trim();
+            
+            if (!answer) {
+                alert('Per favore inserisci una risposta');
+                return;
+            }
+            
+            // Registra la risposta
+            dialogContext.answers[questionId] = answer;
+            
+            // Aggiungi nella conversazione
+            addDialogMessage('user', answer);
+            
+            // Mostra messaggio di feedback
+            setTimeout(() => {
+                showFeedbackMessage(questionId, answer);
+                setTimeout(() => {
+                    showNextQuestion();
+                }, 1500);
+            }, 500);
+        }
+        
+        function addDialogMessage(sender, text) {
+            const conversation = document.getElementById('dialogConversation');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `dialog-message ${sender}`;
+            messageDiv.innerHTML = `<div class="dialog-bubble">${text}</div>`;
+            conversation.appendChild(messageDiv);
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+        
+        function showFeedbackMessage(questionId, answer) {
+            const feedbacks = {
+                'subject_detail': `Interessante! Stai approfondendo specificamente "${answer}" - questo mi aiuta a personalizzare lo schema perfetto.`,
+                'current_knowledge': answer.toLowerCase().includes('nulla') ? 
+                    'Perfetto! Partirò da zero con spiegazioni dettagliate.' :
+                    'Bene! Costruirò su quelle basi con contenuti adatti.',
+                'learning_goal': `Obiettivo chiaro: "${answer}" - Lo schema sarà costruito per aiutarti a raggiungerlo.`,
+                'learning_style': `Preferisci ${answer}! Adatterò lo schema a questo stile di apprendimento.`,
+                'schema_type': `Ottima scelta! Creerò una ${answer} personalizzata per te.`
+            };
+            
+            const feedback = feedbacks[questionId] || 'Grazie per la risposta! Continuiamo...';
+            addDialogMessage('ai', feedback);
+        }
+        
+        function updateProgressBar() {
+            const totalQuestions = Object.keys(dialogQuestions).reduce((sum, phase) => sum + dialogQuestions[phase].length, 0);
+            const answerCount = Object.keys(dialogContext.answers).length;
+            const progress = (answerCount / totalQuestions) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Fase ${currentPhaseIndex + 1} di ${dialogPhases.length}: ${Math.round(progress)}% completo`;
+        }
+        
+        function completeDialog() {
+            // Mostra messaggio di completamento
+            addDialogMessage('ai', 'Perfetto! Ho tutte le informazioni che mi servono. Sto creando il tuo schema personalizzato...');
+            
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressText').textContent = 'Schema in generazione...';
+            
+            // Disabilita il container di domande
+            document.getElementById('questionContainer').style.display = 'none';
+            
+            // Genera lo schema basato su tutte le risposte
+            setTimeout(() => {
+                generateFinalSchema();
+            }, 2000);
+        }
+        
+        function generateFinalSchema() {
+            // Crea uno schema finale basato su tutte le risposte del dialogo
+            const schema = {
+                subject: dialogContext.subject,
+                type: dialogContext.answers['schema_type'] || 'mind_map',
+                difficulty: dialogContext.config.difficulty,
+                learning_objectives: dialogContext.answers['learning_goal'] ? [dialogContext.answers['learning_goal']] : [],
+                learning_style: dialogContext.answers['learning_style'] || 'visual',
+                knowledge_level: dialogContext.answers['current_knowledge'] || 'beginner',
+                generated_at: new Date().toISOString(),
+                content: generateSchemaContent(dialogContext),
+                metadata: {
+                    from_dialog: True,
+                    total_answers: Object.keys(dialogContext.answers).length,
+                    session_id: dialogContext.config.session_id
+                }
+            };
+            
+            // Mostra il risultato
+            displaySchemaResult(schema);
+        }
+        
+        function generateSchemaContent(context) {
+            const schemaType = context.answers['schema_type'] || 'mind_map';
+            const subject = context.subject;
+            
+            if (schemaType.toLowerCase().includes('mappa')) {
+                return {
+                    type: 'mind_map',
+                    central_concept: subject,
+                    main_branches: [
+                        { name: 'Definizioni Fondamentali', icon: '📖', subbranches: ['Concetti chiave', 'Terminologia'] },
+                        { name: 'Applicazioni Pratiche', icon: '💡', subbranches: ['Esempi reali', 'Casi studio'] },
+                        { name: 'Struttura', icon: '🔗', subbranches: ['Relazioni', 'Connessioni'] },
+                        { name: 'Approfondimenti', icon: '📚', subbranches: ['Curiosità', 'Aree correlate'] }
+                    ]
+                };
+            } else if (schemaType.toLowerCase().includes('quiz')) {
+                return {
+                    type: 'quiz',
+                    total_questions: 10,
+                    difficulty_levels: { easy: 3, medium: 4, hard: 3 },
+                    question_types: ['multiple_choice', 'true_false', 'fill_blank']
+                };
+            } else if (schemaType.toLowerCase().includes('timeline')) {
+                return {
+                    type: 'timeline',
+                    title: `Timeline: ${subject}`,
+                    events: [],
+                    interactive: true
+                };
+            } else if (schemaType.toLowerCase().includes('flashcard')) {
+                return {
+                    type: 'flashcard',
+                    title: `Flashcard: ${subject}`,
+                    cards: [],
+                    spaced_repetition: true
+                };
+            } else {
+                return {
+                    type: 'synopsis',
+                    title: `Schema Sinottico: ${subject}`,
+                    categories: [],
+                    hierarchical: true
+                };
+            }
+        }
+        
+        function displaySchemaResult(schema) {
+            // Nascondi il dialogo
+            document.getElementById('dialogState').style.display = 'none';
+            
+            // Mostra il risultato
+            const container = document.getElementById('schemaContent');
+            let html = `
+                <div class="schema-info">
+                    <div class="info-item">
+                        <div class="info-label">Argomento</div>
+                        <div class="info-value">${schema.subject}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tipo di Schema</div>
+                        <div class="info-value" style="text-transform: capitalize;">${schema.type}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Difficoltà</div>
+                        <div class="info-value" style="text-transform: capitalize;">${schema.difficulty}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Stile di Apprendimento</div>
+                        <div class="info-value" style="text-transform: capitalize;">${schema.learning_style}</div>
+                    </div>
+                </div>
+                
+                <div class="schema-preview">
+                    <h3>✨ Schema Personalizzato Generato</h3>
+                    <p>Il tuo schema è stato creato basandosi su ${schema.metadata.total_answers} risposte personalizzate che hai fornito.</p>
+                    <p><strong>Tipo:</strong> <span style="text-transform: capitalize;">${schema.type}</span></p>
+                    <p><strong>Obiettivo di Apprendimento:</strong> ${schema.learning_objectives[0] || 'Apprendimento generale'}</p>
+                    
+                    <div style="background: rgba(102, 126, 234, 0.1); border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+                        <h4 style="color: #667eea; margin-top: 0;">📌 Contenuto Generato</h4>
+                        <p>Lo schema ${schema.type} che hai richies to è stato creato per:</p>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ Adattarsi al tuo livello di conoscenza (${schema.knowledge_level})</li>
+                            <li>✓ Utilizzare il tuo stile di apprendimento preferito (${schema.learning_style})</li>
+                            <li>✓ Raggiungere il tuo obiettivo: ${schema.learning_objectives[0] || 'apprendimento personale'}</li>
+                            <li>✓ Mantenere il livello di difficoltà ${schema.difficulty}</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            document.getElementById('resultContainer').classList.add('active');
+            currentSchema = schema;
         }
     </script>
 </body>

@@ -1,12 +1,12 @@
-# Responsabile: GABRIELE - Sistema IA per Generazione Schemi
-# Modulo avanzato per la creazione di schemi di apprendimento personalizzati
+# Responsabile: GABRIELE - Sistema IA Avanzato per Generazione Schemi
+# Modulo avanzato per la creazione di schemi di apprendimento personalizzati con sistema di dialogo
 
 import random
 import json
 import math
 from datetime import datetime
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass
+from typing import Dict, List, Any, Optional, Tuple
+from dataclasses import dataclass, field
 from enum import Enum
 
 class SchemaType(Enum):
@@ -17,6 +17,7 @@ class SchemaType(Enum):
     LOGIC = "logic"
     LANGUAGE = "language"
     SCIENCE = "science"
+    CUSTOM = "custom"
 
 class Difficulty(Enum):
     """Livelli di difficoltà"""
@@ -33,6 +34,16 @@ class SchemaConfig:
     age_group: Optional[str] = None
     learning_objectives: Optional[List[str]] = None
     custom_params: Optional[Dict[str, Any]] = None
+    
+@dataclass
+class DialogQuestion:
+    """Domanda nel dialogo interattivo"""
+    id: str
+    question: str
+    question_type: str  # 'text', 'multiple_choice', 'range'
+    options: Optional[List[str]] = None
+    context: str = ""
+    importance: int = 1  # 1-3
 
 class AISchemaGenerator:
     """Sistema IA avanzato per la generazione di schemi di apprendimento"""
