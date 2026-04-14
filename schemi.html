@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>brainplaying — Home</title>
+  <title>brainplaying — Schemi</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="dashboard.css" />
-
+  <link rel="stylesheet" href="css/schemi.css" />
 </head>
 <body>
   <header class="nav">
@@ -23,7 +23,7 @@
       <span>brainplaying</span>
     </a>
     <div class="nav-actions">
-      <button class="nav-link" type="button">Home</button>
+      <a href="home.html" class="nav-link">Home</a>
       <a href="schemi.html" class="nav-link">Schemi</a>
       <a href="foto.html" class="nav-link">Foto</a>
       <button class="nav-link" type="button">Sessioni</button>
@@ -91,56 +91,86 @@
     </aside>
 
     <main class="main-content">
-
-    <div class="hero-grid">
-      <section class="hero-card">
-        <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Dashboard</p>
-        <h1>Una home pulita per il tuo studio quotidiano</h1>
-        <p>brainplaying ti aiuta a trasformare la tua routine in produttività: navigazione rapida, focus strutturato e progresso ben visibile.</p>
-        <p id="guestNotice" class="guest-note" style="display:none;margin-top:1rem;"></p>
+      <section class="hero-card" style="margin-bottom: 2rem;">
+        <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Schemi</p>
+        <h1>Gestisci i tuoi schemi in una pagina dedicata</h1>
+        <p>In questa pagina trovi il muro delle idee, l'upload drag & drop e le flashcard interattive per approfondire i tuoi appunti.</p>
         <div class="hero-actions">
-          <button class="hero-button" type="button">Avvia sessione</button>
-          <button class="secondary-button" type="button">Visualizza relazioni</button>
+          <a href="home.html" class="hero-button" style="text-decoration:none;">Torna alla home</a>
         </div>
       </section>
 
-    </div>
+      <section class="main-schemi">
+        <h2 style="margin: 0 0 1.5rem; font-size: 2rem; color: var(--text);">I tuoi schemi</h2>
 
-    <section class="feature-card">
-      <h2>Scopri brainplaying</h2>
-      <p>Rimani concentrato, organizza le tue sessioni e monitora i progressi con un’esperienza studiata per lo studio produttivo.</p>
-      <ul class="feature-list">
-        <li>Sessioni guidate per mantenere il ritmo</li>
-        <li>Ripetizione spaziata per fissare i concetti</li>
-        <li>Metascore di progressi e obiettivi giornalieri</li>
-        <li>Interfaccia pulita e focus mode</li>
-      </ul>
-    </section>
+        <div class="upload-section">
+          <div class="drop-zone" id="dropZone">
+            <div class="drop-zone-content">
+              <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📸</span>
+              <h3 style="margin: 0 0 0.5rem; color: var(--text); font-weight: 600;">Carica i tuoi appunti</h3>
+              <p style="margin: 0 0 1rem; color: var(--muted); font-size: 0.95rem;">Trascina qui le tue immagini oppure clicca per selezionare</p>
+              <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+              <button class="upload-btn" id="uploadBtn" type="button">Seleziona Immagini</button>
+            </div>
+          </div>
+          <p style="margin: 1rem 0 0; color: var(--muted); font-size: 0.85rem; text-align: center;">JPG, PNG o PDF • Max 10MB per file</p>
+        </div>
 
-    <div class="dashboard-grid">
-      <a href="schemi.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
-        <header>
-          <h2>Schemi</h2>
-        </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata agli schemi</p>
-      </a>
-      <a href="foto.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
-        <header>
-          <h2>Foto</h2>
-        </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Carica una foto per ricevere spiegazioni e quiz.</p>
-      </a>
+        <div class="schemi-grid" id="schemiGrid">
+          <!-- Le schede caricate saranno aggiunte qui -->
+        </div>
 
-      <article class="session-card">
-        <header>
-          <h2>Classifica</h2>
-        </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Contenuto in arrivo...</p>
-      </article>
-    </div>
+        <h3 style="margin: 3rem 0 1.5rem; font-size: 1.3rem; color: var(--text);">Flashcard Interattive</h3>
+        <div class="flashcards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          <div class="flashcard-schema">
+            <div class="flashcard-central">
+              <p class="flashcard-title">Processo Biologico</p>
+              <p class="flashcard-concept">Fotosintesi</p>
+              <p class="flashcard-hint">Clicca per scoprire i concetti collegati</p>
+            </div>
+            <div class="flashcard-connections">
+              <div class="connection-item"><span class="connection-icon">☀️</span><p class="connection-label">Energia Solare</p></div>
+              <div class="connection-item"><span class="connection-icon">🍃</span><p class="connection-label">Clorofilla</p></div>
+              <div class="connection-item"><span class="connection-icon">💧</span><p class="connection-label">Acqua</p></div>
+              <div class="connection-item"><span class="connection-icon">CO₂</span><p class="connection-label">Biossido di Carbonio</p></div>
+              <div class="connection-item"><span class="connection-icon">🍬</span><p class="connection-label">Glucosio</p></div>
+              <div class="connection-item"><span class="connection-icon">O₂</span><p class="connection-label">Ossigeno</p></div>
+            </div>
+          </div>
+
+          <div class="flashcard-schema">
+            <div class="flashcard-central">
+              <p class="flashcard-title">Ecologia</p>
+              <p class="flashcard-concept">Ciclo del Carbonio</p>
+              <p class="flashcard-hint">Clicca per scoprire i concetti collegati</p>
+            </div>
+            <div class="flashcard-connections">
+              <div class="connection-item"><span class="connection-icon">🌍</span><p class="connection-label">Atmosfera</p></div>
+              <div class="connection-item"><span class="connection-icon">🌲</span><p class="connection-label">Biosfera</p></div>
+              <div class="connection-item"><span class="connection-icon">⛰️</span><p class="connection-label">Litosfera</p></div>
+              <div class="connection-item"><span class="connection-icon">💨</span><p class="connection-label">Respirazione</p></div>
+              <div class="connection-item"><span class="connection-icon">🔥</span><p class="connection-label">Combustione</p></div>
+            </div>
+          </div>
+
+          <div class="flashcard-schema">
+            <div class="flashcard-central">
+              <p class="flashcard-title">Algebra</p>
+              <p class="flashcard-concept">Teorema di Pitagora</p>
+              <p class="flashcard-hint">Clicca per scoprire i concetti collegati</p>
+            </div>
+            <div class="flashcard-connections">
+              <div class="connection-item"><span class="connection-icon">📐</span><p class="connection-label">Triangoli</p></div>
+              <div class="connection-item"><span class="connection-icon">∟</span><p class="connection-label">Angoli Retti</p></div>
+              <div class="connection-item"><span class="connection-icon">²</span><p class="connection-label">Quadrati</p></div>
+              <div class="connection-item"><span class="connection-icon">📏</span><p class="connection-label">Lati</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <footer class="home-footer">
-        <p>Pronto a continuare? Torna al <a href="index.html">login</a> o resta sulla dashboard.</p>
+        <p>Vai a <a href="home.html">home</a> o visita il tuo <a href="profile.html">profilo</a>.</p>
         <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
       </footer>
     </main>
@@ -151,7 +181,6 @@
       window.location.href = 'index.html';
     }
 
-    // HAMBURGER MENU
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const sidebar = document.querySelector('.sidebar');
     const body = document.body;
@@ -162,7 +191,6 @@
       body.classList.toggle('menu-open');
     });
 
-    // Chiudi il menu quando clicchi sull'overlay
     body.addEventListener('click', (e) => {
       if (body.classList.contains('menu-open') && !sidebar.contains(e.target) && e.target !== hamburgerBtn) {
         sidebar.classList.remove('active');
@@ -170,7 +198,6 @@
       }
     });
 
-    // Chiudi il menu quando clicchi su un elemento della sidebar
     sidebar.addEventListener('click', (e) => {
       if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
         sidebar.classList.remove('active');
@@ -180,9 +207,6 @@
 
     const themeToggle = document.getElementById('themeToggle');
     const navAvatar = document.getElementById('navAvatar');
-    const guestNotice = document.getElementById('guestNotice');
-    const heroButton = document.querySelector('.hero-button');
-    const secondaryButton = document.querySelector('.secondary-button');
 
     const user = {
       username: sessionStorage.getItem('username') || 'Studente',
@@ -213,17 +237,9 @@
     function updateGuestMode() {
       const role = sessionStorage.getItem('role') || 'user';
       if (role === 'guest') {
-        if (guestNotice) {
-          guestNotice.style.display = 'block';
-          guestNotice.textContent = 'Sei connesso come ospite: alcune funzionalità sono limitate e le modifiche al profilo non saranno salvate.';
-        }
-        if (heroButton) {
-          heroButton.disabled = true;
-          heroButton.textContent = 'Non disponibile per ospiti';
-        }
-        if (secondaryButton) {
-          secondaryButton.disabled = true;
-          secondaryButton.textContent = 'Area riservata agli utenti';
+        if (themeToggle) {
+          themeToggle.disabled = true;
+          themeToggle.setAttribute('aria-label', 'Funzionalità non disponibile in modalità ospite');
         }
       }
     }
@@ -243,5 +259,6 @@
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
   </script>
+  <script src="js/schemi.js"></script>
 </body>
 </html>
