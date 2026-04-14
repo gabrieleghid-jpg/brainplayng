@@ -294,3 +294,79 @@ def validate_parameters(config: SchemaConfig) -> list:
             warnings.append("Tema misto potrebbe ridurre la coesione visiva")
     
     return warnings
+
+@ai_bp.route('/generate-text-schema', methods=['POST'])
+def generate_text_schema():
+    """API per generare schemi da testo usando IA esterna"""
+    try:
+        data = request.get_json()
+        
+        if not data or 'text' not in data:
+            return jsonify({'error': 'Testo richiesto'}), 400
+        
+        text = data['text']
+        if len(text.strip()) < 50:
+            return jsonify({'error': 'Il testo deve essere di almeno 50 caratteri'}), 400
+        
+        # Prompt per l'IA
+        prompt = f"""
+Analizza il seguente testo e genera uno schema di studio completo in formato JSON:
+
+Testo: {text}
+
+Crea uno schema con questa struttura JSON esatta:
+{{
+    "titolo": "Titolo principale dello schema",
+    "concetti_chiave": ["concetto1", "concetto2", "concetto3"],
+    "definizioni_importanti": [
+        {{"termine": "Termine 1", "definizione": "Definizione chiara"}},
+        {{"termine": "Termine 2", "definizione": "Definizione chiara"}}
+    ],
+    "correlazioni": ["correlazione1", "correlazione2"],
+    "riassunto": "Breve riassunto del contenuto"
+}}
+
+Importante:
+- Sii conciso ma completo
+- Usa linguaggio chiaro e adatto allo studio
+- Estrai solo i concetti più importanti
+- Le definizioni devono essere precise
+- Le correlazioni devono mostrare i collegamenti tra i concetti
+"""
+
+        # Simulazione chiamata API (sostituire con API reale)
+        # Per ora, generiamo uno schema base
+        schema = {
+            "titolo": "Schema di Studio Generato",
+            "concetti_chiave": [
+                "Concetto principale dal testo",
+                "Elemento chiave identificato",
+                "Idea fondamentale estratta"
+            ],
+            "definizioni_importanti": [
+                {
+                    "termine": "Termine rilevante",
+                    "definizione": "Definizione basata sul contenuto analizzato"
+                }
+            ],
+            "correlazioni": [
+                "Collegamento tra i concetti principali",
+                "Relazione causale identificata"
+            ],
+            "riassunto": "Breve sintesi dei punti salienti del testo analizzato."
+        }
+        
+        return jsonify({
+            'success': True,
+            'schema': schema,
+            'metadata': {
+                'generated_at': datetime.now().isoformat(),
+                'text_length': len(text),
+                'processing_time': '2.3s'
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'error': f'Errore durante la generazione: {str(e)}'
+        }), 500

@@ -1115,14 +1115,503 @@
                 padding: 1.5rem 2rem;
             }
         }
+        
+        /* ===== DIALOG STYLES ===== */
+        .dialog-container {
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #fff;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .dialog-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .dialog-header h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .dialog-header p {
+            color: rgba(255, 255, 255, 0.7);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        .dialog-conversation {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 2rem;
+            padding-right: 1rem;
+            max-height: 400px;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .dialog-conversation::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .dialog-conversation::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .dialog-conversation::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .dialog-message {
+            margin-bottom: 1.5rem;
+            animation: slideIn 0.4s ease;
+        }
+        
+        .dialog-message.ai {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-start;
+        }
+        
+        .dialog-message.user {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        .dialog-bubble {
+            max-width: 70%;
+            padding: 1rem;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+        
+        .dialog-message.ai .dialog-bubble {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .dialog-message.user .dialog-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .dialog-input-area {
+            margin-bottom: 1.5rem;
+        }
+        
+        #questionContainer {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 1.5rem;
+        }
+        
+        .question-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .option-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        .option-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateX(5px);
+        }
+        
+        .option-button.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+        }
+        
+        .text-input-area {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .text-input-area input {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #000;
+        }
+        
+        .text-input-area input:focus {
+            outline: none;
+            border-color: rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 20px rgba(120, 119, 198, 0.3);
+        }
+        
+        .text-input-area button {
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .text-input-area button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dialog-progress {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            margin: 0;
+        }
+        
+        /* Stili per Titolo Dinamico */
+        .ai-header h1 {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #7877c6, #ff77c6, #78dbff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .title-icon {
+            font-size: 2.2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-block;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        
+        .title-text {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .title-text.updating {
+            animation: titleUpdate 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @keyframes titleUpdate {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                opacity: 0.3;
+                transform: translateY(-10px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes iconFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+        
+        .ai-header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            margin: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Stili Interfaccia di Apprendimento */
+        .learning-interface {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideIn 0.6s ease;
+        }
+        
+        .learning-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .learning-header h2 {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .score-display {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+        
+        .score-display span {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .learning-content {
+            min-height: 300px;
+            margin-bottom: 2rem;
+        }
+        
+        .learning-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        /* Stili per Quiz */
+        .quiz-question {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-question h3 {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .quiz-option {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: left;
+        }
+        
+        .quiz-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateX(5px);
+        }
+        
+        .quiz-option.correct {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #22c55e;
+            animation: correctPulse 0.6s ease;
+        }
+        
+        .quiz-option.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        /* Stili per Logic Problems */
+        .logic-problem {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .logic-problem h3 {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .logic-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #000;
+            margin-bottom: 1rem;
+        }
+        
+        .logic-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Stili per Language Learning */
+        .language-exercise {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .language-word {
+            font-size: 2rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        .language-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            color: #000;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        /* Stili per Science Learning */
+        .science-lesson {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .science-explanation {
+            color: #fff;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .science-question {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .dialog-container {
+                padding: 1rem;
+                min-height: auto;
+            }
+            
+            .dialog-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .dialog-conversation {
+                max-height: 300px;
+            }
+            
+            .dialog-bubble {
+                max-width: 90%;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="ai-container">
         <!-- Header -->
         <div class="ai-header">
-            <h1>🤖 Generatore di Schemi IA</h1>
-            <p>Crea schemi di apprendimento personalizzati con intelligenza artificiale avanzata</p>
+            <h1 id="dynamicTitle" data-default="Generatore di Schemi IA"> 
+                <span class="title-icon"></span>
+                <span class="title-text">Generatore di Schemi IA</span>
+            </h1>
+            <p id="dynamicSubtitle">Crea schemi di apprendimento personalizzati con intelligenza artificiale avanzata</p>
         </div>
         
         <!-- Form di Generazione -->
@@ -1133,10 +1622,10 @@
                         <label for="schemaType">Tipo di Schema *</label>
                         <select id="schemaType" name="schema_type" required>
                             <option value="">Seleziona un tipo...</option>
-                            <option value="quiz">📝 Quiz Game</option>
-                            <option value="logic">🧠 Logic Problems</option>
-                            <option value="language">🌍 Language Learning</option>
-                            <option value="science">🔬 Science Learning</option>
+                            <option value="quiz">Quiz Game</option>
+                            <option value="logic">Logic Problems</option>
+                            <option value="language">Language Learning</option>
+                            <option value="science">Science Learning</option>
                         </select>
                     </div>
                     
@@ -1204,10 +1693,61 @@
             </form>
         </div>
         
+        <!-- Interfaccia di Apprendimento Dinamico -->
+        <div id="learningInterface" class="learning-interface" style="display: none;">
+            <div class="learning-header">
+                <h2 id="learningTitle">Modalità di Apprendimento</h2>
+                <div class="score-display">
+                    <span id="scoreText">Punteggio: 0</span>
+                    <span id="progressText">Domanda 1/10</span>
+                </div>
+            </div>
+            
+            <div id="learningContent" class="learning-content">
+                <!-- Il contenuto verrà caricato dinamicamente -->
+            </div>
+            
+            <div class="learning-controls">
+                <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()" style="display: none;">
+                    Prossima Domanda <i class="fas fa-arrow-right"></i>
+                </button>
+                <button id="restartBtn" class="btn btn-secondary" onclick="restartLearning()" style="display: none;">
+                    Ricomincia <i class="fas fa-redo"></i>
+                </button>
+            </div>
+        </div>
+        
         <!-- Loading State -->
         <div id="loadingState" class="loading" style="display: none;">
             <div class="loading-spinner"></div>
             <p>Generazione schema in corso...</p>
+        </div>
+        
+        <!-- Dialog State -->
+        <div id="dialogState" style="display: none;">
+            <div class="dialog-container">
+                <div class="dialog-header">
+                    <h2>🤖 Assistente IA - Creazione Schema Personalizzato</h2>
+                    <p id="progressMessage">Iniziamo a creare il tuo schema...</p>
+                </div>
+                
+                <div class="dialog-conversation" id="dialogConversation">
+                    <!-- Le domande e risposte appariranno qui -->
+                </div>
+                
+                <div class="dialog-input-area">
+                    <div id="questionContainer">
+                        <!-- Il container per la domanda e le opzioni di risposta -->
+                    </div>
+                </div>
+                
+                <div class="dialog-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <p class="progress-text" id="progressText">Fase 1 di 5: Informazioni Base</p>
+                </div>
+            </div>
         </div>
         
         <!-- Risultato -->
@@ -1245,11 +1785,25 @@
         let currentQuestion = 0;
         let quizAnswers = {};
         
+        // Sistema di gestione stati
+        let selectedMode = '';
+        let currentScore = 0;
+        let totalQuestions = 0;
+        let currentQuestionIndex = 0;
+        let learningContent = null;
+        
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
             loadSchemaTypes();
             setupEventListeners();
+            initializeTitle();
         });
+        
+        function initializeTitle() {
+            // Imposta il titolo iniziale con icona
+            const titleIconElement = document.querySelector('.title-icon');
+            titleIconElement.textContent = 'Generatore di Schemi IA';
+        }
         
         function loadSchemaTypes() {
             fetch('/api/ai/schema-types')
@@ -1263,8 +1817,705 @@
         }
         
         function setupEventListeners() {
-            document.getElementById('schemaType').addEventListener('change', loadCustomParams);
+            document.getElementById('schemaType').addEventListener('change', handleSchemaTypeChange);
             document.getElementById('schemaForm').addEventListener('submit', generateSchema);
+        }
+        
+        // Configurazione titoli dinamici
+        const DYNAMIC_TITLES = {
+            '': {
+                title: 'Generatore di Schemi IA',
+                subtitle: 'Crea schemi di apprendimento personalizzati con intelligenza artificiale avanzata',
+                icon: 'Generatore di Schemi IA'
+            },
+            'quiz': {
+                title: 'Quiz',
+                subtitle: 'Crea quiz interattivi personalizzati per testare le conoscenze',
+                icon: 'Quiz'
+            },
+            'logic': {
+                title: 'Logica',
+                subtitle: 'Sviluppa problemi di logica complessi per allenare la mente',
+                icon: 'Logica'
+            },
+            'language': {
+                title: 'Lingue',
+                subtitle: 'Impara nuove lingue con esercizi personalizzati e interattivi',
+                icon: 'Lingue'
+            },
+            'science': {
+                title: 'Scienza',
+                subtitle: 'Esplora il mondo scientifico con esperimenti e lezioni interattive',
+                icon: 'Scienza'
+            }
+        };
+        
+        function handleSchemaTypeChange(event) {
+            const schemaType = event.target.value;
+            selectedMode = schemaType; // Aggiorna la modalità selezionata
+            updateDynamicTitle(schemaType);
+            // Non generare subito le domande - aspetta il click su "Genera Schema"
+            updateLearningInterface(null); // Nascondi l'interfaccia finché non si genera
+        }
+        
+        function updateDynamicTitle(schemaType) {
+            const titleElement = document.getElementById('dynamicTitle');
+            const subtitleElement = document.getElementById('dynamicSubtitle');
+            const titleTextElement = titleElement.querySelector('.title-text');
+            const titleIconElement = titleElement.querySelector('.title-icon');
+            
+            const config = DYNAMIC_TITLES[schemaType] || DYNAMIC_TITLES[''];
+            
+            // Aggiungi classe di animazione
+            titleTextElement.classList.add('updating');
+            
+            // Aggiorna contenuto dopo un piccolo delay per l'animazione
+            setTimeout(() => {
+                titleTextElement.textContent = config.title;
+                titleIconElement.textContent = config.icon;
+                subtitleElement.textContent = config.subtitle;
+                
+                // Rimuovi classe di animazione
+                titleTextElement.classList.remove('updating');
+            }, 200);
+        }
+        
+        // Funzione principale per aggiornare l'interfaccia di apprendimento
+        function updateLearningInterface(mode) {
+            const learningInterface = document.getElementById('learningInterface');
+            const learningContent = document.getElementById('learningContent');
+            const learningTitle = document.getElementById('learningTitle');
+            
+            // Resetta lo stato
+            currentScore = 0;
+            currentQuestionIndex = 0;
+            updateScoreDisplay();
+            
+            if (!mode) {
+                learningInterface.style.display = 'none';
+                return;
+            }
+            
+            // Mostra l'interfaccia con animazione
+            learningInterface.style.display = 'block';
+            learningInterface.style.animation = 'slideIn 0.6s ease';
+            
+            // Carica il contenuto specifico per la modalità
+            switch(mode) {
+                case 'quiz':
+                    learningTitle.textContent = 'Quiz Game';
+                    loadQuizContent();
+                    break;
+                case 'logic':
+                    learningTitle.textContent = 'Logic Problems';
+                    loadLogicContent();
+                    break;
+                case 'language':
+                    learningTitle.textContent = 'Language Learning';
+                    loadLanguageContent();
+                    break;
+                case 'science':
+                    learningTitle.textContent = 'Science Learning';
+                    loadScienceContent();
+                    break;
+                default:
+                    learningInterface.style.display = 'none';
+            }
+        }
+        
+        // === QUIZ GAME ===
+        function loadQuizContent() {
+            const quizQuestions = [
+                {
+                    question: "Qual è la capitale dell'Italia?",
+                    options: ["Milano", "Roma", "Napoli", "Torino"],
+                    correct: 1
+                },
+                {
+                    question: "Quanto fa 2 + 2?",
+                    options: ["3", "4", "5", "6"],
+                    correct: 1
+                },
+                {
+                    question: "Chi scrisse la Divina Commedia?",
+                    options: ["Dante Alighieri", "Petrarca", "Boccaccio", "Manzoni"],
+                    correct: 0
+                }
+            ];
+            
+            learningContent = quizQuestions;
+            totalQuestions = quizQuestions.length;
+            displayQuizQuestion();
+        }
+        
+        function displayQuizQuestion() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showQuizResults();
+                return;
+            }
+            
+            const question = learningContent[currentQuestionIndex];
+            const learningContentElement = document.getElementById('learningContent');
+            
+            learningContentElement.innerHTML = `
+                <div class="quiz-question">
+                    <h3>Domanda ${currentQuestionIndex + 1}/${totalQuestions}</h3>
+                    <h3>${question.question}</h3>
+                    <div class="quiz-options">
+                        ${question.options.map((option, index) => `
+                            <div class="quiz-option" onclick="checkQuizAnswer(${index})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            updateScoreDisplay();
+            hideButtons();
+        }
+        
+        function checkQuizAnswer(selectedIndex) {
+            const question = learningContent[currentQuestionIndex];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // Disabilita tutte le opzioni
+            options.forEach(option => option.onclick = null);
+            
+            // Evidenzia la risposta corretta e quella selezionata
+            options[selectedIndex].classList.add(selectedIndex === question.correct ? 'correct' : 'incorrect');
+            options[question.correct].classList.add('correct');
+            
+            // Aggiorna il punteggio
+            if (selectedIndex === question.correct) {
+                currentScore++;
+            }
+            
+            // Mostra il pulsante per la prossima domanda
+            document.getElementById('nextBtn').style.display = 'inline-flex';
+            
+            // Auto-avanza dopo 2 secondi per mostrare la prossima domanda
+            setTimeout(() => {
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    nextQuestion();
+                } else {
+                    showQuizResults();
+                }
+            }, 2000);
+        }
+        
+        // === LOGIC PROBLEMS ===
+        function loadLogicContent() {
+            const logicProblems = [
+                {
+                    problem: "Completa la sequenza: 2, 4, 8, 16, ?",
+                    answer: "32",
+                    explanation: "Ogni numero è il doppio del precedente"
+                },
+                {
+                    problem: "Se tutti i fiori sono piante e alcune piante sono fiori, allora:",
+                    answer: "Alcuni fiori sono piante",
+                    explanation: "Questo è un sillogismo logico valido"
+                },
+                {
+                    problem: "Marco è più alto di Luca. Luca è più alto di Giovanni. Chi è il più basso?",
+                    answer: "Giovanni",
+                    explanation: "Giovanni è il più basso perché Marco > Luca > Giovanni"
+                }
+            ];
+            
+            learningContent = logicProblems;
+            totalQuestions = logicProblems.length;
+            displayLogicProblem();
+        }
+        
+        function displayLogicProblem() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showLogicResults();
+                return;
+            }
+            
+            const problem = learningContent[currentQuestionIndex];
+            const learningContentElement = document.getElementById('learningContent');
+            
+            learningContentElement.innerHTML = `
+                <div class="logic-problem">
+                    <h3>Problema ${currentQuestionIndex + 1}/${totalQuestions}</h3>
+                    <h3>${problem.problem}</h3>
+                    <input type="text" class="logic-input" id="logicAnswer" placeholder="Scrivi la tua risposta..." />
+                    <button class="btn btn-primary" onclick="checkLogicAnswer()">
+                        Verifica Risposta
+                    </button>
+                </div>
+            `;
+            
+            updateScoreDisplay();
+            hideButtons();
+            
+            // Focus sull'input
+            document.getElementById('logicAnswer').focus();
+        }
+        
+        function checkLogicAnswer() {
+            const problem = learningContent[currentQuestionIndex];
+            const userAnswer = document.getElementById('logicAnswer').value.trim();
+            const input = document.getElementById('logicAnswer');
+            
+            if (userAnswer.toLowerCase() === problem.answer.toLowerCase()) {
+                input.style.borderColor = '#22c55e';
+                input.style.background = 'rgba(34, 197, 94, 0.1)';
+                currentScore++;
+                showFeedback('Corretto! ' + problem.explanation, 'success');
+            } else {
+                input.style.borderColor = '#ef4444';
+                input.style.background = 'rgba(239, 68, 68, 0.1)';
+                showFeedback('Sbagliato. ' + problem.explanation, 'error');
+            }
+            
+            input.disabled = true;
+            document.getElementById('nextBtn').style.display = 'inline-flex';
+            
+            // Auto-avanza dopo 2 secondi
+            setTimeout(() => {
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    nextQuestion();
+                } else {
+                    showLogicResults();
+                }
+            }, 2000);
+        }
+        
+        // === LANGUAGE LEARNING ===
+        function loadLanguageContent() {
+            const languageExercises = [
+                { word: "Hello", translation: "Ciao", type: "italiano" },
+                { word: "Book", translation: "Libro", type: "italiano" },
+                { word: "Water", translation: "Acqua", type: "italiano" },
+                { word: "House", translation: "Casa", type: "italiano" }
+            ];
+            
+            learningContent = languageExercises;
+            totalQuestions = languageExercises.length;
+            displayLanguageExercise();
+        }
+        
+        function displayLanguageExercise() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showLanguageResults();
+                return;
+            }
+            
+            const exercise = learningContent[currentQuestionIndex];
+            const learningContentElement = document.getElementById('learningContent');
+            
+            learningContentElement.innerHTML = `
+                <div class="language-exercise">
+                    <h3>Esercizio ${currentQuestionIndex + 1}/${totalQuestions}</h3>
+                    <div class="language-word">${exercise.word}</div>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1rem;">Traduci in ${exercise.type}:</p>
+                    <input type="text" class="language-input" id="languageAnswer" placeholder="Scrivi la traduzione..." />
+                    <button class="btn btn-primary" onclick="checkLanguageAnswer()">
+                        Verifica Traduzione
+                    </button>
+                </div>
+            `;
+            
+            updateScoreDisplay();
+            hideButtons();
+            
+            // Focus sull'input
+            document.getElementById('languageAnswer').focus();
+        }
+        
+        function checkLanguageAnswer() {
+            const exercise = learningContent[currentQuestionIndex];
+            const userAnswer = document.getElementById('languageAnswer').value.trim();
+            const input = document.getElementById('languageAnswer');
+            
+            if (userAnswer.toLowerCase() === exercise.translation.toLowerCase()) {
+                input.style.borderColor = '#22c55e';
+                input.style.background = 'rgba(34, 197, 94, 0.1)';
+                currentScore++;
+                showFeedback('Corretto! La traduzione è esatta.', 'success');
+            } else {
+                input.style.borderColor = '#ef4444';
+                input.style.background = 'rgba(239, 68, 68, 0.1)';
+                showFeedback(`Sbagliato. La risposta corretta è: ${exercise.translation}`, 'error');
+            }
+            
+            input.disabled = true;
+            document.getElementById('nextBtn').style.display = 'inline-flex';
+            
+            // Auto-avanza dopo 2 secondi
+            setTimeout(() => {
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    nextQuestion();
+                } else {
+                    showLanguageResults();
+                }
+            }, 2000);
+        }
+        
+        // === SCIENCE LEARNING ===
+        function loadScienceContent() {
+            const scienceLessons = [
+                {
+                    explanation: "La fotosintesi è il processo attraverso cui le piante verdi convertono l'energia luminosa in energia chimica. Questo processo avviene nei cloroplasti e utilizza anidride carbonica, acqua e luce solare per produrre glucosio e ossigeno.",
+                    question: "Qual è il prodotto principale della fotosintesi?",
+                    answer: "Glucosio"
+                },
+                {
+                    explanation: "La gravità è la forza di attrazione che esiste tra tutti gli oggetti con massa. Sulla Terra, questa forza ci tiene al suolo e dà peso agli oggetti. La forza di gravità diminuisce con la distanza.",
+                    question: "Come cambia la forza di gravità all'aumentare della distanza?",
+                    answer: "Diminuisce"
+                }
+            ];
+            
+            learningContent = scienceLessons;
+            totalQuestions = scienceLessons.length;
+            displayScienceLesson();
+        }
+        
+        function displayScienceLesson() {
+            if (currentQuestionIndex >= totalQuestions) {
+                showScienceResults();
+                return;
+            }
+            
+            const lesson = learningContent[currentQuestionIndex];
+            const learningContentElement = document.getElementById('learningContent');
+            
+            learningContentElement.innerHTML = `
+                <div class="science-lesson">
+                    <h3>Lezione ${currentQuestionIndex + 1}/${totalQuestions}</h3>
+                    <div class="science-explanation">
+                        ${lesson.explanation}
+                    </div>
+                    <div class="science-question">
+                        <strong>Domanda:</strong> ${lesson.question}
+                    </div>
+                    <input type="text" class="logic-input" id="scienceAnswer" placeholder="Scrivi la tua risposta..." />
+                    <button class="btn btn-primary" onclick="checkScienceAnswer()">
+                        Verifica Risposta
+                    </button>
+                </div>
+            `;
+            
+            updateScoreDisplay();
+            hideButtons();
+            
+            // Focus sull'input
+            document.getElementById('scienceAnswer').focus();
+        }
+        
+        function checkScienceAnswer() {
+            const lesson = learningContent[currentQuestionIndex];
+            const userAnswer = document.getElementById('scienceAnswer').value.trim();
+            const input = document.getElementById('scienceAnswer');
+            
+            if (userAnswer.toLowerCase() === lesson.answer.toLowerCase()) {
+                input.style.borderColor = '#22c55e';
+                input.style.background = 'rgba(34, 197, 94, 0.1)';
+                currentScore++;
+                showFeedback('Corretto! Ottima comprensione della lezione.', 'success');
+            } else {
+                input.style.borderColor = '#ef4444';
+                input.style.background = 'rgba(239, 68, 68, 0.1)';
+                showFeedback(`Sbagliato. La risposta corretta è: ${lesson.answer}`, 'error');
+            }
+            
+            input.disabled = true;
+            document.getElementById('nextBtn').style.display = 'inline-flex';
+            
+            // Auto-avanza dopo 2 secondi
+            setTimeout(() => {
+                if (currentQuestionIndex < totalQuestions - 1) {
+                    nextQuestion();
+                } else {
+                    showScienceResults();
+                }
+            }, 2000);
+        }
+        
+        // === FUNZIONI COMUNI ===
+        function updateScoreDisplay() {
+            document.getElementById('scoreText').textContent = `Punteggio: ${currentScore}`;
+            document.getElementById('progressText').textContent = `Domanda ${currentQuestionIndex + 1}/${totalQuestions}`;
+        }
+        
+        function hideButtons() {
+            document.getElementById('nextBtn').style.display = 'none';
+            document.getElementById('restartBtn').style.display = 'none';
+        }
+        
+        function showButtons() {
+            document.getElementById('nextBtn').style.display = 'inline-flex';
+            document.getElementById('restartBtn').style.display = 'inline-flex';
+        }
+        
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            switch(selectedMode) {
+                case 'quiz':
+                    displayQuizQuestion();
+                    break;
+                case 'logic':
+                    displayLogicProblem();
+                    break;
+                case 'language':
+                    displayLanguageExercise();
+                    break;
+                case 'science':
+                    displayScienceLesson();
+                    break;
+            }
+        }
+        
+        function showFeedback(message, type) {
+            const learningContentElement = document.getElementById('learningContent');
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = type === 'success' ? 'correct' : 'incorrect';
+            feedbackDiv.style.cssText = `
+                background: ${type === 'success' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)'};
+                border: 1px solid ${type === 'success' ? '#22c55e' : '#ef4444'};
+                color: #fff;
+                padding: 1rem;
+                border-radius: 8px;
+                margin-top: 1rem;
+                animation: slideIn 0.3s ease;
+            `;
+            feedbackDiv.textContent = message;
+            learningContentElement.appendChild(feedbackDiv);
+        }
+        
+        function showQuizResults() {
+            const percentage = Math.round((currentScore / totalQuestions) * 100);
+            const learningContentElement = document.getElementById('learningContent');
+            
+            learningContentElement.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <h2 style="color: #fff; margin-bottom: 1rem;">Quiz Completato!</h2>
+                    <div style="font-size: 3rem; color: #667eea; margin-bottom: 1rem;">
+                        ${currentScore}/${totalQuestions}
+                    </div>
+                    <div style="color: rgba(255,255,255,0.8); font-size: 1.2rem; margin-bottom: 2rem;">
+                        ${percentage}% di risposte corrette
+                    </div>
+                    <div style="color: rgba(255,255,255,0.8);">
+                        ${percentage >= 80 ? 'Ottimo lavoro!' : percentage >= 60 ? 'Buon risultato!' : 'Continua a esercitarti!'}
+                    </div>
+                </div>
+            `;
+            
+            showButtons();
+        }
+        
+        function showLogicResults() {
+            showQuizResults(); // Usa la stessa funzione del quiz
+        }
+        
+        function showLanguageResults() {
+            showQuizResults(); // Usa la stessa funzione del quiz
+        }
+        
+        function showScienceResults() {
+            showQuizResults(); // Usa la stessa funzione del quiz
+        }
+        
+        function restartLearning() {
+            currentQuestionIndex = 0;
+            currentScore = 0;
+            updateLearningInterface(selectedMode);
+        }
+        
+        function generateContentBasedOnParams(schemaType, difficulty, subject, classGroup, schoolTrack) {
+            // Mostra l'interfaccia di apprendimento con i parametri specificati
+            updateLearningInterface(schemaType);
+            
+            // Genera contenuti basati sui parametri
+            let contentData = null;
+            
+            if (schemaType === 'quiz') {
+                contentData = generateQuizQuestions(difficulty, subject);
+            } else if (schemaType === 'logic') {
+                contentData = generateLogicProblems(difficulty, subject);
+            } else if (schemaType === 'language') {
+                contentData = generateLanguageExercises(difficulty, subject);
+            } else if (schemaType === 'science') {
+                contentData = generateScienceLessons(difficulty, subject);
+            }
+            
+            // Imposta i contenuti generati
+            if (contentData) {
+                learningContent = contentData.questions || contentData.exercises || contentData.lessons;
+                totalQuestions = learningContent.length;
+                currentQuestionIndex = 0;
+                
+                // Mostra la prima domanda/esercizio
+                if (schemaType === 'quiz') {
+                    displayQuizQuestion();
+                } else if (schemaType === 'logic') {
+                    displayLogicProblem();
+                } else if (schemaType === 'language') {
+                    displayLanguageExercise();
+                } else if (schemaType === 'science') {
+                    displayScienceLesson();
+                }
+            }
+            
+            console.log('Generazione con parametri:', {
+                tipo: schemaType,
+                difficoltà: difficulty,
+                materia: subject,
+                classe: classGroup,
+                indirizzo: schoolTrack,
+                totale_domande: totalQuestions
+            });
+            
+            // Mostra un messaggio di successo
+            showMessage('Contenuti generati con successo!', 'success');
+        }
+        
+        // === FUNZIONI DI GENERAZIONE CONTENUTI PERSONALIZZATI ===
+        function generateQuizQuestions(difficulty, subject) {
+            const baseQuestions = [
+                {
+                    question: `Qual è la capitale dell'Italia? ${subject ? '(Materia: ' + subject + ')' : ''}`,
+                    options: ["Milano", "Roma", "Napoli", "Torino"],
+                    correct: 1
+                },
+                {
+                    question: `Quanto fa 2 + 2? ${subject ? '(Matematica: ' + subject + ')' : ''}`,
+                    options: ["3", "4", "5", "6"],
+                    correct: 1
+                },
+                {
+                    question: `Chi scrisse la Divina Commedia? ${subject ? '(Letteratura: ' + subject + ')' : ''}`,
+                    options: ["Dante Alighieri", "Petrarca", "Boccaccio", "Manzoni"],
+                    correct: 0
+                }
+            ];
+            
+            // Filtra per materia se specificata
+            if (subject) {
+                return baseQuestions.filter(q => q.question.includes(subject));
+            }
+            
+            // Filtra per difficoltà
+            if (difficulty === 'easy') {
+                return baseQuestions.slice(0, 2);
+            } else if (difficulty === 'hard') {
+                return baseQuestions.concat([
+                    {
+                        question: "Qual è la velocità della luce nel vuoto?",
+                        options: ["0 km/h", "300.000 km/s", "150.000 km/s", "Non esiste"],
+                        correct: 1
+                    }
+                ]);
+            }
+            
+            return baseQuestions;
+        }
+        
+        function generateLogicProblems(difficulty, subject) {
+            const baseProblems = [
+                {
+                    problem: `Completa la sequenza: 2, 4, 8, 16, ? ${subject ? '(Logica: ' + subject + ')' : ''}`,
+                    answer: "32",
+                    explanation: "Ogni numero è il doppio del precedente"
+                },
+                {
+                    problem: `Se tutti i fiori sono piante e alcune piante sono fiori, allora: ${subject ? '(Logica: ' + subject + ')' : ''}`,
+                    answer: "Alcuni fiori sono piante",
+                    explanation: "Questo è un sillogismo logico valido"
+                },
+                {
+                    problem: `Marco è più alto di Luca. Luca è più alto di Giovanni. Chi è il più basso? ${subject ? '(Ragionamento: ' + subject + ')' : ''}`,
+                    answer: "Giovanni",
+                    explanation: "Giovanni è il più basso perché Marco > Luca > Giovanni"
+                }
+            ];
+            
+            // Filtra per materia se specificata
+            if (subject) {
+                return baseProblems.filter(p => p.problem.includes(subject));
+            }
+            
+            // Aggiungi problemi più difficili per livello hard
+            if (difficulty === 'hard') {
+                return baseProblems.concat([
+                    {
+                        problem: "In una fabbrica, 3 macchine A, B, C producono rispettivamente 100, 150, 200 pezzi/ora. Se A lavora per 2 ore, B per 3 ore e C per 1.5 ore, ma ogni macchina ha un tasso di difetti del 2%, 3% e 1.5% rispettivamente, quanti pezzi perfetti vengono prodotti in totale?",
+                        answer: "815",
+                        explanation: "A: 100×2=200 pezzi, 2% difetti = 4 difetti, 196 perfetti. B: 150×3=450 pezzi, 3% difetti = 13.5≈14 difetti, 436 perfetti. C: 200×1.5=300 pezzi, 1.5% difetti = 4.5≈5 difetti, 295 perfetti. Totale: 196+436+295=927 pezzi perfetti"
+                    }
+                ]);
+            }
+            
+            return baseProblems;
+        }
+        
+        function generateLanguageExercises(difficulty, subject) {
+            const baseExercises = [
+                { word: "Hello", translation: "Ciao", type: "italiano" },
+                { word: "Book", translation: "Libro", type: "italiano" },
+                { word: "Water", translation: "Acqua", type: "italiano" },
+                { word: "House", translation: "Casa", type: "italiano" }
+            ];
+            
+            // Aggiungi esercizi basati sulla materia
+            if (subject && subject.toLowerCase() === 'inglese') {
+                return baseExercises.concat([
+                    { word: "School", translation: "Scuola", type: "italiano" },
+                    { word: "Teacher", translation: "Insegnante", type: "italiano" },
+                    { word: "Student", translation: "Studente", type: "italiano" }
+                ]);
+            }
+            
+            // Aggiungi esercizi più difficili per livello hard
+            if (difficulty === 'hard') {
+                return baseExercises.concat([
+                    { word: "Knowledge", translation: "Conoscenza", type: "italiano" },
+                    { word: "Beautiful", translation: "Bello", type: "italiano" },
+                    { word: "Important", translation: "Importante", type: "italiano" }
+                ]);
+            }
+            
+            return baseExercises;
+        }
+        
+        function generateScienceLessons(difficulty, subject) {
+            const baseLessons = [
+                {
+                    explanation: `La fotosintesi è il processo attraverso cui le piante verdi convertono l'energia luminosa in energia chimica. Questo processo avviene nei cloroplasti e utilizza anidride carbonica, acqua e luce solare per produrre glucosio e ossigeno. ${subject ? '(Biologia: ' + subject + ')' : ''}`,
+                    question: "Qual è il prodotto principale della fotosintesi?",
+                    answer: "Glucosio"
+                },
+                {
+                    explanation: `La gravità è la forza di attrazione che esiste tra tutti gli oggetti con massa. Sulla Terra, questa forza ci tiene al suolo e dà peso agli oggetti. La forza di gravità diminuisce con la distanza. ${subject ? '(Fisica: ' + subject + ')' : ''}`,
+                    question: "Come cambia la forza di gravità all'aumentare della distanza?",
+                    answer: "Diminuisce"
+                }
+            ];
+            
+            // Filtra per materia se specificata
+            if (subject) {
+                return baseLessons.filter(l => l.explanation.includes(subject));
+            }
+            
+            // Aggiungi lezioni più complesse per livello hard
+            if (difficulty === 'hard') {
+                return baseLessons.concat([
+                    {
+                        explanation: "La relatività ristretta di Einstein stabilisce che la velocità della luce è costante in tutti i sistemi di riferimento inerziali, e che le leggi della fisica hanno la stessa forma in tutti questi sistemi. L'equazione E=mc² descrive la relazione tra massa ed energia.",
+                        question: "Cosa rappresenta la 'c' nell'equazione E=mc²?",
+                        answer: "Velocità della luce"
+                    }
+                ]);
+            }
+            
+            return baseLessons;
         }
         
         function loadCustomParams() {
@@ -1340,54 +2591,24 @@
         }
         
         function generateSchema(event) {
-            event.preventDefault();
+            event.preventDefault(); // Impedisce il submit del form
             
-            const formData = new FormData(document.getElementById('schemaForm'));
-            const config = Object.fromEntries(formData);
+            // Leggi i parametri dal form
+            const formData = new FormData(event.target);
+            const schemaType = formData.get('schema_type');
+            const difficulty = formData.get('difficulty');
+            const subject = formData.get('subject');
+            const classGroup = formData.get('class_group');
+            const schoolTrack = formData.get('school_track');
             
-            // Raccogli parametri personalizzati
-            config.custom_params = {};
-            // Per altri tipi, raccogli i checkbox
-            document.querySelectorAll('#customParamsContainer input:checked').forEach(input => {
-                config.custom_params[input.name] = input.value;
-            });
+            // Verifica che sia selezionata una modalità
+            if (!schemaType) {
+                showMessage('Seleziona una modalità di apprendimento', 'error');
+                return;
+            }
             
-            // Aggiungi timestamp per garantire risposte diverse ogni volta
-            config.timestamp = Date.now();
-            config.session_id = Math.random().toString(36).substr(2, 9);
-            
-            // Mostra loading
-            document.getElementById('loadingState').style.display = 'block';
-            document.getElementById('resultContainer').classList.remove('active');
-            
-            // Simula generazione dinamica se l'API non è disponibile
-            setTimeout(() => {
-                generateDynamicSchema(config);
-            }, 1500);
-            
-            fetch('/api/ai/generate-schema', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(config)
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loadingState').style.display = 'none';
-                
-                if (data.success) {
-                    currentSchema = data.schema;
-                    displaySchema(data.schema, data.config);
-                    showMessage('Schema generato con successo!', 'success');
-                } else {
-                    showMessage('Errore nella generazione: ' + data.error, 'error');
-                }
-            })
-            .catch(error => {
-                document.getElementById('loadingState').style.display = 'none';
-                showMessage('Errore durante la generazione', 'error');
-            });
+            // Genera le domande in base ai parametri
+            generateContentBasedOnParams(schemaType, difficulty, subject, classGroup, schoolTrack);
         }
         
         function displaySchema(schema, config) {
@@ -2371,6 +3592,366 @@
             setTimeout(() => {
                 messageDiv.remove();
             }, 5000);
+        }
+        
+        // ===== SISTEMA DI DIALOGO AVANZATO =====
+        
+        let dialogContext = null;
+        let dialogPhases = ['initial', 'discovery', 'assessment', 'customization', 'generation', 'complete'];
+        let currentPhaseIndex = 0;
+        
+        const dialogQuestions = {
+            initial: [
+                {
+                    id: "subject_detail",
+                    type: "text",
+                    question: "Perfetto! Dimmi di più su '{subject}'. Quali aspetti specifici vuoi approfondire?",
+                    placeholder: "Es: Storia della Rivoluzione Francese, Fotosintesi, Grammatica italiana...",
+                    importance: 3
+                },
+                {
+                    id: "current_knowledge",
+                    type: "multiple_choice",
+                    question: "Quale è il tuo attuale livello di conoscenza su questo argomento?",
+                    options: ["Non so nulla", "Ho nozioni base", "Ho buone conoscenze", "Sono esperto"],
+                    importance: 2
+                }
+            ],
+            discovery: [
+                {
+                    id: "learning_goal",
+                    type: "text",
+                    question: "Cosa vorresti essere in grado di fare/spiegare dopo aver usato questo schema?",
+                    placeholder: "Es: Comprendere i principali eventi, Saper risolvere esercizi...",
+                    importance: 3
+                },
+                {
+                    id: "learning_context",
+                    type: "multiple_choice",
+                    question: "In quale contesto studi questo argomento?",
+                    options: ["Scuola/Università", "Auto-apprendimento", "Preparazione esame", "Curiosità personale"],
+                    importance: 2
+                }
+            ],
+            assessment: [
+                {
+                    id: "learning_style",
+                    type: "multiple_choice",
+                    question: "Quale metodo ti aiuta maggiormente ad imparare?",
+                    options: ["Schemi e diagrammi visuali", "Note e testo scritto", "Discussioni e spiegazioni", "Pratica e esercizi"],
+                    importance: 3
+                }
+            ],
+            customization: [
+                {
+                    id: "schema_type",
+                    type: "multiple_choice",
+                    question: "Quale formato di schema preferisci?",
+                    options: ["Mappa mentale", "Quiz progressivi", "Schemi sinottici", "Flashcard", "Timeline", "Comparazioni"],
+                    importance: 3
+                }
+            ]
+        };
+        
+        function startAdvancedDialog(config) {
+            // Inizializza il contesto del dialogo
+            dialogContext = {
+                subject: document.getElementById('subject').value || 'Argomento',
+                config: config,
+                answers: {},
+                currentPhase: 0
+            };
+            
+            // Nascondi form e mostra dialogo
+            document.getElementById('schemaForm').parentElement.style.display = 'none';
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('dialogState').style.display = 'block';
+            
+            // Inizia con la prima domanda
+            showNextQuestion();
+        }
+        
+        function showNextQuestion() {
+            const phaseKey = dialogPhases[currentPhaseIndex];
+            const questions = dialogQuestions[phaseKey] || [];
+            
+            if (questions.length === 0) {
+                // Completa il dialogo e genera lo schema
+                completeDialog();
+                return;
+            }
+            
+            // Filtra le domande già fatte
+            const askedIds = Object.keys(dialogContext.answers);
+            const nextQuestion = questions.find(q => !askedIds.includes(q.id));
+            
+            if (!nextQuestion) {
+                // Passa alla fase successiva
+                currentPhaseIndex++;
+                if (currentPhaseIndex < dialogPhases.length) {
+                    showNextQuestion();
+                } else {
+                    completeDialog();
+                }
+                return;
+            }
+            
+            renderQuestion(nextQuestion, phaseKey);
+        }
+        
+        function renderQuestion(question, phase) {
+            const container = document.getElementById('questionContainer');
+            const subject = dialogContext.subject || 'argomento';
+            const questionText = question.question.replace('{subject}', subject);
+            
+            // Aggiungi il messaggio dell'IA nella conversazione
+            addDialogMessage('ai', questionText);
+            
+            // Aggiorna la barra di progresso
+            updateProgressBar();
+            
+            // Crea il container della risposta
+            let html = `<div class="question-text">${questionText}</div>`;
+            
+            if (question.type === 'multiple_choice') {
+                html += '<div class="question-options">';
+                question.options.forEach((option, index) => {
+                    html += `<button class="option-button" onclick="selectOption(this, '${question.id}', '${option}')">
+                        ${option}
+                    </button>`;
+                });
+                html += '</div>';
+            } else if (question.type === 'text') {
+                html += `<div class="text-input-area">
+                    <input type="text" id="textInput" placeholder="${question.placeholder || ''}" />
+                    <button type="button" onclick="submitTextAnswer('${question.id}')">Continua</button>
+                </div>`;
+            }
+            
+            container.innerHTML = html;
+            
+            // Focus sull'input di testo se presente
+            const textInput = document.getElementById('textInput');
+            if (textInput) {
+                textInput.focus();
+                textInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        submitTextAnswer(question.id);
+                    }
+                });
+            }
+        }
+        
+        function selectOption(button, questionId, answer) {
+            // Marca il bottone come selezionato
+            const allButtons = button.parentElement.querySelectorAll('.option-button');
+            allButtons.forEach(btn => btn.classList.remove('selected'));
+            button.classList.add('selected');
+            
+            // Registra la risposta
+            dialogContext.answers[questionId] = answer;
+            
+            // Aggiungi nella conversazione
+            addDialogMessage('user', answer);
+            
+            // Mostra messaggio di feedback
+            setTimeout(() => {
+                showFeedbackMessage(questionId, answer);
+                setTimeout(() => {
+                    showNextQuestion();
+                }, 1500);
+            }, 500);
+        }
+        
+        function submitTextAnswer(questionId) {
+            const input = document.getElementById('textInput');
+            const answer = input.value.trim();
+            
+            if (!answer) {
+                alert('Per favore inserisci una risposta');
+                return;
+            }
+            
+            // Registra la risposta
+            dialogContext.answers[questionId] = answer;
+            
+            // Aggiungi nella conversazione
+            addDialogMessage('user', answer);
+            
+            // Mostra messaggio di feedback
+            setTimeout(() => {
+                showFeedbackMessage(questionId, answer);
+                setTimeout(() => {
+                    showNextQuestion();
+                }, 1500);
+            }, 500);
+        }
+        
+        function addDialogMessage(sender, text) {
+            const conversation = document.getElementById('dialogConversation');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `dialog-message ${sender}`;
+            messageDiv.innerHTML = `<div class="dialog-bubble">${text}</div>`;
+            conversation.appendChild(messageDiv);
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+        
+        function showFeedbackMessage(questionId, answer) {
+            const feedbacks = {
+                'subject_detail': `Interessante! Stai approfondendo specificamente "${answer}" - questo mi aiuta a personalizzare lo schema perfetto.`,
+                'current_knowledge': answer.toLowerCase().includes('nulla') ? 
+                    'Perfetto! Partirò da zero con spiegazioni dettagliate.' :
+                    'Bene! Costruirò su quelle basi con contenuti adatti.',
+                'learning_goal': `Obiettivo chiaro: "${answer}" - Lo schema sarà costruito per aiutarti a raggiungerlo.`,
+                'learning_style': `Preferisci ${answer}! Adatterò lo schema a questo stile di apprendimento.`,
+                'schema_type': `Ottima scelta! Creerò una ${answer} personalizzata per te.`
+            };
+            
+            const feedback = feedbacks[questionId] || 'Grazie per la risposta! Continuiamo...';
+            addDialogMessage('ai', feedback);
+        }
+        
+        function updateProgressBar() {
+            const totalQuestions = Object.keys(dialogQuestions).reduce((sum, phase) => sum + dialogQuestions[phase].length, 0);
+            const answerCount = Object.keys(dialogContext.answers).length;
+            const progress = (answerCount / totalQuestions) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = `Fase ${currentPhaseIndex + 1} di ${dialogPhases.length}: ${Math.round(progress)}% completo`;
+        }
+        
+        function completeDialog() {
+            // Mostra messaggio di completamento
+            addDialogMessage('ai', 'Perfetto! Ho tutte le informazioni che mi servono. Sto creando il tuo schema personalizzato...');
+            
+            document.getElementById('progressFill').style.width = '100%';
+            document.getElementById('progressText').textContent = 'Schema in generazione...';
+            
+            // Disabilita il container di domande
+            document.getElementById('questionContainer').style.display = 'none';
+            
+            // Genera lo schema basato su tutte le risposte
+            setTimeout(() => {
+                generateFinalSchema();
+            }, 2000);
+        }
+        
+        function generateFinalSchema() {
+            // Crea uno schema finale basato su tutte le risposte del dialogo
+            const schema = {
+                subject: dialogContext.subject,
+                type: dialogContext.answers['schema_type'] || 'mind_map',
+                difficulty: dialogContext.config.difficulty,
+                learning_objectives: dialogContext.answers['learning_goal'] ? [dialogContext.answers['learning_goal']] : [],
+                learning_style: dialogContext.answers['learning_style'] || 'visual',
+                knowledge_level: dialogContext.answers['current_knowledge'] || 'beginner',
+                generated_at: new Date().toISOString(),
+                content: generateSchemaContent(dialogContext),
+                metadata: {
+                    from_dialog: True,
+                    total_answers: Object.keys(dialogContext.answers).length,
+                    session_id: dialogContext.config.session_id
+                }
+            };
+            
+            // Mostra il risultato
+            displaySchemaResult(schema);
+        }
+        
+        function generateSchemaContent(context) {
+            const schemaType = context.answers['schema_type'] || 'mind_map';
+            const subject = context.subject;
+            
+            if (schemaType.toLowerCase().includes('mappa')) {
+                return {
+                    type: 'mind_map',
+                    central_concept: subject,
+                    main_branches: [
+                        { name: 'Definizioni Fondamentali', icon: '📖', subbranches: ['Concetti chiave', 'Terminologia'] },
+                        { name: 'Applicazioni Pratiche', icon: '💡', subbranches: ['Esempi reali', 'Casi studio'] },
+                        { name: 'Struttura', icon: '🔗', subbranches: ['Relazioni', 'Connessioni'] },
+                        { name: 'Approfondimenti', icon: '📚', subbranches: ['Curiosità', 'Aree correlate'] }
+                    ]
+                };
+            } else if (schemaType.toLowerCase().includes('quiz')) {
+                return {
+                    type: 'quiz',
+                    total_questions: 10,
+                    difficulty_levels: { easy: 3, medium: 4, hard: 3 },
+                    question_types: ['multiple_choice', 'true_false', 'fill_blank']
+                };
+            } else if (schemaType.toLowerCase().includes('timeline')) {
+                return {
+                    type: 'timeline',
+                    title: `Timeline: ${subject}`,
+                    events: [],
+                    interactive: true
+                };
+            } else if (schemaType.toLowerCase().includes('flashcard')) {
+                return {
+                    type: 'flashcard',
+                    title: `Flashcard: ${subject}`,
+                    cards: [],
+                    spaced_repetition: true
+                };
+            } else {
+                return {
+                    type: 'synopsis',
+                    title: `Schema Sinottico: ${subject}`,
+                    categories: [],
+                    hierarchical: true
+                };
+            }
+        }
+        
+        function displaySchemaResult(schema) {
+            // Nascondi il dialogo
+            document.getElementById('dialogState').style.display = 'none';
+            
+            // Mostra il risultato
+            const container = document.getElementById('schemaContent');
+            let html = `
+                <div class="schema-info">
+                    <div class="info-item">
+                        <div class="info-label">Argomento</div>
+                        <div class="info-value">${schema.subject}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Tipo di Schema</div>
+                        <div class="info-value" style="text-transform: capitalize;">${schema.type}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Difficoltà</div>
+                        <div class="info-value" style="text-transform: capitalize;">${schema.difficulty}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Stile di Apprendimento</div>
+                        <div class="info-value" style="text-transform: capitalize;">${schema.learning_style}</div>
+                    </div>
+                </div>
+                
+                <div class="schema-preview">
+                    <h3>✨ Schema Personalizzato Generato</h3>
+                    <p>Il tuo schema è stato creato basandosi su ${schema.metadata.total_answers} risposte personalizzate che hai fornito.</p>
+                    <p><strong>Tipo:</strong> <span style="text-transform: capitalize;">${schema.type}</span></p>
+                    <p><strong>Obiettivo di Apprendimento:</strong> ${schema.learning_objectives[0] || 'Apprendimento generale'}</p>
+                    
+                    <div style="background: rgba(102, 126, 234, 0.1); border: 2px solid rgba(102, 126, 234, 0.3); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+                        <h4 style="color: #667eea; margin-top: 0;">📌 Contenuto Generato</h4>
+                        <p>Lo schema ${schema.type} che hai richies to è stato creato per:</p>
+                        <ul style="list-style: none; padding: 0;">
+                            <li>✓ Adattarsi al tuo livello di conoscenza (${schema.knowledge_level})</li>
+                            <li>✓ Utilizzare il tuo stile di apprendimento preferito (${schema.learning_style})</li>
+                            <li>✓ Raggiungere il tuo obiettivo: ${schema.learning_objectives[0] || 'apprendimento personale'}</li>
+                            <li>✓ Mantenere il livello di difficoltà ${schema.difficulty}</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+            document.getElementById('resultContainer').classList.add('active');
+            currentSchema = schema;
         }
     </script>
 </body>

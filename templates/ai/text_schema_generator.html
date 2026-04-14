@@ -1,0 +1,698 @@
+<!-- Responsabile: GABRIELE - Generatore di Schemi Testuali IA -->
+<!-- Interfaccia per generare schemi di studio da testo -->
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore Schemi IA - BrainPlayNG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .schema-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+        }
+        
+        .schema-header {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .schema-header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+        
+        .schema-header p {
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .generator-form {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .text-input {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .char-counter {
+            text-align: right;
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+        
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-generate:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-generate:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading-state {
+            text-align: center;
+            padding: 2rem;
+            display: none;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .schema-result {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        .schema-result.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .schema-header-section {
+            border-bottom: 2px solid #f3f4f6;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .schema-title {
+            color: #1f2937;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .schema-meta {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        .schema-section {
+            margin-bottom: 2rem;
+        }
+        
+        .schema-section h3 {
+            color: #667eea;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .concept-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .concept-item {
+            background: #f9fafb;
+            border-left: 4px solid #667eea;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .concept-item:hover {
+            background: #f3f4f6;
+            transform: translateX(5px);
+        }
+        
+        .definition-card {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .definition-term {
+            font-weight: 600;
+            color: #16a34a;
+            margin-bottom: 0.5rem;
+        }
+        
+        .definition-text {
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .correlation-item {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            color: #1e40af;
+        }
+        
+        .summary-box {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            color: #92400e;
+            line-height: 1.6;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #f3f4f6;
+        }
+        
+        .btn-action {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-copy {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .btn-copy:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .btn-pdf {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .btn-pdf:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+        }
+        
+        .btn-new {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-new:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+        
+        .error-message {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #ef4444;
+            margin-bottom: 1rem;
+        }
+        
+        .success-message {
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            border-left: 4px solid #10b981;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .schema-container {
+                padding: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .schema-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="schema-container">
+        <!-- Header -->
+        <div class="schema-header">
+            <h1>🤖 Generatore di Schemi IA</h1>
+            <p>Incolla il tuo testo e genera uno schema di studio completo con l'intelligenza artificiale</p>
+        </div>
+        
+        <!-- Form di Generazione -->
+        <div class="generator-form">
+            <form id="schemaForm">
+                <div class="form-group">
+                    <label for="textInput">Testo da Analizzare *</label>
+                    <textarea 
+                        id="textInput" 
+                        class="text-input" 
+                        placeholder="Incolla qui il testo del libro, dell'articolo o degli appunti che vuoi trasformare in uno schema di studio..."
+                        required
+                    ></textarea>
+                    <div class="char-counter">
+                        <span id="charCount">0</span> / 5000 caratteri
+                    </div>
+                </div>
+                
+                <div id="messageContainer"></div>
+                
+                <button type="submit" class="btn-generate" id="generateBtn">
+                    <i class="fas fa-magic"></i> Genera Schema
+                </button>
+            </form>
+        </div>
+        
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Sto analizzando il testo e generando lo schema...</p>
+        </div>
+        
+        <!-- Risultato -->
+        <div id="schemaResult" class="schema-result">
+            <div class="schema-header-section">
+                <h2 class="schema-title" id="schemaTitle">Schema di Studio</h2>
+                <div class="schema-meta">
+                    Generato il <span id="generatedDate"></span> • 
+                    Caratteri analizzati: <span id="textLength"></span> • 
+                    Tempo di elaborazione: <span id="processingTime"></span>
+                </div>
+            </div>
+            
+            <!-- Concetti Chiave -->
+            <div class="schema-section">
+                <h3><i class="fas fa-key"></i> Concetti Chiave</h3>
+                <ul class="concept-list" id="conceptsList">
+                    <!-- Verranno popolati dinamicamente -->
+                </ul>
+            </div>
+            
+            <!-- Definizioni Importanti -->
+            <div class="schema-section">
+                <h3><i class="fas fa-book"></i> Definizioni Importanti</h3>
+                <div id="definitionsContainer">
+                    <!-- Verranno popolati dinamicamente -->
+                </div>
+            </div>
+            
+            <!-- Correlazioni -->
+            <div class="schema-section">
+                <h3><i class="fas fa-link"></i> Correlazioni</h3>
+                <div id="correlationsContainer">
+                    <!-- Verranno popolati dinamicamente -->
+                </div>
+            </div>
+            
+            <!-- Riassunto -->
+            <div class="schema-section">
+                <h3><i class="fas fa-compress-alt"></i> Riassunto</h3>
+                <div class="summary-box" id="summaryBox">
+                    <!-- Verrà popolato dinamicamente -->
+                </div>
+            </div>
+            
+            <!-- Pulsanti Azione -->
+            <div class="action-buttons">
+                <button class="btn-action btn-copy" onclick="copySchema()">
+                    <i class="fas fa-copy"></i> Copia Schema
+                </button>
+                <button class="btn-action btn-pdf" onclick="downloadPDF()">
+                    <i class="fas fa-file-pdf"></i> Scarica PDF
+                </button>
+                <button class="btn-action btn-new" onclick="newSchema()">
+                    <i class="fas fa-plus"></i> Nuovo Schema
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentSchema = null;
+        
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+        });
+        
+        function setupEventListeners() {
+            const textInput = document.getElementById('textInput');
+            const form = document.getElementById('schemaForm');
+            
+            // Contatore caratteri
+            textInput.addEventListener('input', updateCharCounter);
+            
+            // Submit form
+            form.addEventListener('submit', generateSchema);
+        }
+        
+        function updateCharCounter() {
+            const textInput = document.getElementById('textInput');
+            const charCount = document.getElementById('charCount');
+            const currentLength = textInput.value.length;
+            
+            charCount.textContent = currentLength;
+            
+            // Cambia colore se supera il limite
+            if (currentLength > 5000) {
+                charCount.style.color = '#dc2626';
+            } else if (currentLength > 4000) {
+                charCount.style.color = '#f59e0b';
+            } else {
+                charCount.style.color = '#6b7280';
+            }
+        }
+        
+        async function generateSchema(event) {
+            event.preventDefault();
+            
+            const textInput = document.getElementById('textInput');
+            const text = textInput.value.trim();
+            
+            // Validazione
+            if (text.length < 50) {
+                showMessage('Il testo deve contenere almeno 50 caratteri', 'error');
+                return;
+            }
+            
+            if (text.length > 5000) {
+                showMessage('Il testo non può superare i 5000 caratteri', 'error');
+                return;
+            }
+            
+            // Mostra loading
+            showLoading(true);
+            hideResult();
+            clearMessages();
+            
+            try {
+                const response = await fetch('/api/ai/generate-text-schema', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentSchema = data.schema;
+                    displaySchema(data.schema, data.metadata);
+                    showMessage('Schema generato con successo!', 'success');
+                } else {
+                    showMessage(data.error || 'Errore durante la generazione', 'error');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showMessage('Errore di connessione al server', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+        
+        function displaySchema(schema, metadata) {
+            // Titolo
+            document.getElementById('schemaTitle').textContent = schema.titolo;
+            
+            // Metadati
+            const generatedDate = new Date(metadata.generated_at).toLocaleString('it-IT');
+            document.getElementById('generatedDate').textContent = generatedDate;
+            document.getElementById('textLength').textContent = metadata.text_length;
+            document.getElementById('processingTime').textContent = metadata.processing_time;
+            
+            // Concetti chiave
+            const conceptsList = document.getElementById('conceptsList');
+            conceptsList.innerHTML = schema.concetti_chiave.map(concept => 
+                `<li class="concept-item">${concept}</li>`
+            ).join('');
+            
+            // Definizioni
+            const definitionsContainer = document.getElementById('definitionsContainer');
+            definitionsContainer.innerHTML = schema.definizioni_importanti.map(def => 
+                `<div class="definition-card">
+                    <div class="definition-term">${def.termine}</div>
+                    <div class="definition-text">${def.definizione}</div>
+                </div>`
+            ).join('');
+            
+            // Correlazioni
+            const correlationsContainer = document.getElementById('correlationsContainer');
+            correlationsContainer.innerHTML = schema.correlazioni.map(correlation => 
+                `<div class="correlation-item">${correlation}</div>`
+            ).join('');
+            
+            // Riassunto
+            document.getElementById('summaryBox').textContent = schema.riassunto;
+            
+            // Mostra risultato
+            showResult();
+        }
+        
+        function copySchema() {
+            if (!currentSchema) return;
+            
+            const schemaText = formatSchemaAsText(currentSchema);
+            
+            navigator.clipboard.writeText(schemaText).then(() => {
+                showMessage('Schema copiato negli appunti!', 'success');
+            }).catch(() => {
+                showMessage('Errore durante la copia', 'error');
+            });
+        }
+        
+        function formatSchemaAsText(schema) {
+            let text = `**${schema.titolo}**\n\n`;
+            
+            text += `**Concetti Chiave:**\n`;
+            schema.concetti_chiave.forEach(concept => {
+                text += `• ${concept}\n`;
+            });
+            
+            text += `\n**Definizioni Importanti:**\n`;
+            schema.definizioni_importanti.forEach(def => {
+                text += `• **${def.termine}**: ${def.definizione}\n`;
+            });
+            
+            text += `\n**Correlazioni:**\n`;
+            schema.correlazioni.forEach(correlation => {
+                text += `• ${correlation}\n`;
+            });
+            
+            text += `\n**Riassunto:**\n${schema.riassunto}`;
+            
+            return text;
+        }
+        
+        function downloadPDF() {
+            if (!currentSchema) return;
+            
+            // Per ora, simuliamo il download
+            // In una implementazione reale, useremmo una libreria come jsPDF
+            showMessage('Funzione PDF in fase di sviluppo...', 'info');
+            
+            // Alternative: apri in una nuova finestra per stampa
+            const printWindow = window.open('', '_blank');
+            const schemaHTML = formatSchemaAsHTML(currentSchema);
+            printWindow.document.write(schemaHTML);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        function formatSchemaAsHTML(schema) {
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${schema.titolo}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #667eea; }
+                        h2 { color: #374151; border-bottom: 2px solid #f3f4f6; padding-bottom: 5px; }
+                        ul { list-style-type: none; padding: 0; }
+                        li { margin: 5px 0; padding: 10px; background: #f9fafb; border-left: 4px solid #667eea; }
+                        .definition { margin: 10px 0; padding: 10px; background: #f0fdf4; border: 1px solid #bbf7d0; }
+                        .term { font-weight: bold; color: #16a34a; }
+                        .correlation { margin: 5px 0; padding: 8px; background: #eff6ff; border-left: 4px solid #3b82f6; }
+                        .summary { margin: 15px 0; padding: 15px; background: #fef3c7; border: 1px solid #fde68a; }
+                    </style>
+                </head>
+                <body>
+                    <h1>${schema.titolo}</h1>
+                    
+                    <h2>Concetti Chiave</h2>
+                    <ul>
+                        ${schema.concetti_chiave.map(concept => `<li>${concept}</li>`).join('')}
+                    </ul>
+                    
+                    <h2>Definizioni Importanti</h2>
+                    ${schema.definizioni_importanti.map(def => 
+                        `<div class="definition">
+                            <span class="term">${def.termine}:</span> ${def.definizione}
+                        </div>`
+                    ).join('')}
+                    
+                    <h2>Correlazioni</h2>
+                    ${schema.correlazioni.map(correlation => 
+                        `<div class="correlation">${correlation}</div>`
+                    ).join('')}
+                    
+                    <h2>Riassunto</h2>
+                    <div class="summary">${schema.riassunto}</div>
+                </body>
+                </html>
+            `;
+        }
+        
+        function newSchema() {
+            // Resetta il form
+            document.getElementById('schemaForm').reset();
+            document.getElementById('charCount').textContent = '0';
+            
+            // Nascondi il risultato
+            hideResult();
+            clearMessages();
+            
+            // Resetta lo schema corrente
+            currentSchema = null;
+            
+            // Focus sul textarea
+            document.getElementById('textInput').focus();
+        }
+        
+        function showLoading(show) {
+            const loadingState = document.getElementById('loadingState');
+            const generateBtn = document.getElementById('generateBtn');
+            
+            if (show) {
+                loadingState.style.display = 'block';
+                generateBtn.disabled = true;
+                generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generazione...';
+            } else {
+                loadingState.style.display = 'none';
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<i class="fas fa-magic"></i> Genera Schema';
+            }
+        }
+        
+        function showResult() {
+            document.getElementById('schemaResult').classList.add('active');
+        }
+        
+        function hideResult() {
+            document.getElementById('schemaResult').classList.remove('active');
+        }
+        
+        function showMessage(message, type) {
+            const container = document.getElementById('messageContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `${type}-message`;
+            messageDiv.textContent = message;
+            
+            container.innerHTML = '';
+            container.appendChild(messageDiv);
+            
+            // Auto-removal after 5 seconds
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+        
+        function clearMessages() {
+            document.getElementById('messageContainer').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
