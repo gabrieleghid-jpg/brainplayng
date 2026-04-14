@@ -1,7 +1,7 @@
 # Responsabile: Team Lead - File principale del progetto Flask
 # Collega tutti i moduli e avvia l'applicazione web
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, session
 from auth import auth_bp
 from core_logic import core_bp
 from game import game_bp
