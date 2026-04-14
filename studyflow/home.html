@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>brainplaying — Home</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7ff;
+      --panel: rgba(255, 255, 255, 0.95);
+      --panel-strong: #ffffff;
+      --text: #111827;
+      --muted: #596275;
+      --accent: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.16);
+      --border: rgba(15, 23, 42, 0.08);
+      --shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+      --radius: 28px;
+    }
+
+    body.dark {
+      color-scheme: dark;
+      --bg: #080b16;
+      --panel: rgba(15, 23, 42, 0.95);
+      --panel-strong: #111827;
+      --text: #f8fafc;
+      --muted: #9ca3af;
+      --accent: #818cf8;
+      --accent-soft: rgba(129, 140, 248, 0.16);
+      --border: rgba(148, 163, 184, 0.2);
+      --shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 20%),
+                   radial-gradient(circle at bottom right, rgba(59, 130, 246, 0.14), transparent 18%),
+                   linear-gradient(180deg, #eef2ff 0%, #f8fafc 48%, var(--bg) 100%);
+      color: var(--text);
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 20% 10%, rgba(79, 70, 229, 0.18), transparent 24%),
+                        radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.12), transparent 20%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 3rem;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .brand-icon {
+      width: 2.6rem;
+      height: 2.6rem;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: rgba(79, 70, 229, 0.14);
+      color: var(--accent);
+      font-weight: 700;
+      box-shadow: 0 18px 40px rgba(79, 70, 229, 0.14);
+    }
+
+    .nav-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-link,
+    .theme-toggle {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .theme-toggle {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 18px;
+      background: var(--panel-strong);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.8fr);
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+
+    .hero-card,
+    .stats-panel,
+    .activity-card,
+    .session-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero-card {
+      padding: 2.4rem;
+    }
+
+    .hero-card h1 {
+      margin: 0;
+      font-size: clamp(2.7rem, 4vw, 3.6rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .hero-card p {
+      margin: 1.6rem 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      max-width: 40rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .hero-button,
+    .secondary-button {
+      border: none;
+      border-radius: 18px;
+      padding: 1rem 1.4rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hero-button {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      box-shadow: 0 18px 40px rgba(79, 70, 229, 0.18);
+    }
+
+    .hero-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .secondary-button {
+      background: rgba(79, 70, 229, 0.08);
+      color: var(--text);
+    }
+
+    .stats-panel {
+      padding: 1.5rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .stats-panel h2 {
+      margin: 0 0 1rem;
+      font-size: 1.2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1.25rem 1.3rem;
+      border-radius: 22px;
+      background: rgba(79, 70, 229, 0.06);
+      color: var(--text);
+      min-height: 112px;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .stat-card strong {
+      font-size: 1.8rem;
+      display: block;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .session-card,
+    .activity-card {
+      padding: 1.8rem;
+    }
+
+    .session-card header,
+    .activity-card header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .session-card header h2,
+    .activity-card header h2 {
+      margin: 0;
+      font-size: 1.1rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--accent);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .session-details {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .session-item {
+      display: grid;
+      gap: 0.45rem;
+      color: var(--muted);
+    }
+
+    .session-item strong {
+      color: var(--text);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 0.75rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 68%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #4f46e5, #818cf8);
+    }
+
+    .activity-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .activity-item {
+      display: grid;
+      gap: 0.6rem;
+      padding: 1rem;
+      border-radius: 22px;
+      background: rgba(79, 70, 229, 0.05);
+    }
+
+    .activity-item strong {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .activity-item span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .quick-panel {
+      display: grid;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .quick-item {
+      padding: 1.4rem;
+      border-radius: 24px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+    }
+
+    .quick-item h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1rem;
+    }
+
+    .quick-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    .home-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding: 1.5rem 2rem;
+      border-radius: 28px;
+      background: rgba(79, 70, 229, 0.08);
+      border: 1px solid rgba(79, 70, 229, 0.14);
+    }
+
+    .home-footer p,
+    .home-footer a {
+      margin: 0;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .home-footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .home-footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1110px) {
+      .hero-grid,
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page-shell {
+        padding: 1.5rem 1rem 2rem;
+      }
+
+      .nav {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-card,
+      .stats-panel,
+      .session-card,
+      .activity-card,
+      .quick-item,
+      .home-footer {
+        border-radius: 24px;
+      }
+
+      .hero-card {
+        padding: 1.8rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="nav">
+      <a href="home.html" class="brand">
+        <span class="brand-icon">S</span>
+        <span>brainplaying</span>
+      </a>
+      <div class="nav-actions">
+        <button class="nav-link" type="button">Home</button>
+        <button class="nav-link" type="button">Sessioni</button>
+        <button class="nav-link" type="button">Obiettivi</button>
+        <button class="nav-link" type="button">Profilo</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
+      </div>
+    </header>
+
+    <div class="hero-grid">
+      <section class="hero-card">
+        <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Dashboard</p>
+        <h1>Una home pulita per il tuo studio quotidiano</h1>
+        <p>brainplaying ti aiuta a trasformare la tua routine in produttività: navigazione rapida, focus strutturato e progresso ben visibile.</p>
+        <div class="hero-actions">
+          <button class="hero-button" type="button">Avvia sessione</button>
+          <button class="secondary-button" type="button">Visualizza relazioni</button>
+        </div>
+      </section>
+
+      <aside class="stats-panel">
+        <h2>Riepilogo rapido</h2>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong>4h 12m</strong>
+            <span>Tempo di studio questa settimana</span>
+          </div>
+          <div class="stat-card">
+            <strong>72%</strong>
+            <span>Obiettivi raggiunti</span>
+          </div>
+          <div class="stat-card">
+            <strong>3</strong>
+            <span>Sessioni attive</span>
+          </div>
+          <div class="stat-card">
+            <strong>260</strong>
+            <span>Flashcard apprese</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="dashboard-grid">
+      <article class="session-card">
+        <header>
+          <h2>Prossima sessione</h2>
+          <span class="pill">Focus</span>
+        </header>
+        <div class="session-details">
+          <div class="session-item">
+            <strong>Mattinata di ripasso</strong>
+            <span>Biologia, matematica e inglese</span>
+          </div>
+          <div class="session-item">
+            <strong>45 min</strong>
+            <span>Tempo stimato</span>
+          </div>
+          <div class="progress-bar" aria-label="Progresso sessione">
+            <div class="progress-fill"></div>
+          </div>
+          <span style="color:var(--muted);font-size:0.95rem;">68% completato del piano giornaliero</span>
+        </div>
+      </article>
+
+      <article class="activity-card">
+        <header>
+          <h2>Attività recenti</h2>
+          <span class="pill">Aggiornamenti</span>
+        </header>
+        <ul class="activity-list">
+          <li class="activity-item">
+            <strong>Quiz completato</strong>
+            <span>Hai risposto correttamente all'88% delle domande.</span>
+          </li>
+          <li class="activity-item">
+            <strong>Nuova routine</strong>
+            <span>Definisci il tuo prossimo intervallo di focus da 50 minuti.</span>
+          </li>
+          <li class="activity-item">
+            <strong>Traguardo giornaliero</strong>
+            <span>Hai raggiunto il 75% dell'obiettivo di studio.</span>
+          </li>
+        </ul>
+      </article>
+    </div>
+
+    <section class="quick-panel">
+      <div class="quick-item">
+        <h3>Modalità completa</h3>
+        <p>Attiva la modalità focus per eliminare le distrazioni e lavorare in blocchi con timer visivi.</p>
+      </div>
+      <div class="quick-item">
+        <h3>Campanello di progresso</h3>
+        <p>Imposta un obiettivo giornaliero e segui il tuo avanzamento direttamente dalla home.</p>
+      </div>
+    </section>
+
+    <footer class="home-footer">
+      <p>Pronto a continuare? Torna al <a href="index.html">login</a> o resta sulla dashboard.</p>
+      <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
+    </footer>
+  </div>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+    });
+  </script>
+</body>
+</html>

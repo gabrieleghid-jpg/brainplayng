@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>StudyFlow — Accedi</title>
+  <title>brainplaying — Accedi</title>
 
   <!-- Tipografia elegante e moderna -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -566,10 +566,10 @@
   <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
 
   <main>
-    <section class="brand-panel" aria-label="Introduzione StudyFlow">
+    <section class="brand-panel" aria-label="Introduzione brainplaying">
       <div class="logo">
         <span class="logo-icon">S</span>
-        <span class="logo-text">StudyFlow</span>
+        <span class="logo-text">brainplaying</span>
       </div>
       <h1 class="brand-headline">Concentrazione e studio perfetto <em>in un unico posto</em></h1>
       <p class="brand-sub">Organizza le tue sessioni, tieni traccia del progresso e rimani focalizzato con un'interfaccia minimal pensata per supportare la produttività.</p>
@@ -581,12 +581,12 @@
       </ul>
     </section>
 
-    <section class="form-panel" aria-label="Accesso StudyFlow">
+    <section class="form-panel" aria-label="Accesso brainplaying">
       <div class="form-card">
         <div class="form-header">
           <div class="mobile-logo">
             <span class="logo-icon">S</span>
-            <span class="logo-text">StudyFlow</span>
+            <span class="logo-text">brainplaying</span>
           </div>
           <h2 class="form-title">Bentornato</h2>
           <p class="form-subtitle">Accedi al tuo account per iniziare una nuova sessione di studio.</p>
@@ -719,6 +719,9 @@
 
     document.getElementById('btn-login').addEventListener('click', () => {
       showToast('Login simulato: pronto per la tua sessione di studio!');
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 450);
     });
 
     document.getElementById('btn-register').addEventListener('click', () => {
@@ -727,6 +730,9 @@
 
     document.getElementById('btn-guest').addEventListener('click', () => {
       showToast('Stai continuando come ospite. Buono studio!');
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 450);
     });
   </script>
 </body>
