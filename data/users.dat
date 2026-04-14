@@ -1,0 +1,29 @@
+{
+  "zenzi": {
+    "email": "gabriele.ghid@gmail.com",
+    "password": "58d2a40f4ae2c1337ad43a43d6700ff2049944387d9082fb2e532e5aae26b9f9",
+    "created_at": "2026-02-27T12:12:26.093175",
+    "games_played": 0,
+    "high_score": 0,
+    "last_login": "2026-04-14T02:45:46.466638",
+    "is_active": true
+  },
+  "christopher": {
+    "email": "christopher.petro09@gmail.com",
+    "password": "b3ed987f8994ea735639d72a90cf9c25f14056d675bff96e4a5e2828a11dbbfc",
+    "created_at": "2026-02-27T13:17:22.551971",
+    "games_played": 0,
+    "high_score": 0,
+    "last_login": "2026-03-10T08:54:32.495513",
+    "is_active": true
+  },
+  "abifni": {
+    "email": "christopher.petro09@gmail.com",
+    "password": "9603595fcecaca1db766658796812b55706c9c91556cb261cc661e672b6ca97f",
+    "created_at": "2026-03-23T15:18:45.201897",
+    "games_played": 1,
+    "high_score": 0,
+    "last_login": "2026-04-14T08:57:55.735413",
+    "is_active": true
+  }
+}
