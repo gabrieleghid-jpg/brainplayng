@@ -306,6 +306,22 @@
       transform: translateY(-1px);
     }
 
+    .hero-button:disabled,
+    .secondary-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .guest-note {
+      padding: 1rem 1.2rem;
+      border-radius: 22px;
+      background: rgba(79, 70, 229, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(79, 70, 229, 0.14);
+      font-size: 0.96rem;
+    }
+
     .secondary-button {
       background: rgba(79, 70, 229, 0.08);
       color: var(--text);
@@ -563,6 +579,7 @@
         <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Dashboard</p>
         <h1>Una home pulita per il tuo studio quotidiano</h1>
         <p>brainplaying ti aiuta a trasformare la tua routine in produttività: navigazione rapida, focus strutturato e progresso ben visibile.</p>
+        <p id="guestNotice" class="guest-note" style="display:none;margin-top:1rem;"></p>
         <div class="hero-actions">
           <button class="hero-button" type="button">Avvia sessione</button>
           <button class="secondary-button" type="button">Visualizza relazioni</button>
@@ -650,6 +667,9 @@
 
     const themeToggle = document.getElementById('themeToggle');
     const navAvatar = document.getElementById('navAvatar');
+    const guestNotice = document.getElementById('guestNotice');
+    const heroButton = document.querySelector('.hero-button');
+    const secondaryButton = document.querySelector('.secondary-button');
 
     const user = {
       username: sessionStorage.getItem('username') || 'Studente',
@@ -677,7 +697,26 @@
       }
     }
 
+    function updateGuestMode() {
+      const role = sessionStorage.getItem('role') || 'user';
+      if (role === 'guest') {
+        if (guestNotice) {
+          guestNotice.style.display = 'block';
+          guestNotice.textContent = 'Sei connesso come ospite: alcune funzionalità sono limitate e le modifiche al profilo non saranno salvate.';
+        }
+        if (heroButton) {
+          heroButton.disabled = true;
+          heroButton.textContent = 'Non disponibile per ospiti';
+        }
+        if (secondaryButton) {
+          secondaryButton.disabled = true;
+          secondaryButton.textContent = 'Area riservata agli utenti';
+        }
+      }
+    }
+
     updateProfileUI();
+    updateGuestMode();
 
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {

@@ -66,7 +66,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      max-width: 680px;
+      max-width: 880px;
       margin: 0 auto;
       padding: 3.5rem 2rem;
       min-height: 100vh;
@@ -203,7 +203,7 @@
     }
 
     .form-card {
-      width: min(100%, 520px);
+      width: min(100%, 640px);
       padding: 2.4rem;
       border-radius: 32px;
       background: var(--panel);
@@ -403,6 +403,20 @@
       transition: transform 0.2s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease;
     }
 
+    .password-reset-panel {
+      display: none;
+      gap: 1rem;
+      padding: 1.4rem 1.2rem;
+      margin: 1rem 0 0;
+      border-radius: 24px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+    }
+
+    .password-reset-panel.active {
+      display: grid;
+    }
+
     .btn-primary {
       color: #ffffff;
       background: linear-gradient(135deg, #4f46e5, #6366f1);
@@ -573,7 +587,12 @@
             <span class="logo-text">brainplaying</span>
           </div>
           <h2 class="form-title">Bentornato</h2>
-          <p class="form-subtitle">Accedi al tuo account per iniziare una nuova sessione di studio.</p>
+          <p class="form-subtitle">Accedi, registrati o prova la versione ospite con funzionalità limitate.</p>
+        </div>
+
+        <div class="auth-tabs" role="tablist" aria-label="Seleziona accesso o registrazione">
+          <button class="tab-btn active" id="tab-login" type="button" role="tab" aria-selected="true">Accedi</button>
+          <button class="tab-btn" id="tab-register" type="button" role="tab" aria-selected="false">Registrati</button>
         </div>
 
         <div class="tab-panel active" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
@@ -588,7 +607,7 @@
           <div class="input-group">
             <label for="login-password">
               Password
-              <a href="#" class="forgot-link">Dimenticata?</a>
+              <button class="forgot-link" id="forgotPasswordButton" type="button">Dimenticata?</button>
             </label>
             <div class="input-wrapper">
               <span class="input-icon">🔒</span>
@@ -597,7 +616,77 @@
             </div>
           </div>
 
+          <div class="password-reset-panel" id="passwordResetPanel">
+            <div class="input-group">
+              <label for="reset-email">Email</label>
+              <div class="input-wrapper">
+                <span class="input-icon">✉</span>
+                <input type="email" id="reset-email" placeholder="nome@esempio.com" autocomplete="email" />
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="reset-password">Nuova password</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="reset-password" placeholder="••••••••" autocomplete="new-password" />
+              </div>
+            </div>
+            <div class="input-group">
+              <label for="reset-confirm-password">Conferma nuova password</label>
+              <div class="input-wrapper">
+                <span class="input-icon">🔒</span>
+                <input type="password" id="reset-confirm-password" placeholder="••••••••" autocomplete="new-password" />
+              </div>
+            </div>
+            <button class="btn-primary" id="btn-reset-password" type="button">Cambia password <span class="btn-arrow">→</span></button>
+          </div>
+
           <button class="btn-primary" id="btn-login" type="button">Accedi <span class="btn-arrow">→</span></button>
+        </div>
+
+        <div class="tab-panel" id="panel-register" role="tabpanel" aria-labelledby="tab-register">
+          <div class="input-group">
+            <label for="register-username">Nome utente</label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input type="text" id="register-username" placeholder="Il tuo nome" autocomplete="name" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="register-email">Email</label>
+            <div class="input-wrapper">
+              <span class="input-icon">✉</span>
+              <input type="email" id="register-email" placeholder="nome@esempio.com" autocomplete="email" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="register-password">Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="register-password" placeholder="••••••••" autocomplete="new-password" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="register-confirm-password">Conferma password</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="register-confirm-password" placeholder="••••••••" autocomplete="new-password" />
+            </div>
+          </div>
+
+          <button class="btn-primary" id="btn-register" type="button">Registrati <span class="btn-arrow">→</span></button>
+        </div>
+
+        <div class="divider"></div>
+        <div class="guest-access">
+          <button class="btn-guest" id="btn-guest" type="button">Accedi come ospite <span class="btn-arrow">→</span></button>
+          <div class="guest-text" style="margin-top:1rem;">
+            <strong>Accesso ospite</strong>
+            <small>Accedi subito con funzionalità limitate: il profilo e le impostazioni non saranno salvati in modo completo.</small>
+          </div>
         </div>
       </div>
     </section>
@@ -612,6 +701,39 @@
     const passwordToggles = document.querySelectorAll('.toggle-password');
     const toast = document.getElementById('toast');
     const loginEmail = document.getElementById('login-email');
+    const loginPassword = document.getElementById('login-password');
+    const loginTab = document.getElementById('tab-login');
+    const registerTab = document.getElementById('tab-register');
+    const panelLogin = document.getElementById('panel-login');
+    const panelRegister = document.getElementById('panel-register');
+    const registerUsername = document.getElementById('register-username');
+    const registerEmail = document.getElementById('register-email');
+    const registerPassword = document.getElementById('register-password');
+    const registerConfirmPassword = document.getElementById('register-confirm-password');
+    const btnRegister = document.getElementById('btn-register');
+    const btnGuest = document.getElementById('btn-guest');
+
+    const STORAGE_ACCOUNTS_KEY = 'bp_accounts';
+
+    function getAccounts() {
+      return JSON.parse(localStorage.getItem(STORAGE_ACCOUNTS_KEY) || '{}');
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(STORAGE_ACCOUNTS_KEY, JSON.stringify(accounts));
+    }
+
+    function getAccountByEmail(email) {
+      if (!email) return null;
+      const accounts = getAccounts();
+      return accounts[email.toLowerCase()] || null;
+    }
+
+    function storeAccount(account) {
+      const accounts = getAccounts();
+      accounts[account.email.toLowerCase()] = account;
+      saveAccounts(accounts);
+    }
 
     passwordToggles.forEach((button) => {
       button.addEventListener('click', () => {
@@ -640,11 +762,125 @@
       themeToggle.setAttribute('aria-label', body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 
+    function switchTab(selectedTab) {
+      if (selectedTab === 'login') {
+        loginTab.classList.add('active');
+        loginTab.setAttribute('aria-selected', 'true');
+        registerTab.classList.remove('active');
+        registerTab.setAttribute('aria-selected', 'false');
+        panelLogin.classList.add('active');
+        panelRegister.classList.remove('active');
+      } else {
+        registerTab.classList.add('active');
+        registerTab.setAttribute('aria-selected', 'true');
+        loginTab.classList.remove('active');
+        loginTab.setAttribute('aria-selected', 'false');
+        panelRegister.classList.add('active');
+        panelLogin.classList.remove('active');
+      }
+    }
+
+    loginTab.addEventListener('click', () => switchTab('login'));
+    registerTab.addEventListener('click', () => switchTab('register'));
+
+    btnRegister.addEventListener('click', () => {
+      const usernameValue = normalizeUsername(registerUsername.value);
+      const emailValue = registerEmail.value.trim();
+      const passwordValue = registerPassword.value.trim();
+      const confirmValue = registerConfirmPassword.value.trim();
+
+      if (!usernameValue || !emailValue || !passwordValue || !confirmValue) {
+        showToast('Compila tutti i campi per registrarti.');
+        return;
+      }
+      if (passwordValue !== confirmValue) {
+        showToast('La password e la conferma non corrispondono.');
+        return;
+      }
+      if (getAccountByEmail(emailValue)) {
+        showToast('Esiste già un account con questa email.');
+        return;
+      }
+
+      const account = {
+        username: usernameValue,
+        email: emailValue,
+        password: passwordValue,
+        profileImage: ''
+      };
+      storeAccount(account);
+
+      sessionStorage.setItem('authenticated', 'true');
+      sessionStorage.setItem('role', 'user');
+      sessionStorage.setItem('username', usernameValue);
+      sessionStorage.setItem('email', emailValue);
+      sessionStorage.setItem('profileImage', '');
+      showToast('Registrazione completata! Benvenuto su brainplaying.');
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 450);
+    });
+
+    btnGuest.addEventListener('click', () => {
+      sessionStorage.setItem('authenticated', 'true');
+      sessionStorage.setItem('role', 'guest');
+      sessionStorage.setItem('username', 'Ospite');
+      sessionStorage.setItem('email', 'ospite@brainplaying.it');
+      sessionStorage.removeItem('profileImage');
+      showToast('Accesso ospite attivato. Alcune funzioni sono limitate.');
+      setTimeout(() => {
+        window.location.href = 'home.html';
+      }, 450);
+    });
+
     function showToast(message) {
       toast.textContent = message;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2600);
     }
+
+    const forgotPasswordButton = document.getElementById('forgotPasswordButton');
+    const passwordResetPanel = document.getElementById('passwordResetPanel');
+    const resetEmail = document.getElementById('reset-email');
+    const resetPassword = document.getElementById('reset-password');
+    const resetConfirmPassword = document.getElementById('reset-confirm-password');
+    const btnResetPassword = document.getElementById('btn-reset-password');
+
+    forgotPasswordButton?.addEventListener('click', () => {
+      passwordResetPanel?.classList.toggle('active');
+      if (passwordResetPanel?.classList.contains('active')) {
+        forgotPasswordButton.textContent = 'Chiudi recupero';
+      } else {
+        forgotPasswordButton.textContent = 'Dimenticata?';
+      }
+    });
+
+    btnResetPassword?.addEventListener('click', () => {
+      const emailValue = resetEmail.value.trim();
+      const passwordValue = resetPassword.value.trim();
+      const confirmValue = resetConfirmPassword.value.trim();
+      if (!emailValue || !passwordValue || !confirmValue) {
+        showToast('Compila tutti i campi per il recupero password.');
+        return;
+      }
+      if (passwordValue !== confirmValue) {
+        showToast('Le password non corrispondono.');
+        return;
+      }
+      const account = getAccountByEmail(emailValue);
+      if (!account) {
+        showToast('Account non trovato per questa email.');
+        return;
+      }
+      account.password = passwordValue;
+      storeAccount(account);
+      showToast('Password aggiornata con successo. Ora puoi accedere.');
+      resetEmail.value = '';
+      resetPassword.value = '';
+      resetConfirmPassword.value = '';
+      passwordResetPanel?.classList.remove('active');
+      forgotPasswordButton.textContent = 'Dimenticata?';
+    });
 
     function normalizeUsername(value) {
       if (!value) return 'Studente';
@@ -658,11 +894,27 @@
 
     document.getElementById('btn-login').addEventListener('click', () => {
       const emailValue = loginEmail?.value.trim() || '';
-      const username = emailValue ? normalizeUsername(emailValue.split('@')[0].replace(/[._\-]/g, ' ')) : 'Studente';
+      const passwordValue = loginPassword?.value.trim() || '';
+      if (!emailValue || !passwordValue) {
+        showToast('Inserisci email e password per accedere.');
+        return;
+      }
+      const account = getAccountByEmail(emailValue);
+      if (!account) {
+        showToast('Account non trovato. Registrati prima.');
+        return;
+      }
+      if (account.password !== passwordValue) {
+        showToast('Password errata. Riprova.');
+        return;
+      }
+
       sessionStorage.setItem('authenticated', 'true');
-      sessionStorage.setItem('username', username);
-      sessionStorage.setItem('email', emailValue || 'ospite@brainplaying.it');
-      showToast('Login simulato: pronto per la tua sessione di studio!');
+      sessionStorage.setItem('role', 'user');
+      sessionStorage.setItem('username', account.username);
+      sessionStorage.setItem('email', account.email);
+      sessionStorage.setItem('profileImage', account.profileImage || '');
+      showToast('Login eseguito! Benvenuto su brainplaying.');
       setTimeout(() => {
         window.location.href = 'home.html';
       }, 450);

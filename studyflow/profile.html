@@ -236,6 +236,24 @@
       transform: translateY(-1px);
       box-shadow: 0 14px 28px rgba(79, 70, 229, 0.2);
     }
+
+    .username-save-button:disabled,
+    .upload-photo-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+      background: rgba(79, 70, 229, 0.04);
+    }
+
+    .guest-note {
+      padding: 1rem 1.2rem;
+      border-radius: 22px;
+      background: rgba(79, 70, 229, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(79, 70, 229, 0.14);
+      font-size: 0.96rem;
+      margin-bottom: 0.75rem;
+    }
     .profile-actions {
       display: grid;
       gap: 0.9rem;
@@ -362,6 +380,7 @@
         </div>
         <h1 class="profile-title" id="profileUsername">Studente</h1>
         <p class="profile-subtitle">Benvenuto nella tua pagina personale. Qui trovi tutte le tue statistiche, informazioni e l'immagine del profilo.</p>
+        <p id="guestProfileNotice" class="guest-note" style="display:none;margin-top:1rem;"></p>
         <div class="profile-meta">
           <strong id="profileName">Studente</strong>
           <span id="profileEmail">ospite@brainplaying.it</span>
@@ -427,12 +446,47 @@
     const usernameInput = document.getElementById('usernameInput');
     const usernameSaveButton = document.getElementById('usernameSaveButton');
     const avatarInput = document.getElementById('avatarInput');
+    const guestProfileNotice = document.getElementById('guestProfileNotice');
+
+    const STORAGE_ACCOUNTS_KEY = 'bp_accounts';
+    const currentEmail = sessionStorage.getItem('email');
+    const role = sessionStorage.getItem('role') || 'user';
+
+    function getAccounts() {
+      return JSON.parse(localStorage.getItem(STORAGE_ACCOUNTS_KEY) || '{}');
+    }
+
+    function saveAccounts(accounts) {
+      localStorage.setItem(STORAGE_ACCOUNTS_KEY, JSON.stringify(accounts));
+    }
+
+    function getAccountByEmail(email) {
+      if (!email) return null;
+      const accounts = getAccounts();
+      return accounts[email.toLowerCase()] || null;
+    }
+
+    function saveAccount(account) {
+      const accounts = getAccounts();
+      accounts[account.email.toLowerCase()] = account;
+      saveAccounts(accounts);
+    }
 
     const user = {
       username: sessionStorage.getItem('username') || 'Studente',
       email: sessionStorage.getItem('email') || 'ospite@brainplaying.it',
       profileImage: sessionStorage.getItem('profileImage') || ''
     };
+
+    if (role === 'user' && currentEmail) {
+      const storedAccount = getAccountByEmail(currentEmail);
+      if (storedAccount) {
+        user.username = storedAccount.username || user.username;
+        user.profileImage = storedAccount.profileImage || user.profileImage;
+        sessionStorage.setItem('username', user.username);
+        sessionStorage.setItem('profileImage', user.profileImage);
+      }
+    }
 
     function getInitials(name) {
       return name
@@ -471,6 +525,11 @@
       reader.onload = () => {
         user.profileImage = reader.result;
         sessionStorage.setItem('profileImage', user.profileImage);
+        if (role === 'user' && currentEmail) {
+          const storedAccount = getAccountByEmail(currentEmail) || { email: currentEmail };
+          storedAccount.profileImage = user.profileImage;
+          saveAccount(storedAccount);
+        }
         updateProfilePage();
       };
       reader.readAsDataURL(file);
@@ -481,6 +540,11 @@
       if (!newUsername) return;
       user.username = newUsername;
       sessionStorage.setItem('username', newUsername);
+      if (role === 'user' && currentEmail) {
+        const storedAccount = getAccountByEmail(currentEmail) || { email: currentEmail };
+        storedAccount.username = newUsername;
+        saveAccount(storedAccount);
+      }
       updateProfilePage();
       usernameInput.value = '';
     });
@@ -502,7 +566,21 @@
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 
+    function updateGuestProfileMode() {
+      const role = sessionStorage.getItem('role') || 'user';
+      if (role === 'guest') {
+        if (guestProfileNotice) {
+          guestProfileNotice.style.display = 'block';
+          guestProfileNotice.textContent = 'Sei connesso come ospite: alcune funzioni del profilo sono limitate.';
+        }
+        usernameInput.disabled = true;
+        usernameSaveButton.disabled = true;
+        uploadPhotoButton.disabled = true;
+      }
+    }
+
     updateProfilePage();
+    updateGuestProfileMode();
   </script>
 </body>
 </html>
