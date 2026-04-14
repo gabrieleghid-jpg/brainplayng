@@ -80,6 +80,7 @@
       justify-content: space-between;
       gap: 1rem;
       margin-bottom: 2.5rem;
+      position: relative;
     }
 
     .brand {
@@ -109,6 +110,119 @@
       align-items: center;
       gap: 0.75rem;
       flex-wrap: wrap;
+    }
+
+    .profile-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--panel-strong);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .profile-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(15, 23, 42, 0.12);
+    }
+
+    .profile-avatar {
+      width: 2.6rem;
+      height: 2.6rem;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.18), rgba(59, 130, 246, 0.16));
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.95rem;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .profile-name {
+      display: inline-flex;
+      color: var(--text);
+      font-weight: 600;
+      min-width: 4rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-menu {
+      position: absolute;
+      top: calc(100% + 1rem);
+      right: 0;
+      width: min(360px, calc(100vw - 2rem));
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 1.4rem;
+      display: grid;
+      gap: 1rem;
+      z-index: 5;
+    }
+
+    .profile-menu[aria-hidden="true"] {
+      display: none;
+    }
+
+    .profile-summary {
+      display: grid;
+      gap: 1rem;
+      align-items: center;
+      grid-template-columns: auto 1fr;
+    }
+
+    .profile-avatar-large {
+      width: 4.2rem;
+      height: 4.2rem;
+      font-size: 1.1rem;
+    }
+
+    .profile-meta strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .profile-meta span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.93rem;
+    }
+
+    .profile-stats {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .profile-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.1rem;
+      border-radius: 22px;
+      background: rgba(79, 70, 229, 0.06);
+    }
+
+    .profile-stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .profile-actions {
+      display: grid;
+      gap: 0.8rem;
     }
 
     .nav-link,
@@ -142,6 +256,58 @@
       gap: 2rem;
       align-items: start;
       margin-bottom: 2rem;
+    }
+
+    .feature-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+      padding: 2.4rem;
+      margin-bottom: 2rem;
+    }
+
+    .feature-card h2 {
+      margin: 0 0 1rem;
+      font-size: clamp(2.1rem, 3vw, 2.6rem);
+      line-height: 1.05;
+    }
+
+    .feature-card p {
+      margin: 0 0 2rem;
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 46rem;
+    }
+
+    .feature-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--accent);
+      font-size: 0.9rem;
     }
 
     .hero-card,
@@ -445,10 +611,42 @@
         <button class="nav-link" type="button">Home</button>
         <button class="nav-link" type="button">Sessioni</button>
         <button class="nav-link" type="button">Obiettivi</button>
-        <button class="nav-link" type="button">Profilo</button>
+        <button class="profile-button" id="profileToggle" type="button" aria-expanded="false" aria-controls="profileMenu">
+          <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
+          <span class="profile-name" id="navUsername">Studente</span>
+        </button>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
       </div>
     </header>
+
+    <div class="profile-menu" id="profileMenu" aria-hidden="true">
+      <div class="profile-summary">
+        <span class="profile-avatar profile-avatar-large" id="menuAvatar">BP</span>
+        <div class="profile-meta">
+          <strong id="profileName">Studente</strong>
+          <span id="profileEmail">ospite@brainplaying.it</span>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="profile-stat">
+          <span>Tempo totale</span>
+          <strong id="stat-study-time">4h 12m</strong>
+        </div>
+        <div class="profile-stat">
+          <span>Sessioni completate</span>
+          <strong id="stat-sessions">18</strong>
+        </div>
+        <div class="profile-stat">
+          <span>Streak</span>
+          <strong id="stat-streak">5 giorni</strong>
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button class="secondary-button" id="changePhotoButton" type="button">Modifica foto</button>
+        <button class="hero-button" id="logoutButton" type="button">Esci</button>
+      </div>
+      <input type="file" id="avatarInput" accept="image/*" style="display:none" />
+    </div>
 
     <div class="hero-grid">
       <section class="hero-card">
@@ -483,6 +681,17 @@
         </div>
       </aside>
     </div>
+
+    <section class="feature-card">
+      <h2>Scopri brainplaying</h2>
+      <p>Rimani concentrato, organizza le tue sessioni e monitora i progressi con un’esperienza studiata per lo studio produttivo.</p>
+      <ul class="feature-list">
+        <li>Sessioni guidate per mantenere il ritmo</li>
+        <li>Ripetizione spaziata per fissare i concetti</li>
+        <li>Metascore di progressi e obiettivi giornalieri</li>
+        <li>Interfaccia pulita e focus mode</li>
+      </ul>
+    </section>
 
     <div class="dashboard-grid">
       <article class="session-card">
@@ -546,7 +755,95 @@
   </div>
 
   <script>
+    if (sessionStorage.getItem('authenticated') !== 'true') {
+      window.location.href = 'index.html';
+    }
+
     const themeToggle = document.getElementById('themeToggle');
+    const profileToggle = document.getElementById('profileToggle');
+    const profileMenu = document.getElementById('profileMenu');
+    const navAvatar = document.getElementById('navAvatar');
+    const menuAvatar = document.getElementById('menuAvatar');
+    const navUsername = document.getElementById('navUsername');
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const changePhotoButton = document.getElementById('changePhotoButton');
+    const avatarInput = document.getElementById('avatarInput');
+    const logoutButton = document.getElementById('logoutButton');
+
+    const user = {
+      username: sessionStorage.getItem('username') || 'Studente',
+      email: sessionStorage.getItem('email') || 'ospite@brainplaying.it',
+      profileImage: sessionStorage.getItem('profileImage') || ''
+    };
+
+    function getInitials(name) {
+      return name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join('');
+    }
+
+    function updateProfileUI() {
+      const initials = getInitials(user.username);
+      if (navUsername) navUsername.textContent = user.username;
+      if (profileName) profileName.textContent = user.username;
+      if (profileEmail) profileEmail.textContent = user.email;
+
+      [navAvatar, menuAvatar].forEach((avatarEl) => {
+        if (!avatarEl) return;
+        if (user.profileImage) {
+          avatarEl.style.backgroundImage = `url(${user.profileImage})`;
+          avatarEl.textContent = '';
+        } else {
+          avatarEl.style.backgroundImage = '';
+          avatarEl.textContent = initials;
+        }
+      });
+    }
+
+    function closeProfileMenu() {
+      profileMenu.setAttribute('aria-hidden', 'true');
+      profileToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    updateProfileUI();
+
+    profileToggle.addEventListener('click', () => {
+      const expanded = profileToggle.getAttribute('aria-expanded') === 'true';
+      profileToggle.setAttribute('aria-expanded', String(!expanded));
+      profileMenu.setAttribute('aria-hidden', String(expanded));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!profileMenu.contains(event.target) && !profileToggle.contains(event.target)) {
+        closeProfileMenu();
+      }
+    });
+
+    changePhotoButton.addEventListener('click', () => {
+      avatarInput.click();
+    });
+
+    avatarInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        user.profileImage = reader.result;
+        sessionStorage.setItem('profileImage', user.profileImage);
+        updateProfileUI();
+      };
+      reader.readAsDataURL(file);
+    });
+
+    logoutButton.addEventListener('click', () => {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
