@@ -61,13 +61,12 @@
       position: relative;
     }
 
-    /* Layout principale con due colonne su desktop */
+    /* Layout principale centrato per il login */
     main {
-      display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.95fr);
-      gap: 3.5rem;
+      display: flex;
+      justify-content: center;
       align-items: center;
-      max-width: 1280px;
+      max-width: 680px;
       margin: 0 auto;
       padding: 3.5rem 2rem;
       min-height: 100vh;
@@ -566,21 +565,6 @@
   <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
 
   <main>
-    <section class="brand-panel" aria-label="Introduzione brainplaying">
-      <div class="logo">
-        <span class="logo-icon">S</span>
-        <span class="logo-text">brainplaying</span>
-      </div>
-      <h1 class="brand-headline">Concentrazione e studio perfetto <em>in un unico posto</em></h1>
-      <p class="brand-sub">Organizza le tue sessioni, tieni traccia del progresso e rimani focalizzato con un'interfaccia minimal pensata per supportare la produttività.</p>
-      <ul class="feature-list">
-        <li><span class="feat-icon">✓</span> Routine di studio personalizzate</li>
-        <li><span class="feat-icon">✓</span> Obiettivi giornalieri chiari</li>
-        <li><span class="feat-icon">✓</span> Dashboard senza distrazioni</li>
-        <li><span class="feat-icon">✓</span> Design pulito e intuitivo</li>
-      </ul>
-    </section>
-
     <section class="form-panel" aria-label="Accesso brainplaying">
       <div class="form-card">
         <div class="form-header">
@@ -590,11 +574,6 @@
           </div>
           <h2 class="form-title">Bentornato</h2>
           <p class="form-subtitle">Accedi al tuo account per iniziare una nuova sessione di studio.</p>
-        </div>
-
-        <div class="auth-tabs" role="tablist" aria-label="Seleziona modalità autenticazione">
-          <button class="tab-btn active" role="tab" aria-selected="true" data-tab="login" id="tab-login">Accedi</button>
-          <button class="tab-btn" role="tab" aria-selected="false" data-tab="register" id="tab-register">Registrati</button>
         </div>
 
         <div class="tab-panel active" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
@@ -620,50 +599,6 @@
 
           <button class="btn-primary" id="btn-login" type="button">Accedi <span class="btn-arrow">→</span></button>
         </div>
-
-        <div class="tab-panel" id="panel-register" role="tabpanel" aria-labelledby="tab-register">
-          <div class="input-group">
-            <label for="reg-name">Nome completo</label>
-            <div class="input-wrapper">
-              <span class="input-icon">👤</span>
-              <input type="text" id="reg-name" placeholder="Mario Rossi" autocomplete="name" />
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label for="reg-email">Email</label>
-            <div class="input-wrapper">
-              <span class="input-icon">✉</span>
-              <input type="email" id="reg-email" placeholder="nome@esempio.com" autocomplete="email" />
-            </div>
-          </div>
-
-          <div class="input-group">
-            <label for="reg-password">Password</label>
-            <div class="input-wrapper">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="reg-password" placeholder="Min. 8 caratteri" autocomplete="new-password" />
-              <button class="toggle-password" type="button" aria-label="Mostra password">👁</button>
-            </div>
-          </div>
-
-          <button class="btn-primary" id="btn-register" type="button">Crea account <span class="btn-arrow">→</span></button>
-        </div>
-
-        <div class="divider"><span>oppure</span></div>
-
-        <button class="btn-guest" id="btn-guest" type="button">
-          <span class="guest-icon">◌</span>
-          <div class="guest-text">
-            <strong>Continua come ospite</strong>
-            <small>Accesso rapido senza registrazione</small>
-          </div>
-          <span class="btn-arrow">→</span>
-        </button>
-
-        <p class="terms-note">
-          Continuando accetti i nostri <a href="#">Termini</a> e la <a href="#">Privacy Policy</a>.
-        </p>
       </div>
     </section>
   </main>
@@ -672,24 +607,11 @@
 
   <script>
     const tabs = document.querySelectorAll('.tab-btn');
-    const panels = document.querySelectorAll('.tab-panel');
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     const passwordToggles = document.querySelectorAll('.toggle-password');
     const toast = document.getElementById('toast');
-
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', () => {
-        tabs.forEach((button) => {
-          button.classList.toggle('active', button === tab);
-          button.setAttribute('aria-selected', button === tab ? 'true' : 'false');
-        });
-
-        panels.forEach((panel) => {
-          panel.classList.toggle('active', panel.id === `panel-${tab.dataset.tab}`);
-        });
-      });
-    });
+    const loginEmail = document.getElementById('login-email');
 
     passwordToggles.forEach((button) => {
       button.addEventListener('click', () => {
@@ -717,23 +639,29 @@
       setTimeout(() => toast.classList.remove('show'), 2600);
     }
 
+    function normalizeUsername(value) {
+      if (!value) return 'Studente';
+      return value
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase() + part.slice(1).toLowerCase())
+        .join(' ');
+    }
+
     document.getElementById('btn-login').addEventListener('click', () => {
+      const emailValue = loginEmail?.value.trim() || '';
+      const username = emailValue ? normalizeUsername(emailValue.split('@')[0].replace(/[._\-]/g, ' ')) : 'Studente';
+      sessionStorage.setItem('authenticated', 'true');
+      sessionStorage.setItem('username', username);
+      sessionStorage.setItem('email', emailValue || 'ospite@brainplaying.it');
       showToast('Login simulato: pronto per la tua sessione di studio!');
       setTimeout(() => {
         window.location.href = 'home.html';
       }, 450);
     });
 
-    document.getElementById('btn-register').addEventListener('click', () => {
-      showToast('Registrazione simulata: account creato!');
-    });
 
-    document.getElementById('btn-guest').addEventListener('click', () => {
-      showToast('Stai continuando come ospite. Buono studio!');
-      setTimeout(() => {
-        window.location.href = 'home.html';
-      }, 450);
-    });
   </script>
 </body>
 </html>
