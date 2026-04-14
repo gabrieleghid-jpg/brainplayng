@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StudyFlow — Accedi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+
+  <!-- Sfondo animato -->
+  <div class="bg-layer">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <main class="login-container">
+
+    <!-- Pannello sinistro: branding -->
+    <section class="brand-panel" aria-hidden="true">
+      <div class="brand-content">
+        <div class="logo">
+          <span class="logo-icon">⬡</span>
+          <span class="logo-text">StudyFlow</span>
+        </div>
+        <h1 class="brand-headline">
+          Studia meglio.<br />
+          <em>Ogni giorno.</em>
+        </h1>
+        <p class="brand-sub">Flashcard, quiz, appunti e statistiche di apprendimento — tutto in un unico spazio progettato per te.</p>
+        <ul class="feature-list">
+          <li><span class="feat-icon">◈</span> Sessioni di studio guidate</li>
+          <li><span class="feat-icon">◈</span> Ripetizione spaziata intelligente</li>
+          <li><span class="feat-icon">◈</span> Progressi in tempo reale</li>
+          <li><span class="feat-icon">◈</span> Modalità focus senza distrazioni</li>
+        </ul>
+      </div>
+      <div class="brand-decoration">
+        <div class="deco-ring"></div>
+        <div class="deco-ring deco-ring-2"></div>
+      </div>
+    </section>
+
+    <!-- Pannello destro: form -->
+    <section class="form-panel">
+      <div class="form-card">
+        <div class="form-header">
+          <div class="mobile-logo">
+            <span class="logo-icon">⬡</span>
+            <span class="logo-text">StudyFlow</span>
+          </div>
+          <h2 class="form-title">Bentornato</h2>
+          <p class="form-subtitle">Accedi al tuo account per continuare a studiare</p>
+        </div>
+
+        <!-- Tabs login / registrati -->
+        <div class="auth-tabs" role="tablist">
+          <button class="tab-btn active" role="tab" aria-selected="true" data-tab="login" id="tab-login">Accedi</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-tab="register" id="tab-register">Registrati</button>
+          <div class="tab-slider"></div>
+        </div>
+
+        <!-- Form Login -->
+        <div class="tab-panel active" id="panel-login" role="tabpanel" aria-labelledby="tab-login">
+          <div class="input-group">
+            <label for="login-email">Email</label>
+            <div class="input-wrapper">
+              <span class="input-icon">✉</span>
+              <input type="email" id="login-email" placeholder="nome@esempio.com" autocomplete="email" />
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="login-password">
+              Password
+              <a href="pages/reset-password.html" class="forgot-link">Dimenticata?</a>
+            </label>
+            <div class="input-wrapper">
+              <span class="input-icon">◉</span>
+              <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" />
+              <button class="toggle-password" aria-label="Mostra password" type="button">👁</button>
+            </div>
+          </div>
+          <button class="btn-primary" id="btn-login" type="button">
+            <span>Accedi</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+
+        <!-- Form Registrazione -->
+        <div class="tab-panel" id="panel-register" role="tabpanel" aria-labelledby="tab-register">
+          <div class="input-group">
+            <label for="reg-name">Nome completo</label>
+            <div class="input-wrapper">
+              <span class="input-icon">◎</span>
+              <input type="text" id="reg-name" placeholder="Mario Rossi" autocomplete="name" />
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="reg-email">Email</label>
+            <div class="input-wrapper">
+              <span class="input-icon">✉</span>
+              <input type="email" id="reg-email" placeholder="nome@esempio.com" autocomplete="email" />
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="reg-password">Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon">◉</span>
+              <input type="password" id="reg-password" placeholder="Min. 8 caratteri" autocomplete="new-password" />
+              <button class="toggle-password" aria-label="Mostra password" type="button">👁</button>
+            </div>
+            <div class="password-strength" id="strength-bar">
+              <div class="strength-fill"></div>
+            </div>
+            <span class="strength-label" id="strength-label"></span>
+          </div>
+          <button class="btn-primary" id="btn-register" type="button">
+            <span>Crea account</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+
+        <!-- Divider -->
+        <div class="divider"><span>oppure</span></div>
+
+        <!-- Accesso Ospite -->
+        <button class="btn-guest" id="btn-guest" type="button">
+          <span class="guest-icon">◌</span>
+          <div class="guest-text">
+            <strong>Continua come Ospite</strong>
+            <small>Accesso limitato · Nessuna registrazione richiesta</small>
+          </div>
+          <span class="btn-arrow">→</span>
+        </button>
+
+        <p class="terms-note">
+          Continuando, accetti i nostri <a href="#">Termini di servizio</a> e la <a href="#">Privacy Policy</a>.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast notifiche -->
+  <div class="toast" id="toast" role="alert" aria-live="polite"></div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
