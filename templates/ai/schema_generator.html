@@ -1543,6 +1543,36 @@
             animation: shake 0.5s ease;
         }
         
+        .quiz-option.selected {
+            background: rgba(120, 119, 198, 0.2);
+            border-color: #7877c6;
+            transform: translateX(5px);
+        }
+        
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .option-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+        
+        .quiz-navigation {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
         @keyframes correctPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -2104,26 +2134,95 @@
         
         // === QUIZ GAME ===
         function loadQuizContent() {
-            const quizQuestions = [
+            const allQuizQuestions = [
+                // Geografia
                 {
                     question: "Qual è la capitale dell'Italia?",
                     options: ["Milano", "Roma", "Napoli", "Torino"],
                     correct: 1
                 },
                 {
-                    question: "Quanto fa 2 + 2?",
-                    options: ["3", "4", "5", "6"],
+                    question: "Qual è il fiume più lungo d'Italia?",
+                    options: ["Po", "Tevere", "Arno", "Adige"],
+                    correct: 0
+                },
+                {
+                    question: "In quale continente si trova il Brasile?",
+                    options: ["Africa", "Asia", "America del Sud", "Europa"],
+                    correct: 2
+                },
+                // Matematica
+                {
+                    question: "Quanto fa 15 + 27?",
+                    options: ["40", "41", "42", "43"],
+                    correct: 2
+                },
+                {
+                    question: "Qual è il risultato di 8 × 7?",
+                    options: ["54", "56", "58", "60"],
+                    correct: 1
+                },
+                {
+                    question: "Quanto fa 144 ÷ 12?",
+                    options: ["10", "11", "12", "13"],
+                    correct: 2
+                },
+                // Storia
+                {
+                    question: "In quale anno è iniziata la Seconda Guerra Mondiale?",
+                    options: ["1935", "1939", "1941", "1945"],
                     correct: 1
                 },
                 {
                     question: "Chi scrisse la Divina Commedia?",
                     options: ["Dante Alighieri", "Petrarca", "Boccaccio", "Manzoni"],
                     correct: 0
+                },
+                {
+                    question: "Quale dinastia regnava in Francia durante la Rivoluzione Francese?",
+                    options: ["Borboni", "Orleans", "Bonaparte", "Valois"],
+                    correct: 0
+                },
+                // Scienze
+                {
+                    question: "Qual è la formula chimica dell'acqua?",
+                    options: ["H2O", "CO2", "O2", "N2"],
+                    correct: 0
+                },
+                {
+                    question: "Quale pianeta è conosciuto come il Pianeta Rosso?",
+                    options: ["Venere", "Marte", "Giove", "Saturno"],
+                    correct: 1
+                },
+                {
+                    question: "Qual è l'organo principale del sistema circolatorio?",
+                    options: ["Polmoni", "Cervello", "Cuore", "Fegato"],
+                    correct: 2
+                },
+                // Cultura generale
+                {
+                    question: "Quanti giorni ha un anno bisestile?",
+                    options: ["364", "365", "366", "367"],
+                    correct: 2
+                },
+                {
+                    question: "Qual è il colore più comune nelle bandiere nazionali?",
+                    options: ["Rosso", "Blu", "Verde", "Giallo"],
+                    correct: 0
+                },
+                {
+                    question: "Quale strumento musicale ha 88 tasti?",
+                    options: ["Chitarra", "Violino", "Pianoforte", "Batteria"],
+                    correct: 2
                 }
             ];
             
-            learningContent = quizQuestions;
-            totalQuestions = quizQuestions.length;
+            // Mescola le domande e seleziona 5 casuali
+            const shuffled = allQuizQuestions.sort(() => Math.random() - 0.5);
+            learningContent = shuffled.slice(0, 5);
+            totalQuestions = learningContent.length;
+            currentQuestionIndex = 0;
+            currentScore = 0;
             displayQuizQuestion();
         }
         
@@ -2142,10 +2241,16 @@
                     <h3>${question.question}</h3>
                     <div class="quiz-options">
                         ${question.options.map((option, index) => `
-                            <div class="quiz-option" onclick="checkQuizAnswer(${index})">
-                                ${option}
+                            <div class="quiz-option" data-index="${index}" onclick="selectQuizOption(${index})">
+                                <span class="option-letter">${String.fromCharCode(65 + index)}</span>
+                                <span class="option-text">${option}</span>
                             </div>
                         `).join('')}
+                    </div>
+                    <div class="quiz-navigation">
+                        <button id="nextQuizBtn" class="btn btn-primary" style="display: none; margin-top: 1rem;" onclick="nextQuizQuestion()">
+                            Prossima Domanda <i class="fas fa-arrow-right"></i>
+                        </button>
                     </div>
                 </div>
             `;
@@ -2154,31 +2259,81 @@
             hideButtons();
         }
         
-        function checkQuizAnswer(selectedIndex) {
+        function selectQuizOption(selectedIndex) {
             const question = learningContent[currentQuestionIndex];
             const options = document.querySelectorAll('.quiz-option');
             
-            // Disabilita tutte le opzioni
-            options.forEach(option => option.onclick = null);
+            // Disabilita tutte le opzioni per evitare click multipli
+            options.forEach(option => {
+                option.onclick = null;
+                option.style.cursor = 'not-allowed';
+            });
             
-            // Evidenzia la risposta corretta e quella selezionata
-            options[selectedIndex].classList.add(selectedIndex === question.correct ? 'correct' : 'incorrect');
-            options[question.correct].classList.add('correct');
+            // Evidenzia la risposta selezionata
+            options[selectedIndex].classList.add('selected');
             
-            // Aggiorna il punteggio
-            if (selectedIndex === question.correct) {
-                currentScore++;
-            }
-            
-            // Mostra il pulsante per la prossima domanda
-            document.getElementById('nextBtn').style.display = 'inline-flex';
-            
-            // Auto-avanza dopo 2 secondi per mostrare la prossima domanda
+            // Mostra la risposta corretta dopo un breve delay
             setTimeout(() => {
-                if (currentQuestionIndex < totalQuestions - 1) {
-                    nextQuestion();
+                options[question.correct].classList.add('correct');
+                
+                // Se la risposta è sbagliata, evidenziala come incorrect
+                if (selectedIndex !== question.correct) {
+                    options[selectedIndex].classList.add('incorrect');
+                }
+                
+                // Aggiorna il punteggio
+                if (selectedIndex === question.correct) {
+                    currentScore++;
+                    updateScoreDisplay();
+                    
+                    // Feedback positivo
+                    showFeedback('Corretto! +1 punto', 'success');
                 } else {
-                    showQuizResults();
+                    // Feedback negativo
+                    showFeedback('Sbagliato! La risposta corretta era: ' + question.options[question.correct], 'error');
+                }
+                
+                // Mostra il pulsante per la prossima domanda
+                const nextBtn = document.getElementById('nextQuizBtn');
+                if (nextBtn) {
+                    nextBtn.style.display = 'inline-flex';
+                }
+                
+                // Se è l'ultima domanda, cambia il testo del pulsante
+                if (currentQuestionIndex === totalQuestions - 1) {
+                    if (nextBtn) {
+                        nextBtn.innerHTML = 'Vedi Risultati <i class="fas fa-check"></i>';
+                        nextBtn.onclick = showQuizResults;
+                    }
+                }
+            }, 500);
+        }
+        
+        function nextQuizQuestion() {
+            currentQuestionIndex++;
+            displayQuizQuestion();
+        }
+        
+        function showFeedback(message, type) {
+            const learningContentElement = document.getElementById('learningContent');
+            const feedbackDiv = document.createElement('div');
+            feedbackDiv.className = `quiz-feedback ${type}`;
+            feedbackDiv.textContent = message;
+            feedbackDiv.style.cssText = `
+                padding: 1rem;
+                margin: 1rem 0;
+                border-radius: 8px;
+                text-align: center;
+                font-weight: 600;
+                ${type === 'success' ? 'background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3);' : 'background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);'}
+            `;
+            
+            learningContentElement.appendChild(feedbackDiv);
+            
+            // Rimuovi il feedback dopo 2 secondi
+            setTimeout(() => {
+                if (feedbackDiv.parentNode) {
+                    feedbackDiv.parentNode.removeChild(feedbackDiv);
                 }
             }, 2000);
         }
