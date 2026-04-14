@@ -628,8 +628,15 @@
       });
     });
 
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      body.classList.add('dark');
+    }
+    themeToggle.setAttribute('aria-label', body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+
     themeToggle.addEventListener('click', () => {
       body.classList.toggle('dark');
+      localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
       themeToggle.setAttribute('aria-label', body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 

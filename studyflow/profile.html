@@ -121,6 +121,13 @@
       transition: transform 0.2s ease, background 0.2s ease;
     }
     .theme-toggle:hover { transform: translateY(-1px); }
+    .nav-link:hover {
+      background: rgba(79, 70, 229, 0.08);
+    }
+    body.dark .nav-link {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
     .profile-panel {
       display: grid;
       grid-template-columns: 320px minmax(0, 1fr);
@@ -141,6 +148,12 @@
       display: grid;
       gap: 1.5rem;
     }
+    .avatar-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 1rem;
+    }
     .avatar-large {
       width: 120px;
       height: 120px;
@@ -152,7 +165,24 @@
       color: var(--accent);
       font-weight: 700;
       overflow: hidden;
-      margin-bottom: 1rem;
+      margin: 0;
+    }
+    .upload-photo-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 1.2rem;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--panel-strong);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .upload-photo-button:hover {
+      transform: translateY(-1px);
+      background: rgba(79, 70, 229, 0.08);
     }
     .profile-title {
       margin: 0;
@@ -177,10 +207,67 @@
       color: var(--muted);
       font-size: 0.95rem;
     }
+    .username-edit {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1.2rem;
+    }
+    .username-input {
+      width: 100%;
+      padding: 0.95rem 1rem;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--panel-strong);
+      color: var(--text);
+      font-size: 1rem;
+    }
+    .username-save-button {
+      width: fit-content;
+      border: none;
+      border-radius: 18px;
+      padding: 0.9rem 1.2rem;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .username-save-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.2);
+    }
     .profile-actions {
       display: grid;
       gap: 0.9rem;
       margin-top: 1.5rem;
+    }
+    .avatar-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 1rem;
+    }
+    .upload-photo-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 1.2rem;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--panel-strong);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .upload-photo-button:hover {
+      transform: translateY(-1px);
+      background: rgba(79, 70, 229, 0.08);
+    }
+    .logout-footer {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: flex-end;
     }
     .hero-button,
     .secondary-button {
@@ -269,16 +356,19 @@
 
     <main class="profile-panel">
       <section class="profile-summary-card">
-        <div class="avatar-large" id="profileAvatar">BP</div>
+        <div class="avatar-row">
+          <div class="avatar-large" id="profileAvatar">BP</div>
+          <button class="upload-photo-button" id="uploadPhotoButton" type="button">Carica foto profilo</button>
+        </div>
         <h1 class="profile-title" id="profileUsername">Studente</h1>
         <p class="profile-subtitle">Benvenuto nella tua pagina personale. Qui trovi tutte le tue statistiche, informazioni e l'immagine del profilo.</p>
         <div class="profile-meta">
           <strong id="profileName">Studente</strong>
           <span id="profileEmail">ospite@brainplaying.it</span>
         </div>
-        <div class="profile-actions">
-          <button class="hero-button" id="uploadPhotoButton" type="button">Carica foto profilo</button>
-          <button class="secondary-button" id="logoutButton" type="button">Esci</button>
+        <div class="username-edit">
+          <input class="username-input" id="usernameInput" type="text" placeholder="Inserisci nuovo username" />
+          <button class="username-save-button" id="usernameSaveButton" type="button">Salva username</button>
         </div>
         <input type="file" id="avatarInput" accept="image/*" style="display:none" />
       </section>
@@ -314,6 +404,9 @@
           </div>
         </div>
       </section>
+      <div class="logout-footer">
+        <button class="secondary-button" id="logoutButton" type="button">Esci</button>
+      </div>
     </main>
   </div>
 
@@ -331,6 +424,8 @@
     const profileEmailCard = document.getElementById('profileEmailCard');
     const uploadPhotoButton = document.getElementById('uploadPhotoButton');
     const logoutButton = document.getElementById('logoutButton');
+    const usernameInput = document.getElementById('usernameInput');
+    const usernameSaveButton = document.getElementById('usernameSaveButton');
     const avatarInput = document.getElementById('avatarInput');
 
     const user = {
@@ -381,13 +476,29 @@
       reader.readAsDataURL(file);
     });
 
+    usernameSaveButton.addEventListener('click', () => {
+      const newUsername = usernameInput.value.trim();
+      if (!newUsername) return;
+      user.username = newUsername;
+      sessionStorage.setItem('username', newUsername);
+      updateProfilePage();
+      usernameInput.value = '';
+    });
+
     logoutButton.addEventListener('click', () => {
       sessionStorage.clear();
       window.location.href = 'index.html';
     });
 
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+    }
+    themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 

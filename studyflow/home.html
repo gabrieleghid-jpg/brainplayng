@@ -181,6 +181,15 @@
       transform: translateY(-1px);
     }
 
+    .nav-link:hover {
+      background: rgba(79, 70, 229, 0.08);
+    }
+
+    body.dark .nav-link {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text);
+    }
+
     .hero-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.8fr);
@@ -544,7 +553,6 @@
         <button class="nav-link" type="button">Obiettivi</button>
         <a href="profile.html" class="profile-button">
           <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
-          <span class="profile-name" id="navUsername">Studente</span>
         </a>
         <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
       </div>
@@ -561,27 +569,6 @@
         </div>
       </section>
 
-      <aside class="stats-panel">
-        <h2>Riepilogo rapido</h2>
-        <div class="stats-grid">
-          <div class="stat-card">
-            <strong>4h 12m</strong>
-            <span>Tempo di studio questa settimana</span>
-          </div>
-          <div class="stat-card">
-            <strong>72%</strong>
-            <span>Obiettivi raggiunti</span>
-          </div>
-          <div class="stat-card">
-            <strong>3</strong>
-            <span>Sessioni attive</span>
-          </div>
-          <div class="stat-card">
-            <strong>260</strong>
-            <span>Flashcard apprese</span>
-          </div>
-        </div>
-      </aside>
     </div>
 
     <section class="feature-card">
@@ -663,7 +650,6 @@
 
     const themeToggle = document.getElementById('themeToggle');
     const navAvatar = document.getElementById('navAvatar');
-    const navUsername = document.getElementById('navUsername');
 
     const user = {
       username: sessionStorage.getItem('username') || 'Studente',
@@ -680,23 +666,28 @@
     }
 
     function updateProfileUI() {
-      const initials = getInitials(user.username);
-      if (navUsername) navUsername.textContent = user.username;
       if (navAvatar) {
         if (user.profileImage) {
           navAvatar.style.backgroundImage = `url(${user.profileImage})`;
           navAvatar.textContent = '';
         } else {
           navAvatar.style.backgroundImage = '';
-          navAvatar.textContent = initials;
+          navAvatar.textContent = getInitials(user.username);
         }
       }
     }
 
     updateProfileUI();
 
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+    }
+    themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
   </script>
