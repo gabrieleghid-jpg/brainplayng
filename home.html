@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="css/schemi.css" />
 
 </head>
 <body>
@@ -116,11 +117,11 @@
     </section>
 
     <div class="dashboard-grid">
-      <article class="session-card">
+      <article class="session-card" style="cursor: pointer;" id="schemiBtnCard">
         <header>
           <h2>Schemi</h2>
         </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Contenuto in arrivo...</p>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Clicca per esplorare i tuoi schemi</p>
       </article>
 
       <article class="session-card">
@@ -129,6 +130,38 @@
         </header>
         <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Contenuto in arrivo...</p>
       </article>
+    </div>
+
+    <!-- MODAL SCHEMI - Muro delle Idee + Flashcard Interattive -->
+    <div id="schemiBigModal" class="schemi-modal">
+      <div class="schemi-modal-content">
+        <div class="schemi-modal-header">
+          <h2>Muro delle Idee</h2>
+          <button class="schemi-modal-close" id="schemiBigModalClose">&times;</button>
+        </div>
+
+        <div class="schemi-modal-body">
+          <!-- AREA UPLOAD DRAG & DROP -->
+          <div class="upload-section">
+            <div class="drop-zone" id="dropZone">
+              <div class="drop-zone-content">
+                <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📸</span>
+                <h3 style="margin: 0 0 0.5rem; color: var(--text); font-weight: 600;">Carica i tuoi appunti</h3>
+                <p style="margin: 0 0 1rem; color: var(--muted); font-size: 0.95rem;">Trascina qui le tue immagini oppure clicca per selezionare</p>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                <button class="upload-btn" id="uploadBtn" type="button">Seleziona Immagini</button>
+              </div>
+            </div>
+            <p style="margin: 1rem 0 0; color: var(--muted); font-size: 0.85rem; text-align: center;">JPG, PNG o PDF • Max 10MB per file</p>
+          </div>
+
+          <!-- PARTE 1: MURO DELLE IDEE (Schema Cards) -->
+          <h3 style="margin: 2rem 0 1.5rem; font-size: 1.3rem; color: var(--text);">I tuoi Schemi</h3>
+          <div class="schemi-grid" id="schemiGrid">
+          </div>
+
+        </div>
+      </div>
     </div>
 
       <footer class="home-footer">
@@ -234,6 +267,5 @@
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
-  </script>
-</body>
+  </script>  <script src="js/schemi.js"></script></body>
 </html>
