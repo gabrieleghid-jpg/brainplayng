@@ -24,12 +24,13 @@
     </a>
     <div class="nav-actions">
       <button class="nav-link" type="button">Home</button>
+      <a href="generatore-schemi.html" class="nav-link">Generatore Schemi</a>
       <button class="nav-link" type="button">Sessioni</button>
       <button class="nav-link" type="button">Obiettivi</button>
       <a href="profile.html" class="profile-button">
         <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
       </a>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">?</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌙</button>
     </div>
   </header>
 
@@ -116,11 +117,19 @@
     </section>
 
     <div class="dashboard-grid">
-      <a href="schemi.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
+      <a href="generatore-schemi.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
         <header>
-          <h2>Schemi</h2>
+          <h2>Generatore Schemi</h2>
+          <span class="pill">Nuovo</span>
         </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata agli schemi</p>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Crea schemi visivi con frecce e parole chiave</p>
+      </a>
+
+      <a href="riassunti.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
+        <header>
+          <h2>Riassunti</h2>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata ai riassunti</p>
       </a>
 
       <div class="session-card" id="minigameCard" style="cursor: pointer;">
@@ -140,7 +149,7 @@
     </div>
 
       <footer class="home-footer">
-        <p>Pronto a continuare? Torna al <a href="index.html">login</a> o resta sulla dashboard.</p>
+        <p>Torna alla <a href="home.html">home</a> o ai <a href="riassunti.html">riassunti</a>.</p>
         <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
       </footer>
     </main>
@@ -156,19 +165,19 @@
       <div class="modal-body">
         <div class="minigame-grid">
           <div class="minigame-item" data-game="sudoku">
-            <div class="minigame-icon">7</div>
+            <div class="minigame-icon">🧠</div>
             <h3>Sudoku</h3>
             <p>Risolvi il puzzle numerico per allenare la logica e la concentrazione</p>
             <button class="play-button">Gioca</button>
           </div>
           <div class="minigame-item" data-game="wordle">
-            <div class="minigame-icon">??</div>
+            <div class="minigame-icon">📖</div>
             <h3>Wordle</h3>
             <p>Indovina la parola segreta in 6 tentativi per allenare il vocabolario</p>
             <button class="play-button">Gioca</button>
           </div>
           <div class="minigame-item" data-game="math">
-            <div class="minigame-icon">??</div>
+            <div class="minigame-icon">➕</div>
             <h3>Calcolo Veloce</h3>
             <p>Risolvi operazioni matematiche sotto tempo</p>
             <button class="play-button">Gioca</button>
@@ -284,12 +293,16 @@
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       document.body.classList.add('dark');
+      themeToggle.textContent = '☀️'; // Sole per tema scuro
+    } else {
+      themeToggle.textContent = '🌙'; // Luna per tema chiaro
     }
     themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
 
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark');
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; // Cambia icona dinamicamente
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 

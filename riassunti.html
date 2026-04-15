@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>brainplaying - Schemi</title>
+  <title>brainplaying - Riassunti</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -372,7 +372,7 @@
     <main class="main-content">
       <div class="hero-grid">
         <section class="hero-card">
-          <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Schemi</p>
+          <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Riassunti</p>
           <h1>Crea materiali di studio con AI</h1>
           <p>Scrivi cosa ti serve e ottieni automaticamente riassunti, schemi gerarchici, flashcard e quiz personalizzati.</p>
           <p id="guestNotice" class="guest-note" style="display:none;margin-top:1rem;"></p>
@@ -418,7 +418,6 @@
           <button class="tab-btn active" data-tab="analisi">? Analisi</button>
           <button class="tab-btn" data-tab="riassunto">? Riassunto</button>
           <button class="tab-btn" data-tab="flashcard">? Flashcard</button>
-          <button class="tab-btn" data-tab="schemi-ai">? Schemi AI</button>
           <button class="tab-btn" data-tab="quiz">? Quiz</button>
         </div>
 
@@ -440,15 +439,7 @@
           </button>
         </div>
 
-        <div class="tab-content" id="schemi-ai">
-          <div class="schemi-ai-container" id="schemiAiContainer">
-            <!-- Sezione Schemi AI verrà generata qui -->
-          </div>
-          <button class="download-btn" id="downloadSchemiAi">
-            ? Scarica Schemi AI
-          </button>
-        </div>
-
+        
         <div class="tab-content" id="riassunto">
           <div class="riassunto-container" id="riassuntoContainer">
             <!-- Riassunto verrà generato qui -->
@@ -486,7 +477,7 @@
       </section>
 
       <footer class="home-footer">
-        <p>Torna alla <a href="home.html">home</a> o visita il tuo <a href="profile.html">profilo</a>.</p>
+        <p>Torna alla <a href="home.html">home</a> o ai <a href="riassunti.html">riassunti</a>.</p>
         <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
       </footer>
     </main>
@@ -605,7 +596,7 @@
       }
       
       generateBtn.disabled = true;
-      generateBtn.textContent = '🤖 Generando...';
+      generateBtn.textContent = '?? Ricerca su Google...';
       
       try {
         analysisResults = await generateTextBasedMaterials(text);
@@ -617,58 +608,102 @@
         alert('Errore durante la generazione: ' + error.message);
       } finally {
         generateBtn.disabled = false;
-        generateBtn.textContent = '🤖 Genera Riassunto e Schema';
+        generateBtn.textContent = '?? Genera Riassunto e Schema';
       }
     });
 
-    // Generate study materials from user text input - MODALITÀ TESTO
+    // Search Google for information about the topic
+    async function searchGoogle(query) {
+      try {
+        // Using a free search API (you may need to replace with Google Custom Search API)
+        const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&pretty=1`;
+        
+        const response = await fetch(searchUrl);
+        if (!response.ok) {
+          throw new Error('Errore nella ricerca');
+        }
+        
+        const data = await response.json();
+        
+        // Extract relevant information from search results
+        const searchResults = data.RelatedTopics || [];
+        const abstractText = data.Abstract || '';
+        const abstractSource = data.AbstractSource || '';
+        
+        return {
+          abstract: abstractText,
+          source: abstractSource,
+          relatedTopics: searchResults.slice(0, 3).map(topic => topic.Text || '').join('\n')
+        };
+      } catch (error) {
+        console.error('Errore ricerca Google:', error);
+        return {
+          abstract: '',
+          source: '',
+          relatedTopics: ''
+        };
+      }
+    }
+
+    // Generate study materials from user text input - MODALITÀ TESTO CON RICERCA GOOGLE
     async function generateTextBasedMaterials(userText) {
       try {
-        const prompt = `Agisci come un esperto tutor didattico. Il tuo obiettivo è aiutarmi a imparare e padroneggiare l'argomento: ${userText}
+        // Check if input is too vague
+        function isInputVague(input) {
+          const vagueWords = ['qualcosa', 'spiegami', 'parlami di', 'aiutami', 'voglio imparare', 'dammi info'];
+          const inputLower = input.toLowerCase();
+          return vagueWords.some(word => inputLower.includes(word)) && inputLower.length < 20;
+        }
 
-Per favore, elabora il materiale fornendo una risposta strutturata nelle seguenti sezioni:
+        if (isInputVague(userText)) {
+          throw new Error('Input troppo vago. Per favore, specifica meglio l\'argomento che ti interessa. Esempio: "fotosintesi clorofilliana" invece di "voglio imparare qualcosa"');
+        }
 
-1. **SPiegazione Semplice**: Una panoramica chiara e concisa dell'argomento, strutturata per punti chiave per facilitare la comprensione.
-   - Usa un linguaggio semplice e diretto
-   - Organizza il contenuto in punti elenco numerati
-   - Includi esempi pratici e analogie
-   - Sii chiaro e didattico
+        // First, search Google for information about the topic
+        const searchResults = await searchGoogle(userText);
+        
+        const prompt = `Agisci come un assistente didattico esperto. Quando l'utente invia un argomento o un testo, genera sempre questi 4 elementi distinti in formato Markdown:
 
-2. **Riassunto Esecutivo**: Un riassunto formattato con markdown (punti elenco, grassetto) che evidenzi i concetti fondamentali da ricordare.
-   - Usa **grassetto** per i concetti chiave
-   - Usa punti elenco per organizzare le informazioni
-   - Sii conciso ma completo
-   - Formattazione markdown ottimale
+INFORMAZIONI DALLA RICERCA GOOGLE:
+${searchResults.abstract ? `Fonte: ${searchResults.source}\n${searchResults.abstract}\n` : ''}
+${searchResults.relatedTopics ? `Informazioni correlate:\n${searchResults.relatedTopics}\n` : ''}
 
-3. **Schema Concettuale/Tabella**: Crea una tabella o uno schema strutturato per confrontare idee, elencare passaggi o organizzare le informazioni gerarchicamente.
-   - Usa formato tabella o schema strutturato
-   - Organizza le informazioni in modo logico
-   - Includi confronti o gerarchie chiare
-   - Usa markdown per la formattazione
+ARGOMENTO RICHIESTO: ${userText}
 
-4. **Flashcards (Q&A)**: Crea 5 coppie di Domanda/Risposta per testare i concetti chiave.
+1. **Discorso/Riassunto**: Un testo fluido e approfondito che spieghi i concetti chiave.
+   - Usa un linguaggio chiaro ma professionale
+   - Struttura il contenuto in paragrafi logici
+   - Includi definizioni, esempi e spiegazioni dettagliate
+   - Formattazione Markdown con titoli e sottotitoli
+
+2. **Flashcard**: Una lista di 5-10 domande e risposte brevi.
+   - Formato: D: [Domanda] - R: [Risposta]
    - Domande chiare e specifiche
-   - Risposte precise e complete
+   - Risposte concise e dirette
    - Copri tutti i concetti fondamentali
-   - Formato: Domanda -> Risposta
 
-5. **Quiz finale**: Crea 3 domande a scelta multipla con le soluzioni nascoste alla fine.
-   - 4 opzioni per ogni domanda (A, B, C, D)
-   - Una sola risposta corretta
+3. **Schema**: Una struttura gerarchica a punti per visualizzare i collegamenti tra le idee.
+   - Usa numerazione gerarchica (1, 1.1, 1.1.1...)
+   - Includi frecce e simboli per mostrare relazioni
+   - Organizza i concetti in modo logico
+   - Formattazione Markdown
+
+4. **Quiz**: 5 domande a scelta multipla con 4 opzioni ciascuna, indicando la risposta corretta alla fine.
    - Domande che testino la comprensione
+   - 4 opzioni (A, B, C, D) per ogni domanda
+   - Una sola risposta corretta per domanda
    - Soluzioni separate alla fine
 
 OUTPUT FINALE in formato JSON:
 {
-  "spiegazione_semplice": "Testo della spiegazione semplice con punti chiave",
-  "riassunto_esecutivo": "Riassunto formattato con markdown",
-  "schema_concettuale": "Tabella o schema strutturato in formato markdown",
+  "discorso_riassunto": "Testo fluido e approfondito in formato Markdown",
   "flashcard": [
     {
       "domanda": "Domanda chiave",
-      "risposta": "Risposta dettagliata"
+      "risposta": "Risposta breve"
     }
   ],
+  "schema": "Struttura gerarchica a punti in formato Markdown",
   "quiz": {
     "domande": [
       {
@@ -677,16 +712,17 @@ OUTPUT FINALE in formato JSON:
         "risposta_corretta": 0
       }
     ],
-    "soluzioni": "Soluzioni del quiz nascoste alla fine"
+    "soluzioni": "Soluzioni complete con risposte corrette"
   }
 }
 
 REGOLE SPECIFICHE:
-- Usa uno stile chiaro, didattico e formattato con markdown
+- Mantieni un tono chiaro e professionale
+- Usa sempre formato Markdown per tutti i contenuti
+- Se l'input è vago, chiedi precisazioni prima di procedere
+- Genera sempre esattamente 4 elementi distinti
 - Adatta il contenuto all'argomento specifico richiesto
-- Sii esaustivo ma comprensibile
-- Mantieni un tono professionale e educativo
-- Ogni sezione deve essere ben strutturata e distinta`;
+- Sii esaustivo ma comprensibile`;
 
         const response = await fetch(CONFIG.HF_API_URL_TEXT, {
           method: 'POST',
@@ -897,32 +933,32 @@ REGOLE SPECIFICHE:
       });
     });
 
-    // Download functions for all materials - MODALITÀ TUTOR DIDATTICO
+    // Download functions for all materials - MODALITÀ ASSISTENTE DIDATTICO ESPERTO
     document.getElementById('downloadAnalisi')?.addEventListener('click', () => {
-      if (analysisResults && analysisResults.spiegazione_semplice) {
-        downloadFile(analysisResults.spiegazione_semplice, 'spiegazione_semplice.txt');
+      if (analysisResults && analysisResults.discorso_riassunto) {
+        downloadFile(analysisResults.discorso_riassunto, 'discorso_riassunto.txt');
       }
     });
     
     document.getElementById('downloadFlashcard')?.addEventListener('click', () => {
       if (analysisResults && analysisResults.flashcard) {
         const flashcardText = analysisResults.flashcard.map((card, index) => 
-          `Flashcard ${index + 1}:\nDomanda: ${card.domanda}\nRisposta: ${card.risposta}\n\n`
+          `D: [${card.domanda}] - R: [${card.risposta}]\n\n`
         ).join('');
-        downloadFile(flashcardText, 'flashcard_q&a.txt');
+        downloadFile(flashcardText, 'flashcard.txt');
       }
     });
     
     document.getElementById('downloadSchemiAi')?.addEventListener('click', () => {
-      if (analysisResults && analysisResults.schema_concettuale) {
-        const schemiText = `SCHEMA CONCETTUALE\n\n${analysisResults.schema_concettuale}`;
-        downloadFile(schemiText, 'schema_concettuale.txt');
+      if (analysisResults && analysisResults.schema) {
+        const schemiText = `SCHEMA GERARCHICO\n\n${analysisResults.schema}`;
+        downloadFile(schemiText, 'schema.txt');
       }
     });
     
     document.getElementById('downloadRiassunto')?.addEventListener('click', () => {
-      if (analysisResults && analysisResults.riassunto_esecutivo) {
-        downloadFile(analysisResults.riassunto_esecutivo, 'riassunto_esecutivo.txt');
+      if (analysisResults && analysisResults.discorso_riassunto) {
+        downloadFile(analysisResults.discorso_riassunto, 'discorso_riassunto.txt');
       }
     });
     
@@ -931,8 +967,8 @@ REGOLE SPECIFICHE:
         const quizText = analysisResults.quiz.domande.map((question, index) => {
           const correctAnswer = question.opzioni[question.risposta_corretta];
           return `Domanda ${index + 1}: ${question.domanda}\nA) ${question.opzioni[0]}\nB) ${question.opzioni[1]}\nC) ${question.opzioni[2]}\nD) ${question.opzioni[3]}\nRisposta corretta: ${String.fromCharCode(65 + question.risposta_corretta)}. ${correctAnswer}\n\n`;
-        }).join('') + `\n${analysisResults.quiz.soluzioni || ''}`;
-        downloadFile(quizText, 'quiz_finale.txt');
+        }).join('') + `\n\n${analysisResults.quiz.soluzioni || ''}`;
+        downloadFile(quizText, 'quiz.txt');
       }
     });
     
