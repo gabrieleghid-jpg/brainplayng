@@ -123,6 +123,14 @@
         <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata agli schemi</p>
       </a>
 
+      <div class="session-card" id="minigameCard" style="cursor: pointer;">
+        <header>
+          <h2>Minigiochi</h2>
+          <span class="pill">Allenamento</span>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Allena la tua mente con giochi interattivi</p>
+      </div>
+
       <a href="classifica.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
         <header>
           <h2>Classifica</h2>
@@ -136,6 +144,73 @@
         <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
       </footer>
     </main>
+  </div>
+
+  <!-- Minigame Modal -->
+  <div id="minigameModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Minigiochi per Allenare la Mente</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="minigame-grid">
+          <div class="minigame-item" data-game="memory">
+            <div class="minigame-icon">??</div>
+            <h3>Memory Cards</h3>
+            <p>Abbina le carte per migliorare la memoria a breve termine</p>
+            <button class="play-button">Gioca</button>
+          </div>
+          <div class="minigame-item" data-game="pattern">
+            <div class="minigame-icon">??</div>
+            <h3>Pattern Matching</h3>
+            <p>Trova i pattern nascosti per allenare la percezione visiva</p>
+            <button class="play-button">Gioca</button>
+          </div>
+          <div class="minigame-item" data-game="sequence">
+            <div class="minigame-icon">??</div>
+            <h3>Sequence Memory</h3>
+            <p>Ricorda sequenze di colori per potenziare la memoria</p>
+            <button class="play-button">Gioca</button>
+          </div>
+          <div class="minigame-item" data-game="math">
+            <div class="minigame-icon">??</div>
+            <h3>Calcolo Veloce</h3>
+            <p>Risolvi operazioni matematiche sotto tempo</p>
+            <button class="play-button">Gioca</button>
+          </div>
+          <div class="minigame-item" data-game="word">
+            <div class="minigame-icon">??</div>
+            <h3>Word Puzzle</h3>
+            <p>Trova parole nascoste per allenare il lessico</p>
+            <button class="play-button">Gioca</button>
+          </div>
+          <div class="minigame-item" data-game="reaction">
+            <div class="minigame-icon">??</div>
+            <h3>Reaction Time</h3>
+            <p>Misura i tuoi riflessi con test di velocità</p>
+            <button class="play-button">Gioca</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Container -->
+  <div id="gameContainer" class="game-container" style="display: none;">
+    <div class="game-header">
+      <button class="back-button" id="backToMenu">&larr; Torna ai minigiochi</button>
+      <div class="game-info">
+        <span id="gameTitle">Memory Cards</span>
+        <div class="game-stats">
+          <span id="gameScore">Punteggio: 0</span>
+          <span id="gameTimer">Tempo: 0:00</span>
+        </div>
+      </div>
+    </div>
+    <div class="game-area" id="gameArea">
+      <!-- Game content will be dynamically inserted here -->
+    </div>
   </div>
 
   <script src="auth-helper.js"></script>
@@ -235,6 +310,374 @@
       localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
+
+    // MINIGAME FUNCTIONALITY
+    const minigameCard = document.getElementById('minigameCard');
+    const minigameModal = document.getElementById('minigameModal');
+    const closeModal = document.getElementById('closeModal');
+    const gameContainer = document.getElementById('gameContainer');
+    const backToMenu = document.getElementById('backToMenu');
+    const gameArea = document.getElementById('gameArea');
+    const gameTitle = document.getElementById('gameTitle');
+    const gameScore = document.getElementById('gameScore');
+    const gameTimer = document.getElementById('gameTimer');
+
+    let currentGame = null;
+    let gameInterval = null;
+    let gameState = {};
+
+    // Open minigame modal
+    minigameCard.addEventListener('click', () => {
+      minigameModal.classList.add('active');
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+      minigameModal.classList.remove('active');
+    });
+
+    // Close modal on overlay click
+    minigameModal.addEventListener('click', (e) => {
+      if (e.target === minigameModal) {
+        minigameModal.classList.remove('active');
+      }
+    });
+
+    // Back to menu from game
+    backToMenu.addEventListener('click', () => {
+      stopGame();
+      gameContainer.style.display = 'none';
+      minigameModal.classList.add('active');
+    });
+
+    // Game selection
+    document.querySelectorAll('.minigame-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const gameType = item.dataset.game;
+        startGame(gameType);
+      });
+    });
+
+    function startGame(gameType) {
+      currentGame = gameType;
+      minigameModal.classList.remove('active');
+      gameContainer.style.display = 'flex';
+      
+      // Reset game state
+      gameState = {
+        score: 0,
+        time: 0,
+        moves: 0,
+        ...getGameInitialState(gameType)
+      };
+      
+      updateGameUI();
+      startTimer();
+      
+      switch(gameType) {
+        case 'memory':
+          initMemoryGame();
+          break;
+        case 'pattern':
+          initPatternGame();
+          break;
+        case 'sequence':
+          initSequenceGame();
+          break;
+        case 'math':
+          initMathGame();
+          break;
+        case 'word':
+          initWordGame();
+          break;
+        case 'reaction':
+          initReactionGame();
+          break;
+        default:
+          gameArea.innerHTML = '<p>Gioco in sviluppo...</p>';
+      }
+    }
+
+    function stopGame() {
+      if (gameInterval) {
+        clearInterval(gameInterval);
+        gameInterval = null;
+      }
+      currentGame = null;
+      gameState = {};
+    }
+
+    function startTimer() {
+      gameState.time = 0;
+      gameInterval = setInterval(() => {
+        gameState.time++;
+        const minutes = Math.floor(gameState.time / 60);
+        const seconds = gameState.time % 60;
+        gameTimer.textContent = `Tempo: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateGameUI() {
+      gameScore.textContent = `Punteggio: ${gameState.score}`;
+      
+      const gameTitles = {
+        memory: 'Memory Cards',
+        pattern: 'Pattern Matching',
+        sequence: 'Sequence Memory',
+        math: 'Calcolo Veloce',
+        word: 'Word Puzzle',
+        reaction: 'Reaction Time'
+      };
+      
+      gameTitle.textContent = gameTitles[currentGame] || 'Minigioco';
+    }
+
+    function getGameInitialState(gameType) {
+      const states = {
+        memory: { cards: [], flippedCards: [], matchedPairs: 0 },
+        pattern: { currentPattern: [], userPattern: [], level: 1 },
+        sequence: { sequence: [], userSequence: [], level: 1 },
+        math: { currentProblem: null, correctAnswers: 0 },
+        word: { currentWord: null, foundWords: [] },
+        reaction: { startTime: null, reactions: [] }
+      };
+      return states[gameType] || {};
+    }
+
+    // Memory Game Implementation
+    function initMemoryGame() {
+      const emojis = ['??', '??', '??', '??', '??', '??', '??', '??'];
+      const cards = [...emojis, ...emojis];
+      cards.sort(() => Math.random() - 0.5);
+      
+      gameState.cards = cards;
+      gameState.flippedCards = [];
+      gameState.matchedPairs = 0;
+      
+      const grid = document.createElement('div');
+      grid.className = 'memory-grid';
+      
+      cards.forEach((emoji, index) => {
+        const card = document.createElement('div');
+        card.className = 'memory-card';
+        card.dataset.index = index;
+        card.dataset.emoji = emoji;
+        card.textContent = '?';
+        card.addEventListener('click', () => flipCard(card));
+        grid.appendChild(card);
+      });
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(grid);
+    }
+
+    function flipCard(card) {
+      if (gameState.flippedCards.length >= 2) return;
+      if (card.classList.contains('flipped') || card.classList.contains('matched')) return;
+      
+      card.classList.add('flipped');
+      card.textContent = card.dataset.emoji;
+      gameState.flippedCards.push(card);
+      
+      if (gameState.flippedCards.length === 2) {
+        gameState.moves++;
+        setTimeout(() => checkMatch(), 1000);
+      }
+    }
+
+    function checkMatch() {
+      const [card1, card2] = gameState.flippedCards;
+      
+      if (card1.dataset.emoji === card2.dataset.emoji) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        gameState.matchedPairs++;
+        gameState.score += 10;
+        updateGameUI();
+        
+        if (gameState.matchedPairs === 8) {
+          endGame(true);
+        }
+      } else {
+        card1.classList.remove('flipped');
+        card2.classList.remove('flipped');
+        card1.textContent = '?';
+        card2.textContent = '?';
+      }
+      
+      gameState.flippedCards = [];
+    }
+
+    // Pattern Game Implementation
+    function initPatternGame() {
+      const patterns = [
+        ['??', '??', '??'],
+        ['??', '??', '??', '??'],
+        ['??', '??', '??', '??', '??']
+      ];
+      
+      const currentPattern = patterns[Math.min(gameState.level - 1, patterns.length - 1)];
+      gameState.currentPattern = currentPattern;
+      gameState.userPattern = [];
+      
+      const container = document.createElement('div');
+      container.style.textAlign = 'center';
+      
+      const patternDisplay = document.createElement('div');
+      patternDisplay.style.fontSize = '3rem';
+      patternDisplay.style.marginBottom = '2rem';
+      patternDisplay.textContent = currentPattern.join(' ');
+      
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.placeholder = 'Ripeti il pattern';
+      input.style.fontSize = '1.5rem';
+      input.style.padding = '1rem';
+      input.style.textAlign = 'center';
+      input.style.border = '2px solid var(--border)';
+      input.style.borderRadius = '12px';
+      input.style.background = 'var(--panel-strong)';
+      input.style.color = 'var(--text)';
+      
+      const button = document.createElement('button');
+      button.textContent = 'Verifica';
+      button.className = 'play-button';
+      button.style.marginTop = '1rem';
+      button.addEventListener('click', () => checkPattern(input.value));
+      
+      container.appendChild(patternDisplay);
+      container.appendChild(input);
+      container.appendChild(button);
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(container);
+      
+      setTimeout(() => {
+        patternDisplay.textContent = '???';
+      }, 3000);
+    }
+
+    function checkPattern(userInput) {
+      const correctPattern = gameState.currentPattern.join('');
+      if (userInput === correctPattern) {
+        gameState.score += 15 * gameState.level;
+        gameState.level++;
+        updateGameUI();
+        initPatternGame();
+      } else {
+        gameState.score = Math.max(0, gameState.score - 5);
+        updateGameUI();
+        alert('Pattern errato! Riprova.');
+      }
+    }
+
+    // Math Game Implementation
+    function initMathGame() {
+      generateMathProblem();
+    }
+
+    function generateMathProblem() {
+      const operations = ['+', '-', '*'];
+      const operation = operations[Math.floor(Math.random() * operations.length)];
+      let a, b, answer;
+      
+      switch(operation) {
+        case '+':
+          a = Math.floor(Math.random() * 50) + 1;
+          b = Math.floor(Math.random() * 50) + 1;
+          answer = a + b;
+          break;
+        case '-':
+          a = Math.floor(Math.random() * 50) + 10;
+          b = Math.floor(Math.random() * a) + 1;
+          answer = a - b;
+          break;
+        case '*':
+          a = Math.floor(Math.random() * 12) + 1;
+          b = Math.floor(Math.random() * 12) + 1;
+          answer = a * b;
+          break;
+      }
+      
+      gameState.currentProblem = { a, b, operation, answer };
+      
+      const container = document.createElement('div');
+      container.style.textAlign = 'center';
+      
+      const problem = document.createElement('div');
+      problem.style.fontSize = '2.5rem';
+      problem.style.marginBottom = '2rem';
+      problem.textContent = `${a} ${operation} ${b} = ?`;
+      
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.placeholder = 'Risposta';
+      input.style.fontSize = '1.5rem';
+      input.style.padding = '1rem';
+      input.style.textAlign = 'center';
+      input.style.border = '2px solid var(--border)';
+      input.style.borderRadius = '12px';
+      input.style.background = 'var(--panel-strong)';
+      input.style.color = 'var(--text)';
+      
+      const button = document.createElement('button');
+      button.textContent = 'Verifica';
+      button.className = 'play-button';
+      button.style.marginTop = '1rem';
+      button.addEventListener('click', () => checkMathAnswer(parseInt(input.value)));
+      
+      container.appendChild(problem);
+      container.appendChild(input);
+      container.appendChild(button);
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(container);
+    }
+
+    function checkMathAnswer(userAnswer) {
+      if (userAnswer === gameState.currentProblem.answer) {
+        gameState.score += 10;
+        gameState.correctAnswers++;
+        updateGameUI();
+        generateMathProblem();
+      } else {
+        gameState.score = Math.max(0, gameState.score - 5);
+        updateGameUI();
+        alert('Risposta errata! Riprova.');
+      }
+    }
+
+    // Placeholder functions for other games
+    function initSequenceGame() {
+      gameArea.innerHTML = '<p style="font-size: 1.5rem;">Sequence Memory - In sviluppo...</p>';
+    }
+
+    function initWordGame() {
+      gameArea.innerHTML = '<p style="font-size: 1.5rem;">Word Puzzle - In sviluppo...</p>';
+    }
+
+    function initReactionGame() {
+      gameArea.innerHTML = '<p style="font-size: 1.5rem;">Reaction Time - In sviluppo...</p>';
+    }
+
+    function endGame(won) {
+      clearInterval(gameInterval);
+      const message = won ? 
+        `Complimenti! Hai completato il gioco con ${gameState.score} punti in ${gameState.time} secondi!` :
+        `Gioco terminato. Punteggio finale: ${gameState.score}`;
+      
+      const resultDiv = document.createElement('div');
+      resultDiv.style.textAlign = 'center';
+      resultDiv.style.fontSize = '1.5rem';
+      resultDiv.innerHTML = `
+        <h3>${won ? '?? Vittoria!' : '?? Fine Gioco'}</h3>
+        <p>${message}</p>
+        <button class="play-button" onclick="location.reload()">Gioca ancora</button>
+      `;
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(resultDiv);
+    }
   </script>
 </body>
 </html>
