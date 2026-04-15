@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>brainplaying — Foto appunti</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="css/foto.css" />
+</head>
+<body class="photo-page">
+  <header class="nav">
+    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Apri menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <a href="home.html" class="brand">
+      <span class="brand-icon">S</span>
+      <span>brainplaying</span>
+    </a>
+    <div class="nav-actions">
+      <a href="home.html" class="nav-link">Home</a>
+      <a href="schemi.html" class="nav-link">Schemi</a>
+      <a href="foto.html" class="nav-link">Foto</a>
+      <button class="nav-link" type="button">Sessioni</button>
+      <button class="nav-link" type="button">Obiettivi</button>
+      <a href="profile.html" class="profile-button">
+        <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
+      </a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
+    </div>
+  </header>
+
+  <div class="page-shell">
+    <aside class="sidebar">
+      <article class="session-card">
+        <header>
+          <h2>Carica una foto</h2>
+          <span class="pill">Appunti</span>
+        </header>
+        <div class="session-details">
+          <div class="session-item">
+            <strong>Spiegazioni automatiche</strong>
+            <span>Ricevi una sintesi del contenuto dal tuo file.</span>
+          </div>
+          <div class="session-item">
+            <strong>Domande e risposte</strong>
+            <span>Poni dubbi e approfondisci direttamente qui.</span>
+          </div>
+          <div class="session-item">
+            <strong>Quiz personalizzati</strong>
+            <span>Scegli tu il numero di domande del test.</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="activity-card">
+        <header>
+          <h2>Consiglio rapido</h2>
+          <span class="pill">Studio</span>
+        </header>
+        <p>Quando carichi una foto, l’AI spiegherà il contenuto e ti aiuterà a chiarire i dubbi con domande e quiz.</p>
+      </article>
+    </aside>
+
+    <main class="main-content">
+      <section class="hero-card">
+        <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Foto appunti</p>
+        <h1>Carica una foto e lascia che l’AI spieghi il contenuto</h1>
+        <p>La pagina foto ti guida passo dopo passo: upload, spiegazione AI del contenuto, domande personalizzate e quiz basati su ciò che hai capito.</p>
+      </section>
+
+      <section class="section-card">
+        <div class="section-header">
+          <h2>1. Carica la foto</h2>
+          <p class="info-note">Scegli l’immagine del tuo appunto. L’AI cercherà di capire cosa dice la foto e ti fornirà una spiegazione completa.</p>
+        </div>
+        <div class="upload-grid">
+          <div class="upload-card">
+            <div class="drop-zone" id="dropZone">
+              <div class="drop-zone-content">
+                <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📷</span>
+                <h3 style="margin: 0 0 0.5rem; color: var(--text); font-weight: 600;">Trascina qui la tua foto</h3>
+                <p style="margin: 0 0 1rem; color: var(--muted); font-size: 0.95rem;">Oppure seleziona un file immagine dal tuo dispositivo.</p>
+                <input type="file" id="fileInput" accept="image/*" style="display:none;" />
+                <button class="upload-btn" id="uploadBtn" type="button">Seleziona immagine</button>
+              </div>
+              <img id="photoPreview" class="drop-zone-preview hidden" src="" alt="Anteprima foto" />
+              <div class="drop-zone-footer hidden" id="previewMeta">
+                <strong id="uploadedFileName">Nessun file selezionato</strong>
+                <p class="info-note">Dopo l’upload vedrai qui l’anteprima e potrai ricevere la spiegazione generata dall’AI.</p>
+              </div>
+            </div>
+            <div class="field-group">
+              <label for="notesInput">Aggiungi un dettaglio o un titolo dell’appunto</label>
+              <textarea id="notesInput" placeholder="Ad esempio: foto di un foglio di appunti sulla fotosintesi"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card hidden" id="explanationSection">
+        <h2>2. Spiegazione della foto</h2>
+        <p class="info-note">L’AI ti dice cosa vede nella foto e cosa significano gli appunti. Se vuoi, aggiungi un dettaglio per rendere la spiegazione più accurata.</p>
+        <div id="explanationArea" class="explanation-box"></div>
+      </section>
+
+      <section class="section-card hidden" id="qaSection">
+        <h2>3. Chiedi se hai dubbi</h2>
+        <p class="info-note">Fai domande specifiche sul contenuto o su parti che non ti sono chiare.</p>
+        <div class="qa-thread" id="qaList"></div>
+        <form id="askForm" style="display:grid;gap:1rem; margin-top:1rem;">
+          <div class="field-group">
+            <label for="askInput">Scrivi una domanda</label>
+            <input type="text" id="askInput" placeholder="Ad esempio: come funziona la fotosintesi?" />
+          </div>
+          <button type="submit" class="generate-btn">Invia domanda</button>
+        </form>
+      </section>
+
+      <section class="section-card hidden" id="quizSection">
+        <h2>4. Quiz personalizzato</h2>
+        <p class="info-note">Scegli quante domande vuoi affrontare e testa la comprensione del contenuto.</p>
+        <div class="field-group" style="max-width: 220px;">
+          <label for="quizCount">Numero di domande</label>
+          <input type="number" id="quizCount" min="1" max="10" value="3" />
+        </div>
+        <button type="button" class="generate-btn" id="generateQuizBtn">Genera quiz</button>
+        <div id="quizContainer" class="quiz-container"></div>
+        <button type="button" class="submit-btn hidden" id="quizSubmitBtn">Controlla risposte</button>
+        <div id="quizResult" class="quiz-result hidden"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/foto.js"></script>
+</body>
+</html>

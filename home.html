@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>brainplaying — Home</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dashboard.css" />
+
+</head>
+<body>
+  <header class="nav">
+    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Apri menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <a href="home.html" class="brand">
+      <span class="brand-icon">S</span>
+      <span>brainplaying</span>
+    </a>
+    <div class="nav-actions">
+      <button class="nav-link" type="button">Home</button>
+      <button class="nav-link" type="button">Sessioni</button>
+      <button class="nav-link" type="button">Obiettivi</button>
+      <a href="profile.html" class="profile-button">
+        <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
+      </a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">?</button>
+    </div>
+  </header>
+
+  <div class="page-shell">
+    <aside class="sidebar">
+      <article class="session-card">
+        <header>
+          <h2>Prossima sessione</h2>
+          <span class="pill">Focus</span>
+        </header>
+        <div class="session-details">
+          <div class="session-item">
+            <strong>Mattinata di ripasso</strong>
+            <span>Biologia, matematica e inglese</span>
+          </div>
+          <div class="session-item">
+            <strong>45 min</strong>
+            <span>Tempo stimato</span>
+          </div>
+          <div class="progress-bar" aria-label="Progresso sessione">
+            <div class="progress-fill"></div>
+          </div>
+          <span style="color:var(--muted);font-size:0.95rem;">68% completato del piano giornaliero</span>
+        </div>
+      </article>
+
+      <article class="activity-card">
+        <header>
+          <h2>Attività recenti</h2>
+          <span class="pill">Aggiornamenti</span>
+        </header>
+        <ul class="activity-list">
+          <li class="activity-item">
+            <strong>Quiz completato</strong>
+            <span>Hai risposto correttamente all'88% delle domande.</span>
+          </li>
+          <li class="activity-item">
+            <strong>Nuova routine</strong>
+            <span>Definisci il tuo prossimo intervallo di focus da 50 minuti.</span>
+          </li>
+          <li class="activity-item">
+            <strong>Traguardo giornaliero</strong>
+            <span>Hai raggiunto il 75% dell'obiettivo di studio.</span>
+          </li>
+        </ul>
+      </article>
+
+      <div class="quick-item">
+        <h3>Modalità completa</h3>
+        <p>Attiva la modalità focus per eliminare le distrazioni e lavorare in blocchi con timer visivi.</p>
+      </div>
+
+      <div class="quick-item">
+        <h3>Campanello di progresso</h3>
+        <p>Imposta un obiettivo giornaliero e segui il tuo avanzamento direttamente dalla home.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+
+    <div class="hero-grid">
+      <section class="hero-card">
+        <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Dashboard</p>
+        <h1>Una home pulita per il tuo studio quotidiano</h1>
+        <p>brainplaying ti aiuta a trasformare la tua routine in produttività: navigazione rapida, focus strutturato e progresso ben visibile.</p>
+        <p id="guestNotice" class="guest-note" style="display:none;margin-top:1rem;"></p>
+        <div class="hero-actions">
+          <button class="hero-button" type="button">Avvia sessione</button>
+          <button class="secondary-button" type="button">Visualizza relazioni</button>
+        </div>
+      </section>
+
+    </div>
+
+    <section class="feature-card">
+      <h2>Scopri brainplaying</h2>
+      <p>Rimani concentrato, organizza le tue sessioni e monitora i progressi con un’esperienza studiata per lo studio produttivo.</p>
+      <ul class="feature-list">
+        <li>Sessioni guidate per mantenere il ritmo</li>
+        <li>Ripetizione spaziata per fissare i concetti</li>
+        <li>Metascore di progressi e obiettivi giornalieri</li>
+        <li>Interfaccia pulita e focus mode</li>
+      </ul>
+    </section>
+
+    <div class="dashboard-grid">
+      <a href="schemi.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
+        <header>
+          <h2>Schemi</h2>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata agli schemi</p>
+      </a>
+
+      <a href="classifica.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
+        <header>
+          <h2>Classifica</h2>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Scopri i migliori studenti di brainplaying</p>
+      </a>
+    </div>
+
+      <footer class="home-footer">
+        <p>Pronto a continuare? Torna al <a href="index.html">login</a> o resta sulla dashboard.</p>
+        <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script src="auth-helper.js"></script>
+  <script>
+    if (!checkAuthentication()) {
+      window.location.href = 'index.html';
+    }
+
+    // HAMBURGER MENU
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar = document.querySelector('.sidebar');
+    const body = document.body;
+
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.toggle('active');
+      body.classList.toggle('menu-open');
+    });
+
+    // Chiudi il menu quando clicchi sull'overlay
+    body.addEventListener('click', (e) => {
+      if (body.classList.contains('menu-open') && !sidebar.contains(e.target) && e.target !== hamburgerBtn) {
+        sidebar.classList.remove('active');
+        body.classList.remove('menu-open');
+      }
+    });
+
+    // Chiudi il menu quando clicchi su un elemento della sidebar
+    sidebar.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+        sidebar.classList.remove('active');
+        body.classList.remove('menu-open');
+      }
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+    const navAvatar = document.getElementById('navAvatar');
+    const guestNotice = document.getElementById('guestNotice');
+    const heroButton = document.querySelector('.hero-button');
+    const secondaryButton = document.querySelector('.secondary-button');
+
+    const user = {
+      username: sessionStorage.getItem('username') || 'Studente',
+      profileImage: sessionStorage.getItem('profileImage') || ''
+    };
+
+    function getInitials(name) {
+      return name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join('');
+    }
+
+    function updateProfileUI() {
+      if (navAvatar) {
+        if (user.profileImage) {
+          navAvatar.style.backgroundImage = `url(${user.profileImage})`;
+          navAvatar.textContent = '';
+        } else {
+          navAvatar.style.backgroundImage = '';
+          navAvatar.textContent = getInitials(user.username);
+        }
+      }
+    }
+
+    function updateGuestMode() {
+      const role = sessionStorage.getItem('role') || 'user';
+      if (role === 'guest') {
+        if (guestNotice) {
+          guestNotice.style.display = 'block';
+          guestNotice.textContent = 'Sei connesso come ospite: alcune funzionalità sono limitate e le modifiche al profilo non saranno salvate.';
+        }
+        if (heroButton) {
+          heroButton.disabled = true;
+          heroButton.textContent = 'Non disponibile per ospiti';
+        }
+        if (secondaryButton) {
+          secondaryButton.disabled = true;
+          secondaryButton.textContent = 'Area riservata agli utenti';
+        }
+      }
+    }
+
+    updateProfileUI();
+    updateGuestMode();
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+    }
+    themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+    });
+  </script>
+</body>
+</html>
