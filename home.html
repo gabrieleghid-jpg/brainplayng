@@ -156,39 +156,21 @@
       <div class="modal-body">
         <div class="minigame-grid">
           <div class="minigame-item" data-game="sudoku">
-            <div class="minigame-icon">&#x1F4A1;</div>
+            <div class="minigame-icon">7</div>
             <h3>Sudoku</h3>
             <p>Risolvi il puzzle numerico per allenare la logica e la concentrazione</p>
             <button class="play-button">Gioca</button>
           </div>
           <div class="minigame-item" data-game="wordle">
-            <div class="minigame-icon">&#x1F4D6;</div>
+            <div class="minigame-icon">??</div>
             <h3>Wordle</h3>
             <p>Indovina la parola segreta in 6 tentativi per allenare il vocabolario</p>
-            <button class="play-button">Gioca</button>
-          </div>
-          <div class="minigame-item" data-game="sequence">
-            <div class="minigame-icon">??</div>
-            <h3>Sequence Memory</h3>
-            <p>Ricorda sequenze di colori per potenziare la memoria</p>
             <button class="play-button">Gioca</button>
           </div>
           <div class="minigame-item" data-game="math">
             <div class="minigame-icon">??</div>
             <h3>Calcolo Veloce</h3>
             <p>Risolvi operazioni matematiche sotto tempo</p>
-            <button class="play-button">Gioca</button>
-          </div>
-          <div class="minigame-item" data-game="word">
-            <div class="minigame-icon">??</div>
-            <h3>Word Puzzle</h3>
-            <p>Trova parole nascoste per allenare il lessico</p>
-            <button class="play-button">Gioca</button>
-          </div>
-          <div class="minigame-item" data-game="reaction">
-            <div class="minigame-icon">??</div>
-            <h3>Reaction Time</h3>
-            <p>Misura i tuoi riflessi con test di velocità</p>
             <button class="play-button">Gioca</button>
           </div>
         </div>
@@ -325,9 +307,11 @@
     let currentGame = null;
     let gameInterval = null;
     let gameState = {};
+    let wonGames = JSON.parse(localStorage.getItem('wonGames') || '{}');
 
     // Open minigame modal
     minigameCard.addEventListener('click', () => {
+      updateMinigameIcons();
       minigameModal.classList.add('active');
     });
 
@@ -381,17 +365,8 @@
         case 'wordle':
           initWordleGame();
           break;
-        case 'sequence':
-          initSequenceGame();
-          break;
         case 'math':
           initMathGame();
-          break;
-        case 'word':
-          initWordGame();
-          break;
-        case 'reaction':
-          initReactionGame();
           break;
         default:
           gameArea.innerHTML = '<p>Gioco in sviluppo...</p>';
@@ -695,7 +670,7 @@
        'TRENO', 'BARCA', 'PONTE', 'PAESE', 'FIUME',
          'VENTO', 'CIANO', 'ROSSO',
         'LIMONE', 'ARANCIA', 'BIRRA', 'VINO', 'CAFFE', 'SALTO', 'BALLO', 'CANTO', 'CUCINA', 'FORNO', 'PIATTO', 'FRIGO',
-        'BOCCA', 'MAREE', 'LAVORO', 'GIOCO', 'SPORT', 'LETTO', 'CAMICE', 'OCCHIO', 'MANO', 'DITO', 'GAMBA', 'CUORE', 'TESTA', 'GINE', 'RENE', 'LUNEDI', 'SABATO', 'MESE', 'ANNO', 'AMORE', 'ODIO', 'PAURA', 'GIOIA', 'RABBIA', 'SORPRE', 'PACE', 'GUERRA', 'PROGET', 'CLIENT', 'COMPIT', 'ESAME', 'BANCO', 'PREZZO', 'SALDO', 'DOLCE', 'CINEMA', 'FILM', 'ATTORE', 'REGIST', 'CANZONE', 'PIANO', 'DISCO', 'RADIO', 'TAVOLO', 'MONTE', 'VALLE', 'COLLE', 'FRUTTA', 'MELA', 'PERA', 'CILIEG', 'ZUCCHER', 'FORMAG', 'SALUME', 'PROSCI', 'POLLO', 'MANZO', 'VITELL', 'PASTA', 'CARNE', 'UOVA', 'PATATA', 'POMODO', 'INSALA', 'CEBOLL', 'CAROTA', 'AGLIO', 'BASILI', 'ROSMAR', 'ORIGAN', 'PEPERO', 'CUCINA', 'FRIGOR', 'LAVARE', 'ASCIUG', 'STIRAR', 'PASTO', 'SCEND', 'SALIR', 'ENTRA', 'ESCI', 'APRI', 'CHIUD', 'SCRIV', 'LEGGI', 'PARLA', 'SENTI', 'VEDER', 'UDIRE', 'SAPER', 'VIVER', 'MORIR', 'DORMI', 'MANGI', 'BERE', 'FARE', 'DARE', 'AVERE', 'ESSER', 'ANDAR', 'VENIR', 'STARE', 'TENER', 'VOLER', 'DOVER', 'POTER', 'BASTA', 'SERVE', 'PIACE', 'GRAND', 'PICCO', 'BELLO', 'BRUTT', 'BUONO', 'CATTIV', 'FACIL', 'DIFFIC', 'LUNGO', 'CORTO', 'LARGO', 'STRET', 'ALTO', 'BASSO', 'GROSS', 'SOTTO', 'DESTRO', 'SINIS', 'DIETR', 'FRONT', 'AVANT', 'INDIE', 'TORN', 'RESTA', 'CAMBI', 'MUOVI', 'CORRI', 'SALTI', 'BALLI', 'NUOTI', 'CANTI', 'PULIR', 'CUCI', 'STIRI', 'SORRI', 'PIANG', 'RIDI', 'SALTO', 'BALLO', 'NUOTO', 'CANTO', 'DANZO', 'LAVOR', 'STUDI', 'SCRIV', 'PENS', 'ASPET', 'ARRIV', 'PARTI', 'RESTO', 'MANCO', 'RIMAN', 'VADAN', 'VENGO', 'VENG', 'STAI', 'ABBI', 'SIAM', 'SIATE', 'SENZA', 'SOTTO', 'SOVRA', 'FUORI', 'DENTR', 'LASSU', 'QUI', 'QUA', 'DOVE', 'COME', 'QUAND', 'QUANT', 'PERCH', 'PERCH', 'COSA', 'INFAT', 'POICH', 'ALLOR', 'CIOE', 'GRADI', 'PEGGIO', 'SERVI', 'VIENI', 'FACCI', 'DICHI', 'QUELL', 'QUEGLI', 'QUEST', 'TUTTO', 'NESSUN', 'QUALSI', 'QUALUN', 'QUALCO',
+        'BOCCA', 'MAREE', 'GIOCO', 'SPORT', 'LETTO', 'CAMICE', 'OCCHIO', 'MANO', 'DITO', 'GAMBA', 'CUORE', 'TESTA', 'GINE', 'RENE', 'LUNEDI', 'SABATO', 'MESE', 'ANNO', 'AMORE', 'ODIO', 'PAURA', 'GIOIA', 'RABBIA', 'SORPRE', 'PACE', 'GUERRA', 'PROGET', 'CLIENT', 'COMPIT', 'ESAME', 'BANCO', 'PREZZO', 'SALDO', 'DOLCE', 'CINEMA', 'FILM', 'ATTORE', 'REGIST', 'CANZONE', 'PIANO', 'DISCO', 'RADIO', 'TAVOLO', 'MONTE', 'VALLE', 'COLLE', 'FRUTTA', 'MELA', 'PERA', 'CILIEG', 'ZUCCHER', 'FORMAG', 'SALUME', 'PROSCI', 'POLLO', 'MANZO', 'VITELL', 'PASTA', 'CARNE', 'UOVA', 'PATATA', 'POMODO', 'INSALA', 'CEBOLL', 'CAROTA', 'AGLIO', 'BASILI', 'ROSMAR', 'ORIGAN', 'PEPERO', 'CUCINA', 'FRIGOR', 'LAVARE', 'ASCIUG', 'STIRAR', 'PASTO', 'SCEND', 'SALIR', 'ENTRA', 'ESCI', 'APRI', 'CHIUD', 'SCRIV', 'LEGGI', 'PARLA', 'SENTI', 'VEDER', 'UDIRE', 'SAPER', 'VIVER', 'MORIR', 'DORMI', 'MANGI', 'BERE', 'FARE', 'DARE', 'AVERE', 'ESSER', 'ANDAR', 'VENIR', 'STARE', 'TENER', 'VOLER', 'DOVER', 'POTER', 'BASTA', 'SERVE', 'PIACE', 'GRAND', 'PICCO', 'BELLO', 'BRUTT', 'BUONO', 'CATTIV', 'FACIL', 'DIFFIC', 'LUNGO', 'CORTO', 'LARGO', 'STRET', 'ALTO', 'BASSO', 'GROSS', 'SOTTO', 'DESTRO', 'SINIS', 'DIETR', 'FRONT', 'AVANT', 'INDIE', 'TORN', 'RESTA', 'CAMBI', 'MUOVI', 'CORRI', 'SALTI', 'BALLI', 'NUOTI', 'CANTI', 'PULIR', 'CUCI', 'STIRI', 'SORRI', 'PIANG', 'RIDI', 'SALTO', 'BALLO', 'NUOTO', 'CANTO', 'DANZO', 'LAVOR', 'STUDI', 'SCRIV', 'PENS', 'ASPET', 'ARRIV', 'PARTI', 'RESTO', 'MANCO', 'RIMAN', 'VADAN', 'VENGO', 'VENG', 'STAI', 'ABBI', 'SIAM', 'SIATE', 'SENZA', 'SOTTO', 'SOVRA', 'FUORI', 'DENTR', 'LASSU', 'QUI', 'QUA', 'DOVE', 'COME', 'QUAND', 'QUANT', 'PERCH', 'PERCH', 'COSA', 'INFAT', 'POICH', 'ALLOR', 'CIOE', 'GRADI', 'PEGGIO', 'SERVI', 'VIENI', 'FACCI', 'DICHI', 'QUELL', 'QUEGLI', 'QUEST', 'TUTTO', 'NESSUN', 'QUALSI', 'QUALUN', 'QUALCO',
       ];
       const filteredWordList = wordList.filter(word => word.length === 5);
       gameState.targetWord = filteredWordList[Math.floor(Math.random() * filteredWordList.length)];
@@ -988,11 +963,18 @@
         `Complimenti! Hai completato il gioco con ${gameState.score} punti in ${gameState.time} secondi!` :
         `Gioco terminato. Punteggio finale: ${gameState.score}`;
       
+      // Save win status and update icons
+      if (won && currentGame) {
+        wonGames[currentGame] = true;
+        localStorage.setItem('wonGames', JSON.stringify(wonGames));
+        updateMinigameIcons();
+      }
+      
       const resultDiv = document.createElement('div');
       resultDiv.style.textAlign = 'center';
       resultDiv.style.fontSize = '1.5rem';
       resultDiv.innerHTML = `
-        <h3>${won ? '?? Vittoria!' : '?? Fine Gioco'}</h3>
+        <h3>${won ? '🏆 Vittoria!' : '?? Fine Gioco'}</h3>
         <p>${message}</p>
         <button class="play-button" onclick="location.reload()">Gioca ancora</button>
       `;
@@ -1000,6 +982,28 @@
       gameArea.innerHTML = '';
       gameArea.appendChild(resultDiv);
     }
+    function updateMinigameIcons() {
+      const gameIcons = {
+        'sudoku': '🔢',
+        'wordle': '📘', 
+        'math': '??'
+      };
+      
+      document.querySelectorAll('.minigame-item').forEach(item => {
+        const gameType = item.dataset.game;
+        const iconElement = item.querySelector('.minigame-icon');
+        if (iconElement) {
+          if (wonGames[gameType]) {
+            iconElement.textContent = gameIcons[gameType];
+          } else {
+            iconElement.textContent = '??';
+          }
+        }
+      });
+    }
+
+    // Initialize icons on page load
+    updateMinigameIcons();
   </script>
 </body>
 </html>
