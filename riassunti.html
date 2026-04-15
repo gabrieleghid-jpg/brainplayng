@@ -133,45 +133,6 @@
       display: block;
     }
     
-    .flashcard-container {
-      display: grid;
-      gap: 1rem;
-    }
-    
-    .flashcard-item {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 1rem;
-      padding: 1.5rem;
-      background: rgba(79, 70, 229, 0.04);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      transition: transform 0.2s ease;
-    }
-    
-    .flashcard-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-    }
-    
-    .flashcard-number {
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      background: var(--accent);
-      color: white;
-      border-radius: 12px;
-      font-weight: 700;
-    }
-    
-    .flashcard-question, .flashcard-answer {
-      margin-bottom: 0.5rem;
-    }
-    
-    .flashcard-answer {
-      color: var(--muted);
-    }
     
     .schema-container {
       margin-bottom: 2rem;
@@ -666,19 +627,13 @@ ARGOMENTO RICHIESTO: ${userText}
    - Includi definizioni, esempi e spiegazioni dettagliate
    - Formattazione Markdown con titoli e sottotitoli
 
-2. **Flashcard**: Una lista di 5-10 domande e risposte brevi.
-   - Formato: D: [Domanda] - R: [Risposta]
-   - Domande chiare e specifiche
-   - Risposte concise e dirette
-   - Copri tutti i concetti fondamentali
-
-3. **Schema**: Una struttura gerarchica a punti per visualizzare i collegamenti tra le idee.
+2. **Schema**: Una struttura gerarchica a punti per visualizzare i collegamenti tra le idee.
    - Usa numerazione gerarchica (1, 1.1, 1.1.1...)
    - Includi frecce e simboli per mostrare relazioni
    - Organizza i concetti in modo logico
    - Formattazione Markdown
 
-4. **Quiz**: 5 domande a scelta multipla con 4 opzioni ciascuna, indicando la risposta corretta alla fine.
+3. **Quiz**: 5 domande a scelta multipla con 4 opzioni ciascuna, indicando la risposta corretta alla fine.
    - Domande che testino la comprensione
    - 4 opzioni (A, B, C, D) per ogni domanda
    - Una sola risposta corretta per domanda
@@ -687,12 +642,6 @@ ARGOMENTO RICHIESTO: ${userText}
 OUTPUT FINALE in formato JSON:
 {
   "discorso_riassunto": "Testo fluido e approfondito in formato Markdown",
-  "flashcard": [
-    {
-      "domanda": "Domanda chiave",
-      "risposta": "Risposta breve"
-    }
-  ],
   "schema": "Struttura gerarchica a punti in formato Markdown",
   "quiz": {
     "domande": [
@@ -710,7 +659,7 @@ REGOLE SPECIFICHE:
 - Mantieni un tono chiaro e professionale
 - Usa sempre formato Markdown per tutti i contenuti
 - Se l'input è vago, chiedi precisazioni prima di procedere
-- Genera sempre esattamente 4 elementi distinti
+- Genera sempre esattamente 3 elementi distinti
 - Adatta il contenuto all'argomento specifico richiesto
 - Sii esaustivo ma comprensibile`;
 
@@ -746,10 +695,6 @@ REGOLE SPECIFICHE:
             spiegazione_semplice: `Analisi della richiesta: ${userText}`,
             riassunto_esecutivo: `**Concetto principale**: ${userText.substring(0, 100)}...\n\n**Punti chiave**:\n- ${userText.substring(0, 50)}...\n- Dettagli rilevanti\n- Concetti secondari`,
             schema_concettuale: `| Concetto | Descrizione |\n|----------|-------------|\n| Principale | ${userText.substring(0, 50)}... |\n| Secondario | Dettagli rilevanti |`,
-            flashcard: [
-              { domanda: "Qual è l'argomento principale?", risposta: userText.substring(0, 100) + "..." },
-              { domanda: "Quali sono i concetti chiave?", risposta: "I concetti principali derivano dalla tua richiesta" }
-            ],
             quiz: {
               domande: [
                 {
@@ -768,9 +713,6 @@ REGOLE SPECIFICHE:
           spiegazione_semplice: "Errore nell'analisi della richiesta",
           riassunto_esecutivo: "**Errore**: Impossibile generare il riassunto richiesto.",
           schema_concettuale: "| Errore | Descrizione |\n|---------|-------------|\n| Analisi | Non disponibile |",
-          flashcard: [
-            { domanda: "Errore", risposta: "Riprova più tardi" }
-          ],
           quiz: {
             domande: [
               {
