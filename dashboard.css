@@ -26,6 +26,18 @@ body.dark {
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.24);
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes flip {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+
 * {
   box-sizing: border-box;
 }
