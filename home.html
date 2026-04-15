@@ -19,7 +19,7 @@
       <span></span>
     </button>
     <a href="home.html" class="brand">
-      <span class="brand-icon">S</span>
+      <span class="brand-icon">🧠</span>
       <span>brainplaying</span>
     </a>
     <div class="nav-actions">
@@ -997,20 +997,16 @@
     }
     function updateMinigameIcons() {
       const gameIcons = {
-        'sudoku': '🔢',
-        'wordle': '📘', 
-        'math': '??'
+        'sudoku': '🧠',
+        'wordle': '�', 
+        'math': '➕'
       };
       
       document.querySelectorAll('.minigame-item').forEach(item => {
         const gameType = item.dataset.game;
         const iconElement = item.querySelector('.minigame-icon');
         if (iconElement) {
-          if (wonGames[gameType]) {
-            iconElement.textContent = gameIcons[gameType];
-          } else {
-            iconElement.textContent = '??';
-          }
+          iconElement.textContent = gameIcons[gameType];
         }
       });
     }
