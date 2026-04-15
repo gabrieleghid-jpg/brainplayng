@@ -29,7 +29,7 @@
       <a href="profile.html" class="profile-button">
         <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
       </a>
-      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">?</button>
     </div>
   </header>
 
@@ -123,12 +123,12 @@
         <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata agli schemi</p>
       </a>
 
-      <article class="session-card">
+      <a href="classifica.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
         <header>
           <h2>Classifica</h2>
         </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Contenuto in arrivo...</p>
-      </article>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Scopri i migliori studenti di brainplaying</p>
+      </a>
     </div>
 
       <footer class="home-footer">
@@ -138,8 +138,9 @@
     </main>
   </div>
 
+  <script src="auth-helper.js"></script>
   <script>
-    if (sessionStorage.getItem('authenticated') !== 'true') {
+    if (!checkAuthentication()) {
       window.location.href = 'index.html';
     }
 

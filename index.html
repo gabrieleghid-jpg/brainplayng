@@ -810,11 +810,18 @@
       };
       storeAccount(account);
 
+      // Store in both sessionStorage and localStorage for persistence
       sessionStorage.setItem('authenticated', 'true');
       sessionStorage.setItem('role', 'user');
       sessionStorage.setItem('username', usernameValue);
       sessionStorage.setItem('email', emailValue);
       sessionStorage.setItem('profileImage', '');
+      
+      localStorage.setItem('bp_authenticated', 'true');
+      localStorage.setItem('bp_role', 'user');
+      localStorage.setItem('bp_username', usernameValue);
+      localStorage.setItem('bp_email', emailValue);
+      localStorage.setItem('bp_profileImage', '');
       showToast('Registrazione completata! Benvenuto su brainplaying.');
       setTimeout(() => {
         window.location.href = 'home.html';
@@ -909,11 +916,18 @@
         return;
       }
 
+      // Store in both sessionStorage and localStorage for persistence
       sessionStorage.setItem('authenticated', 'true');
       sessionStorage.setItem('role', 'user');
       sessionStorage.setItem('username', account.username);
       sessionStorage.setItem('email', account.email);
       sessionStorage.setItem('profileImage', account.profileImage || '');
+      
+      localStorage.setItem('bp_authenticated', 'true');
+      localStorage.setItem('bp_role', 'user');
+      localStorage.setItem('bp_username', account.username);
+      localStorage.setItem('bp_email', account.email);
+      localStorage.setItem('bp_profileImage', account.profileImage || '');
       showToast('Login eseguito! Benvenuto su brainplaying.');
       setTimeout(() => {
         window.location.href = 'home.html';

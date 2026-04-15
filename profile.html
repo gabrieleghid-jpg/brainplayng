@@ -55,8 +55,9 @@
     .page-shell {
       position: relative;
       z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
+      width: 100vw;
+      margin: 0;
+      max-width: none;
       padding: 2.5rem 1.5rem 3rem;
     }
     .nav {
@@ -368,7 +369,7 @@
         <a class="nav-link" href="home.html">Home</a>
         <button class="nav-link" type="button">Sessioni</button>
         <button class="nav-link" type="button">Obiettivi</button>
-        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌓</button>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">?</button>
       </div>
     </header>
 
@@ -429,8 +430,9 @@
     </main>
   </div>
 
+  <script src="auth-helper.js"></script>
   <script>
-    if (sessionStorage.getItem('authenticated') !== 'true') {
+    if (!checkAuthentication()) {
       window.location.href = 'index.html';
     }
 
@@ -550,8 +552,7 @@
     });
 
     logoutButton.addEventListener('click', () => {
-      sessionStorage.clear();
-      window.location.href = 'index.html';
+      logout();
     });
 
     const savedTheme = localStorage.getItem('theme');
