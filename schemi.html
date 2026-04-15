@@ -373,54 +373,61 @@
       <div class="hero-grid">
         <section class="hero-card">
           <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Schemi</p>
-          <h1>Trasforma foto in materiali di studio</h1>
-          <p>Carica una foto e ottieni automaticamente flashcard, schemi gerarchici e riassunti pronti per lo studio.</p>
+          <h1>Crea materiali di studio con AI</h1>
+          <p>Scrivi cosa ti serve e ottieni automaticamente riassunti, schemi gerarchici, flashcard e quiz personalizzati.</p>
           <p id="guestNotice" class="guest-note" style="display:none;margin-top:1rem;"></p>
-          <div class="hero-actions">
-            <label for="photoUpload" class="hero-button" style="cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;">
-              ? Carica foto
-            </label>
-            <input type="file" id="photoUpload" accept="image/*" style="display: none;">
-          </div>
         </section>
       </div>
 
-      <!-- Sezione Upload e Analisi -->
-      <div class="upload-section" id="uploadSection" style="display: none;">
+      <!-- Sezione Richiesta Testo -->
+      <div class="upload-section">
         <div class="upload-card">
-          <div class="upload-preview" id="uploadPreview">
-            <div class="preview-placeholder">
-              <span style="font-size: 3rem;">?</span>
-              <p>Anteprima foto</p>
+          <div class="upload-controls" style="width: 100%;">
+            <h3 style="margin: 0 0 1rem; color: var(--accent);">Scrivi cosa ti serve</h3>
+            <textarea 
+              id="textInput" 
+              placeholder="Esempio: Voglio un riassunto sulla fotosintesi e uno schema del processo clorofilliano..."
+              style="width: 100%; 
+                     min-height: 120px; 
+                     padding: 1rem; 
+                     border: 2px solid var(--border); 
+                     border-radius: 12px; 
+                     background: var(--panel-strong); 
+                     color: var(--text); 
+                     font-family: inherit; 
+                     font-size: 1rem; 
+                     resize: vertical;
+                     transition: border-color 0.3s ease;">
+            </textarea>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+              <button class="analyze-btn" id="generateBtn">
+                🤖 Genera Riassunto e Schema
+              </button>
+              <button class="clear-btn" id="clearTextBtn">
+                🗑️ Cancella testo
+              </button>
             </div>
-          </div>
-          <div class="upload-controls">
-            <button class="analyze-btn" id="analyzeBtn" disabled>
-              ? Analizza con AI
-            </button>
-            <button class="clear-btn" id="clearBtn">
-              ? Rimuovi foto
-            </button>
           </div>
         </div>
       </div>
 
+      
       <!-- Sezione Risultati -->
       <div class="results-section" id="resultsSection" style="display: none;">
         <div class="results-tabs">
-          <button class="tab-btn active" data-tab="trascrizione">? Trascrizione</button>
+          <button class="tab-btn active" data-tab="analisi">? Analisi</button>
           <button class="tab-btn" data-tab="riassunto">? Riassunto</button>
           <button class="tab-btn" data-tab="flashcard">? Flashcard</button>
           <button class="tab-btn" data-tab="schemi-ai">? Schemi AI</button>
           <button class="tab-btn" data-tab="quiz">? Quiz</button>
         </div>
 
-        <div class="tab-content active" id="trascrizione">
-          <div class="trascrizione-container" id="trascrizioneContainer">
-            <!-- Trascrizione pulita verrà generata qui -->
+        <div class="tab-content active" id="analisi">
+          <div class="trascrizione-container" id="analisiContainer">
+            <!-- Analisi della richiesta verrà generata qui -->
           </div>
-          <button class="download-btn" id="downloadTrascrizione">
-            ? Scarica trascrizione
+          <button class="download-btn" id="downloadAnalisi">
+            ? Scarica analisi
           </button>
         </div>
 
@@ -468,13 +475,13 @@
 
       <section class="feature-card">
         <h2>Come funziona l'analisi AI</h2>
-        <p>Carica una foto dei tuoi appunti, libro o lavagna e ottieni materiali di studio organizzati automaticamente.</p>
+        <p>Scrivi l'argomento che ti interessa e ottieni materiali di studio personalizzati con l'intelligenza artificiale.</p>
         <ul class="feature-list">
-          <li>? Upload foto da appunti, libri o lavagne</li>
-          <li>? Analisi del testo con intelligenza artificiale</li>
-          <li>? Generazione automatica di flashcard (Domanda ? Risposta)</li>
-          <li>? Creazione di schemi gerarchici (1, 1.1, 1.1.1...)</li>
-          <li>? Download dei materiali in formato esportabile</li>
+          <li>✍️ Scrivi l'argomento o la richiesta</li>
+          <li>🤖 Analisi con intelligenza artificiale avanzata</li>
+          <li>📚 Generazione automatica di flashcard (Domanda → Risposta)</li>
+          <li>📋 Creazione di schemi gerarchici (1, 1.1, 1.1.1...)</li>
+          <li>💾 Download dei materiali in formato esportabile</li>
         </ul>
       </section>
 
@@ -574,180 +581,115 @@
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 
-    // PHOTO ANALYSIS SYSTEM
-    const photoUpload = document.getElementById('photoUpload');
-    const uploadSection = document.getElementById('uploadSection');
-    const uploadPreview = document.getElementById('uploadPreview');
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const clearBtn = document.getElementById('clearBtn');
+    // TEXT ANALYSIS SYSTEM
     const resultsSection = document.getElementById('resultsSection');
+    const textInput = document.getElementById('textInput');
+    const generateBtn = document.getElementById('generateBtn');
+    const clearTextBtn = document.getElementById('clearTextBtn');
     
-    let currentImageData = null;
     let analysisResults = null;
 
-    // Photo upload handler
-    photoUpload?.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      if (!file.type.startsWith('image/')) {
-        alert('Per favore carica un file immagine.');
+    // Clear text
+    clearTextBtn?.addEventListener('click', () => {
+      textInput.value = '';
+      analysisResults = null;
+      resultsSection.style.display = 'none';
+    });
+
+    // Generate from text
+    generateBtn?.addEventListener('click', async () => {
+      const text = textInput.value.trim();
+      if (!text) {
+        alert('Per favore inserisci il testo per generare riassunto e schema.');
         return;
       }
       
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        currentImageData = e.target.result;
-        displayImagePreview(currentImageData);
-        uploadSection.style.display = 'block';
-        analyzeBtn.disabled = false;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    function displayImagePreview(imageData) {
-      uploadPreview.innerHTML = `
-        <img src="${imageData}" alt="Preview" style="width: 100%; height: 300px; object-fit: cover; border-radius: 16px;">
-        <p style="margin-top: 1rem; color: var(--muted);">Foto caricata - pronta per l'analisi AI</p>
-      `;
-    }
-
-    // Clear photo
-    clearBtn?.addEventListener('click', () => {
-      currentImageData = null;
-      analysisResults = null;
-      uploadSection.style.display = 'none';
-      resultsSection.style.display = 'none';
-      photoUpload.value = '';
-      uploadPreview.innerHTML = `
-        <div class="preview-placeholder">
-          <span style="font-size: 3rem;">?</span>
-          <p>Anteprima foto</p>
-        </div>
-      `;
-    });
-
-    // Analyze photo with AI
-    analyzeBtn?.addEventListener('click', async () => {
-      if (!currentImageData) return;
-      
-      analyzeBtn.disabled = true;
-      analyzeBtn.textContent = '? Analizzando...';
+      generateBtn.disabled = true;
+      generateBtn.textContent = '🤖 Generando...';
       
       try {
-        // Convert image to base64 for API
-        const base64Image = currentImageData.split(',')[1];
-        
-        // Call Hugging Face API for image analysis
-        const response = await fetch(CONFIG.HF_API_URL_VISION, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${CONFIG.HF_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            inputs: base64Image
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Errore nell\'analisi dell\'immagine');
-        }
-        
-        const imageDescription = await response.json();
-        const extractedText = imageDescription[0]?.generated_text || 'Testo non rilevato';
-        
-        // Generate study materials from extracted text
-        analysisResults = await generateStudyMaterials(extractedText);
-        
-        // Display results
+        analysisResults = await generateTextBasedMaterials(text);
         displayResults(analysisResults);
         resultsSection.style.display = 'block';
         
       } catch (error) {
         console.error('Errore:', error);
-        alert('Errore durante l\'analisi: ' + error.message);
+        alert('Errore durante la generazione: ' + error.message);
       } finally {
-        analyzeBtn.disabled = false;
-        analyzeBtn.textContent = '? Analizza con AI';
+        generateBtn.disabled = false;
+        generateBtn.textContent = '🤖 Genera Riassunto e Schema';
       }
     });
 
-    // Generate comprehensive study materials using text AI - MODALITÀ FOTO
-    async function generateStudyMaterials(text) {
+    // Generate study materials from user text input - MODALITÀ TESTO
+    async function generateTextBasedMaterials(userText) {
       try {
-        const prompt = `MODALITÀ FOTO ATTIVATA - Analisi completa dell'immagine
+        const prompt = `MODALITÀ TESTO ATTIVATA - Generazione materiali da richiesta utente
 
-Testo estratto dall'immagine: "${text}"
+Richiesta dell'utente: "${userText}"
 
-Esegui la seguente sequenza di analisi:
+Esegui la seguente sequenza di analisi basata SULLA RICHIESTA dell'utente:
 
-1. ANALISI DELL'IMMAGINE:
-   - Leggi tutto il testo presente nell'immagine
-   - Riconosci titoli, paragrafi, formule, simboli, diagrammi, codice, circuiti
-   - Identifica l'argomento principale e i sotto-argomenti
-   - NON saltare nessuna parte dell'immagine
+1. ANALISI DELLA RICHIESTA:
+   - Comprendi l'argomento richiesto
+   - Identifica i concetti chiave da trattare
+   - Determina il livello di dettaglio necessario
 
-2. TRASCRIZIONE PULITA:
-   - Riscrivi il contenuto in modo ordinato, leggibile e strutturato
-   - Correggi errori di OCR
-   - Mantieni fedeltà ai concetti originali
+2. RIASSUNTO DETTAGLIATO:
+   - Crea un riassunto completo e ben strutturato
+   - Usa un linguaggio chiaro e educativo
+   - Includi definizioni, esempi e spiegazioni
+   - Organizza il contenuto in paragrafi logici
 
-3. RIASSUNTO:
-   - Crea un riassunto chiaro e sintetico
-   - Usa frasi brevi e dirette
-   - Evidenzia concetti chiave, definizioni, formule importanti
+3. SCHEMA GERARCHICO:
+   - Crea uno schema strutturato (1, 1.1, 1.1.1...)
+   - Organizza i concetti in modo gerarchico
+   - Includi collegamenti logici tra i concetti
+   - Usa una struttura chiara e facile da seguire
 
-4. FLASHCARD (8-20 flashcard):
-   - Genera flashcard in formato: Domanda → Risposta
-   - Le domande devono essere SEMPRE diverse
-   - Le flashcard devono coprire TUTTI i concetti principali
-   - Basate SOLO sul contenuto della foto
+4. MINI-SCHEMI TEMATICI:
+   - Crea mini-schemi per sottotemi specifici
+   - Usa diagrammi semplici testuali
+   - Evidenzia relazioni causa-effetto
 
-5. SEZIONE "SCHEMI AI":
-   - Crea una sezione dedicata chiamata Schemi AI
-   - Sistema degli schemi gerarchico (1, 1.1, 1.1.1...)
-   - Collegamenti logici, categorie, cause-effetti
-   - Mini-schemi tematici (se servono)
-   - Versione compatta dello schema
-   - Pronti per essere copiati o esportati
-
-6. MINI-QUIZ FINALE (6-12 domande):
-   - Formati: Scelta multipla (A, B, C, D) e Vero/Falso
-   - Le domande devono essere SEMPRE diverse
-   - Basate SOLO sul contenuto della foto
-   - Non ripetitive, non generiche
-   - Ogni domanda deve avere una sola risposta corretta
+5. VERSIONE COMPATTA:
+   - Riepiloga i punti essenziali
+   - Formato bullet points per memorizzazione rapida
 
 OUTPUT FINALE in formato JSON:
 {
-  "trascrizione_pulita": "testo trascritto e ordinato",
-  "riassunto": "testo del riassunto",
-  "flashcard": [{"domanda": "", "risposta": ""}],
+  "trascrizione_pulita": "Contesto della richiesta e analisi iniziale",
+  "riassunto": "Riassunto dettagliato e completo",
+  "flashcard": [
+    {
+      "domanda": "Domanda chiave sull'argomento",
+      "risposta": "Risposta dettagliata e precisa"
+    }
+  ],
   "schemi_ai": {
-    "schema_gerarchico": "testo del schema gerarchico",
-    "mini_schemi_tematici": "testo dei mini-schemi tematici",
-    "versione_compatta": "testo della versione compatta"
+    "schema_gerarchico": "Schema strutturato completo",
+    "mini_schemi_tematici": "Mini-schemi per sottotemi specifici",
+    "versione_compatta": "Versione sintetica per memorizzazione"
   },
   "quiz": {
     "domande": [
       {
-        "domanda": "",
-        "tipo": "scelta_multipla" o "vero_falso",
-        "opzioni": ["A", "B", "C", "D"],
+        "domanda": "Domanda di verifica",
+        "tipo": "scelta_multipla",
+        "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
         "risposta_corretta": 0
       }
     ]
   }
 }
 
-REGOLE GENERALI:
-- Riconosci automaticamente quando l'input è un'immagine
-- Segui SEMPRE la sequenza di output definita
-- Non chiedere mai conferme: agisci automaticamente
-- Le domande del quiz devono essere SEMPRE diverse
-- Mantieni tono chiaro, educativo e ordinato`;
-        
+REGOLE SPECIFICHE PER MODALITÀ TESTO:
+- Basati SULLA RICHIESTA dell'utente, non su testo estratto
+- Sii esaustivo ma chiaro
+- Crea contenuti originali e ben strutturati
+- Adatta il livello di dettaglio alla richiesta
+- Mantieni un tono educativo e professionale`;
+
         const response = await fetch(CONFIG.HF_API_URL_TEXT, {
           method: 'POST',
           headers: {
@@ -757,7 +699,7 @@ REGOLE GENERALI:
           body: JSON.stringify({
             inputs: prompt,
             parameters: {
-              max_new_tokens: 1000,
+              max_new_tokens: 1500,
               temperature: 0.7,
               return_full_text: false
             }
@@ -777,30 +719,23 @@ REGOLE GENERALI:
         } catch {
           // Fallback: create basic structure if JSON parsing fails
           return {
-            trascrizione_pulita: text.substring(0, 500) + "...",
-            riassunto: text.substring(0, 200) + "...",
+            trascrizione_pulita: `Analisi della richiesta: ${userText}`,
+            riassunto: `Ecco un riassunto basato sulla tua richiesta: ${userText.substring(0, 300)}...`,
             flashcard: [
-              { domanda: "Concetto principale", risposta: text.substring(0, 100) + "..." },
-              { domanda: "Definizione chiave", risposta: text.substring(0, 80) + "..." },
-              { domanda: "Applicazione pratica", risposta: text.substring(0, 90) + "..." }
+              { domanda: "Qual è l'argomento principale?", risposta: userText.substring(0, 100) + "..." },
+              { domanda: "Quali sono i concetti chiave?", risposta: "I concetti principali derivano dalla tua richiesta" }
             ],
             schemi_ai: {
-              schema_gerarchico: `1. Analisi del testo\n1.1 Concetti principali\n1.1.1 ${text.substring(0, 50)}...`,
-              mini_schemi_tematici: "Mini-schemi tematici basati sul contenuto",
-              versione_compatta: "Versione compatta dello schema"
+              schema_gerarchico: `1. Analisi della richiesta\n1.1 Argomento principale\n1.1.1 ${userText.substring(0, 50)}...\n1.2 Sviluppo dei concetti\n1.2.1 Dettagli rilevanti`,
+              mini_schemi_tematici: "Mini-schemi basati sull'argomento richiesto",
+              versione_compatta: "- Punto principale\n- Dettagli rilevanti\n- Concetti secondari"
             },
             quiz: {
               domande: [
                 {
-                  domanda: "Il testo contiene informazioni rilevanti?",
+                  domanda: "L'argomento trattato è rilevante?",
                   tipo: "vero_falso",
                   opzioni: ["Vero", "Falso"],
-                  risposta_corretta: 0
-                },
-                {
-                  domanda: "Qual è l'argomento principale del testo?",
-                  tipo: "scelta_multipla",
-                  opzioni: ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
                   risposta_corretta: 0
                 }
               ]
@@ -810,21 +745,27 @@ REGOLE GENERALI:
       } catch (error) {
         console.error('Errore generazione materiali:', error);
         return {
+          trascrizione_pulita: "Errore nell'analisi della richiesta",
+          riassunto: "Impossibile generare il riassunto richiesto.",
           flashcard: [
-            { domanda: "Errore analisi", risposta: "Impossibile analizzare l'immagine" }
+            { domanda: "Errore", risposta: "Riprova più tardi" }
           ],
-          schema: "1. Errore nell'analisi",
-          riassunto: "Impossibile generare materiali di studio."
+          schemi_ai: {
+            schema_gerarchico: "1. Errore nell'analisi",
+            mini_schemi_tematici: "Mini-schemi non disponibili",
+            versione_compatta: "Versione compatta non disponibile"
+          }
         };
       }
     }
 
-    // Display comprehensive analysis results - MODALITÀ FOTO
+    
+    // Display analysis results - MODALITÀ TESTO
     function displayResults(results) {
-      // Display trascrizione pulita (PRIMO OUTPUT)
-      const trascrizioneContainer = document.getElementById('trascrizioneContainer');
-      if (trascrizioneContainer && results.trascrizione_pulita) {
-        trascrizioneContainer.innerHTML = `
+      // Display analisi richiesta (PRIMO OUTPUT)
+      const analisiContainer = document.getElementById('analisiContainer');
+      if (analisiContainer && results.trascrizione_pulita) {
+        analisiContainer.innerHTML = `
           <div class="trascrizione-text">${results.trascrizione_pulita}</div>
         `;
       }
@@ -922,10 +863,10 @@ REGOLE GENERALI:
       });
     });
 
-    // Download functions for all materials - MODALITÀ FOTO
-    document.getElementById('downloadTrascrizione')?.addEventListener('click', () => {
+    // Download functions for all materials - MODALITÀ TESTO
+    document.getElementById('downloadAnalisi')?.addEventListener('click', () => {
       if (analysisResults && analysisResults.trascrizione_pulita) {
-        downloadFile(analysisResults.trascrizione_pulita, 'trascrizione_pulita.txt');
+        downloadFile(analysisResults.trascrizione_pulita, 'analisi_richiesta.txt');
       }
     });
     
