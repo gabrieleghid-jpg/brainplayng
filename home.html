@@ -162,7 +162,7 @@
             <button class="play-button">Gioca</button>
           </div>
           <div class="minigame-item" data-game="wordle">
-            <div class="minigame-icon">??</div>
+            <div class="minigame-icon">&#x1F4D6;</div>
             <h3>Wordle</h3>
             <p>Indovina la parola segreta in 6 tentativi per allenare il vocabolario</p>
             <button class="play-button">Gioca</button>
@@ -690,73 +690,15 @@
     // Wordle Game Implementation
     function initWordleGame() {
       const wordList = [
-        'CASA', 'SOLE', 'MARE', 'NOTTE', 'GATTO', 'CANI', 'LIBRO', 'PIZZA', 'MUSICA', 'AMICI', 'FIORE', 'LUNA', 'STELLA',
-        'TAVOLO', 'PORTA', 'GARDINO', 'BAMBINO', 'MAMMA', 'PAPÀ', 'FRATELLO', 'SORELLA', 'NONNO', 'CUGINO',
-        'MOTO', 'TRENO', 'BARCA', 'PONTE', 'STRADA', 'PAESE', 'ALBERO', 'ERBA', 'FIUME', 'LAGO', 'NEVE',
-        'PIOGGIA', 'VENTO', 'NUVOLA', 'CIANO', 'ROSSO', 'MELA', 'PERA', 'UVA', 'PANE', 'FORMAGGIO',
-        'LATTE', 'CAFFÈ', 'ACQUA', 'VINO', 'BIRRA', 'CANE', 'MUCCA', 'MAIALE', 'PESCE', 'UCCELLO',
-        'AQUILA', 'FARFALLA', 'RIVISTA', 'PENNA', 'FOGLIO', 'GIOCO', 'SPORT', 'PALLA', 'CALCIO',
-        'TENNIS', 'NUOTO', 'CORSAR', 'SALTAR', 'BALLAR', 'CANTAR', 'CUCINA', 'FORNO', 'PIATTO', 'FRIGO',
-        'LETTO', 'CUSCINO', 'LAMPADA', 'SPECCHIO', 'SCARPA', 'CAMICIA', 'OCCHIO', 'NASO', 'BOCCA',
-        'CAPELLI', 'MANO', 'DITO', 'PIEDE', 'GAMBA', 'CUORE', 'TESTA', 'SPALLA', 'GINE', 'RENE',
-        'LUNEDÌ', 'SABATO', 'MESE', 'ANNO', 'AMORE', 'ODIO', 'PAURA', 'GIOIA', 'RABBIA',
-        'SORPRESA', 'PACE', 'GUERRA', 'LAVORO', 'UFFICIO', 'PROGETTO', 'CLIENTE', 'COMPITO', 'VOTO',
-        'ESAME', 'BANCO', 'NEGOZIO', 'PREZZO', 'SALDO', 'OFFERTA', 'MENÙ', 'DOLCE', 'CENA',
-        'CINEMA', 'FILM', 'ATTORE', 'REGISTA', 'TRAMA', 'CANZONE', 'PIANO', 'DISCO', 'RADIO', 'MAREE',
-        'PIANO', 'TAVOLO', 'GATTO', 'CANE', 'PORCO', 'VITE', 'RONZE', 'TETTO', 'BOTTE', 'NOTTE',
-        'MONTE', 'PONTE', 'VALLE', 'COLLE', 'FIORE', 'FRUTTA', 'MELA', 'PERA', 'UVA', 'FICO',
-        'LIMONE', 'ARANC', 'UVA', 'FICO', 'MELA', 'PERA', 'CILIEG', 'BIRRA', 'VINO', 'CAFFÈ',
-        'TÈ', 'ZUCCH', 'PANE', 'LATTE', 'FORMAGGIO', 'SALUM', 'PROSCI', 'COTTO', 'POLLO',
-        'MANZO', 'VITEL', 'RISO', 'PASTA', 'PIZZA', 'CARNE', 'PESCE', 'UOVA', 'PATAT',
-        'TOMAT', 'INSALA', 'CEBOL', 'CAROT', 'AGLIO', 'BASIL', 'ROSMAR', 'ORIGAN',
-        'PEPER', 'CUCIN', 'FORN', 'FRIG', 'LAVA', 'ASCIU', 'STIR', 'LAVO', 'PASTI',
-        'SCEND', 'SALIR', 'ENTRA', 'ESCI', 'APRI', 'CHIU', 'SCRIV', 'LEGGI', 'PARLA',
-        'SENTI', 'VEDE', 'UDI', 'SAPI', 'VIVI', 'MORI', 'DORMI', 'MANG', 'BEVI',
-        'FARE', 'DARE', 'AVER', 'ESSER', 'ANDAR', 'VENE', 'STARE', 'TENER', 'VOLER',
-        'DOVER', 'POTER', 'SAPER', 'VOLER', 'BAST', 'SERVE', 'PIACE', 'DISPIACE',
-        'GRAND', 'PICCO', 'BELLO', 'BRUTT', 'BUON', 'CATTIV', 'FACIL', 'DIFFIC',
-        'LUNG', 'CORT', 'LARG', 'STRET', 'ALTE', 'BASS', 'GROSS', 'SOTT', 'DEST',
-        'SINS', 'DIET', 'FRONT', 'DRET', 'AVAN', 'INDIE', 'DIRO', 'TORNA', 'RESTA',
-        'CAMBI', 'MUOVI', 'CORRI', 'SALTI', 'BALLI', 'NUOTI', 'CANTI', 'DORMI', 'MANGI',
-        'BEVI', 'FARE', 'PULI', 'LAVA', 'CUCI', 'STIRI', 'LAVO', 'ASCIU', 'MANGI',
-        'BEVI', 'VIVI', 'MUOR', 'MORI', 'DORMI', 'SORRI', 'PIANGI', 'RIDI', 'CORRI',
-        'SALT', 'BALL', 'NUOT', 'CANT', 'DANC', 'GIOC', 'LAVOR', 'STUDI', 'LEGGI', 'SCRIV',
-        'PENS', 'RIDI', 'PIANG', 'SORRI', 'ASPET', 'ATTES', 'ARRIV', 'PARTI', 'TORN',
-        'REST', 'MANC', 'RIMAN', 'VADAN', 'VENGO', 'VENG', 'STAI', 'SEI', 'HA',
-        'ABBI', 'SIA', 'SIA', 'ABBIA', 'ABBIAM', 'ABBIATE', 'SIAM', 'SIATE',
-        'FAR', 'DAR', 'DIR', 'DET', 'DAL', 'DEL', 'SUL', 'COL', 'CON', 'SENZ',
-        'PER', 'TRA', 'FRA', 'SOT', 'SOVR', 'CONTRO', 'VIA', 'FUOR', 'DENT',
-        'QUI', 'QUA', 'LASSÙ', 'LÌ', 'GLI', 'LE', 'LA', 'LO', 'MI', 'TI',
-        'CI', 'VI', 'NI', 'GLI', 'NE', 'ANC', 'OGGI', 'QUI', 'QUA', 'DOVE',
-        'COME', 'QUAND', 'QUANT', 'PERCH', 'PERCHÉ', 'COS', 'COSA', 'DOVE',
-        'MA', 'SE', 'PURE', 'ANCHE', 'INFATT', 'PERÒ', 'POICH', 'ALLOR',
-        'CIOÈ', 'BASTA', 'PIAC', 'DISP', 'GRAD', 'PEGG', 'SERV', 'TEN',
-        'VAD', 'VADO', 'VADO', 'VAI', 'ANDA', 'VA', 'VENG', 'VIE',
-        'FACC', 'FACC', 'FACCI', 'DIC', 'DET', 'DAN', 'DALL', 'DAL', 'DEL',
-        'QUEL', 'QUELL', 'QUELLA', 'QUELLO', 'QUEI', 'QUEGLI', 'QUEST', 'QUESTA',
-        'QUESTO', 'QUES', 'QUESI', 'QUESTI', 'TUTT', 'TUTT', 'TUTTA', 'TUTTI',
-        'NESS', 'NESSU', 'NESSUN', 'NESSUNA', 'NESSUNO', 'QUAL', 'QUALCOS',
-        'QUALUN', 'QUALUNA', 'QUALSI', 'CHI', 'COS', 'DOVE', 'COME', 'QUAND',
-        'QUANT', 'PERCH', 'MA', 'SE', 'ANCHE', 'PURE', 'INFATT', 'POICH',
-        'ALLOR', 'CIOÈ', 'BASTA', 'PIAC', 'DISP', 'GRAD', 'PEGG', 'SERV',
-        'TEN', 'VAD', 'VADO', 'VAI', 'ANDA', 'VENG', 'VIE', 'FACC', 'FACC',
-        'FACCI', 'DIC', 'DET', 'DAN', 'DALL', 'DAL', 'DEL', 'QUEL', 'QUELL',
-        'QUELLA', 'QUELLO', 'QUEI', 'QUEGLI', 'QUEST', 'QUESTA', 'QUESTO', 'QUES',
-        'QUESI', 'QUESTI', 'TUTT', 'TUTT', 'TUTTA', 'TUTTI', 'NESS', 'NESSU',
-        'NESSUN', 'NESSUNA', 'NESSUNO', 'QUAL', 'QUALCOS', 'QUALUN', 'QUALUNA',
-        'QUALSI', 'CHI', 'COS', 'DOVE', 'COME', 'QUAND', 'QUANT', 'PERCH',
-        'PERCHÉ', 'MA', 'SE', 'ANCHE', 'PURE', 'INFATT', 'POICH', 'ALLOR', 'CIOÈ',
-        'BASTA', 'PIAC', 'DISP', 'GRAD', 'PEGG', 'SERV', 'TEN', 'VAD', 'VADO',
-        'VAI', 'ANDA', 'VENG', 'VIE', 'FACC', 'FACC', 'FACCI', 'DIC', 'DET',
-        'DAN', 'DALL', 'DAL', 'DEL', 'QUEL', 'QUELL', 'QUELLA', 'QUELLO', 'QUEI',
-        'QUEGLI', 'QUEST', 'QUESTA', 'QUESTO', 'QUES', 'QUESI', 'QUESTI', 'TUTT',
-        'TUTT', 'TUTTA', 'TUTTI', 'NESS', 'NESSU', 'NESSUN', 'NESSUNA', 'NESSUNO',
-        'QUAL', 'QUALCOS', 'QUALUN', 'QUALUNA', 'QUALSI', 'CHI', 'COS', 'DOVE',
-        'COME', 'QUAND', 'QUANT', 'PERCH', 'PERCHÉ', 'MA', 'SE', 'ANCHE', 'PURE',
-        'INFATT', 'POICH', 'ALLOR', 'CIOÈ', 'BASTA', 'PIAC', 'DISP', 'GRAD',
-        'PEGG', 'SERV', 'TEN', 'VAD', 'VADO', 'VAI', 'ANDA', 'VENG', 'VIE'
+        'NOTTE', 'GATTO', 'LIBRO', 'PIZZA', 'AMICI', 'FIORE', 
+       'PORTA', 'MAMMA', 'NONNO', 
+       'TRENO', 'BARCA', 'PONTE', 'PAESE', 'FIUME',
+         'VENTO', 'CIANO', 'ROSSO',
+        'LIMONE', 'ARANCIA', 'BIRRA', 'VINO', 'CAFFE', 'SALTO', 'BALLO', 'CANTO', 'CUCINA', 'FORNO', 'PIATTO', 'FRIGO',
+        'BOCCA', 'MAREE', 'LAVORO', 'GIOCO', 'SPORT', 'LETTO', 'CAMICE', 'OCCHIO', 'MANO', 'DITO', 'GAMBA', 'CUORE', 'TESTA', 'GINE', 'RENE', 'LUNEDI', 'SABATO', 'MESE', 'ANNO', 'AMORE', 'ODIO', 'PAURA', 'GIOIA', 'RABBIA', 'SORPRE', 'PACE', 'GUERRA', 'PROGET', 'CLIENT', 'COMPIT', 'ESAME', 'BANCO', 'PREZZO', 'SALDO', 'DOLCE', 'CINEMA', 'FILM', 'ATTORE', 'REGIST', 'CANZONE', 'PIANO', 'DISCO', 'RADIO', 'TAVOLO', 'MONTE', 'VALLE', 'COLLE', 'FRUTTA', 'MELA', 'PERA', 'CILIEG', 'ZUCCHER', 'FORMAG', 'SALUME', 'PROSCI', 'POLLO', 'MANZO', 'VITELL', 'PASTA', 'CARNE', 'UOVA', 'PATATA', 'POMODO', 'INSALA', 'CEBOLL', 'CAROTA', 'AGLIO', 'BASILI', 'ROSMAR', 'ORIGAN', 'PEPERO', 'CUCINA', 'FRIGOR', 'LAVARE', 'ASCIUG', 'STIRAR', 'PASTO', 'SCEND', 'SALIR', 'ENTRA', 'ESCI', 'APRI', 'CHIUD', 'SCRIV', 'LEGGI', 'PARLA', 'SENTI', 'VEDER', 'UDIRE', 'SAPER', 'VIVER', 'MORIR', 'DORMI', 'MANGI', 'BERE', 'FARE', 'DARE', 'AVERE', 'ESSER', 'ANDAR', 'VENIR', 'STARE', 'TENER', 'VOLER', 'DOVER', 'POTER', 'BASTA', 'SERVE', 'PIACE', 'GRAND', 'PICCO', 'BELLO', 'BRUTT', 'BUONO', 'CATTIV', 'FACIL', 'DIFFIC', 'LUNGO', 'CORTO', 'LARGO', 'STRET', 'ALTO', 'BASSO', 'GROSS', 'SOTTO', 'DESTRO', 'SINIS', 'DIETR', 'FRONT', 'AVANT', 'INDIE', 'TORN', 'RESTA', 'CAMBI', 'MUOVI', 'CORRI', 'SALTI', 'BALLI', 'NUOTI', 'CANTI', 'PULIR', 'CUCI', 'STIRI', 'SORRI', 'PIANG', 'RIDI', 'SALTO', 'BALLO', 'NUOTO', 'CANTO', 'DANZO', 'LAVOR', 'STUDI', 'SCRIV', 'PENS', 'ASPET', 'ARRIV', 'PARTI', 'RESTO', 'MANCO', 'RIMAN', 'VADAN', 'VENGO', 'VENG', 'STAI', 'ABBI', 'SIAM', 'SIATE', 'SENZA', 'SOTTO', 'SOVRA', 'FUORI', 'DENTR', 'LASSU', 'QUI', 'QUA', 'DOVE', 'COME', 'QUAND', 'QUANT', 'PERCH', 'PERCH', 'COSA', 'INFAT', 'POICH', 'ALLOR', 'CIOE', 'GRADI', 'PEGGIO', 'SERVI', 'VIENI', 'FACCI', 'DICHI', 'QUELL', 'QUEGLI', 'QUEST', 'TUTTO', 'NESSUN', 'QUALSI', 'QUALUN', 'QUALCO',
       ];
-      gameState.targetWord = wordList[Math.floor(Math.random() * wordList.length)];
+      const filteredWordList = wordList.filter(word => word.length === 5);
+      gameState.targetWord = filteredWordList[Math.floor(Math.random() * filteredWordList.length)];
       gameState.currentGuess = '';
       gameState.guesses = [];
       gameState.gameOver = false;
