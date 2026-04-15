@@ -415,8 +415,9 @@ class SchematiManager {
     try {
       // Verifica che il token sia configurato
       if (!CONFIG.HF_TOKEN || CONFIG.HF_TOKEN.includes('INSERISCI')) {
+        console.log('Token Hugging Face non configurato, uso dati mock');
         loadingContainer.remove();
-        this.renderApiKeyWarning(contentBody);
+        this.renderMockContent(contentBody, schemaTitle);
         return;
       }
 
@@ -435,9 +436,9 @@ class SchematiManager {
       // Render il contenuto con le domande generate
       this.renderGeneratedContent(contentBody, huggingFaceResponse);
     } catch (error) {
-      console.error('Errore nell\'analisi con Hugging Face:', error);
+      console.error('Errore nell\'analisi con Hugging Face, uso dati mock:', error);
       loadingContainer.remove();
-      this.renderErrorMessage(contentBody, error.message);
+      this.renderMockContent(contentBody, schemaTitle);
     }
   }
 
@@ -887,18 +888,104 @@ Assicurati che il JSON sia valido e le domande siano specifiche al contenuto des
     contentBody.appendChild(warning);
   }
 
+  renderMockContent(contentBody, schemaTitle) {
+    // Usa i dati mock esistenti ma personalizzati per il titolo
+    const mockFlashcards = this.mockFlashcards.map(fc => ({
+      ...fc,
+      title: fc.title === 'Concetto Principale' ? `Concetto chiave di ${schemaTitle}` : fc.title
+    }));
+
+    const mockQuestions = this.mockQuestions.map(q => ({
+      ...q,
+      question: q.question.includes('schema') ? q.question.replace('questo schema', schemaTitle) : q.question
+    }));
+
+    // Crea le sezioni come nella funzione expandCard originale
+    const flashcardSection = document.createElement('div');
+    flashcardSection.className = 'flashcard-section';
+    flashcardSection.innerHTML = `
+      <div class="section-header">
+        <h3 style="margin: 0 0 1rem; color: var(--accent); font-size: 1.1rem; font-weight: 600;">
+          <span style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.2rem;">Flashcard Interattive</span>
+            <span style="font-size: 0.8rem; color: var(--muted);">Clicca per esplorare i concetti</span>
+          </span>
+        </h3>
+      </div>
+    `;
+
+    const flashcardsContainer = document.createElement('div');
+    flashcardsContainer.className = 'flashcards-grid';
+    flashcardsContainer.style.cssText = `
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    `;
+
+    mockFlashcards.forEach((fc, index) => {
+      const flashcard = this.createFlashcardElement(fc);
+      flashcard.style.animation = `fadeInUp 0.6s ease ${index * 0.15}s both`;
+      flashcardsContainer.appendChild(flashcard);
+    });
+
+    flashcardSection.appendChild(flashcardsContainer);
+    contentBody.appendChild(flashcardSection);
+
+    // Separatore visivo
+    const separator = document.createElement('div');
+    separator.className = 'content-separator';
+    separator.style.cssText = `
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 1rem 0;
+      animation: fadeInUp 0.4s ease 0.25s both;
+    `;
+    contentBody.appendChild(separator);
+
+    // Sezione Quiz
+    const quizSection = document.createElement('div');
+    quizSection.className = 'quiz-section';
+    quizSection.innerHTML = `
+      <div class="section-header">
+        <h3 style="margin: 0 0 1.5rem; color: var(--accent); font-size: 1.1rem; font-weight: 600;">
+          <span style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <span style="font-size: 1.2rem;">Quiz di Verifica</span>
+            <span style="font-size: 0.8rem; color: var(--muted);">Testa la tua comprensione</span>
+          </span>
+        </h3>
+      </div>
+    `;
+
+    const quizContainer = document.createElement('div');
+    quizContainer.className = 'quiz-container';
+    quizContainer.style.cssText = `
+      display: grid;
+      gap: 2rem;
+      width: 100%;
+    `;
+
+    mockQuestions.forEach((q, index) => {
+      const quizDiv = this.createQuizQuestion(q, index);
+      quizDiv.style.animation = `fadeInUp 0.6s ease ${(index * 0.15) + 0.45}s both`;
+      quizContainer.appendChild(quizDiv);
+    });
+
+    quizSection.appendChild(quizContainer);
+    contentBody.appendChild(quizSection);
+  }
+
   renderErrorMessage(contentBody, errorMessage) {
     const error = document.createElement('div');
+    error.className = 'error-message';
     error.style.cssText = `
-      background: rgba(239, 68, 68, 0.1);
-      border: 2px solid #ef4444;
-      border-radius: 12px;
-      padding: 2rem;
       text-align: center;
+      padding: 2rem;
+      color: var(--text);
     `;
 
     error.innerHTML = `
-      <h3 style="color: #ef4444; margin: 0 0 1rem;">❌ Errore nell'analisi</h3>
+      <h3 style="color: #ef4444; margin: 0 0 1rem;">? Errore nell'analisi</h3>
       <p style="margin: 0; color: var(--text);">${errorMessage}</p>
       <p style="margin: 1rem 0 0; font-size: 0.9rem; color: var(--muted);">Controlla la console per più dettagli.</p>
     `;
