@@ -23,9 +23,6 @@
       <span>brainplaying</span>
     </a>
     <div class="nav-actions">
-      <a href="home.html" class="nav-link">Home</a>
-      <a href="schemi.html" class="nav-link">Schemi</a>
-      <a href="foto.html" class="nav-link">Foto</a>
       <button class="nav-link" type="button">Sessioni</button>
       <button class="nav-link" type="button">Obiettivi</button>
       <a href="profile.html" class="profile-button">
@@ -94,7 +91,7 @@
       <section class="hero-card" style="margin-bottom: 2rem;">
         <p style="margin:0 0 1rem;color:var(--accent);font-weight:700;letter-spacing:0.05em;text-transform:uppercase;font-size:0.85rem;">Schemi</p>
         <h1>Gestisci i tuoi schemi in una pagina dedicata</h1>
-        <p>In questa pagina trovi il muro delle idee, l'upload drag & drop e le flashcard interattive per approfondire i tuoi appunti.</p>
+        <p>Carica i tuoi appunti e organizza i tuoi schemi con il nostro sistema drag & drop intuitivo.</p>
         <div class="hero-actions">
           <a href="home.html" class="hero-button" style="text-decoration:none;">Torna alla home</a>
         </div>
@@ -119,54 +116,6 @@
         <div class="schemi-grid" id="schemiGrid">
           <!-- Le schede caricate saranno aggiunte qui -->
         </div>
-
-        <h3 style="margin: 3rem 0 1.5rem; font-size: 1.3rem; color: var(--text);">Flashcard Interattive</h3>
-        <div class="flashcards-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-          <div class="flashcard-schema">
-            <div class="flashcard-central">
-              <p class="flashcard-title">Processo Biologico</p>
-              <p class="flashcard-concept">Fotosintesi</p>
-              <p class="flashcard-hint">Clicca per scoprire i concetti collegati</p>
-            </div>
-            <div class="flashcard-connections">
-              <div class="connection-item"><span class="connection-icon">☀️</span><p class="connection-label">Energia Solare</p></div>
-              <div class="connection-item"><span class="connection-icon">🍃</span><p class="connection-label">Clorofilla</p></div>
-              <div class="connection-item"><span class="connection-icon">💧</span><p class="connection-label">Acqua</p></div>
-              <div class="connection-item"><span class="connection-icon">CO₂</span><p class="connection-label">Biossido di Carbonio</p></div>
-              <div class="connection-item"><span class="connection-icon">🍬</span><p class="connection-label">Glucosio</p></div>
-              <div class="connection-item"><span class="connection-icon">O₂</span><p class="connection-label">Ossigeno</p></div>
-            </div>
-          </div>
-
-          <div class="flashcard-schema">
-            <div class="flashcard-central">
-              <p class="flashcard-title">Ecologia</p>
-              <p class="flashcard-concept">Ciclo del Carbonio</p>
-              <p class="flashcard-hint">Clicca per scoprire i concetti collegati</p>
-            </div>
-            <div class="flashcard-connections">
-              <div class="connection-item"><span class="connection-icon">🌍</span><p class="connection-label">Atmosfera</p></div>
-              <div class="connection-item"><span class="connection-icon">🌲</span><p class="connection-label">Biosfera</p></div>
-              <div class="connection-item"><span class="connection-icon">⛰️</span><p class="connection-label">Litosfera</p></div>
-              <div class="connection-item"><span class="connection-icon">💨</span><p class="connection-label">Respirazione</p></div>
-              <div class="connection-item"><span class="connection-icon">🔥</span><p class="connection-label">Combustione</p></div>
-            </div>
-          </div>
-
-          <div class="flashcard-schema">
-            <div class="flashcard-central">
-              <p class="flashcard-title">Algebra</p>
-              <p class="flashcard-concept">Teorema di Pitagora</p>
-              <p class="flashcard-hint">Clicca per scoprire i concetti collegati</p>
-            </div>
-            <div class="flashcard-connections">
-              <div class="connection-item"><span class="connection-icon">📐</span><p class="connection-label">Triangoli</p></div>
-              <div class="connection-item"><span class="connection-icon">∟</span><p class="connection-label">Angoli Retti</p></div>
-              <div class="connection-item"><span class="connection-icon">²</span><p class="connection-label">Quadrati</p></div>
-              <div class="connection-item"><span class="connection-icon">📏</span><p class="connection-label">Lati</p></div>
-            </div>
-          </div>
-        </div>
       </section>
 
       <footer class="home-footer">
@@ -176,6 +125,7 @@
     </main>
   </div>
 
+  <script src="config.js"></script>
   <script>
     if (sessionStorage.getItem('authenticated') !== 'true') {
       window.location.href = 'index.html';

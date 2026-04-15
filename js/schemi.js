@@ -256,28 +256,99 @@ class SchematiManager {
     const btn = card.querySelector('.schema-ai-btn');
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      this.expandCard(card, data.id);
+      this.openGeneratorModal(card, data.id);
     });
   }
 
-  expandCard(cardElement, schemaId) {
-    // Nascondi l'immagine
-    const imageDiv = cardElement.querySelector('[data-card-image]');
-    imageDiv.style.display = 'none';
+  openGeneratorModal(cardElement, schemaId) {
+    // Prendi l'immagine dal card
+    const imageElement = cardElement.querySelector('.schema-card-image img');
+    const schemaTitle = cardElement.querySelector('.schema-title-input').value || 'Schema';
+    
+    // Crea modal overlay a schermo intero
+    const modalOverlay = document.createElement('div');
+    modalOverlay.className = 'generator-modal-overlay';
+    modalOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 2rem;
+      overflow-y: auto;
+      animation: fadeIn 0.3s ease;
+    `;
 
-    // Nascondi il pulsante
-    const btn = cardElement.querySelector('.schema-ai-btn');
-    btn.style.display = 'none';
+    // Crea il contenuto del modal
+    const modalContent = document.createElement('div');
+    modalContent.className = 'generator-modal-content';
+    modalContent.style.cssText = `
+      background: var(--panel);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 1200px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+      position: relative;
+      animation: slideInUp 0.4s ease;
+    `;
 
-    // Crea container principale per contenuti espansi
-    const expandedContainer = document.createElement('div');
-    expandedContainer.className = 'expanded-content-container';
-    expandedContainer.style.cssText = `
+    // Header con pulsante di chiusura
+    const header = document.createElement('div');
+    header.style.cssText = `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--panel);
+      z-index: 10;
+    `;
+
+    const title = document.createElement('h2');
+    title.style.cssText = `
+      margin: 0;
+      color: var(--text);
+      font-size: 1.5rem;
+    `;
+    title.textContent = 'Flashcard e Domande';
+
+    const closeBtn = document.createElement('button');
+    closeBtn.style.cssText = `
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.2s;
+      padding: 0.5rem;
+    `;
+    closeBtn.textContent = '✕';
+    closeBtn.addEventListener('mouseenter', () => closeBtn.style.color = 'var(--text)');
+    closeBtn.addEventListener('mouseleave', () => closeBtn.style.color = 'var(--muted)');
+    closeBtn.addEventListener('click', () => {
+      modalOverlay.style.animation = 'fadeOut 0.3s ease';
+      setTimeout(() => modalOverlay.remove(), 300);
+    });
+
+    header.appendChild(title);
+    header.appendChild(closeBtn);
+
+    // Container per il contenuto principale
+    const contentBody = document.createElement('div');
+    contentBody.style.cssText = `
+      padding: 2rem;
       display: flex;
       flex-direction: column;
       gap: 2rem;
-      padding: 1rem 0;
-      animation: slideInUp 0.5s ease;
     `;
 
     // Mostra spinner di caricamento
@@ -289,7 +360,7 @@ class SchematiManager {
       align-items: center;
       justify-content: center;
       gap: 1rem;
-      padding: 3rem 2rem;
+      padding: 3rem;
       text-align: center;
     `;
 
@@ -311,102 +382,546 @@ class SchematiManager {
       font-size: 1rem;
       margin: 0;
     `;
-    loadingText.textContent = 'Sto analizzando lo schema...';
+    loadingText.textContent = 'Sto analizzando lo schema con l\'IA...';
 
     loadingContainer.appendChild(spinner);
     loadingContainer.appendChild(loadingText);
-    expandedContainer.appendChild(loadingContainer);
+    contentBody.appendChild(loadingContainer);
 
-    // Aggiungi il container espanso alla card
-    cardElement.querySelector('.schema-card-content').appendChild(expandedContainer);
+    modalContent.appendChild(header);
+    modalContent.appendChild(contentBody);
+    modalOverlay.appendChild(modalContent);
+    document.body.appendChild(modalOverlay);
 
-    // Espandi la card per contenere meglio i nuovi contenuti
-    cardElement.style.gridRow = 'span 2';
-    cardElement.style.minHeight = 'auto';
+    // Chiudi cliccando sul background
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        modalOverlay.style.animation = 'fadeOut 0.3s ease';
+        setTimeout(() => modalOverlay.remove(), 300);
+      }
+    });
 
-    // Simula caricamento di 2 secondi prima di mostrare i contenuti
-    setTimeout(() => {
-      // Rimuovi il spinner
+    // Analizza l'immagine con Hugging Face e genera domande
+    if (imageElement && imageElement.src) {
+      this.analyzeSchemaWithHuggingFace(imageElement.src, schemaTitle, contentBody, loadingContainer);
+    } else {
+      // Fallback se nessuna immagine
       loadingContainer.remove();
+      this.renderFallbackContent(contentBody);
+    }
+  }
 
-      // Sezione Flashcard con titolo
-      const flashcardSection = document.createElement('div');
-      flashcardSection.className = 'flashcard-section';
-      flashcardSection.innerHTML = `
-        <div class="section-header">
-          <h3 style="margin: 0 0 1rem; color: var(--accent); font-size: 1.1rem; font-weight: 600;">
-            <span style="display: inline-flex; align-items: center; gap: 0.5rem;">
-              <span style="font-size: 1.2rem;">Flashcard Interattive</span>
-              <span style="font-size: 0.8rem; color: var(--muted);">Clicca per esplorare i concetti</span>
-            </span>
-          </h3>
-        </div>
+  async analyzeSchemaWithHuggingFace(imageSrc, schemaTitle, contentBody, loadingContainer) {
+    try {
+      // Verifica che il token sia configurato
+      if (!CONFIG.HF_TOKEN || CONFIG.HF_TOKEN.includes('INSERISCI')) {
+        loadingContainer.remove();
+        this.renderApiKeyWarning(contentBody);
+        return;
+      }
+
+      // Converti l'immagine in base64
+      const base64Image = await this.imageToBase64(imageSrc);
+      
+      // Step 1: Usa BLIP per descrivere l'immagine
+      const imageDescription = await this.describeImageWithBlip(base64Image);
+      
+      // Step 2: Usa Mistral per generare domande basate sulla descrizione
+      const huggingFaceResponse = await this.generateQuestionsWithMistral(imageDescription, schemaTitle);
+      
+      // Rimuovi il loading
+      loadingContainer.remove();
+      
+      // Render il contenuto con le domande generate
+      this.renderGeneratedContent(contentBody, huggingFaceResponse);
+    } catch (error) {
+      console.error('Errore nell\'analisi con Hugging Face:', error);
+      loadingContainer.remove();
+      this.renderErrorMessage(contentBody, error.message);
+    }
+  }
+
+  async describeImageWithBlip(base64Image) {
+    // Converte base64 in Blob per Hugging Face
+    const binaryString = atob(base64Image);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: 'image/jpeg' });
+
+    const response = await fetch(CONFIG.HF_API_URL_VISION, {
+      headers: { Authorization: `Bearer ${CONFIG.HF_TOKEN}` },
+      method: 'POST',
+      body: blob,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Errore BLIP: ${error.error || 'Impossibile analizzare l\'immagine'}`);
+    }
+
+    const result = await response.json();
+    return result[0]?.generated_text || 'Schema educativo';
+  }
+
+  async generateQuestionsWithMistral(imageDescription, schemaTitle) {
+    const prompt = `Analizza la seguente descrizione di uno schema educativo intitolato "${schemaTitle}":
+
+Descrizione: ${imageDescription}
+
+Devi generare:
+1. Una lista di 3-4 concetti principali identificati
+2. 2-3 domande a scelta multipla che testino la comprensione
+3. Per ogni domanda: testo, 4 opzioni, indice risposta corretta, spiegazione
+
+Rispondi SOLO in JSON valido, nel formato ESATTO:
+{
+  "concepts": ["concetto1", "concetto2", "concetto3"],
+  "questions": [
+    {
+      "question": "Testo della domanda?",
+      "options": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+      "correctIndex": 0,
+      "explanation": "Spiegazione della risposta"
+    }
+  ]
+}
+
+Assicurati che il JSON sia valido e le domande siano specifiche al contenuto descritto.`;
+
+    const response = await fetch(CONFIG.HF_API_URL_TEXT, {
+      headers: { Authorization: `Bearer ${CONFIG.HF_TOKEN}` },
+      method: 'POST',
+      body: JSON.stringify({
+        inputs: prompt,
+        parameters: {
+          max_new_tokens: 1000,
+          temperature: 0.7
+        }
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Errore Mistral: ${error.error || 'Impossibile generare domande'}`);
+    }
+
+    const result = await response.json();
+    const responseText = result[0]?.generated_text || '';
+    
+    // Estrai il JSON dalla risposta
+    const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('Formato risposta non valido. Riprova.');
+    }
+    
+    return JSON.parse(jsonMatch[0]);
+  }
+
+  async imageToBase64(imageSrc) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'Anonymous';
+      
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const base64 = canvas.toDataURL('image/jpeg').split(',')[1];
+        resolve(base64);
+      };
+      
+      img.onerror = () => {
+        reject(new Error('Non riesco a leggere l\'immagine'));
+      };
+      
+      img.src = imageSrc;
+    });
+  }
+
+  async describeImageWithBlip(base64Image) {
+    // Converte base64 in Blob per Hugging Face
+    const binaryString = atob(base64Image);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    const blob = new Blob([bytes], { type: 'image/jpeg' });
+
+    const response = await fetch(CONFIG.HF_API_URL_VISION, {
+      headers: { Authorization: `Bearer ${CONFIG.HF_TOKEN}` },
+      method: 'POST',
+      body: blob,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Errore BLIP: ${error.error || 'Impossibile analizzare l\'immagine'}`);
+    }
+
+    const result = await response.json();
+    return result[0]?.generated_text || 'Schema educativo';
+  }
+
+  renderGeneratedContent(contentBody, geminiData) {
+    // Sezione Concetti
+    const conceptsSection = document.createElement('div');
+    conceptsSection.style.cssText = `
+      background: rgba(79, 70, 229, 0.04);
+      border-left: 4px solid var(--accent);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    `;
+
+    const conceptsTitle = document.createElement('h3');
+    conceptsTitle.style.cssText = `
+      margin: 0 0 1rem;
+      color: var(--accent);
+      font-size: 1.1rem;
+    `;
+    conceptsTitle.textContent = '📚 Concetti Identificati';
+
+    const conceptsList = document.createElement('div');
+    conceptsList.style.cssText = `
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    `;
+
+    geminiData.concepts.forEach(concept => {
+      const tag = document.createElement('div');
+      tag.style.cssText = `
+        background: var(--accent);
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 20px;
+        font-weight: 500;
+        text-align: center;
       `;
+      tag.textContent = concept;
+      conceptsList.appendChild(tag);
+    });
 
-      // Container per flashcard con layout migliorato
-      const flashcardsContainer = document.createElement('div');
-      flashcardsContainer.className = 'flashcards-grid';
-      flashcardsContainer.style.cssText = `
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 1.5rem;
-        width: 100%;
+    conceptsSection.appendChild(conceptsTitle);
+    conceptsSection.appendChild(conceptsList);
+    contentBody.appendChild(conceptsSection);
+
+    // Separatore
+    const separator1 = document.createElement('div');
+    separator1.style.cssText = `
+      height: 1px;
+      background: var(--border);
+      margin: 1rem 0;
+    `;
+    contentBody.appendChild(separator1);
+
+    // Sezione Quiz con domande generate
+    const quizSection = document.createElement('div');
+    quizSection.className = 'quiz-section';
+    quizSection.innerHTML = `
+      <h3 style="margin: 0 0 1.5rem; color: var(--accent); font-size: 1.1rem; font-weight: 600;">
+        ✍️ Quiz Personalizzato
+      </h3>
+    `;
+
+    const quizContainer = document.createElement('div');
+    quizContainer.style.cssText = `
+      display: grid;
+      gap: 2rem;
+      width: 100%;
+    `;
+
+    geminiData.questions.forEach((q, index) => {
+      const quizDiv = this.createGeminiQuizQuestion(q, index);
+      quizDiv.style.animation = `fadeInUp 0.6s ease ${(index * 0.15) + 0.45}s both`;
+      quizContainer.appendChild(quizDiv);
+    });
+
+    quizSection.appendChild(quizContainer);
+    contentBody.appendChild(quizSection);
+  }
+
+  createGeminiQuizQuestion(questionData, index) {
+    const qDiv = document.createElement('div');
+    qDiv.className = 'quiz-question-enhanced';
+    qDiv.style.cssText = `
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    `;
+    
+    // Header della domanda
+    const questionHeader = document.createElement('div');
+    questionHeader.style.cssText = `
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    `;
+    
+    const questionNumber = document.createElement('div');
+    questionNumber.style.cssText = `
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    `;
+    questionNumber.textContent = index + 1;
+    
+    const questionText = document.createElement('div');
+    questionText.style.cssText = `
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.5;
+    `;
+    questionText.textContent = questionData.question;
+    
+    questionHeader.appendChild(questionNumber);
+    questionHeader.appendChild(questionText);
+    qDiv.appendChild(questionHeader);
+
+    // Container per le opzioni
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'quiz-options-enhanced';
+    optionsContainer.style.cssText = `
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    `;
+    optionsContainer.setAttribute('data-correct', questionData.correctIndex);
+
+    // Crea le opzioni
+    questionData.options.forEach((option, optIndex) => {
+      const label = String.fromCharCode(65 + optIndex);
+      const optionBtn = document.createElement('button');
+      optionBtn.className = 'quiz-option-enhanced';
+      optionBtn.setAttribute('data-index', optIndex);
+      optionBtn.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: left;
+        font-size: 0.95rem;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
       `;
-
-      // Aggiungi 3 flashcard con animazione ritardata
-      this.mockFlashcards.forEach((fc, index) => {
-        const flashcard = this.createFlashcardElement(fc);
-        flashcard.style.animation = `fadeInUp 0.6s ease ${index * 0.15}s both`;
-        flashcardsContainer.appendChild(flashcard);
+      
+      const optionLabel = document.createElement('span');
+      optionLabel.style.cssText = `
+        background: rgba(79, 70, 229, 0.1);
+        color: var(--accent);
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+      `;
+      optionLabel.textContent = label;
+      
+      const optionText = document.createElement('span');
+      optionText.textContent = option;
+      
+      optionBtn.appendChild(optionLabel);
+      optionBtn.appendChild(optionText);
+      
+      // Event listener per il click
+      optionBtn.addEventListener('click', (e) => {
+        this.handleGeminiQuizClick(optionBtn, questionData, e);
       });
-
-      flashcardSection.appendChild(flashcardsContainer);
-      expandedContainer.appendChild(flashcardSection);
-
-      // Separatore visivo
-      const separator = document.createElement('div');
-      separator.className = 'content-separator';
-      separator.style.cssText = `
-        height: 1px;
-        background: linear-gradient(90deg, transparent, var(--border), transparent);
-        margin: 1rem 0;
-        animation: fadeInUp 0.4s ease 0.25s both;
-      `;
-      expandedContainer.appendChild(separator);
-
-      // Sezione Quiz con titolo
-      const quizSection = document.createElement('div');
-      quizSection.className = 'quiz-section';
-      quizSection.innerHTML = `
-        <div class="section-header">
-          <h3 style="margin: 0 0 1.5rem; color: var(--accent); font-size: 1.1rem; font-weight: 600;">
-            <span style="display: inline-flex; align-items: center; gap: 0.5rem;">
-              <span style="font-size: 1.2rem;">Quiz di Verifica</span>
-              <span style="font-size: 0.8rem; color: var(--muted);">Testa la tua comprensione</span>
-            </span>
-          </h3>
-        </div>
-      `;
-
-      // Container per quiz con layout migliorato
-      const quizContainer = document.createElement('div');
-      quizContainer.className = 'quiz-container';
-      quizContainer.style.cssText = `
-        display: grid;
-        gap: 2rem;
-        width: 100%;
-      `;
-
-      // Aggiungi 2 domande con animazione ritardata
-      this.mockQuestions.forEach((q, index) => {
-        const quizDiv = this.createQuizQuestion(q, index);
-        quizDiv.style.animation = `fadeInUp 0.6s ease ${(index * 0.15) + 0.45}s both`;
-        quizContainer.appendChild(quizDiv);
+      
+      // Hover effect
+      optionBtn.addEventListener('mouseenter', () => {
+        if (!optionsContainer.classList.contains('answered')) {
+          optionBtn.style.borderColor = 'var(--accent)';
+          optionBtn.style.background = 'rgba(79, 70, 229, 0.04)';
+          optionBtn.style.transform = 'translateY(-1px)';
+        }
       });
+      
+      optionBtn.addEventListener('mouseleave', () => {
+        if (!optionsContainer.classList.contains('answered')) {
+          optionBtn.style.borderColor = 'var(--border)';
+          optionBtn.style.background = 'transparent';
+          optionBtn.style.transform = 'translateY(0)';
+        }
+      });
+      
+      optionsContainer.appendChild(optionBtn);
+    });
 
-      quizSection.appendChild(quizContainer);
-      expandedContainer.appendChild(quizSection);
-    }, 2000); // 2 secondi di caricamento
+    qDiv.appendChild(optionsContainer);
+    return qDiv;
+  }
+
+  handleGeminiQuizClick(optionElement, questionData, event) {
+    event.stopPropagation();
+    
+    const optionsContainer = optionElement.parentElement;
+    if (optionsContainer.classList.contains('answered')) {
+      return;
+    }
+
+    const correctIndex = questionData.correctIndex;
+    const selectedIndex = parseInt(optionElement.dataset.index);
+
+    // Deseleziona tutte le opzioni
+    optionsContainer.querySelectorAll('.quiz-option-enhanced').forEach(opt => {
+      opt.style.borderColor = 'var(--border)';
+      opt.style.background = 'transparent';
+    });
+
+    // Seleziona l'opzione cliccata
+    optionElement.style.borderColor = 'var(--accent)';
+    optionElement.style.background = 'rgba(79, 70, 229, 0.08)';
+    optionsContainer.classList.add('answered');
+
+    // Mostra risultato dopo 300ms
+    setTimeout(() => {
+      const allOptions = optionsContainer.querySelectorAll('.quiz-option-enhanced');
+      
+      if (selectedIndex === correctIndex) {
+        // Risposta corretta
+        optionElement.style.borderColor = '#10b981';
+        optionElement.style.background = 'rgba(16, 185, 129, 0.08)';
+        optionElement.querySelector('span:first-child').style.background = '#10b981';
+        optionElement.querySelector('span:first-child').style.color = 'white';
+        this.showQuizFeedback(optionElement, '✅ Corretto! Ottimo lavoro!', 'success');
+      } else {
+        // Risposta errata
+        optionElement.style.borderColor = '#ef4444';
+        optionElement.style.background = 'rgba(239, 68, 68, 0.08)';
+        optionElement.querySelector('span:first-child').style.background = '#ef4444';
+        optionElement.querySelector('span:first-child').style.color = 'white';
+        
+        // Mostra la risposta corretta
+        const correctOption = allOptions[correctIndex];
+        correctOption.style.borderColor = '#10b981';
+        correctOption.style.background = 'rgba(16, 185, 129, 0.08)';
+        correctOption.querySelector('span:first-child').style.background = '#10b981';
+        correctOption.querySelector('span:first-child').style.color = 'white';
+        
+        this.showQuizFeedback(optionElement, `❌ Non esatto. La risposta corretta è: ${questionData.options[correctIndex]}`, 'error');
+      }
+
+      // Mostra la spiegazione
+      setTimeout(() => {
+        this.showExplanation(optionElement, questionData.explanation);
+      }, 1500);
+    }, 300);
+  }
+
+  showExplanation(questionElement, explanation) {
+    const questionDiv = questionElement.closest('.quiz-question-enhanced');
+    
+    const explanationDiv = document.createElement('div');
+    explanationDiv.style.cssText = `
+      background: rgba(79, 70, 229, 0.06);
+      border-left: 4px solid var(--accent);
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: var(--text);
+      animation: slideInUp 0.3s ease;
+    `;
+    explanationDiv.innerHTML = `
+      <strong style="color: var(--accent);">💡 Spiegazione:</strong><br>
+      ${explanation}
+    `;
+    
+    questionDiv.appendChild(explanationDiv);
+  }
+
+  renderApiKeyWarning(contentBody) {
+    const warning = document.createElement('div');
+    warning.style.cssText = `
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid #ef4444;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+    `;
+
+    warning.innerHTML = `
+      <h3 style="color: #ef4444; margin: 0 0 1rem;">⚠️ Token Hugging Face non configurato</h3>
+      <p style="margin: 0 0 1rem; color: var(--text);">Per usare il generatore intelligente di domande con IA, devi:</p>
+      <ol style="margin: 0 0 1.5rem; color: var(--text); text-align: left; display: inline-block;">
+        <li>Registrati gratuitamente su <strong>https://huggingface.co/join</strong></li>
+        <li>Vai a <strong>https://huggingface.co/settings/tokens</strong></li>
+        <li>Crea un nuovo token (scegli "Read")</li>
+        <li>Apri il file <code style="background: var(--panel-strong); padding: 0.2rem 0.5rem; border-radius: 4px;">config.js</code></li>
+        <li>Incolla il token in: <code style="background: var(--panel-strong); padding: 0.2rem 0.5rem; border-radius: 4px;">HF_TOKEN: 'tuotoken'</code></li>
+      </ol>
+      <button onclick="location.reload()" style="padding: 0.75rem 1.5rem; background: var(--accent); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Ricarica quando pronto</button>
+    `;
+
+    contentBody.appendChild(warning);
+  }
+
+  renderErrorMessage(contentBody, errorMessage) {
+    const error = document.createElement('div');
+    error.style.cssText = `
+      background: rgba(239, 68, 68, 0.1);
+      border: 2px solid #ef4444;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+    `;
+
+    error.innerHTML = `
+      <h3 style="color: #ef4444; margin: 0 0 1rem;">❌ Errore nell'analisi</h3>
+      <p style="margin: 0; color: var(--text);">${errorMessage}</p>
+      <p style="margin: 1rem 0 0; font-size: 0.9rem; color: var(--muted);">Controlla la console per più dettagli.</p>
+    `;
+
+    contentBody.appendChild(error);
+  }
+
+  renderFallbackContent(contentBody) {
+    const fallback = document.createElement('div');
+    fallback.style.cssText = `
+      background: rgba(79, 70, 229, 0.04);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+    `;
+
+    fallback.innerHTML = `
+      <h3 style="color: var(--muted); margin: 0 0 1rem;">⚠️ Immagine non disponibile</h3>
+      <p style="margin: 0; color: var(--text);">Non riesco a leggere l'immagine dello schema. Assicurati che il file sia stato caricato correttamente.</p>
+    `;
+
+    contentBody.appendChild(fallback);
   }
 
   createFlashcardElement(data) {
