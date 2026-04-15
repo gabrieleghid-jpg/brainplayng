@@ -197,6 +197,40 @@
       color: var(--text);
     }
     
+    .schemi-ai-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .schemi-ai-header h3 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+    
+    .schemi-ai-content {
+      display: grid;
+      gap: 2rem;
+    }
+    
+    .schemi-section {
+      background: rgba(79, 70, 229, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+    }
+    
+    .schemi-section h4 {
+      margin: 0 0 1rem;
+      color: var(--accent);
+      font-size: 1.1rem;
+    }
+    
+    .mini-schemi-text, .versione-compatta-text {
+      line-height: 1.6;
+      color: var(--text);
+    }
+    
     .quiz-container {
       display: grid;
       gap: 1.5rem;
@@ -377,7 +411,7 @@
           <button class="tab-btn active" data-tab="trascrizione">? Trascrizione</button>
           <button class="tab-btn" data-tab="riassunto">? Riassunto</button>
           <button class="tab-btn" data-tab="flashcard">? Flashcard</button>
-          <button class="tab-btn" data-tab="schema">? Schema</button>
+          <button class="tab-btn" data-tab="schemi-ai">? Schemi AI</button>
           <button class="tab-btn" data-tab="quiz">? Quiz</button>
         </div>
 
@@ -399,12 +433,12 @@
           </button>
         </div>
 
-        <div class="tab-content" id="schema">
-          <div class="schema-container" id="schemaContainer">
-            <!-- Schema verrà generato qui -->
+        <div class="tab-content" id="schemi-ai">
+          <div class="schemi-ai-container" id="schemiAiContainer">
+            <!-- Sezione Schemi AI verrà generata qui -->
           </div>
-          <button class="download-btn" id="downloadSchema">
-            ? Scarica schema
+          <button class="download-btn" id="downloadSchemiAi">
+            ? Scarica Schemi AI
           </button>
         </div>
 
@@ -652,10 +686,11 @@ Esegui la seguente sequenza di analisi:
    - Leggi tutto il testo presente nell'immagine
    - Riconosci titoli, paragrafi, formule, simboli, diagrammi, codice, circuiti
    - Identifica l'argomento principale e i sotto-argomenti
+   - NON saltare nessuna parte dell'immagine
 
-2. RISCRITTURA PULITA:
-   - Trascrivi il contenuto in modo ordinato, leggibile e strutturato
-   - Correggi eventuali errori di lettura o formattazione
+2. TRASCRIZIONE PULITA:
+   - Riscrivi il contenuto in modo ordinato, leggibile e strutturato
+   - Correggi errori di OCR
    - Mantieni fedeltà ai concetti originali
 
 3. RIASSUNTO:
@@ -663,26 +698,37 @@ Esegui la seguente sequenza di analisi:
    - Usa frasi brevi e dirette
    - Evidenzia concetti chiave, definizioni, formule importanti
 
-4. FLASHCARD (5-15 flashcard):
+4. FLASHCARD (8-20 flashcard):
    - Genera flashcard in formato: Domanda → Risposta
+   - Le domande devono essere SEMPRE diverse
+   - Le flashcard devono coprire TUTTI i concetti principali
    - Basate SOLO sul contenuto della foto
-   - Minimo 5 flashcard, massimo 15
 
-5. SISTEMA DEGLI SCHEMI:
-   - Crea uno schema strutturato in forma gerarchica (1, 1.1, 1.1.1...)
-   - Inserisci relazioni logiche, categorie, cause-effetti, esempi
-   - Schema pronto per essere copiato o scaricato
+5. SEZIONE "SCHEMI AI":
+   - Crea una sezione dedicata chiamata Schemi AI
+   - Sistema degli schemi gerarchico (1, 1.1, 1.1.1...)
+   - Collegamenti logici, categorie, cause-effetti
+   - Mini-schemi tematici (se servono)
+   - Versione compatta dello schema
+   - Pronti per essere copiati o esportati
 
-6. MINI-QUIZ FINALE (5-10 domande):
+6. MINI-QUIZ FINALE (6-12 domande):
    - Formati: Scelta multipla (A, B, C, D) e Vero/Falso
+   - Le domande devono essere SEMPRE diverse
    - Basate SOLO sul contenuto della foto
+   - Non ripetitive, non generiche
+   - Ogni domanda deve avere una sola risposta corretta
 
 OUTPUT FINALE in formato JSON:
 {
   "trascrizione_pulita": "testo trascritto e ordinato",
   "riassunto": "testo del riassunto",
   "flashcard": [{"domanda": "", "risposta": ""}],
-  "schema": "testo del schema gerarchico",
+  "schemi_ai": {
+    "schema_gerarchico": "testo del schema gerarchico",
+    "mini_schemi_tematici": "testo dei mini-schemi tematici",
+    "versione_compatta": "testo della versione compatta"
+  },
   "quiz": {
     "domande": [
       {
@@ -695,7 +741,12 @@ OUTPUT FINALE in formato JSON:
   }
 }
 
-IMPORTANTE: Segui SEMPRE la sequenza di output definita. Non iniziare analisi senza foto.`;
+REGOLE GENERALI:
+- Riconosci automaticamente quando l'input è un'immagine
+- Segui SEMPRE la sequenza di output definita
+- Non chiedere mai conferme: agisci automaticamente
+- Le domande del quiz devono essere SEMPRE diverse
+- Mantieni tono chiaro, educativo e ordinato`;
         
         const response = await fetch(CONFIG.HF_API_URL_TEXT, {
           method: 'POST',
@@ -729,15 +780,27 @@ IMPORTANTE: Segui SEMPRE la sequenza di output definita. Non iniziare analisi se
             trascrizione_pulita: text.substring(0, 500) + "...",
             riassunto: text.substring(0, 200) + "...",
             flashcard: [
-              { domanda: "Concetto principale", risposta: text.substring(0, 100) + "..." }
+              { domanda: "Concetto principale", risposta: text.substring(0, 100) + "..." },
+              { domanda: "Definizione chiave", risposta: text.substring(0, 80) + "..." },
+              { domanda: "Applicazione pratica", risposta: text.substring(0, 90) + "..." }
             ],
-            schema: `1. Analisi del testo\n1.1 Concetti principali\n1.1.1 ${text.substring(0, 50)}...`,
+            schemi_ai: {
+              schema_gerarchico: `1. Analisi del testo\n1.1 Concetti principali\n1.1.1 ${text.substring(0, 50)}...`,
+              mini_schemi_tematici: "Mini-schemi tematici basati sul contenuto",
+              versione_compatta: "Versione compatta dello schema"
+            },
             quiz: {
               domande: [
                 {
                   domanda: "Il testo contiene informazioni rilevanti?",
                   tipo: "vero_falso",
                   opzioni: ["Vero", "Falso"],
+                  risposta_corretta: 0
+                },
+                {
+                  domanda: "Qual è l'argomento principale del testo?",
+                  tipo: "scelta_multipla",
+                  opzioni: ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
                   risposta_corretta: 0
                 }
               ]
@@ -792,11 +855,27 @@ IMPORTANTE: Segui SEMPRE la sequenza di output definita. Non iniziare analisi se
         `).join('');
       }
       
-      // Display schema (QUARTO OUTPUT)
-      const schemaContainer = document.getElementById('schemaContainer');
-      if (schemaContainer && results.schema) {
-        schemaContainer.innerHTML = `
-          <pre class="schema-text">${results.schema}</pre>
+      // Display Schemi AI section (QUARTO OUTPUT)
+      const schemiAiContainer = document.getElementById('schemiAiContainer');
+      if (schemiAiContainer && results.schemi_ai) {
+        schemiAiContainer.innerHTML = `
+          <div class="schemi-ai-header">
+            <h3>? Sezione Schemi AI</h3>
+          </div>
+          <div class="schemi-ai-content">
+            <div class="schemi-section">
+              <h4>Schema Gerarchico</h4>
+              <pre class="schema-text">${results.schemi_ai.schema_gerarchico || 'Schema non disponibile'}</pre>
+            </div>
+            <div class="schemi-section">
+              <h4>Mini-Schemi Tematici</h4>
+              <div class="mini-schemi-text">${results.schemi_ai.mini_schemi_tematici || 'Mini-schemi non disponibili'}</div>
+            </div>
+            <div class="schemi-section">
+              <h4>Versione Compatta</h4>
+              <div class="versione-compatta-text">${results.schemi_ai.versione_compatta || 'Versione compatta non disponibile'}</div>
+            </div>
+          </div>
         `;
       }
       
@@ -859,9 +938,10 @@ IMPORTANTE: Segui SEMPRE la sequenza di output definita. Non iniziare analisi se
       }
     });
     
-    document.getElementById('downloadSchema')?.addEventListener('click', () => {
-      if (analysisResults && analysisResults.schema) {
-        downloadFile(analysisResults.schema, 'schema_gerarchico.txt');
+    document.getElementById('downloadSchemiAi')?.addEventListener('click', () => {
+      if (analysisResults && analysisResults.schemi_ai) {
+        const schemiAiText = `SEZIONE SCHEMI AI\n\nSchema Gerarchico:\n${analysisResults.schemi_ai.schema_gerarchico || 'Non disponibile'}\n\nMini-Schemi Tematici:\n${analysisResults.schemi_ai.mini_schemi_tematici || 'Non disponibili'}\n\nVersione Compatta:\n${analysisResults.schemi_ai.versione_compatta || 'Non disponibile'}`;
+        downloadFile(schemiAiText, 'schemi_ai_completi.txt');
       }
     });
     
