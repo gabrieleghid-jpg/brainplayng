@@ -624,71 +624,69 @@
     // Generate study materials from user text input - MODALITÀ TESTO
     async function generateTextBasedMaterials(userText) {
       try {
-        const prompt = `MODALITÀ TESTO ATTIVATA - Generazione materiali da richiesta utente
+        const prompt = `Agisci come un esperto tutor didattico. Il tuo obiettivo è aiutarmi a imparare e padroneggiare l'argomento: ${userText}
 
-Richiesta dell'utente: "${userText}"
+Per favore, elabora il materiale fornendo una risposta strutturata nelle seguenti sezioni:
 
-Esegui la seguente sequenza di analisi basata SULLA RICHIESTA dell'utente:
+1. **SPiegazione Semplice**: Una panoramica chiara e concisa dell'argomento, strutturata per punti chiave per facilitare la comprensione.
+   - Usa un linguaggio semplice e diretto
+   - Organizza il contenuto in punti elenco numerati
+   - Includi esempi pratici e analogie
+   - Sii chiaro e didattico
 
-1. ANALISI DELLA RICHIESTA:
-   - Comprendi l'argomento richiesto
-   - Identifica i concetti chiave da trattare
-   - Determina il livello di dettaglio necessario
+2. **Riassunto Esecutivo**: Un riassunto formattato con markdown (punti elenco, grassetto) che evidenzi i concetti fondamentali da ricordare.
+   - Usa **grassetto** per i concetti chiave
+   - Usa punti elenco per organizzare le informazioni
+   - Sii conciso ma completo
+   - Formattazione markdown ottimale
 
-2. RIASSUNTO DETTAGLIATO:
-   - Crea un riassunto completo e ben strutturato
-   - Usa un linguaggio chiaro e educativo
-   - Includi definizioni, esempi e spiegazioni
-   - Organizza il contenuto in paragrafi logici
+3. **Schema Concettuale/Tabella**: Crea una tabella o uno schema strutturato per confrontare idee, elencare passaggi o organizzare le informazioni gerarchicamente.
+   - Usa formato tabella o schema strutturato
+   - Organizza le informazioni in modo logico
+   - Includi confronti o gerarchie chiare
+   - Usa markdown per la formattazione
 
-3. SCHEMA GERARCHICO:
-   - Crea uno schema strutturato (1, 1.1, 1.1.1...)
-   - Organizza i concetti in modo gerarchico
-   - Includi collegamenti logici tra i concetti
-   - Usa una struttura chiara e facile da seguire
+4. **Flashcards (Q&A)**: Crea 5 coppie di Domanda/Risposta per testare i concetti chiave.
+   - Domande chiare e specifiche
+   - Risposte precise e complete
+   - Copri tutti i concetti fondamentali
+   - Formato: Domanda -> Risposta
 
-4. MINI-SCHEMI TEMATICI:
-   - Crea mini-schemi per sottotemi specifici
-   - Usa diagrammi semplici testuali
-   - Evidenzia relazioni causa-effetto
-
-5. VERSIONE COMPATTA:
-   - Riepiloga i punti essenziali
-   - Formato bullet points per memorizzazione rapida
+5. **Quiz finale**: Crea 3 domande a scelta multipla con le soluzioni nascoste alla fine.
+   - 4 opzioni per ogni domanda (A, B, C, D)
+   - Una sola risposta corretta
+   - Domande che testino la comprensione
+   - Soluzioni separate alla fine
 
 OUTPUT FINALE in formato JSON:
 {
-  "trascrizione_pulita": "Contesto della richiesta e analisi iniziale",
-  "riassunto": "Riassunto dettagliato e completo",
+  "spiegazione_semplice": "Testo della spiegazione semplice con punti chiave",
+  "riassunto_esecutivo": "Riassunto formattato con markdown",
+  "schema_concettuale": "Tabella o schema strutturato in formato markdown",
   "flashcard": [
     {
-      "domanda": "Domanda chiave sull'argomento",
-      "risposta": "Risposta dettagliata e precisa"
+      "domanda": "Domanda chiave",
+      "risposta": "Risposta dettagliata"
     }
   ],
-  "schemi_ai": {
-    "schema_gerarchico": "Schema strutturato completo",
-    "mini_schemi_tematici": "Mini-schemi per sottotemi specifici",
-    "versione_compatta": "Versione sintetica per memorizzazione"
-  },
   "quiz": {
     "domande": [
       {
-        "domanda": "Domanda di verifica",
-        "tipo": "scelta_multipla",
+        "domanda": "Domanda a scelta multipla",
         "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
         "risposta_corretta": 0
       }
-    ]
+    ],
+    "soluzioni": "Soluzioni del quiz nascoste alla fine"
   }
 }
 
-REGOLE SPECIFICHE PER MODALITÀ TESTO:
-- Basati SULLA RICHIESTA dell'utente, non su testo estratto
-- Sii esaustivo ma chiaro
-- Crea contenuti originali e ben strutturati
-- Adatta il livello di dettaglio alla richiesta
-- Mantieni un tono educativo e professionale`;
+REGOLE SPECIFICHE:
+- Usa uno stile chiaro, didattico e formattato con markdown
+- Adatta il contenuto all'argomento specifico richiesto
+- Sii esaustivo ma comprensibile
+- Mantieni un tono professionale e educativo
+- Ogni sezione deve essere ben strutturata e distinta`;
 
         const response = await fetch(CONFIG.HF_API_URL_TEXT, {
           method: 'POST',
@@ -719,108 +717,133 @@ REGOLE SPECIFICHE PER MODALITÀ TESTO:
         } catch {
           // Fallback: create basic structure if JSON parsing fails
           return {
-            trascrizione_pulita: `Analisi della richiesta: ${userText}`,
-            riassunto: `Ecco un riassunto basato sulla tua richiesta: ${userText.substring(0, 300)}...`,
+            spiegazione_semplice: `Analisi della richiesta: ${userText}`,
+            riassunto_esecutivo: `**Concetto principale**: ${userText.substring(0, 100)}...\n\n**Punti chiave**:\n- ${userText.substring(0, 50)}...\n- Dettagli rilevanti\n- Concetti secondari`,
+            schema_concettuale: `| Concetto | Descrizione |\n|----------|-------------|\n| Principale | ${userText.substring(0, 50)}... |\n| Secondario | Dettagli rilevanti |`,
             flashcard: [
               { domanda: "Qual è l'argomento principale?", risposta: userText.substring(0, 100) + "..." },
               { domanda: "Quali sono i concetti chiave?", risposta: "I concetti principali derivano dalla tua richiesta" }
             ],
-            schemi_ai: {
-              schema_gerarchico: `1. Analisi della richiesta\n1.1 Argomento principale\n1.1.1 ${userText.substring(0, 50)}...\n1.2 Sviluppo dei concetti\n1.2.1 Dettagli rilevanti`,
-              mini_schemi_tematici: "Mini-schemi basati sull'argomento richiesto",
-              versione_compatta: "- Punto principale\n- Dettagli rilevanti\n- Concetti secondari"
-            },
             quiz: {
               domande: [
                 {
                   domanda: "L'argomento trattato è rilevante?",
-                  tipo: "vero_falso",
-                  opzioni: ["Vero", "Falso"],
+                  opzioni: ["Vero", "Falso", "Non so", "Forse"],
                   risposta_corretta: 0
                 }
-              ]
+              ],
+              soluzioni: "Soluzione: A - Vero"
             }
           };
         }
       } catch (error) {
         console.error('Errore generazione materiali:', error);
         return {
-          trascrizione_pulita: "Errore nell'analisi della richiesta",
-          riassunto: "Impossibile generare il riassunto richiesto.",
+          spiegazione_semplice: "Errore nell'analisi della richiesta",
+          riassunto_esecutivo: "**Errore**: Impossibile generare il riassunto richiesto.",
+          schema_concettuale: "| Errore | Descrizione |\n|---------|-------------|\n| Analisi | Non disponibile |",
           flashcard: [
             { domanda: "Errore", risposta: "Riprova più tardi" }
           ],
-          schemi_ai: {
-            schema_gerarchico: "1. Errore nell'analisi",
-            mini_schemi_tematici: "Mini-schemi non disponibili",
-            versione_compatta: "Versione compatta non disponibile"
+          quiz: {
+            domande: [
+              {
+                domanda: "Errore nel sistema",
+                opzioni: ["Riprova", "Esci", "Contatta supporto", "Ignora"],
+                risposta_corretta: 0
+              }
+            ],
+            soluzioni: "Soluzione: A - Riprova"
           }
         };
       }
     }
 
     
-    // Display analysis results - MODALITÀ TESTO
+    // Display analysis results - MODALITÀ TUTOR DIDATTICO
     function displayResults(results) {
-      // Display analisi richiesta (PRIMO OUTPUT)
+      // Display Spiegazione Semplice (PRIMO OUTPUT)
       const analisiContainer = document.getElementById('analisiContainer');
-      if (analisiContainer && results.trascrizione_pulita) {
+      if (analisiContainer && results.spiegazione_semplice) {
         analisiContainer.innerHTML = `
-          <div class="trascrizione-text">${results.trascrizione_pulita}</div>
+          <div class="trascrizione-text">${results.spiegazione_semplice}</div>
         `;
       }
       
-      // Display riassunto (SECONDO OUTPUT)
+      // Display Riassunto Esecutivo (SECONDO OUTPUT)
       const riassuntoContainer = document.getElementById('riassuntoContainer');
-      if (riassuntoContainer && results.riassunto) {
+      if (riassuntoContainer && results.riassunto_esecutivo) {
+        // Convert markdown to HTML for better display
+        const formattedRiassunto = results.riassunto_esecutivo
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/^- (.+)/gm, '<li>$1</li>')
+          .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
+          .replace(/\n/g, '<br>');
+        
         riassuntoContainer.innerHTML = `
-          <div class="riassunto-text">${results.riassunto}</div>
+          <div class="riassunto-text">${formattedRiassunto}</div>
         `;
       }
       
-      // Display flashcards (TERZO OUTPUT)
+      // Display Flashcards Q&A (TERZO OUTPUT)
       const flashcardContainer = document.getElementById('flashcardContainer');
       if (flashcardContainer && results.flashcard) {
-        flashcardContainer.innerHTML = results.flashcard.map((card, index) => `
+        const flashcardHTML = results.flashcard.map((card, index) => `
           <div class="flashcard-item">
-            <div class="flashcard-number">${index + 1}</div>
+            <div class="flashcard-header">
+              <span class="flashcard-number">Flashcard ${index + 1}</span>
+              <button class="flip-btn" onclick="this.parentElement.parentElement.classList.toggle('flipped')">
+                <span class="flip-icon">?</span>
+              </button>
+            </div>
             <div class="flashcard-content">
-              <div class="flashcard-question">
-                <strong>Domanda:</strong> ${card.domanda}
+              <div class="flashcard-front">
+                <div class="flashcard-question">${card.domanda}</div>
               </div>
-              <div class="flashcard-answer">
-                <strong>Risposta:</strong> ${card.risposta}
+              <div class="flashcard-back">
+                <div class="flashcard-answer">${card.risposta}</div>
               </div>
             </div>
           </div>
         `).join('');
+        flashcardContainer.innerHTML = flashcardHTML;
       }
       
-      // Display Schemi AI section (QUARTO OUTPUT)
+      // Display Schema Concettuale (QUARTO OUTPUT)
       const schemiAiContainer = document.getElementById('schemiAiContainer');
-      if (schemiAiContainer && results.schemi_ai) {
+      if (schemiAiContainer && results.schema_concettuale) {
+        // Convert markdown table to HTML
+        const formattedSchema = results.schema_concettuale
+          .replace(/\|(.+)\|/g, (match, content) => {
+            const cells = content.split('|').map(cell => cell.trim());
+            return `<tr>${cells.map(cell => `<td>${cell}</td>`).join('')}</tr>`;
+          })
+          .replace(/<tr>/g, '<tr>')
+          .replace(/^-+\|/g, '<tr>')
+          .replace(/\n/g, '');
+        
+        const isTable = results.schema_concettuale.includes('|');
+        
         schemiAiContainer.innerHTML = `
           <div class="schemi-ai-header">
-            <h3>? Sezione Schemi AI</h3>
+            <h3>?? Schema Concettuale</h3>
           </div>
           <div class="schemi-ai-content">
             <div class="schemi-section">
-              <h4>Schema Gerarchico</h4>
-              <pre class="schema-text">${results.schemi_ai.schema_gerarchico || 'Schema non disponibile'}</pre>
-            </div>
-            <div class="schemi-section">
-              <h4>Mini-Schemi Tematici</h4>
-              <div class="mini-schemi-text">${results.schemi_ai.mini_schemi_tematici || 'Mini-schemi non disponibili'}</div>
-            </div>
-            <div class="schemi-section">
-              <h4>Versione Compatta</h4>
-              <div class="versione-compatta-text">${results.schemi_ai.versione_compatta || 'Versione compatta non disponibile'}</div>
+              <h4>Schema Strutturato</h4>
+              ${isTable ? 
+                `<table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
+                  ${formattedSchema}
+                </table>` : 
+                `<pre class="schema-text">${results.schema_concettuale}</pre>`
+              }
             </div>
           </div>
         `;
       }
       
-      // Display quiz (QUINTO OUTPUT)
+      // Display Quiz finale (QUINTO OUTPUT)
       const quizContainer = document.getElementById('quizContainer');
       if (quizContainer && results.quiz && results.quiz.domande) {
         quizContainer.innerHTML = results.quiz.domande.map((question, index) => `
@@ -832,12 +855,23 @@ REGOLE SPECIFICHE PER MODALITÀ TESTO:
               ${question.opzioni.map((option, optionIndex) => `
                 <div class="quiz-option" data-option-index="${optionIndex}">
                   <input type="radio" name="question_${index}" value="${optionIndex}" style="margin: 0;">
-                  <span>${option}</span>
+                  <span>${String.fromCharCode(65 + optionIndex)}. ${option}</span>
                 </div>
               `).join('')}
             </div>
           </div>
-        `).join('');
+        `).join('') + `
+          <div class="quiz-solutions" style="margin-top: 2rem; padding: 1rem; background: rgba(79, 70, 229, 0.04); border-radius: 12px; border: 1px solid var(--border);">
+            <h4 style="margin: 0 0 1rem; color: var(--accent);">Soluzioni del Quiz</h4>
+            <div style="display: none;" id="solutionsContent">
+              ${results.quiz.soluzioni || 'Soluzioni non disponibili'}
+            </div>
+            <button onclick="document.getElementById('solutionsContent').style.display='block'; this.style.display='none';" 
+                    class="quiz-check-btn" style="margin-top: 0.5rem;">
+              Mostra Soluzioni
+            </button>
+          </div>
+        `;
       }
     }
 
@@ -863,10 +897,10 @@ REGOLE SPECIFICHE PER MODALITÀ TESTO:
       });
     });
 
-    // Download functions for all materials - MODALITÀ TESTO
+    // Download functions for all materials - MODALITÀ TUTOR DIDATTICO
     document.getElementById('downloadAnalisi')?.addEventListener('click', () => {
-      if (analysisResults && analysisResults.trascrizione_pulita) {
-        downloadFile(analysisResults.trascrizione_pulita, 'analisi_richiesta.txt');
+      if (analysisResults && analysisResults.spiegazione_semplice) {
+        downloadFile(analysisResults.spiegazione_semplice, 'spiegazione_semplice.txt');
       }
     });
     
@@ -875,20 +909,20 @@ REGOLE SPECIFICHE PER MODALITÀ TESTO:
         const flashcardText = analysisResults.flashcard.map((card, index) => 
           `Flashcard ${index + 1}:\nDomanda: ${card.domanda}\nRisposta: ${card.risposta}\n\n`
         ).join('');
-        downloadFile(flashcardText, 'flashcard.txt');
+        downloadFile(flashcardText, 'flashcard_q&a.txt');
       }
     });
     
     document.getElementById('downloadSchemiAi')?.addEventListener('click', () => {
-      if (analysisResults && analysisResults.schemi_ai) {
-        const schemiAiText = `SEZIONE SCHEMI AI\n\nSchema Gerarchico:\n${analysisResults.schemi_ai.schema_gerarchico || 'Non disponibile'}\n\nMini-Schemi Tematici:\n${analysisResults.schemi_ai.mini_schemi_tematici || 'Non disponibili'}\n\nVersione Compatta:\n${analysisResults.schemi_ai.versione_compatta || 'Non disponibile'}`;
-        downloadFile(schemiAiText, 'schemi_ai_completi.txt');
+      if (analysisResults && analysisResults.schema_concettuale) {
+        const schemiText = `SCHEMA CONCETTUALE\n\n${analysisResults.schema_concettuale}`;
+        downloadFile(schemiText, 'schema_concettuale.txt');
       }
     });
     
     document.getElementById('downloadRiassunto')?.addEventListener('click', () => {
-      if (analysisResults && analysisResults.riassunto) {
-        downloadFile(analysisResults.riassunto, 'riassunto.txt');
+      if (analysisResults && analysisResults.riassunto_esecutivo) {
+        downloadFile(analysisResults.riassunto_esecutivo, 'riassunto_esecutivo.txt');
       }
     });
     
@@ -896,9 +930,9 @@ REGOLE SPECIFICHE PER MODALITÀ TESTO:
       if (analysisResults && analysisResults.quiz && analysisResults.quiz.domande) {
         const quizText = analysisResults.quiz.domande.map((question, index) => {
           const correctAnswer = question.opzioni[question.risposta_corretta];
-          return `Domanda ${index + 1}: ${question.domanda}\nTipo: ${question.tipo}\nOpzioni:\n${question.opzioni.map((opt, i) => `  ${String.fromCharCode(65 + i)}. ${opt}`).join('\n')}\nRisposta corretta: ${String.fromCharCode(65 + question.risposta_corretta)}. ${correctAnswer}\n\n`;
-        }).join('');
-        downloadFile(quizText, 'quiz.txt');
+          return `Domanda ${index + 1}: ${question.domanda}\nA) ${question.opzioni[0]}\nB) ${question.opzioni[1]}\nC) ${question.opzioni[2]}\nD) ${question.opzioni[3]}\nRisposta corretta: ${String.fromCharCode(65 + question.risposta_corretta)}. ${correctAnswer}\n\n`;
+        }).join('') + `\n${analysisResults.quiz.soluzioni || ''}`;
+        downloadFile(quizText, 'quiz_finale.txt');
       }
     });
     
@@ -919,25 +953,27 @@ REGOLE SPECIFICHE PER MODALITÀ TESTO:
       const quizQuestions = document.querySelectorAll('.quiz-question');
       quizQuestions.forEach((questionElement, questionIndex) => {
         const question = analysisResults.quiz.domande[questionIndex];
-        const selectedOption = questionElement.querySelector('input[type="radio"]:checked');
-        const options = questionElement.querySelectorAll('.quiz-option');
+        const userAnswer = document.getElementById(`answer_${questionIndex}`);
+        const correctAnswerDiv = questionElement.querySelector('.quiz-correct-answer');
         
-        // Remove previous classes
-        options.forEach(option => {
-          option.classList.remove('correct', 'incorrect', 'selected');
-        });
-        
-        if (selectedOption) {
-          const selectedIndex = parseInt(selectedOption.value);
-          const correctIndex = question.risposta_corretta;
+        if (userAnswer && correctAnswerDiv) {
+          const userAnswerText = userAnswer.value.trim().toLowerCase();
+          const correctAnswerText = question.risposta_breve.toLowerCase();
           
-          options[selectedIndex].classList.add('selected');
+          // Show correct answer
+          correctAnswerDiv.style.display = 'block';
           
-          if (selectedIndex === correctIndex) {
-            options[selectedIndex].classList.add('correct');
+          // Check if answer is correct (allowing some flexibility)
+          if (userAnswerText === correctAnswerText || 
+              userAnswerText.includes(correctAnswerText) || 
+              correctAnswerText.includes(userAnswerText)) {
+            correctAnswerDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+            correctAnswerDiv.style.color = '#10b981';
+            correctAnswerDiv.innerHTML = `Risposta corretta: <strong>${question.risposta_breve}</strong> ? Risposta esatta!`;
           } else {
-            options[selectedIndex].classList.add('incorrect');
-            options[correctIndex].classList.add('correct');
+            correctAnswerDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+            correctAnswerDiv.style.color = '#ef4444';
+            correctAnswerDiv.innerHTML = `Risposta corretta: <strong>${question.risposta_breve}</strong> ? La tua risposta: "${userAnswer.value}"`;
           }
         }
       });
