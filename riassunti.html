@@ -663,13 +663,13 @@ REGOLE SPECIFICHE:
 - Adatta il contenuto all'argomento specifico richiesto
 - Sii esaustivo ma comprensibile`;
 
-        const response = await fetch(CONFIG.HF_API_URL_TEXT, {
+        const response = await fetch(CONFIG.PROXY_URL, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${CONFIG.HF_TOKEN}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
+            apiUrl: CONFIG.HF_API_URL_TEXT,
             inputs: prompt,
             parameters: {
               max_new_tokens: 1500,
@@ -680,10 +680,26 @@ REGOLE SPECIFICHE:
         });
         
         if (!response.ok) {
-          throw new Error('Errore nella generazione dei materiali');
+          let errorDetails = `Errore HTTP ${response.status}: ${response.statusText}`;
+          try {
+            const errorData = await response.json();
+            console.error('API Error Response:', errorData);
+            if (errorData.error) {
+              errorDetails = errorData.error;
+            } else if (errorData.detail) {
+              errorDetails = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
+            } else {
+              errorDetails = JSON.stringify(errorData);
+            }
+          } catch (e) {
+            console.error('Failed to parse error response:', e);
+          }
+          throw new Error(`Errore nella generazione dei materiali: ${errorDetails}`);
         }
         
         const result = await response.json();
+        console.log('API Response:', result);
+        
         const generatedText = result[0]?.generated_text || '{}';
         
         // Try to parse JSON response
