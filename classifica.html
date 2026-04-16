@@ -27,6 +27,9 @@
       box-shadow: var(--shadow);
       padding: 2rem;
       backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      max-height: 90vh;
     }
     
     .section-header {
@@ -74,6 +77,30 @@
     .leaderboard-grid {
       display: grid;
       gap: 1rem;
+      grid-template-columns: 1fr 1fr;
+      max-height: 75vh;
+      overflow-y: auto;
+      padding: 1rem;
+      align-items: start;
+      flex: 1;
+    }
+    
+    .leaderboard-grid::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .leaderboard-grid::-webkit-scrollbar-track {
+      background: rgba(79, 70, 229, 0.1);
+      border-radius: 4px;
+    }
+    
+    .leaderboard-grid::-webkit-scrollbar-thumb {
+      background: rgba(79, 70, 229, 0.3);
+      border-radius: 4px;
+    }
+    
+    .leaderboard-grid::-webkit-scrollbar-thumb:hover {
+      background: rgba(79, 70, 229, 0.5);
     }
     
     .leaderboard-item {
@@ -86,6 +113,8 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-height: 100px;
+      height: fit-content;
     }
     
     .leaderboard-item:hover {
@@ -106,19 +135,54 @@
     .rank-1 {
       background: linear-gradient(135deg, #FFD700, #FFA500);
       color: white;
-      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.25);
+      border-color: #FFD700;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+      transform: scale(1.05);
     }
     
     .rank-2 {
-      background: linear-gradient(135deg, #C0C0C0, #808080);
+      background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
       color: white;
-      box-shadow: 0 6px 20px rgba(192, 192, 192, 0.25);
+      border-color: #C0C0C0;
+      box-shadow: 0 3px 8px rgba(192, 192, 192, 0.2);
+      transform: scale(1.02);
     }
     
     .rank-3 {
-      background: linear-gradient(135deg, #CD7F32, #8B4513);
+      background: linear-gradient(135deg, #CD7F32, #B87333);
       color: white;
-      box-shadow: 0 6px 20px rgba(205, 127, 50, 0.25);
+      border-color: #CD7F32;
+      box-shadow: 0 2px 6px rgba(205, 127, 50, 0.2);
+      transform: scale(1.01);
+    }
+    
+    .podio-medaglia {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    
+    .podio-oro {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: white;
+    }
+    
+    .podio-argento {
+      background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+      color: white;
+    }
+    
+    .podio-bronzo {
+      background: linear-gradient(135deg, #CD7F32, #B87333);
+      color: white;
     }
     
     .rank-other {
@@ -446,6 +510,33 @@
     const filterButtons = document.querySelectorAll('.filter-btn');
     let currentPeriod = 'week';
 
+    // Array JavaScript con 23 oggetti contenenti nome, punti, ore studio, sessioni
+    const usersData = [
+      { name: 'Federico', points: 2850, studyHours: 45, sessions: 28, streak: 12 },
+      { name: 'Chris', points: 2720, studyHours: 42, sessions: 25, streak: 10 },
+      { name: 'Gabriele1', points: 2680, studyHours: 40, sessions: 24, streak: 9 },
+      { name: 'Gabriele2', points: 2650, studyHours: 38, sessions: 23, streak: 8 },
+      { name: 'Nenna', points: 2620, studyHours: 37, sessions: 22, streak: 7 },
+      { name: 'Campanale', points: 2590, studyHours: 36, sessions: 21, streak: 6 },
+      { name: 'Sara', points: 2560, studyHours: 35, sessions: 20, streak: 5 },
+      { name: 'Paolo', points: 2530, studyHours: 34, sessions: 19, streak: 4 },
+      { name: 'Ivan', points: 2500, studyHours: 33, sessions: 18, streak: 3 },
+      { name: 'Andon', points: 2470, studyHours: 32, sessions: 17, streak: 2 },
+      { name: 'Samir', points: 2440, studyHours: 31, sessions: 16, streak: 1 },
+      { name: 'Lorenzo', points: 2410, studyHours: 30, sessions: 15, streak: 0 },
+      { name: 'Nicolò', points: 2380, studyHours: 29, sessions: 14, streak: 0 },
+      { name: 'Franco', points: 2350, studyHours: 28, sessions: 13, streak: 0 },
+      { name: 'Caroti', points: 2320, studyHours: 27, sessions: 12, streak: 0 },
+      { name: 'Dario', points: 2290, studyHours: 26, sessions: 11, streak: 0 },
+      { name: 'Pier', points: 2260, studyHours: 25, sessions: 10, streak: 0 },
+      { name: 'Barzaghi', points: 2230, studyHours: 24, sessions: 9, streak: 0 },
+      { name: 'Manca', points: 2200, studyHours: 23, sessions: 8, streak: 0 },
+      { name: 'Bonato', points: 2170, studyHours: 22, sessions: 7, streak: 0 },
+      { name: 'Amr', points: 2140, studyHours: 21, sessions: 6, streak: 0 },
+      { name: 'Daria', points: 2110, studyHours: 20, sessions: 5, streak: 0 },
+      { name: 'Emely', points: 2080, studyHours: 19, sessions: 4, streak: 0 }
+    ];
+
     function getAccounts() {
       return JSON.parse(localStorage.getItem(STORAGE_ACCOUNTS_KEY) || '{}');
     }
@@ -499,15 +590,6 @@
         };
       });
       
-      // Aggiungi alcuni utenti mock per la demo
-      const mockUsers = [
-        { email: 'marco.rossi@example.com', username: 'Marco Rossi' },
-        { email: 'sara.bianchi@example.com', username: 'Sara Bianchi' },
-        { email: 'luca.neri@example.com', username: 'Luca Neri' },
-        { email: 'giulia.verdi@example.com', username: 'Giulia Verdi' },
-        { email: 'alessandro.galli@example.com', username: 'Alessandro Galli' }
-      ];
-      
       mockUsers.forEach(mockUser => {
         stats[mockUser.email] = {
           studyTime: Math.floor(Math.random() * 600) + 200,
@@ -535,35 +617,21 @@
     }
 
     function getLeaderboardData(period) {
-      const accounts = getAccounts();
-      let stats = getUserStats();
-      
-      // Se non ci sono statistiche, genera dati di demo
-      if (Object.keys(stats).length === 0) {
-        stats = generateMockStats();
-      }
-      
+      // Usa l'array usersData per generare la classifica
       const leaderboard = [];
       
-      Object.keys(accounts).forEach(email => {
-        const account = accounts[email];
-        const userStats = stats[email] || {
-          studyTime: 0,
-          sessions: 0,
-          streak: 0,
-          totalStudyTime: 0,
-          totalSessions: 0,
-          bestStreak: 0
-        };
-        
-        const score = calculateUserScore(userStats, period);
+      usersData.forEach((user, index) => {
+        const rank = index + 1;
         
         leaderboard.push({
-          email: email,
-          username: account.username || 'Utente',
-          profileImage: account.profileImage || '',
-          stats: userStats,
-          score: score
+          rank: rank,
+          username: user.name,
+          points: user.points,
+          studyHours: user.studyHours,
+          sessions: user.sessions,
+          streak: user.streak,
+          profileImage: '',
+          score: user.points
         });
       });
       
@@ -585,11 +653,13 @@
       leaderboardGrid.style.display = 'grid';
       emptyState.style.display = 'none';
       
-      leaderboardGrid.innerHTML = data.map((user, index) => {
-        const rank = index + 1;
-        const isCurrentUser = user.email === user.email;
+      // Generazione dinamica con ciclo JavaScript per tutti i 23 utenti
+      let leaderboardHTML = '';
+      
+      for (let i = 0; i < data.length; i++) {
+        const user = data[i];
+        const rank = i + 1;
         const rankClass = rank === 1 ? 'rank-1' : rank === 2 ? 'rank-2' : rank === 3 ? 'rank-3' : 'rank-other';
-        const currentUserClass = isCurrentUser ? 'current-user-highlight' : '';
         
         const avatarContent = user.profileImage 
           ? `<img src="${user.profileImage}" alt="${user.username}" style="width:100%;height:100%;object-fit:cover;">`
@@ -597,40 +667,41 @@
         
         const statsDisplay = period === 'all' 
           ? `<div class="stat-item">
-               <span class="stat-value">${Math.floor(user.stats.totalStudyTime / 60)}h</span>
+               <span class="stat-value">${user.studyHours}h</span>
                <span class="stat-label">Studio totale</span>
              </div>
              <div class="stat-item">
-               <span class="stat-value">${user.stats.totalSessions}</span>
+               <span class="stat-value">${user.sessions}</span>
                <span class="stat-label">Sessioni</span>
              </div>
              <div class="stat-item">
-               <span class="stat-value">${user.stats.bestStreak}</span>
-               <span class="stat-label">Miglior streak</span>
+               <span class="stat-value">${user.streak}</span>
+               <span class="stat-label">Streak</span>
              </div>`
           : `<div class="stat-item">
-               <span class="stat-value">${Math.floor(user.stats.studyTime / 60)}h</span>
+               <span class="stat-value">${user.studyHours}h</span>
                <span class="stat-label">Studio</span>
              </div>
              <div class="stat-item">
-               <span class="stat-value">${user.stats.sessions}</span>
+               <span class="stat-value">${user.sessions}</span>
                <span class="stat-label">Sessioni</span>
              </div>
              <div class="stat-item">
-               <span class="stat-value">${user.stats.streak}</span>
+               <span class="stat-value">${user.streak}</span>
                <span class="stat-label">Streak</span>
              </div>`;
         
-        return `
-          <div class="leaderboard-item ${currentUserClass}">
-            <div class="rank-badge ${rankClass}">
+        leaderboardHTML += `
+          <div class="leaderboard-item">
+            <div class="rank-badge ${rankClass}" style="position: relative;">
               ${rank <= 3 ? ['??', '??', '??'][rank - 1] : rank}
+              ${rank <= 3 ? `<div class="podio-medaglia podio-${rank === 1 ? 'oro' : rank === 2 ? 'argento' : 'bronzo'}">??${rank === 1 ? '' : rank === 2 ? '??' : '??'}</div>` : ''}
             </div>
             <div class="user-info">
               <div class="user-avatar">${avatarContent}</div>
               <div class="user-details">
                 <h3>${user.username}</h3>
-                <p>${user.score} punti</p>
+                <p>${user.points} punti</p>
               </div>
             </div>
             <div class="user-stats">
@@ -638,7 +709,9 @@
             </div>
           </div>
         `;
-      }).join('');
+      }
+      
+      leaderboardGrid.innerHTML = leaderboardHTML;
     }
 
     // FILTER HANDLING
