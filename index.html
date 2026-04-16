@@ -695,7 +695,8 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    const tabs = document.querySelectorAll('.tab-btn');
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabs = document.querySelectorAll('.tab-btn');
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     const passwordToggles = document.querySelectorAll('.toggle-password');
@@ -934,7 +935,7 @@
       }, 450);
     });
 
-
+    });
   </script>
 </body>
 </html>
