@@ -705,10 +705,10 @@
       }
     }
 
-    // Generate study materials from user text input - SISTEMA MOCK COMPLETO
+    // Generate study materials from user text input - SISTEMA INTELLIGENTE CON GEMINI API
     async function generateTextBasedMaterials(userText) {
       try {
-        console.log('Generazione mock per:', userText);
+        console.log('Generazione con AI per:', userText);
         
         // Check if input is too vague
         function isInputVague(input) {
@@ -721,14 +721,147 @@
           throw new Error('Input troppo vago. Per favore, specifica meglio l\'argomento che ti interessa. Esempio: "fotosintesi clorofilliana" invece di "voglio imparare qualcosa"');
         }
         
-        // Sistema mock che genera contenuti basati sull'input
-        const topic = userText.toLowerCase();
+        // Prova prima con Gemini API, fallback su mock
+        if (CONFIG.USE_REAL_AI && CONFIG.AI_PROVIDER === 'gemini') {
+          try {
+            return await generateWithGemini(userText);
+          } catch (error) {
+            console.warn('Gemini API fallita, uso fallback mock:', error);
+            return await generateMockContent(userText);
+          }
+        } else {
+          return await generateMockContent(userText);
+        }
+      } catch (error) {
+        console.error('Errore generazione materiali:', error);
+        return {
+          spiegazione_semplice: "Errore nell'analisi della richiesta",
+          riassunto_esecutivo: "**Errore**: Impossibile generare il riassunto richiesto.",
+          schema_concettuale: "| Errore | Descrizione |\n|---------|-------------|\n| Analisi | Non disponibile |",
+          quiz: {
+            domande: [
+              {
+                domanda: "Errore nel sistema",
+                opzioni: ["Riprova", "Esci", "Contatta supporto", "Ignora"],
+                risposta_corretta: 0
+              }
+            ],
+            soluzioni: "Soluzione: A - Riprova"
+          }
+        };
+      }
+    }
+
+    // Funzione per generare contenuti con Google Gemini API
+    async function generateWithGemini(userText) {
+      const prompt = `Agisci come un assistente didattico esperto. Genera contenuti educativi completi sull'argomento: "${userText}"
+
+IMPORTANTE: Genera SOLO il JSON valido seguente, senza testo aggiuntivo:
+
+{
+  "spiegazione_semplice": "Spiegazione chiara e concisa dell'argomento in 2-3 frasi",
+  "riassunto_esecutivo": "# **Titolo**\\n\\n## **Sottotitolo**\\n\\nContenuto dettagliato in formato Markdown con titoli, elenchi puntati e formattazione professionale. Includi definizioni, caratteristiche, esempi e applicazioni pratiche.",
+  "schema_concettuale": "## **Schema Concettuale**\\n\\n### **1. Concetti Base**\\n- Punti fondamentali\\n- Definizioni chiave\\n\\n### **2. Sviluppo**\\n- Processi e relazioni\\n- Collegamenti logici\\n\\n### **3. Applicazioni**\\n- Usi pratici\\n- Esempi concreti",
+  "quiz": {
+    "domande": [
+      {
+        "domanda": "Domanda specifica sull'argomento?",
+        "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+        "risposta_corretta": 0
+      },
+      {
+        "domanda": "Seconda domanda specifica?",
+        "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+        "risposta_corretta": 1
+      },
+      {
+        "domanda": "Terza domanda specifica?",
+        "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+        "risposta_corretta": 2
+      },
+      {
+        "domanda": "Quarta domanda specifica?",
+        "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+        "risposta_corretta": 1
+      },
+      {
+        "domanda": "Quinta domanda specifica?",
+        "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
+        "risposta_corretta": 0
+      }
+    ],
+    "soluzioni": "**Soluzioni Complete:**\\n1. Spiegazione dettagliata\\n2. Spiegazione dettagliata\\n3. Spiegazione dettagliata\\n4. Spiegazione dettagliata\\n5. Spiegazione dettagliata"
+  }
+}
+
+REGOLE:
+- Usa linguaggio italiano professionale ma accessibile
+- Adatta i contenuti al livello dell'argomento
+- Includi esempi pratici quando possibile
+- Le domande del quiz devono testare comprensione reale
+- TUTTI i contenuti devono essere specifici per l'argomento richiesto`;
+
+      const requestBody = {
+        contents: [{
+          parts: [{
+            text: prompt
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          topK: 40,
+          topP: 0.95,
+          maxOutputTokens: 2048,
+        }
+      };
+
+      console.log('Chiamata a Gemini API per:', userText);
+      
+      const response = await fetch(`${CONFIG.GEMINI_API_URL}?key=${CONFIG.GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Gemini API error:', errorText);
+        throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      console.log('Gemini API response:', data);
+      
+      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+        const generatedText = data.candidates[0].content.parts[0].text;
         
-        // Database di contenuti pre-generati per argomenti comuni
-        const contentDatabase = {
-          'fotosintesi': {
-            spiegazione_semplice: `La fotosintesi è il processo biologico attraverso cui le piante, le alghe e alcuni batteri convertono l'energia luminosa del sole in energia chimica. Questo processo fondamentale è alla base di quasi tutta la vita sulla Terra.`,
-            riassunto_esecutivo: `# **Fotosintesi Clorofilliana**
+        // Estrai JSON dalla risposta
+        const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const result = JSON.parse(jsonMatch[0]);
+          console.log('Contenuto generato da Gemini:', result);
+          return result;
+        } else {
+          throw new Error('Nessun JSON valido trovato nella risposta Gemini');
+        }
+      } else {
+        throw new Error('Risposta Gemini non valida');
+      }
+    }
+
+    // Funzione fallback per contenuti mock (mantiene il sistema precedente)
+    async function generateMockContent(userText) {
+      console.log('Generazione mock per:', userText);
+      
+      const topic = userText.toLowerCase();
+      
+      // Database di contenuti pre-generati per argomenti comuni
+      const contentDatabase = {
+        'fotosintesi': {
+          spiegazione_semplice: `La fotosintesi è il processo biologico attraverso cui le piante, le alghe e alcuni batteri convertono l'energia luminosa del sole in energia chimica. Questo processo fondamentale è alla base di quasi tutta la vita sulla Terra.`,
+          riassunto_esecutivo: `# **Fotosintesi Clorofilliana**
 
 ## **Processo Fondamentale**
 
@@ -755,7 +888,7 @@ La fotosintesi è un processo biochimico che permette agli organismi fotosinteti
 - Produzione di ossigeno atmosferico
 - Base della catena alimentare
 - Regolazione del carbonio atmosferico`,
-            schema_concettuale: `## **Schema della Fotosintesi**
+          schema_concettuale: `## **Schema della Fotosintesi**
 
 ### **1. Input**
 - **Energia**: Luce solare
@@ -785,40 +918,40 @@ La fotosintesi è un processo biochimico che permette agli organismi fotosinteti
 - **Concentrazione CO2**
 - **Temperatura ottimale (25-35°C)**
 - **Disponibilità idrica**`,
-            quiz: {
-              domande: [
-                {
-                  domanda: "Qual è il prodotto principale della fotosintesi?",
-                  opzioni: ["Ossigeno", "Glucosio", "Anidride carbonica", "Acqua"],
-                  risposta_corretta: 1
-                },
-                {
-                  domanda: "Dove avviene la fase luminosa?",
-                  opzioni: ["Stroma", "Membrana tilacoidale", "Citoplasma", "Nucleo"],
-                  risposta_corretta: 1
-                },
-                {
-                  domanda: "Qual è il pigmento principale nella fotosintesi?",
-                  opzioni: ["Carotene", "Xantofilla", "Clorofilla", "Ficocianina"],
-                  risposta_corretta: 2
-                },
-                {
-                  domanda: "Cosa viene prodotto nella fase oscura?",
-                  opzioni: ["ATP", "NADPH", "Glucosio", "Ossigeno"],
-                  risposta_corretta: 2
-                },
-                {
-                  domanda: "Qual è l'equazione bilanciata della fotosintesi?",
-                  opzioni: ["6CO2 + 6H2O + luce = C6H12O6 + 6O2", "CO2 + H2O = C6H12O6 + O2", "6CO2 + 6H2O = C6H12O6 + 6O2", "CO2 + H2O + luce = C6H12O6 + O2"],
-                  risposta_corretta: 0
-                }
-              ],
-              soluzioni: "**Soluzioni Complete:**\n1. B - Glucosio (è il prodotto energetico principale)\n2. B - Membrana tilacoidale (sede dei fotosistemi)\n3. C - Clorofilla (pigmento fotosintetico principale)\n4. C - Glucosio (prodotto del ciclo di Calvin)\n5. A - 6CO2 + 6H2O + luce = C6H12O6 + 6O2 (equazione bilanciata completa)"
-            }
-          },
-          'cellula': {
-            spiegazione_semplice: `La cellula è l'unità fondamentale della vita, la più piccola struttura capace di svolgere tutte le funzioni vitali. Esistono cellule procariotiche (senza nucleo) ed eucariotiche (con nucleo).`,
-            riassunto_esecutivo: `# **La Cellula: Unità della Vita**
+          quiz: {
+            domande: [
+              {
+                domanda: "Qual è il prodotto principale della fotosintesi?",
+                opzioni: ["Ossigeno", "Glucosio", "Anidride carbonica", "Acqua"],
+                risposta_corretta: 1
+              },
+              {
+                domanda: "Dove avviene la fase luminosa?",
+                opzioni: ["Stroma", "Membrana tilacoidale", "Citoplasma", "Nucleo"],
+                risposta_corretta: 1
+              },
+              {
+                domanda: "Qual è il pigmento principale nella fotosintesi?",
+                opzioni: ["Carotene", "Xantofilla", "Clorofilla", "Ficocianina"],
+                risposta_corretta: 2
+              },
+              {
+                domanda: "Cosa viene prodotto nella fase oscura?",
+                opzioni: ["ATP", "NADPH", "Glucosio", "Ossigeno"],
+                risposta_corretta: 2
+              },
+              {
+                domanda: "Qual è l'equazione bilanciata della fotosintesi?",
+                opzioni: ["6CO2 + 6H2O + luce = C6H12O6 + 6O2", "CO2 + H2O = C6H12O6 + O2", "6CO2 + 6H2O = C6H12O6 + 6O2", "CO2 + H2O + luce = C6H12O6 + O2"],
+                risposta_corretta: 0
+              }
+            ],
+            soluzioni: "**Soluzioni Complete:**\n1. B - Glucosio (è il prodotto energetico principale)\n2. B - Membrana tilacoidale (sede dei fotosistemi)\n3. C - Clorofilla (pigmento fotosintetico principale)\n4. C - Glucosio (prodotto del ciclo di Calvin)\n5. A - 6CO2 + 6H2O + luce = C6H12O6 + 6O2 (equazione bilanciata completa)"
+          }
+        },
+        'cellula': {
+          spiegazione_semplice: `La cellula è l'unità fondamentale della vita, la più piccola struttura capace di svolgere tutte le funzioni vitali. Esistono cellule procariotiche (senza nucleo) ed eucariotiche (con nucleo).`,
+          riassunto_esecutivo: `# **La Cellula: Unità della Vita**
 
 ## **Struttura Cellulare**
 
@@ -837,7 +970,7 @@ La fotosintesi è un processo biochimico che permette agli organismi fotosinteti
 #### **Cellule Procariotiche**
 - **Batteri**: Senza nucleo definito
 - **Archaea**: Estremofile`,
-            schema_concettuale: `## **Organizzazione Cellulare**
+          schema_concettuale: `## **Organizzazione Cellulare**
 
 ### **1. Membrana Plasmatica**
 - **Funzione**: Barriera selettiva
@@ -859,130 +992,670 @@ La fotosintesi è un processo biochimico che permette agli organismi fotosinteti
 - **Reticolo endoplasmatico**: Sintesi molecole
 - **Apparato di Golgi**: Modificazione proteine
 - **Lisosomi**: Digestione intracellulare`,
-            quiz: {
-              domande: [
-                {
-                  domanda: "Qual è la funzione principale del nucleo?",
-                  opzioni: ["Produzione energia", "Controllo genetico", "Digestione", "Sintesi proteica"],
-                  risposta_corretta: 1
-                },
-                {
-                  domanda: "Cosa distingue le cellule vegetali da quelle animali?",
-                  opzioni: ["Presenza di mitochondrie", "Parete cellulare", "Assenza di nucleo", "Dimensione maggiore"],
-                  risposta_corretta: 1
-                },
-                {
-                  domanda: "Qual è l'organelle responsabile della produzione di energia?",
-                  opzioni: ["Nucleo", "Ribosomi", "Mitochondrie", "Lisosomi"],
-                  risposta_corretta: 2
-                },
-                {
-                  domanda: "Cosa contiene il citoplasma?",
-                  opzioni: ["Solo DNA", "Citosol e organelle", "Solo mitochondrie", "Solo acqua"],
-                  risposta_corretta: 1
-                },
-                {
-                  domanda: "Qual è la differenza principale tra cellule procariotiche ed eucariotiche?",
-                  opzioni: ["Dimensione", "Presenza di nucleo", "Numero di mitochondrie", "Tipo di membrana"],
-                  risposta_corretta: 1
-                }
-              ],
-              soluzioni: "**Soluzioni Complete:**\n1. B - Controllo genetico (contiene il DNA)\n2. B - Parete cellulare (struttura rigida esterna)\n3. C - Mitochondrie (produzione di ATP)\n4. B - Citosol e organelle (ambiente cellulare)\n5. B - Presenza di nucleo (differenza fondamentale)"
-            }
+          quiz: {
+            domande: [
+              {
+                domanda: "Qual è la funzione principale del nucleo?",
+                opzioni: ["Produzione energia", "Controllo genetico", "Digestione", "Sintesi proteica"],
+                risposta_corretta: 1
+              },
+              {
+                domanda: "Cosa distingue le cellule vegetali da quelle animali?",
+                opzioni: ["Presenza di mitochondrie", "Parete cellulare", "Assenza di nucleo", "Dimensione maggiore"],
+                risposta_corretta: 1
+              },
+              {
+                domanda: "Qual è l'organelle responsabile della produzione di energia?",
+                opzioni: ["Nucleo", "Ribosomi", "Mitochondrie", "Lisosomi"],
+                risposta_corretta: 2
+              },
+              {
+                domanda: "Cosa contiene il citoplasma?",
+                opzioni: ["Solo DNA", "Citosol e organelle", "Solo mitochondrie", "Solo acqua"],
+                risposta_corretta: 1
+              },
+              {
+                domanda: "Qual è la differenza principale tra cellule procariotiche ed eucariotiche?",
+                opzioni: ["Dimensione", "Presenza di nucleo", "Numero di mitochondrie", "Tipo di membrana"],
+                risposta_corretta: 1
+              }
+            ],
+            soluzioni: "**Soluzioni Complete:**\n1. B - Controllo genetico (contiene il DNA)\n2. B - Parete cellulare (struttura rigida esterna)\n3. C - Mitochondrie (produzione di ATP)\n4. B - Citosol e organelle (ambiente cellulare)\n5. B - Presenza di nucleo (differenza fondamentale)"
           }
+        }
+      };
+        
+        // Funzione per generare contenuti dinamici specifici
+        function generateDynamicContent(topic) {
+          console.log('DEBUG: Topic ricevuto:', topic);
+          
+          // Seleziona il contenuto appropriato
+        let result;
+        
+        // Controlla se l'argomento è nel database
+        for (const [key, content] of Object.entries(contentDatabase)) {
+          if (topic.includes(key)) {
+            result = content;
+            break;
+          }
+        }
+        
+        // Se non trovato, genera contenuti dinamici
+        if (!result) {
+          result = generateDynamicContent(topic);
+        }
+        
+        console.log('Mock content generated:', result);
+        
+        // Simula un leggero ritardo per realismo
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        return result;
+      }
+      
+      // Funzione per generare contenuti dinamici specifici
+      function generateDynamicContent(topic) {
+        console.log('DEBUG: Topic ricevuto:', topic);
+        
+        // Database di categorie per argomenti comuni
+        const categories = {
+          scientific: ['atomo', 'molecola', 'gravità', 'energia', 'materia', 'forza', 'velocità', 'temperatura', 'elettricità', 'magnetismo'],
+          biology: ['dna', 'rna', 'proteina', 'enzima', 'ormone', 'genetica', 'evoluzione', 'ecosistema', 'biodiversità', 'metabolismo'],
+          chemistry: ['elemento', 'composto', 'reazione', 'legame chimico', 'ph', 'ossidazione', 'riduzione', 'soluzione', 'concentrazione'],
+          physics: ['onda', 'particella', 'quantum', 'relatività', 'meccanica', 'termodinamica', 'elettromagnetismo', 'ottica'],
+          history: ['rivoluzione', 'impero', 'guerra', 'pace', 'democrazia', 'monarchia', 'repubblica', 'feudalesimo', 'rinascimento', 'medioevo', 'antichità', 'illuminismo', 'romanticismo', 'novecento', 'guerra fredda', 'colonialismo', 'industrializzazione'],
+          geography: ['continente', 'oceano', 'montagna', 'fiume', 'deserto', 'foresta', 'clima', 'atmosfera'],
+          literature: ['poesia', 'romanzo', 'teatro', 'narrativa', 'personaggio', 'trama', 'stile', 'genere'],
+          technology: ['computer', 'internet', 'software', 'hardware', 'intelligenza artificiale', 'robotica', 'algoritmo', 'programmazione']
         };
         
-        // Funzione per generare contenuti dinamici
-        function generateDynamicContent(topic) {
-          const templates = {
-            spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} è un concetto fondamentale che merita un'analisi approfondita. Questo argomento riveste grande importanza nel suo campo di studio e offre molteplici spunti di riflessione.`,
+        // Determina la categoria dell'argomento
+        let category = 'general';
+        let foundMatch = false;
+        
+        console.log('DEBUG: Inizio categorizzazione per:', topic);
+        
+        for (const [cat, topics] of Object.entries(categories)) {
+          const match = topics.some(t => topic.toLowerCase().includes(t.toLowerCase()));
+          console.log(`DEBUG: Categoria ${cat}, match: ${match}, topics: ${topics.join(', ')}`);
+          if (match) {
+            category = cat;
+            foundMatch = true;
+            console.log('DEBUG: Categoria trovata:', category);
+            break;
+          }
+        }
+        
+        if (!foundMatch) {
+          console.log('DEBUG: Nessuna categoria trovata, uso general');
+        }
+        
+        // Genera contenuti specifici per categoria
+        const contentGenerators = {
+          scientific: () => generateScientificContent(topic),
+          biology: () => generateBiologyContent(topic),
+          chemistry: () => generateChemistryContent(topic),
+          physics: () => generatePhysicsContent(topic),
+          history: () => generateHistoryContent(topic),
+          geography: () => generateGeographyContent(topic),
+          literature: () => generateLiteratureContent(topic),
+          technology: () => generateTechnologyContent(topic),
+          general: () => generateGeneralContent(topic)
+        };
+        
+        console.log('DEBUG: Chiamando generatore per categoria:', category);
+        const result = contentGenerators[category]();
+        console.log('DEBUG: Contenuto generato per categoria:', category);
+        
+        return result;
+      }
+        
+        // Generatori specifici per categoria
+        function generateScientificContent(topic) {
+          return {
+            spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} è un fenomeno scientifico fondamentale che governa le leggi naturali del nostro universo. Questo concetto è essenziale per comprendere il funzionamento della materia e dell'energia.`,
             
             riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
 
-## **Introduzione al Concetto**
+## **Fenomeno Scientifico**
 
-${topic.charAt(0).toUpperCase() + topic.slice(1)} rappresenta un elemento centrale che richiede un'attenta analisi per comprenderne appieno la natura e le implicazioni.
+${topic.charAt(0).toUpperCase() + topic.slice(1)} rappresenta un principio fondamentale della fisica che descrive le interazioni tra materia ed energia.
 
-### **Caratteristiche Principali**
-- **Definizione**: Concetto chiave nel suo dominio
-- **Importanza**: Rilevanza fondamentale
-- **Applicazioni**: Utilizzo pratico in vari contesti
+### **Principi Base**
+- **Definizione scientifica**: Descrizione quantitativa del fenomeno
+- **Unità di misura**: Standard internazionali di riferimento
+- **Costanti universali**: Valori immutabili che governano il fenomeno
 
-### **Aspetti Analitici**
-#### **Componenti Essenziali**
-1. Analisi strutturale del concetto
-2. Relazioni con altri elementi
-3. Impatto pratico e teorico
+### **Leggi e Principi**
+#### **Leggi Fondamentali**
+1. Prima legge: descrizione del comportamento base
+2. Seconda legge: relazioni causa-effetto
+3. Terza legge: interazioni reciproche
 
-#### **Sviluppo Storico**
-- Origini del concetto
-- Evoluzione nel tempo
-- Sviluppi recenti
+#### **Applicazioni Pratiche**
+- Ingegneria e tecnologia
+- Ricerca scientifica
+- Sviluppo industriale
 
-### **Conclusioni**
-${topic.charAt(0).toUpperCase() + topic.slice(1)} continua a essere un campo di studio attivo e rilevante, con nuove scoperte e applicazioni che emergono costantemente.`,
+### **Impatto Scientifico**
+- Rivoluzione nella comprensione del mondo
+- Nuove tecnologie derivate
+- Progresso nella ricerca scientifica`,
             
-            schema_concettuale: `## **Schema Concettuale di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+            schema_concettuale: `## **Schema Scientifico di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
 
-### **1. Definizione e Concetti Base**
-- **Termine**: ${topic}
-- **Campo di applicazione**: Vari settori
-- **Importanza**: Fondamentale
+### **1. Definizione Operativa**
+- **Concetto**: ${topic}
+- **Campo**: Scienze naturali
+- **Importanza**: Principio universale
 
-### **2. Struttura Analitica**
-#### **Componenti Principali**
-- Elementi costitutivi
-- Relazioni interne
-- Interazioni esterne
+### **2. Aspetti Quantitativi**
+#### **Misurazione**
+- Unità standard internazionali
+- Strumenti di misura
+- Precisione e accuratezza
 
-#### **Processi Correlati**
-- Sviluppo e evoluzione
-- Trasformazioni
-- Applicazioni pratiche
+#### **Relazioni Matematiche**
+- Formule fondamentali
+- Costanti universali
+- Variabili dipendenti
 
-### **3. Relazioni e Connessioni**
-- **Contesto generale**: Inquadramento sistematico
-- **Relazioni**: Collegamenti con altri concetti
-- **Impatti**: Conseguenze e effetti
+### **3. Manifestazioni Fisiche**
+- **Macroscopiche**: Osservabili direttamente
+- **Microscopiche**: A livello atomico/molecolare
+- **Quantistiche**: A livello subatomico
 
-### **4. Implicazioni Pratiche**
-- **Utilità**: Applicazioni concrete
-- **Rilevanza**: Importanza attuale
-- **Sviluppi**: Prospettive future`,
+### **4. Applicazioni Tecnologiche**
+- **Ingegneria**: Progettazione e costruzione
+- **Medicina**: Diagnosi e terapia
+- **Energia**: Produzione e utilizzo`,
             
             quiz: {
               domande: [
                 {
-                  domanda: `Qual è l'importanza principale di ${topic}?`,
-                  opzioni: ["Rilevanza teorica", "Applicazioni pratiche", "Entrambe", "Nessuna"],
+                  domanda: `Qual è l'unità di misura standard per ${topic}?`,
+                  opzioni: ["Newton", "Joule", "Metro", "Dipende dal contesto"],
+                  risposta_corretta: 3
+                },
+                {
+                  domanda: `Come si manifesta ${topic} nella natura?`,
+                  opzioni: ["Solo a livello macroscopico", "Solo a livello microscopico", "A tutti i livelli", "Solo in laboratorio"],
                   risposta_corretta: 2
                 },
                 {
-                  domanda: `Come si sviluppa ${topic} nel tempo?`,
-                  opzioni: ["Staticamente", "Evolutivamente", "Ciclicamente", "Casualmente"],
+                  domanda: `Qual è l'importanza di ${topic} nella tecnologia moderna?`,
+                  opzioni: ["Limitata", "Fondamentale", "Secondaria", "Inesistente"],
                   risposta_corretta: 1
                 },
                 {
-                  domanda: `Quali sono le applicazioni di ${topic}?`,
-                  opzioni: ["Teoriche", "Pratiche", "Miste", "Inesistenti"],
-                  risposta_corretta: 2
+                  domanda: `Chi ha studiato per primo ${topic}?`,
+                  opzioni: ["Newton", "Einstein", "Galileo", "Dipende dal fenomeno"],
+                  risposta_corretta: 3
                 },
                 {
-                  domanda: `Qual è il contesto di ${topic}?`,
-                  opzioni: ["Isolato", "Connesso", "Limitato", "Assente"],
-                  risposta_corretta: 1
-                },
-                {
-                  domanda: `Quali sono le prospettive future di ${topic}?`,
-                  opzioni: ["Nessuna", "Limitate", "Promettenti", "Negative"],
+                  domanda: `Quali applicazioni pratiche ha ${topic}?`,
+                  opzioni: ["Nessuna", "Solo teoriche", "Molteplici", "Solo accademiche"],
                   risposta_corretta: 2
                 }
               ],
-              soluzioni: `**Soluzioni Complete:**\n1. C - Entrambe (combinazione di teoria e pratica)\n2. B - Evolutivamente (sviluppo progressivo)\n3. C - Miste (diversi campi di applicazione)\n4. B - Connesso (relazioni con altri concetti)\n5. C - Promettenti (sviluppi futuri positivi)`
+              soluzioni: `**Soluzioni Complete:**\n1. D - Dipende dal contesto (diversi fenomeni hanno unità diverse)\n2. C - A tutti i livelli (manifestazioni su tutte le scale)\n3. B - Fondamentale (base di molte tecnologie)\n4. D - Dipende dal fenomeno (diversi scienziati per diversi campi)\n5. C - Molteplici (applicazioni in vari settori)`
             }
           };
+        }
+        
+        function generateBiologyContent(topic) {
+          return {
+            spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} è un componente essenziale dei sistemi viventi, fondamentale per i processi biologici che sostengono la vita sulla Terra.`,
+            
+            riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+## **Componente Biologico**
+
+${topic.charAt(0).toUpperCase() + topic.slice(1)} gioca un ruolo cruciale nei processi vitali degli organismi viventi.
+
+### **Struttura e Funzione**
+- **Composizione chimica**: Elementi costitutivi fondamentali
+- **Struttura molecolare**: Organizzazione tridimensionale
+- **Funzione biologica**: Ruolo specifico negli organismi
+
+### **Processi Vitali**
+#### **Metabolismo**
+- Reazioni chimiche essenziali
+- Trasformazione energetica
+- Sintesi e degradazione
+
+#### **Genetica**
+- Trasmissione ereditaria
+- Espressione genica
+- Mutazioni ed evoluzione
+
+### **Importanza Biologica**
+- Sopravvivenza degli organismi
+- Adattamento ambientale
+- Evoluzione delle specie`,
+            
+            schema_concettuale: `## **Schema Biologico di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+### **1. Livello Molecolare**
+- **Struttura**: Organizzazione atomica
+- **Proprietà**: Caratteristiche chimiche
+- **Interazioni**: Legami e reazioni
+
+### **2. Livello Cellulare**
+- **Localizzazione**: Posizione nella cellula
+- **Funzione**: Ruolo cellulare specifico
+- **Interazioni**: Relazioni con altri componenti
+
+### **3. Livello Tissutale**
+- **Organizzazione**: Struttura dei tessuti
+- **Specializzazione**: Funzioni specifiche
+- **Integrazione**: Coordinazione sistemica
+
+### **4. Livello Organismo**
+- **Sistemi**: Integrazione negli apparati
+- **Omeostasi**: Mantenimento equilibrio
+- **Adattamento**: Risposta ambientale`,
+            
+            quiz: {
+              domande: [
+                {
+                  domanda: `A quale livello biologico opera principalmente ${topic}?`,
+                  opzioni: ["Molecolare", "Cellulare", "Tissutale", "Tutti i livelli"],
+                  risposta_corretta: 3
+                },
+                {
+                  domanda: `Qual è la funzione principale di ${topic} negli organismi?`,
+                  opzioni: ["Strutturale", "Metabolica", "Genetica", "Dipende dal componente"],
+                  risposta_corretta: 3
+                },
+                {
+                  domanda: `Come viene sintetizzato ${topic} negli organismi?`,
+                  opzioni: ["Importazione dall'esterno", "Sintesi interna", "Entrambi", "Non viene sintetizzato"],
+                  risposta_corretta: 2
+                },
+                {
+                  domanda: `Cosa succerebbe se ${topic} fosse assente?`,
+                  opzioni: ["Niente", "Problemi minori", "Conseguenze gravi", "Estinzione"],
+                  risposta_corretta: 2
+                },
+                {
+                  domanda: `In quali organismi si trova ${topic}?`,
+                  opzioni: ["Solo umani", "Solo animali", "Tutti i viventi", "Solo piante"],
+                  risposta_corretta: 2
+                }
+              ],
+              soluzioni: `**Soluzioni Complete:**\n1. D - Tutti i livelli (azione su più scale biologiche)\n2. D - Dipende dal componente (funzioni diverse)\n3. C - Entrambi (sintesi e importazione)\n4. C - Conseguenze gravi (importanza vitale)\n5. C - Tutti i viventi (diffusione universale)`
+            }
+          };
+        }
+        
+        function generateGeneralContent(topic) {
+          // Genera contenuti più specifici basati sulla lunghezza e tipo dell'argomento
+          const topicLower = topic.toLowerCase();
+          let content;
           
-          return templates;
+          // Contenuti specifici per argomenti comuni non categorizzati
+          if (topicLower.includes('arte') || topicLower.includes('pittura') || topicLower.includes('scultura')) {
+            content = {
+              spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} è una forma di espressione umana che trasforma idee ed emozioni in opere visive o concettuali, rappresentando uno dei mezzi più antichi di comunicazione culturale.`,
+              
+              riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+## **Espressione Artistica**
+
+${topic.charAt(0).toUpperCase() + topic.slice(1)} rappresenta una forma di comunicazione non verbale che utilizza mezzi espressivi per trasmettere significati ed emozioni.
+
+### **Caratteristiche Fondamentali**
+- **Espressione**: Manifestazione di idee ed emozioni
+- **Tecnica**: Metodi e strumenti utilizzati
+- **Stile**: Caratteristiche distintive dell'opera
+
+### **Periodi Storici**
+#### **Evoluzione Artistica**
+- Arte preistorica e antica
+- Medievale e bizantina
+- Rinascimentale e barocca
+- Moderna e contemporanea
+
+### **Funzioni Sociali**
+- Comunicazione culturale
+- Critica sociale
+- Esplorazione estetica
+- Documentazione storica`,
+              
+              schema_concettuale: `## **Schema Artistico di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+### **1. Elementi Compositivi**
+- **Forma**: Struttura e composizione
+- **Colore**: Uso cromatico e simbolismo
+- **Tecnica**: Metodi esecutivi
+- **Materiale**: Supporti e strumenti
+
+### **2. Stili e Correnti**
+- **Classico**: Armonia e proporzione
+- **Romantico**: Emozione e soggettività
+- **Moderno**: Sperimentazione e rottura
+- **Contemporaneo**: Diversità e globalizzazione
+
+### **3. Contesto Culturale**
+- **Funzione**: Scopo sociale e comunicativo
+- **Pubblico**: Destinatari e interpretazione
+- **Mercato**: Collezionismo e valorizzazione
+
+### **4. Impatto Sociale**
+- **Influenza**: Modifiche culturali
+- **Critica**: Riflessione sociale
+- **Educazione**: Trasmissione conoscenza`,
+              
+              quiz: {
+                domande: [
+                  {
+                    domanda: `Qual è la funzione principale di ${topic}?`,
+                    opzioni: ["Estetica", "Comunicativa", "Economica", "Religiosa"],
+                    risposta_corretta: 1
+                  },
+                  {
+                    domanda: `Come si è evoluta ${topic} nel tempo?`,
+                    opzioni: ["Staticamente", "Linearmente", "Con variazioni stilistiche", "Ciclicamente"],
+                    risposta_corretta: 2
+                  },
+                  {
+                    domanda: `Qual è il rapporto tra ${topic} e società?`,
+                    opzioni: ["Nessuno", "Unidirezionale", "Bidirezionale", "Contraddittorio"],
+                    risposta_corretta: 2
+                  },
+                  {
+                    domanda: `Cosa caratterizza lo stile di ${topic}?`,
+                    opzioni: ["Solo la tecnica", "Solo il soggetto", "Tecnica e contenuto", "Solo il colore"],
+                    risposta_corretta: 2
+                  },
+                  {
+                    domanda: `Qual è il valore culturale di ${topic}?`,
+                    opzioni: ["Nullo", "Limitato", "Significativo", "Effimero"],
+                    risposta_corretta: 2
+                  }
+                ],
+                soluzioni: `**Soluzioni Complete:**\n1. B - Comunicativa (trasmissione di significati)\n2. C - Con variazioni stilistiche (evoluzione artistica)\n3. C - Bidirezionale (influenza reciproca)\n4. C - Tecnica e contenuto (insieme completo)\n5. C - Significativo (patrimonio culturale)`
+              }
+            };
+          } else if (topicLower.includes('filosofia') || topicLower.includes('pensiero') || topicLower.includes('etica')) {
+            content = {
+              spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} è una disciplina che investiga le questioni fondamentali dell'esistenza, della conoscenza, dei valori e della ragione, cercando di comprendere la realtà attraverso il pensiero critico e razionale.`,
+              
+              riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+## **Ricerca della Saggezza**
+
+${topic.charAt(0).toUpperCase() + topic.slice(1)} rappresenta l'indagine sistematica dei problemi fondamentali che riguardano l'esistenza umana e la natura della realtà.
+
+### **Aree Principali**
+- **Metafisica**: Studio della realtà e dell'esistenza
+- **Epistemologia**: Teoria della conoscenza
+- **Etica**: Filosofia morale e dei valori
+- **Logica**: Studio del ragionamento valido
+
+### **Scuole di Pensiero**
+#### **Correnti Filosofiche**
+- Filosofia antica greca
+- Scolastica medievale
+- Razionalismo ed empirismo
+- Filosofia contemporanea
+
+### **Metodi e Approcci**
+- Analisi concettuale
+- Argomentazione logica
+- Riflessione critica
+- Dialogo socratico`,
+              
+              schema_concettuale: `## **Schema Filosofico di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+### **1. Domande Fondamentali**
+- **Essere**: Cos'è la realtà?
+- **Conoscenza**: Come sappiamo ciò che sappiamo?
+- **Valori**: Cosa è bene e male?
+- **Significato**: Qual è lo scopo dell'esistenza?
+
+### **2. Metodi di Indagine**
+- **Logica**: Ragionamento formale
+- **Analisi**: Decomposizione concettuale
+- **Sintesi**: Integrazione delle conoscenze
+- **Critica**: Valutazione delle argomentazioni
+
+### **3. Scuole e Tradizioni**
+- **Occidentale**: Socrate, Platone, Aristotele
+- **Orientale**: Confucio, Buddha, Lao Tzu
+- **Moderna**: Descartes, Kant, Nietzsche
+- **Contemporanea**: Filosofia analitica e continentale
+
+### **4. Applicazioni Pratiche**
+- **Etica applicata**: Bioetica, etica ambientale
+- **Politica**: Teoria della giustizia
+- **Scienza**: Filosofia della scienza
+- **Arte**: Estetica`,
+              
+              quiz: {
+                domande: [
+                  {
+                    domanda: `Qual è l'oggetto principale di studio di ${topic}?`,
+                    opzioni: ["La materia", "La realtà e il pensiero", "Solo la natura", "Solo gli esseri umani"],
+                    risposta_corretta: 1
+                  },
+                  {
+                    domanda: `Qual è il metodo fondamentale di ${topic}?`,
+                    opzioni: ["Sperimentale", "Matematico", "Logico-razionale", "Intuitivo"],
+                    risposta_corretta: 2
+                  },
+                  {
+                    domanda: `Come si relaziona ${topic} con la scienza?`,
+                    opzioni: ["Sono separate", "Sono identiche", "Sono complementari", "Sono contrarie"],
+                    risposta_corretta: 2
+                  },
+                  {
+                    domanda: `Qual è il fine ultimo di ${topic}?`,
+                    opzioni: ["La verità", "La felicità", "La conoscenza", "Tutte insieme"],
+                    risposta_corretta: 3
+                  },
+                  {
+                    domanda: `Cosa distingue ${topic} da altre discipline?`,
+                    opzioni: ["Il metodo", "L'oggetto", "La storia", "Le applicazioni"],
+                    risposta_corretta: 0
+                  }
+                ],
+                soluzioni: `**Soluzioni Complete:**\n1. B - La realtà e il pensiero (campo di studio)\n2. C - Logico-razionale (metodo filosofico)\n3. C - Sono complementari (collaborazione)\n4. D - Tutte insieme (obiettivi multipli)\n5. A - Il metodo (approccio distintivo)`
+              }
+            };
+          } else {
+            // Template generale migliorato e più vario
+            const templates = [
+              {
+                spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} rappresenta un concetto fondamentale che ha influenzato significativamente il pensiero e le pratiche umane nel corso del tempo.`,
+                
+                riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+## **Concetto Fondamentale**
+
+${topic.charAt(0).toUpperCase() + topic.slice(1)} costituisce un elemento centrale che ha plasmato comprensioni e approcci in vari campi del sapere umano.
+
+### **Definizione e Significato**
+- **Concetto**: Idea o principio fondamentale
+- **Applicazioni**: Utilizzi pratici e teorici
+- **Impatto**: Influenza su altre discipline
+
+### **Sviluppo Storico**
+#### **Origini ed Evoluzione**
+- Prime manifestazioni del concetto
+- Sviluppo attraverso i secoli
+- Trasformazioni moderne
+
+### **Rilevanza Attuale**
+- **Contemporaneità**: Applicazioni odierne
+- **Futuro**: Prospettive di sviluppo
+- **Interdisciplinarità**: Collegamenti con altri campi`,
+                
+                schema_concettuale: `## **Schema Concettuale di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+### **1. Definizione Base**
+- **Significato**: Concetto fondamentale
+- **Caratteristiche**: Proprietà distintive
+- **Contesto**: Ambito di applicazione
+
+### **2. Sviluppo Storico**
+- **Origini**: Prime apparizioni
+- **Evoluzione**: Modifiche nel tempo
+- **Attualità**: Rilevanza contemporanea
+
+### **3. Relazioni e Connessioni**
+- **Interdisciplinarità**: Collegamenti con altri campi
+- **Influenze**: Impatti su altri concetti
+- **Applicazioni**: Utilizzi pratici
+
+### **4. Valutazione Critica**
+- **Punti di forza**: Aspetti positivi
+- **Limiti**: Vincoli e criticità
+- **Sviluppi futuri**: Possibili evoluzioni`,
+                
+                quiz: {
+                  domande: [
+                    {
+                      domanda: `Qual è l'importanza storica di ${topic}?`,
+                      opzioni: ["Limitata", "Significativa", "Marginale", "Inesistente"],
+                      risposta_corretta: 1
+                    },
+                    {
+                      domanda: `Come si applica ${topic} oggi?`,
+                      opzioni: ["Non si applica", "Solo in teoria", "In vari contesti", "Solo in un campo"],
+                      risposta_corretta: 2
+                    },
+                    {
+                      domanda: `Qual è il valore principale di ${topic}?`,
+                      opzioni: ["Solo teorico", "Solo pratico", "Teorico e pratico", "Nessuno"],
+                      risposta_corretta: 2
+                    },
+                    {
+                      domanda: `Come potrebbe evolversi ${topic}?`,
+                      opzioni: ["Non cambierà", "Si evolverà", "Scomparirà", "Resterà uguale"],
+                      risposta_corretta: 1
+                    },
+                    {
+                      domanda: `Quali sono le implicazioni di ${topic}?`,
+                      opzioni: ["Nessuna", "Limitate", "Multiple e varie", "Singole"],
+                      risposta_corretta: 2
+                    }
+                  ],
+                  soluzioni: `**Soluzioni Complete:**\n1. B - Significativa (impatto storico)\n2. C - In vari contesti (versatilità)\n3. C - Teorico e pratico (valore duplice)\n4. B - Si evolverà (sviluppo progressivo)\n5. C - Multiple e varie (impatto ampio)`
+                }
+              },
+              {
+                spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} è un'idea o principio che ha giocato un ruolo cruciale nello sviluppo della conoscenza umana e delle pratiche sociali.`,
+                
+                riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+## **Principio Guida**
+
+${topic.charAt(0).toUpperCase() + topic.slice(1)} funge da riferimento fondamentale per comprendere e organizzare aspetti importanti della realtà e dell'esperienza umana.
+
+### **Natura del Concetto**
+- **Essenza**: Caratteristiche intrinseche
+- **Funzione**: Ruolo e scopo
+- **Manifestazioni**: Diverse forme di espressione
+
+### **Impatto Culturale**
+#### **Influenza sulla Società**
+- Modifiche nel pensiero collettivo
+- Cambiamenti nelle pratiche sociali
+- Sviluppo di nuove discipline
+
+### **Applicazioni Pratiche**
+- Utilizzo in contesti professionali
+- Implicazioni etiche e morali
+- Sviluppi futuri e potenzialità`,
+                
+                schema_concettuale: `## **Schema Analitico di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+### **1. Struttura Concettuale**
+- **Definizione**: Significato preciso
+- **Componenti**: Elementi costitutivi
+- **Relazioni**: Collegamenti interni
+
+### **2. Contesto Storico**
+- **Origini**: Sorgenti del concetto
+- **Sviluppo**: Evoluzione storica
+- **Momenti chiave**: Punti di svolta
+
+### **3. Applicazioni e Usi**
+- **Pratiche**: Utilizzi concreti
+- **Teoriche**: Implicazioni concettuali
+- **Sociali**: Impatto collettivo
+
+### **4. Prospettive Future**
+- **Sviluppi**: Evoluzioni possibili
+- **Sfide**: Problemi da affrontare
+- **Opportunità**: Potenziali miglioramenti`,
+                
+                quiz: {
+                  domande: [
+                    {
+                      domanda: `Da dove deriva ${topic}?`,
+                      opzioni: ["Dalla tradizione", "Dall'innovazione", "Entrambe", "Da nessuna parte"],
+                      risposta_corretta: 2
+                    },
+                    {
+                      domanda: `Qual è l'applicazione principale di ${topic}?`,
+                      opzioni: ["Teorica", "Pratica", "Mista", "Nessuna"],
+                      risposta_corretta: 2
+                    },
+                    {
+                      domanda: `Come influenza ${topic} la società?`,
+                      opzioni: ["Per niente", "Poco", "Significativamente", "Completamente"],
+                      risposta_corretta: 2
+                    },
+                    {
+                      domanda: `Qual è il futuro di ${topic}?`,
+                      opzioni: ["Sconosciuto", "Promettente", "Limitato", "Negativo"],
+                      risposta_corretta: 1
+                    },
+                    {
+                      domanda: `Perché studiare ${topic}?`,
+                      opzioni: ["Non serve", "È utile", "È essenziale", "È opzionale"],
+                      risposta_corretta: 2
+                    }
+                  ],
+                  soluzioni: `**Soluzioni Complete:**\n1. C - Entrambe (tradizione e innovazione)\n2. C - Mista (applicazioni multiple)\n3. C - Significativamente (impatto sociale)\n4. B - Promettente (potenziale futuro)\n5. C - È essenziale (importanza fondamentale)`
+                }
+              }
+            ];
+            
+            // Scegli un template in modo pseudo-casuale basato sull'argomento
+            const index = Math.abs(topic.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % templates.length;
+            content = templates[index];
+          }
+          
+          return content;
+        }
+        
+        // Altri generatori specifici...
+        function generateChemistryContent(topic) {
+          return generateScientificContent(topic); // Riutilizza il template scientifico
+        }
+        
+        function generatePhysicsContent(topic) {
+          return generateScientificContent(topic); // Riutilizza il template scientifico
+        }
+        
+        function generateHistoryContent(topic) {
+          return generateGeneralContent(topic); // Riutilizza il template generale
+        }
+        
+        function generateGeographyContent(topic) {
+          return generateGeneralContent(topic); // Riutilizza il template generale
+        }
+        
+        function generateLiteratureContent(topic) {
+          return generateGeneralContent(topic); // Riutilizza il template generale
+        }
+        
+        function generateTechnologyContent(topic) {
+          return generateGeneralContent(topic); // Riutilizza il template generale
         }
         
         // Seleziona il contenuto appropriato
