@@ -105,6 +105,54 @@
     </section>
 
     <div class="dashboard-grid">
+      <!-- Riquadro Avatar con Crediti -->
+      <div class="session-card" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(59, 130, 246, 0.08)); border: 2px solid rgba(79, 70, 229, 0.2);">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+          <!-- Avatar con Accessori -->
+          <div style="position: relative; width: 60px; height: 60px;">
+            <!-- Omino Grigio SVG -->
+            <svg width="60" height="60" viewBox="0 0 60 60" style="position: absolute; z-index: 1;">
+              <circle cx="30" cy="20" r="8" fill="#9CA3AF"/>
+              <path d="M30 30 C20 30, 15 35, 15 45 L45 45 C45 35, 40 30, 30 30 Z" fill="#9CA3AF"/>
+            </svg>
+            <!-- Accessori Acquistati -->
+            <div id="avatarAccessori" style="position: absolute; width: 60px; height: 60px; z-index: 2; pointer-events: none;">
+              <!-- Gli accessori verranno inseriti qui dinamicamente -->
+            </div>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem; color: var(--text);">Il Tuo Avatar</h3>
+            <p id="creditiDisplay" style="margin: 0; font-size: 1rem; font-weight: 600; color: var(--accent);">0 crediti</p>
+          </div>
+        </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem;">??</div>
+            <div style="font-size: 0.8rem; color: var(--muted);">Livello 1</div>
+          </div>
+        </div>
+        <div style="padding: 0 1rem 1rem;">
+          <div style="background: rgba(79, 70, 229, 0.1); border-radius: 8px; padding: 0.5rem; text-align: center;">
+            <div style="font-size: 0.9rem; color: var(--muted);">Prossimo livello</div>
+            <div style="background: var(--panel-strong); height: 8px; border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
+              <div id="progressBar" style="background: linear-gradient(90deg, var(--accent), #818cf8); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;">10 / 100 crediti</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop Avatar -->
+      <div class="session-card" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(74, 144, 226, 0.08)); border: 2px solid rgba(255, 107, 107, 0.2);">
+        <header>
+          <h2>?? Shop Avatar</h2>
+          <span class="pill" style="background: linear-gradient(135deg, #FF6B6B, #4A90E2);">Nuovo</span>
+        </header>
+        <div id="shopAvatarContent" style="max-height: 300px; overflow-y: auto;">
+          <!-- Gli accessori verranno generati dinamicamente -->
+        </div>
+      </div>
+
       <a href="generatore-schemi.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
         <header>
           <h2>Generatore Schemi</h2>
@@ -197,6 +245,248 @@
     if (!checkAuthentication()) {
       window.location.href = 'index.html';
     }
+
+    // SISTEMA CREDITI AVATAR
+    const STORAGE_CREDITI_KEY = 'bp_crediti';
+    const STORAGE_ACCESSORI_KEY = 'bp_accessori';
+    
+    // Inizializza crediti se non esistono
+    function initCrediti() {
+      if (!localStorage.getItem(STORAGE_CREDITI_KEY)) {
+        localStorage.setItem(STORAGE_CREDITI_KEY, '0');
+      }
+    }
+    
+    // Array degli accessori disponibili
+    const accessoriDisponibili = [
+      { id: 'cappello', nome: 'Cappello', prezzo: 50, svg: '<path d="M25 10 L35 10 L35 5 L25 5 Z" fill="#FF6B6B"/><path d="M20 10 L40 10 L35 5 L25 5 Z" fill="#FF6B6B"/>' },
+      { id: 'occhiali', nome: 'Occhiali', prezzo: 30, svg: '<circle cx="22" cy="18" r="8" fill="none" stroke="#4A90E2" stroke-width="2"/><circle cx="38" cy="18" r="8" fill="none" stroke="#4A90E2" stroke-width="2"/><path d="M30 18 L30 18" stroke="#4A90E2" stroke-width="2"/>' },
+      { id: 'mantello', nome: 'Mantello', prezzo: 80, svg: '<path d="M15 25 L45 25 L40 50 L20 50 Z" fill="#9B59B6" opacity="0.8"/><path d="M15 25 L45 25 L45 30 L15 30 Z" fill="#8E44AD"/>' },
+      { id: 'corona', nome: 'Corona', prezzo: 100, svg: '<path d="M20 15 L25 5 L30 12 L35 5 L40 15 L35 20 L25 20 Z" fill="#FFD700"/><circle cx="25" cy="10" r="2" fill="#FFF"/><circle cx="35" cy="10" r="2" fill="#FFF"/><circle cx="30" cy="15" r="2" fill="#FFF"/>' },
+      { id: 'sciarpa', nome: 'Sciarpa', prezzo: 40, svg: '<path d="M15 28 L45 28 L45 35 L15 35 Z" fill="#E74C3C"/><path d="M15 31 L45 31 L45 32 L15 32 Z" fill="#C0392B"/>' },
+      { id: 'cuffia', nome: 'Cuffia', prezzo: 35, svg: '<ellipse cx="30" cy="12" rx="12" ry="8" fill="#34495E"/><path d="M18 12 L42 12" stroke="#2C3E50" stroke-width="1"/>' }
+    ];
+    
+    // Inizializza accessori acquistati
+    function initAccessori() {
+      if (!localStorage.getItem(STORAGE_ACCESSORI_KEY)) {
+        localStorage.setItem(STORAGE_ACCESSORI_KEY, JSON.stringify([]));
+      }
+    }
+    
+    // Ottieni accessori acquistati
+    function getAccessoriAcquistati() {
+      return JSON.parse(localStorage.getItem(STORAGE_ACCESSORI_KEY) || '[]');
+    }
+    
+    // Controlla se un accessorio è acquistato
+    function isAccessorioAcquistato(accessorioId) {
+      return getAccessoriAcquistati().includes(accessorioId);
+    }
+    
+    // Acquista accessorio
+    function acquistaAccessorio(accessorioId, prezzo) {
+      const crediti = getCrediti();
+      if (crediti >= prezzo) {
+        // Sottrai crediti
+        const nuoviCrediti = crediti - prezzo;
+        localStorage.setItem(STORAGE_CREDITI_KEY, nuoviCrediti.toString());
+        
+        // Aggiungi accessorio
+        const accessori = getAccessoriAcquistati();
+        if (!accessori.includes(accessorioId)) {
+          accessori.push(accessorioId);
+          localStorage.setItem(STORAGE_ACCESSORI_KEY, JSON.stringify(accessori));
+        }
+        
+        updateAvatarDisplay();
+        renderShopAvatar();
+        showCreditNotification(-prezzo);
+        return true;
+      }
+      return false;
+    }
+    
+    // Ottieni crediti attuali
+    function getCrediti() {
+      return parseInt(localStorage.getItem(STORAGE_CREDITI_KEY) || '0');
+    }
+    
+    // Aggiungi crediti
+    function aggiungiCrediti(importo) {
+      const attuali = getCrediti();
+      const nuovi = attuali + importo;
+      localStorage.setItem(STORAGE_CREDITI_KEY, nuovi.toString());
+      updateAvatarDisplay();
+      
+      // Mostra notifica
+      showCreditNotification(importo);
+    }
+    
+    // Mostra notifica crediti
+    function showCreditNotification(importo) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+      `;
+      notification.textContent = `+${importo} crediti!`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
+    
+    // Aggiorna display avatar
+    function updateAvatarDisplay() {
+      const creditiElement = document.getElementById('creditiDisplay');
+      const progressBar = document.getElementById('progressBar');
+      const crediti = getCrediti();
+      
+      if (creditiElement) {
+        creditiElement.textContent = crediti + ' crediti';
+      }
+      
+      // Aggiorna barra di progresso (ogni 100 crediti = nuovo livello)
+      if (progressBar) {
+        const progress = (crediti % 100);
+        progressBar.style.width = progress + '%';
+        
+        // Aggiorna testo progresso
+        const progressText = progressBar.parentElement?.nextElementSibling;
+        if (progressText) {
+          progressText.textContent = `${progress} / 100 crediti`;
+        }
+      }
+    }
+    
+    // Renderizza Shop Avatar
+    function renderShopAvatar() {
+      const shopContent = document.getElementById('shopAvatarContent');
+      if (!shopContent) return;
+      
+      const crediti = getCrediti();
+      const accessoriAcquistati = getAccessoriAcquistati();
+      
+      let shopHTML = '<div style="display: grid; gap: 0.5rem;">';
+      
+      accessoriDisponibili.forEach(accessorio => {
+        const isAcquistato = accessoriAcquistati.includes(accessorio.id);
+        const puoAcquistare = crediti >= accessorio.prezzo && !isAcquistato;
+        
+        shopHTML += `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: ${isAcquistato ? 'rgba(76, 175, 80, 0.1)' : 'rgba(79, 70, 229, 0.05)'}; border-radius: 12px; border: 1px solid ${isAcquistato ? '#4CAF50' : 'var(--border)'};">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <svg width="40" height="40" viewBox="0 0 60 60" style="fill: none;">
+                  ${accessorio.svg}
+                </svg>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: var(--text); font-size: 0.9rem;">${accessorio.nome}</div>
+                <div style="color: ${isAcquistato ? '#4CAF50' : 'var(--accent)'}; font-size: 0.8rem; font-weight: 500;">
+                  ${isAcquistato ? '?? Acquistato' : `${accessorio.prezzo} crediti`}
+                </div>
+              </div>
+            </div>
+            ${!isAcquistato ? `
+              <button 
+                onclick="handleAcquista('${accessorio.id}', ${accessorio.prezzo})"
+                style="
+                  padding: 0.4rem 0.8rem;
+                  border: none;
+                  border-radius: 8px;
+                  font-size: 0.8rem;
+                  font-weight: 600;
+                  cursor: ${puoAcquistare ? 'pointer' : 'not-allowed'};
+                  background: ${puoAcquistare ? 'linear-gradient(135deg, var(--accent), #818cf8)' : 'rgba(156, 163, 175, 0.3)'};
+                  color: ${puoAcquistare ? 'white' : '#9CA3AF'};
+                  transition: all 0.2s ease;
+                "
+                ${!puoAcquistare ? 'disabled' : ''}
+              >
+                ${puoAcquistare ? 'Acquista' : crediti < accessorio.prezzo ? 'Crediti insufficienti' : 'Già tuo'}
+              </button>
+            ` : `
+              <div style="color: #4CAF50; font-size: 0.8rem; font-weight: 600;">??</div>
+            `}
+          </div>
+        `;
+      });
+      
+      shopHTML += '</div>';
+      shopContent.innerHTML = shopHTML;
+    }
+    
+    // Renderizza accessori sull'avatar
+    function renderAvatarAccessori() {
+      const avatarAccessori = document.getElementById('avatarAccessori');
+      if (!avatarAccessori) return;
+      
+      const accessoriAcquistati = getAccessoriAcquistati();
+      let accessoriHTML = '';
+      
+      accessoriAcquistati.forEach(accessorioId => {
+        const accessorio = accessoriDisponibili.find(a => a.id === accessorId);
+        if (accessorio) {
+          accessoriHTML += `
+            <svg width="60" height="60" viewBox="0 0 60 60" style="position: absolute; z-index: 2;">
+              ${accessorio.svg}
+            </svg>
+          `;
+        }
+      });
+      
+      avatarAccessori.innerHTML = accessoriHTML;
+    }
+    
+    // Gestione acquisto accessorio
+    function handleAcquista(accessorioId, prezzo) {
+      if (acquistaAccessorio(accessorioId, prezzo)) {
+        renderAvatarAccessori();
+      } else {
+        // Mostra messaggio di errore
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #ef4444, #dc2626);
+          color: white;
+          padding: 1rem 1.5rem;
+          border-radius: 12px;
+          font-weight: 600;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+          z-index: 10000;
+          animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = 'Crediti insufficienti!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.style.animation = 'slideOut 0.3s ease';
+          setTimeout(() => notification.remove(), 300);
+        }, 2000);
+      }
+    }
+    
+    // Inizializza
+    initCrediti();
+    initAccessori();
+    updateAvatarDisplay();
+    renderShopAvatar();
+    renderAvatarAccessori();
 
     // HAMBURGER MENU
     const hamburgerBtn = document.getElementById('hamburgerBtn');

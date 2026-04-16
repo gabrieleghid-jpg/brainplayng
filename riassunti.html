@@ -507,6 +507,49 @@
       window.location.href = 'index.html';
     }
 
+    // SISTEMA CREDITI AVATAR
+    const STORAGE_CREDITI_KEY = 'bp_crediti';
+    
+    // Ottieni crediti attuali
+    function getCrediti() {
+      return parseInt(localStorage.getItem(STORAGE_CREDITI_KEY) || '0');
+    }
+    
+    // Aggiungi crediti
+    function aggiungiCrediti(importo) {
+      const attuali = getCrediti();
+      const nuovi = attuali + importo;
+      localStorage.setItem(STORAGE_CREDITI_KEY, nuovi.toString());
+      
+      // Mostra notifica
+      showCreditNotification(importo);
+    }
+    
+    // Mostra notifica crediti
+    function showCreditNotification(importo) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+      `;
+      notification.textContent = `+${importo} crediti!`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
+
     // HAMBURGER MENU
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const sidebar = document.querySelector('.sidebar');
@@ -999,6 +1042,7 @@ REGOLE SPECIFICHE:
     document.getElementById('checkQuizAnswers')?.addEventListener('click', () => {
       if (!analysisResults || !analysisResults.quiz) return;
       
+      let quizCompleted = true;
       const quizQuestions = document.querySelectorAll('.quiz-question');
       quizQuestions.forEach((questionElement, questionIndex) => {
         const question = analysisResults.quiz.domande[questionIndex];
@@ -1024,8 +1068,18 @@ REGOLE SPECIFICHE:
             correctAnswerDiv.style.color = '#ef4444';
             correctAnswerDiv.innerHTML = `Risposta corretta: <strong>${question.risposta_breve}</strong> ? La tua risposta: "${userAnswer.value}"`;
           }
+          
+          // Check if user has answered all questions
+          if (!userAnswer.value.trim()) {
+            quizCompleted = false;
+          }
         }
       });
+      
+      // Add credits if quiz is completed
+      if (quizCompleted) {
+        aggiungiCrediti(10);
+      }
     });
   </script>
 </body>
