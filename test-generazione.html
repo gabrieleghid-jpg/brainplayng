@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Generazione</title>
+  <link rel="stylesheet" href="dashboard.css" />
+  <style>
+    .test-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+    }
+    .test-section {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .test-input {
+      width: 100%;
+      min-height: 100px;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel-strong);
+      color: var(--text);
+      font-family: inherit;
+      margin-bottom: 1rem;
+    }
+    .test-btn {
+      background: linear-gradient(135deg, var(--accent), #818cf8);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .test-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+    .test-btn:disabled {
+      background: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+    .result-section {
+      background: rgba(79, 70, 229, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+    .success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid #10b981;
+      color: #10b981;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-container">
+    <h1>🧪 Test Sistema Generazione</h1>
+    
+    <div class="test-section">
+      <h2>Test API Hugging Face</h2>
+      <textarea id="testInput" class="test-input" placeholder="Inserisci un argomento per testare la generazione...">fotosintesi clorofilliana</textarea>
+      <button id="testBtn" class="test-btn">Testa Generazione</button>
+      <div id="testResult"></div>
+    </div>
+  </div>
+
+  <script>
+    const testBtn = document.getElementById('testBtn');
+    const testInput = document.getElementById('testInput');
+    const testResult = document.getElementById('testResult');
+
+    testBtn.addEventListener('click', async () => {
+      const topic = testInput.value.trim();
+      if (!topic) {
+        testResult.innerHTML = '<div class="error">Inserisci un argomento</div>';
+        return;
+      }
+
+      testBtn.disabled = true;
+      testBtn.textContent = '🔄 Test in corso...';
+      testResult.innerHTML = '';
+
+      try {
+        // Test diretto con Hugging Face API
+        const response = await fetch('http://localhost:3001/api/hf-proxy', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            apiUrl: 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium',
+            inputs: `Genera un riassunto breve su: ${topic}. Includi i punti chiave principali.`,
+            parameters: {
+              max_new_tokens: 200,
+              temperature: 0.7
+            }
+          })
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Error response:', errorText);
+          testResult.innerHTML = `<div class="error">Errore ${response.status}: ${errorText}</div>`;
+          return;
+        }
+
+        const result = await response.json();
+        console.log('API Response:', result);
+
+        if (result.error) {
+          testResult.innerHTML = `<div class="error">Errore API: ${result.error}</div>`;
+        } else if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+          const generatedText = result.data[0].generated_text || 'Nessun testo generato';
+          testResult.innerHTML = `<div class="success">✅ Generazione riuscita!<br><strong>Testo:</strong> ${generatedText}</div>`;
+        } else {
+          testResult.innerHTML = `<div class="error">Formato risposta non previsto: ${JSON.stringify(result)}</div>`;
+        }
+
+      } catch (error) {
+        console.error('Test error:', error);
+        testResult.innerHTML = `<div class="error">Errore: ${error.message}</div>`;
+      } finally {
+        testBtn.disabled = false;
+        testBtn.textContent = 'Testa Generazione';
+      }
+    });
+  </script>
+</body>
+</html>

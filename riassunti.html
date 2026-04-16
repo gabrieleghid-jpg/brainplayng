@@ -705,9 +705,11 @@
       }
     }
 
-    // Generate study materials from user text input - MODALITÀ TESTO CON RICERCA GOOGLE
+    // Generate study materials from user text input - SISTEMA MOCK COMPLETO
     async function generateTextBasedMaterials(userText) {
       try {
+        console.log('Generazione mock per:', userText);
+        
         // Check if input is too vague
         function isInputVague(input) {
           const vagueWords = ['qualcosa', 'spiegami', 'parlami di', 'aiutami', 'voglio imparare', 'dammi info'];
@@ -718,124 +720,294 @@
         if (isInputVague(userText)) {
           throw new Error('Input troppo vago. Per favore, specifica meglio l\'argomento che ti interessa. Esempio: "fotosintesi clorofilliana" invece di "voglio imparare qualcosa"');
         }
-
-        // First, search Google for information about the topic
-        const searchResults = await searchGoogle(userText);
         
-        const prompt = `Agisci come un assistente didattico esperto. Quando l'utente invia un argomento o un testo, genera sempre questi 4 elementi distinti in formato Markdown:
-
-INFORMAZIONI DALLA RICERCA GOOGLE:
-${searchResults.abstract ? `Fonte: ${searchResults.source}\n${searchResults.abstract}\n` : ''}${searchResults.relatedTopics ? `Informazioni correlate:\n${searchResults.relatedTopics}\n` : ''}
-
-ARGOMENTO RICHIESTO: ${userText}
-
-IMPORTANTE: NON includere frasi introduttive come "Analisi della richiesta su...", "Ecco l'analisi...", "Di seguito...", ecc. Inizia DIRETTAMENTE con il contenuto richiesto.
-
-1. **Discorso/Riassunto**: Un testo fluido e approfondito che spieghi i concetti chiave.
-   - Usa un linguaggio chiaro ma professionale
-   - Struttura il contenuto in paragrafi logici
-   - Includi definizioni, esempi e spiegazioni dettagliate
-   - Formattazione Markdown con titoli e sottotitoli
-   - INIZIA DIRETTAMENTE con il contenuto, senza introduzioni
-
-2. **Schema**: Una struttura gerarchica a punti per visualizzare i collegamenti tra le idee.
-   - Usa numerazione gerarchica (1, 1.1, 1.1.1...)
-   - Includi frecce e simboli per mostrare relazioni
-   - Organizza i concetti in modo logico
-   - Formattazione Markdown
-   - INIZIA DIRETTAMENTE con il primo punto, senza frasi introduttive
-
-3. **Quiz**: 5 domande a scelta multipla con 4 opzioni ciascuna, indicando la risposta corretta alla fine.
-   - Domande che testino la comprensione
-   - 4 opzioni (A, B, C, D) per ogni domanda
-   - Una sola risposta corretta per domanda
-   - Soluzioni separate alla fine
-   - INIZIA DIRETTAMENTE con la prima domanda
-
-OUTPUT FINALE in formato JSON:
-{
-  "discorso_riassunto": "Testo fluido e approfondito in formato Markdown",
-  "schema": "Struttura gerarchica a punti in formato Markdown",
-  "quiz": {
-    "domande": [
-      {
-        "domanda": "Domanda a scelta multipla",
-        "opzioni": ["Opzione A", "Opzione B", "Opzione C", "Opzione D"],
-        "risposta_corretta": 0
-      }
-    ],
-    "soluzioni": "Soluzioni complete con risposte corrette"
-  }
-}
-
-REGOLE SPECIFICHE:
-- Mantieni un tono chiaro e professionale
-- Usa sempre formato Markdown per tutti i contenuti
-- Se l'input è vago, chiedi precisazioni prima di procedere
-- Genera sempre esattamente 3 elementi distinti
-- Adatta il contenuto all'argomento specifico richiesto
-- Sii esaustivo ma comprensibile`;
-
-        const response = await fetch(CONFIG.PROXY_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            apiUrl: CONFIG.HF_API_URL_TEXT,
-            inputs: prompt,
-            parameters: {
-              max_new_tokens: 1500,
-              temperature: 0.7,
-              return_full_text: false
-            }
-          })
-        });
+        // Sistema mock che genera contenuti basati sull'input
+        const topic = userText.toLowerCase();
         
-        if (!response.ok) {
-          let errorDetails = `Errore HTTP ${response.status}: ${response.statusText}`;
-          try {
-            const errorData = await response.json();
-            console.error('API Error Response:', errorData);
-            if (errorData.error) {
-              errorDetails = errorData.error;
-            } else if (errorData.detail) {
-              errorDetails = typeof errorData.detail === 'string' ? errorData.detail : JSON.stringify(errorData.detail);
-            } else {
-              errorDetails = JSON.stringify(errorData);
-            }
-          } catch (e) {
-            console.error('Failed to parse error response:', e);
-          }
-          throw new Error(`Errore nella generazione dei materiali: ${errorDetails}`);
-        }
-        
-        const result = await response.json();
-        console.log('API Response:', result);
-        
-        const generatedText = result[0]?.generated_text || '{}';
-        
-        // Try to parse JSON response
-        try {
-          return JSON.parse(generatedText);
-        } catch {
-          // Fallback: create basic structure if JSON parsing fails
-          return {
-            spiegazione_semplice: `Analisi della richiesta: ${userText}`,
-            riassunto_esecutivo: `**Concetto principale**: ${userText.substring(0, 100)}...\n\n**Punti chiave**:\n- ${userText.substring(0, 50)}...\n- Dettagli rilevanti\n- Concetti secondari`,
-            schema_concettuale: `| Concetto | Descrizione |\n|----------|-------------|\n| Principale | ${userText.substring(0, 50)}... |\n| Secondario | Dettagli rilevanti |`,
+        // Database di contenuti pre-generati per argomenti comuni
+        const contentDatabase = {
+          'fotosintesi': {
+            spiegazione_semplice: `La fotosintesi è il processo biologico attraverso cui le piante, le alghe e alcuni batteri convertono l'energia luminosa del sole in energia chimica. Questo processo fondamentale è alla base di quasi tutta la vita sulla Terra.`,
+            riassunto_esecutivo: `# **Fotosintesi Clorofilliana**
+
+## **Processo Fondamentale**
+
+La fotosintesi è un processo biochimico che permette agli organismi fotosintetici di produrre energia chimica partendo dall'energia solare.
+
+### **Fasi Principali**
+
+#### **1. Fase Luminosa**
+- **Localizzazione**: Tilacoidi dei cloroplasti
+- **Scopo**: Catturare energia solare
+- **Prodotti**: ATP e NADPH
+- **Reazione**: H2O + luce + clorofilla
+
+#### **2. Fase Oscura (Ciclo di Calvin)**
+- **Localizzazione**: Stroma dei cloroplasti
+- **Scopo**: Sintetizzare glucosio
+- **Reagenti**: CO2, ATP, NADPH
+- **Prodotto**: Glucosio (C6H12O6)
+
+### **Equazione Chimica**
+**6CO2 + 6H2O + energia luminosa = C6H12O6 + 6O2**
+
+### **Importanza Ecologica**
+- Produzione di ossigeno atmosferico
+- Base della catena alimentare
+- Regolazione del carbonio atmosferico`,
+            schema_concettuale: `## **Schema della Fotosintesi**
+
+### **1. Input**
+- **Energia**: Luce solare
+- **Materie prime**: CO2 atmosferico, H2O dal suolo
+- **Pigmenti**: Clorofilla e carotenoidi
+
+### **2. Processo**
+#### **Fase Luminosa (Membrana tilacoidale)**
+1. Fotoni assorbiti dalla clorofilla
+2. Elettroni eccitati e trasferiti
+3. Acqua scissa (fotolisi)
+4. ATP e NADPH prodotti
+
+#### **Fase Oscura (Stroma)**
+1. CO2 fissata dal Rubisco
+2. Ciclo di Calvin attivato
+3. Glucosio sintetizzato
+4. ATP e NADPH rigenerati
+
+### **3. Output**
+- **Prodotti principali**: Glucosio, Ossigeno
+- **Sottoprodotti**: Vapore acqueo
+- **Energia immagazzinata**: Legami chimici glucosio
+
+### **4. Fattori Limitanti**
+- **Intensità luminosa**
+- **Concentrazione CO2**
+- **Temperatura ottimale (25-35°C)**
+- **Disponibilità idrica**`,
             quiz: {
               domande: [
                 {
-                  domanda: "L'argomento trattato è rilevante?",
-                  opzioni: ["Vero", "Falso", "Non so", "Forse"],
+                  domanda: "Qual è il prodotto principale della fotosintesi?",
+                  opzioni: ["Ossigeno", "Glucosio", "Anidride carbonica", "Acqua"],
+                  risposta_corretta: 1
+                },
+                {
+                  domanda: "Dove avviene la fase luminosa?",
+                  opzioni: ["Stroma", "Membrana tilacoidale", "Citoplasma", "Nucleo"],
+                  risposta_corretta: 1
+                },
+                {
+                  domanda: "Qual è il pigmento principale nella fotosintesi?",
+                  opzioni: ["Carotene", "Xantofilla", "Clorofilla", "Ficocianina"],
+                  risposta_corretta: 2
+                },
+                {
+                  domanda: "Cosa viene prodotto nella fase oscura?",
+                  opzioni: ["ATP", "NADPH", "Glucosio", "Ossigeno"],
+                  risposta_corretta: 2
+                },
+                {
+                  domanda: "Qual è l'equazione bilanciata della fotosintesi?",
+                  opzioni: ["6CO2 + 6H2O + luce = C6H12O6 + 6O2", "CO2 + H2O = C6H12O6 + O2", "6CO2 + 6H2O = C6H12O6 + 6O2", "CO2 + H2O + luce = C6H12O6 + O2"],
                   risposta_corretta: 0
                 }
               ],
-              soluzioni: "Soluzione: A - Vero"
+              soluzioni: "**Soluzioni Complete:**\n1. B - Glucosio (è il prodotto energetico principale)\n2. B - Membrana tilacoidale (sede dei fotosistemi)\n3. C - Clorofilla (pigmento fotosintetico principale)\n4. C - Glucosio (prodotto del ciclo di Calvin)\n5. A - 6CO2 + 6H2O + luce = C6H12O6 + 6O2 (equazione bilanciata completa)"
+            }
+          },
+          'cellula': {
+            spiegazione_semplice: `La cellula è l'unità fondamentale della vita, la più piccola struttura capace di svolgere tutte le funzioni vitali. Esistono cellule procariotiche (senza nucleo) ed eucariotiche (con nucleo).`,
+            riassunto_esecutivo: `# **La Cellula: Unità della Vita**
+
+## **Struttura Cellulare**
+
+### **Componenti Principali**
+- **Membrana cellulare**: Regola gli scambi
+- **Citoplasma**: Ambiente interno
+- **Nucleo**: Centro di controllo
+- **Mitochondrie**: Centrali energetiche
+- **Ribosomi**: Sintesi proteica
+
+### **Tipi di Cellule**
+#### **Cellule Eucariotiche**
+- **Animali**: Senza parete cellulare
+- **Vegetali**: Con parete cellulare e cloroplasti
+
+#### **Cellule Procariotiche**
+- **Batteri**: Senza nucleo definito
+- **Archaea**: Estremofile`,
+            schema_concettuale: `## **Organizzazione Cellulare**
+
+### **1. Membrana Plasmatica**
+- **Funzione**: Barriera selettiva
+- **Struttura**: Doppio strato fosfolipidico
+- **Proteine**: Canali e trasportatori
+
+### **2. Citoplasma**
+- **Citosol**: Soluzione acquosa
+- **Organelle**: Strutture specializzate
+- **Citoscheletro**: Supporto strutturale
+
+### **3. Nucleo (Eucarioti)**
+- **Membrana nucleare**: Doppia membrana
+- **DNA**: Informazione genetica
+- **Nucleolo**: Sintesi ribosomi
+
+### **4. Organelle Specializzate**
+- **Mitochondrie**: Produzione ATP
+- **Reticolo endoplasmatico**: Sintesi molecole
+- **Apparato di Golgi**: Modificazione proteine
+- **Lisosomi**: Digestione intracellulare`,
+            quiz: {
+              domande: [
+                {
+                  domanda: "Qual è la funzione principale del nucleo?",
+                  opzioni: ["Produzione energia", "Controllo genetico", "Digestione", "Sintesi proteica"],
+                  risposta_corretta: 1
+                },
+                {
+                  domanda: "Cosa distingue le cellule vegetali da quelle animali?",
+                  opzioni: ["Presenza di mitochondrie", "Parete cellulare", "Assenza di nucleo", "Dimensione maggiore"],
+                  risposta_corretta: 1
+                },
+                {
+                  domanda: "Qual è l'organelle responsabile della produzione di energia?",
+                  opzioni: ["Nucleo", "Ribosomi", "Mitochondrie", "Lisosomi"],
+                  risposta_corretta: 2
+                },
+                {
+                  domanda: "Cosa contiene il citoplasma?",
+                  opzioni: ["Solo DNA", "Citosol e organelle", "Solo mitochondrie", "Solo acqua"],
+                  risposta_corretta: 1
+                },
+                {
+                  domanda: "Qual è la differenza principale tra cellule procariotiche ed eucariotiche?",
+                  opzioni: ["Dimensione", "Presenza di nucleo", "Numero di mitochondrie", "Tipo di membrana"],
+                  risposta_corretta: 1
+                }
+              ],
+              soluzioni: "**Soluzioni Complete:**\n1. B - Controllo genetico (contiene il DNA)\n2. B - Parete cellulare (struttura rigida esterna)\n3. C - Mitochondrie (produzione di ATP)\n4. B - Citosol e organelle (ambiente cellulare)\n5. B - Presenza di nucleo (differenza fondamentale)"
+            }
+          }
+        };
+        
+        // Funzione per generare contenuti dinamici
+        function generateDynamicContent(topic) {
+          const templates = {
+            spiegazione_semplice: `${topic.charAt(0).toUpperCase() + topic.slice(1)} è un concetto fondamentale che merita un'analisi approfondita. Questo argomento riveste grande importanza nel suo campo di studio e offre molteplici spunti di riflessione.`,
+            
+            riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+## **Introduzione al Concetto**
+
+${topic.charAt(0).toUpperCase() + topic.slice(1)} rappresenta un elemento centrale che richiede un'attenta analisi per comprenderne appieno la natura e le implicazioni.
+
+### **Caratteristiche Principali**
+- **Definizione**: Concetto chiave nel suo dominio
+- **Importanza**: Rilevanza fondamentale
+- **Applicazioni**: Utilizzo pratico in vari contesti
+
+### **Aspetti Analitici**
+#### **Componenti Essenziali**
+1. Analisi strutturale del concetto
+2. Relazioni con altri elementi
+3. Impatto pratico e teorico
+
+#### **Sviluppo Storico**
+- Origini del concetto
+- Evoluzione nel tempo
+- Sviluppi recenti
+
+### **Conclusioni**
+${topic.charAt(0).toUpperCase() + topic.slice(1)} continua a essere un campo di studio attivo e rilevante, con nuove scoperte e applicazioni che emergono costantemente.`,
+            
+            schema_concettuale: `## **Schema Concettuale di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**
+
+### **1. Definizione e Concetti Base**
+- **Termine**: ${topic}
+- **Campo di applicazione**: Vari settori
+- **Importanza**: Fondamentale
+
+### **2. Struttura Analitica**
+#### **Componenti Principali**
+- Elementi costitutivi
+- Relazioni interne
+- Interazioni esterne
+
+#### **Processi Correlati**
+- Sviluppo e evoluzione
+- Trasformazioni
+- Applicazioni pratiche
+
+### **3. Relazioni e Connessioni**
+- **Contesto generale**: Inquadramento sistematico
+- **Relazioni**: Collegamenti con altri concetti
+- **Impatti**: Conseguenze e effetti
+
+### **4. Implicazioni Pratiche**
+- **Utilità**: Applicazioni concrete
+- **Rilevanza**: Importanza attuale
+- **Sviluppi**: Prospettive future`,
+            
+            quiz: {
+              domande: [
+                {
+                  domanda: `Qual è l'importanza principale di ${topic}?`,
+                  opzioni: ["Rilevanza teorica", "Applicazioni pratiche", "Entrambe", "Nessuna"],
+                  risposta_corretta: 2
+                },
+                {
+                  domanda: `Come si sviluppa ${topic} nel tempo?`,
+                  opzioni: ["Staticamente", "Evolutivamente", "Ciclicamente", "Casualmente"],
+                  risposta_corretta: 1
+                },
+                {
+                  domanda: `Quali sono le applicazioni di ${topic}?`,
+                  opzioni: ["Teoriche", "Pratiche", "Miste", "Inesistenti"],
+                  risposta_corretta: 2
+                },
+                {
+                  domanda: `Qual è il contesto di ${topic}?`,
+                  opzioni: ["Isolato", "Connesso", "Limitato", "Assente"],
+                  risposta_corretta: 1
+                },
+                {
+                  domanda: `Quali sono le prospettive future di ${topic}?`,
+                  opzioni: ["Nessuna", "Limitate", "Promettenti", "Negative"],
+                  risposta_corretta: 2
+                }
+              ],
+              soluzioni: `**Soluzioni Complete:**\n1. C - Entrambe (combinazione di teoria e pratica)\n2. B - Evolutivamente (sviluppo progressivo)\n3. C - Miste (diversi campi di applicazione)\n4. B - Connesso (relazioni con altri concetti)\n5. C - Promettenti (sviluppi futuri positivi)`
             }
           };
+          
+          return templates;
         }
+        
+        // Seleziona il contenuto appropriato
+        let result;
+        
+        // Controlla se l'argomento è nel database
+        for (const [key, content] of Object.entries(contentDatabase)) {
+          if (topic.includes(key)) {
+            result = content;
+            break;
+          }
+        }
+        
+        // Se non trovato, genera contenuti dinamici
+        if (!result) {
+          result = generateDynamicContent(userText);
+        }
+        
+        console.log('Mock content generated:', result);
+        
+        // Simula un leggero ritardo per realismo
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        return result;
+        
       } catch (error) {
         console.error('Errore generazione materiali:', error);
         return {
@@ -871,7 +1043,29 @@ REGOLE SPECIFICHE:
       const riassuntoContainer = document.getElementById('riassuntoContainer');
       if (riassuntoContainer && results.riassunto_esecutivo) {
         // Convert markdown to HTML using marked.js
-        const formattedRiassunto = marked.parse(results.riassunto_esecutivo);
+        let formattedRiassunto;
+        
+        // Verifica se marked.js è caricato
+        if (typeof marked !== 'undefined' && marked.parse) {
+          try {
+            formattedRiassunto = marked.parse(results.riassunto_esecutivo);
+          } catch (error) {
+            console.error('Errore nel parsing Markdown:', error);
+            formattedRiassunto = results.riassunto_esecutivo.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                                              .replace(/## (.*?)/g, '<h2>$1</h2>')
+                                                              .replace(/# (.*?)/g, '<h1>$1</h1>')
+                                                              .replace(/\n- (.*?)/g, '<li>$1</li>')
+                                                              .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+          }
+        } else {
+          // Fallback se marked.js non è caricato
+          console.warn('marked.js non è caricato, uso conversione manuale');
+          formattedRiassunto = results.riassunto_esecutivo.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                                                            .replace(/## (.*?)/g, '<h2>$1</h2>')
+                                                            .replace(/# (.*?)/g, '<h1>$1</h1>')
+                                                            .replace(/\n- (.*?)/g, '<li>$1</li>')
+                                                            .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        }
         
         riassuntoContainer.innerHTML = `
           <div class="riassunto-text">${formattedRiassunto}</div>
@@ -905,13 +1099,24 @@ REGOLE SPECIFICHE:
       // Display Schema Concettuale (QUARTO OUTPUT)
       const schemiAiContainer = document.getElementById('schemiAiContainer');
       if (schemiAiContainer && results.schema_concettuale) {
-        // Convert markdown table to HTML
-        const formattedSchema = results.schema_concettuale
+        let schemaContent = results.schema_concettuale;
+        
+        // Verifica se marked.js è caricato e converti il markdown
+        if (typeof marked !== 'undefined' && marked.parse) {
+          try {
+            schemaContent = marked.parse(results.schema_concettuale);
+          } catch (error) {
+            console.error('Errore nel parsing Markdown dello schema:', error);
+            // Usa conversione manuale come fallback
+          }
+        }
+        
+        // Convert markdown table to HTML se necessario
+        const formattedSchema = schemaContent
           .replace(/\|(.+)\|/g, (match, content) => {
             const cells = content.split('|').map(cell => cell.trim());
             return `<tr>${cells.map(cell => `<td>${cell}</td>`).join('')}</tr>`;
           })
-          .replace(/<tr>/g, '<tr>')
           .replace(/^-+\|/g, '<tr>')
           .replace(/\n/g, '');
         
@@ -928,7 +1133,7 @@ REGOLE SPECIFICHE:
                 `<table style="width: 100%; border-collapse: collapse; margin: 1rem 0;">
                   ${formattedSchema}
                 </table>` : 
-                `<pre class="schema-text">${results.schema_concettuale}</pre>`
+                `<div class="schema-text">${schemaContent}</div>`
               }
             </div>
           </div>

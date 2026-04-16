@@ -15,7 +15,7 @@ const PORT = 3001;
 const CONFIG = {
   HF_TOKEN: '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',
   HF_API_URL_VISION: 'https://api-inference.huggingface.co/models/Salesforce/blip-image-captioning-large',
-  HF_API_URL_TEXT: 'https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.1'
+  HF_API_URL_TEXT: 'https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium'
 };
 
 // Funzione per fare richieste HTTPS con handling completo
@@ -156,7 +156,21 @@ const server = http.createServer(async (req, res) => {
         try {
           console.log('Received request body:', body.substring(0, 200) + '...');
           
-          const { apiUrl, inputs, parameters } = JSON.parse(body);
+          let parsedBody;
+          try {
+            parsedBody = JSON.parse(body);
+          } catch (parseError) {
+            console.error('JSON parse error:', parseError);
+            console.error('Raw body was:', body);
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ 
+              error: 'JSON non valido nel corpo della richiesta',
+              details: parseError.message 
+            }));
+            return;
+          }
+          
+          const { apiUrl, inputs, parameters } = parsedBody;
           
           if (!apiUrl || !inputs) {
             console.error('Missing apiUrl or inputs');
