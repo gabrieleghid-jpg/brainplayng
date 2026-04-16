@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   
   <style>
     .upload-section {
@@ -156,6 +157,71 @@
       padding: 1.5rem;
       line-height: 1.8;
       color: var(--text);
+    }
+    
+    /* Stili per Markdown convertito in HTML */
+    .riassunto-text h1, .riassunto-text h2, .riassunto-text h3 {
+      color: var(--accent);
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    
+    .riassunto-text h1 {
+      font-size: 1.8rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.5rem;
+    }
+    
+    .riassunto-text h2 {
+      font-size: 1.5rem;
+    }
+    
+    .riassunto-text h3 {
+      font-size: 1.3rem;
+    }
+    
+    .riassunto-text strong {
+      color: var(--accent);
+      font-weight: 700;
+      background: rgba(79, 70, 229, 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    
+    .riassunto-text ul {
+      margin: 1rem 0;
+      padding-left: 2rem;
+    }
+    
+    .riassunto-text li {
+      margin: 0.5rem 0;
+      padding: 0.3rem 0;
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      background: rgba(79, 70, 229, 0.05);
+      border-radius: 0 4px 4px 0;
+    }
+    
+    .riassunto-text p {
+      margin: 1rem 0;
+      text-align: justify;
+    }
+    
+    .riassunto-text blockquote {
+      border-left: 4px solid var(--accent);
+      padding-left: 1rem;
+      margin: 1rem 0;
+      font-style: italic;
+      color: var(--muted);
+    }
+    
+    .riassunto-text code {
+      background: rgba(79, 70, 229, 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      color: var(--accent);
     }
     
     .schemi-ai-header {
@@ -616,28 +682,32 @@
         const prompt = `Agisci come un assistente didattico esperto. Quando l'utente invia un argomento o un testo, genera sempre questi 4 elementi distinti in formato Markdown:
 
 INFORMAZIONI DALLA RICERCA GOOGLE:
-${searchResults.abstract ? `Fonte: ${searchResults.source}\n${searchResults.abstract}\n` : ''}
-${searchResults.relatedTopics ? `Informazioni correlate:\n${searchResults.relatedTopics}\n` : ''}
+${searchResults.abstract ? `Fonte: ${searchResults.source}\n${searchResults.abstract}\n` : ''}${searchResults.relatedTopics ? `Informazioni correlate:\n${searchResults.relatedTopics}\n` : ''}
 
 ARGOMENTO RICHIESTO: ${userText}
+
+IMPORTANTE: NON includere frasi introduttive come "Analisi della richiesta su...", "Ecco l'analisi...", "Di seguito...", ecc. Inizia DIRETTAMENTE con il contenuto richiesto.
 
 1. **Discorso/Riassunto**: Un testo fluido e approfondito che spieghi i concetti chiave.
    - Usa un linguaggio chiaro ma professionale
    - Struttura il contenuto in paragrafi logici
    - Includi definizioni, esempi e spiegazioni dettagliate
    - Formattazione Markdown con titoli e sottotitoli
+   - INIZIA DIRETTAMENTE con il contenuto, senza introduzioni
 
 2. **Schema**: Una struttura gerarchica a punti per visualizzare i collegamenti tra le idee.
    - Usa numerazione gerarchica (1, 1.1, 1.1.1...)
    - Includi frecce e simboli per mostrare relazioni
    - Organizza i concetti in modo logico
    - Formattazione Markdown
+   - INIZIA DIRETTAMENTE con il primo punto, senza frasi introduttive
 
 3. **Quiz**: 5 domande a scelta multipla con 4 opzioni ciascuna, indicando la risposta corretta alla fine.
    - Domande che testino la comprensione
    - 4 opzioni (A, B, C, D) per ogni domanda
    - Una sola risposta corretta per domanda
    - Soluzioni separate alla fine
+   - INIZIA DIRETTAMENTE con la prima domanda
 
 OUTPUT FINALE in formato JSON:
 {
@@ -757,13 +827,8 @@ REGOLE SPECIFICHE:
       // Display Riassunto Esecutivo (SECONDO OUTPUT)
       const riassuntoContainer = document.getElementById('riassuntoContainer');
       if (riassuntoContainer && results.riassunto_esecutivo) {
-        // Convert markdown to HTML for better display
-        const formattedRiassunto = results.riassunto_esecutivo
-          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.*?)\*/g, '<em>$1</em>')
-          .replace(/^- (.+)/gm, '<li>$1</li>')
-          .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
-          .replace(/\n/g, '<br>');
+        // Convert markdown to HTML using marked.js
+        const formattedRiassunto = marked.parse(results.riassunto_esecutivo);
         
         riassuntoContainer.innerHTML = `
           <div class="riassunto-text">${formattedRiassunto}</div>
