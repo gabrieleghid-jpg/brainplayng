@@ -174,6 +174,42 @@ window.searchTopicInfo = async function(topic) {
     }
 };
 
+// Funzione per aggiungere il link al sito alla fine dei contenuti
+window.addSiteLink = function(content, topic) {
+    const siteLink = '\n\n---\n\n**Scopri di più su [Brainplayng](https://brainplayng.github.io) - Il tuo compagno di studio intelligente!**';
+    const siteUrl = 'https://brainplayng.github.io';
+    
+    if (typeof content === 'string') {
+        return content + siteLink;
+    } else if (typeof content === 'object' && content !== null) {
+        const enhancedContent = { ...content };
+        
+        // Aggiungi link a tutti i campi testuali
+        if (enhancedContent.spiegazione_semplice) {
+            enhancedContent.spiegazione_semplice += siteLink;
+        }
+        
+        if (enhancedContent.riassunto_esecutivo) {
+            enhancedContent.riassunto_esecutivo += siteLink;
+        }
+        
+        if (enhancedContent.schema_concettuale) {
+            enhancedContent.schema_concettuale += siteLink;
+        }
+        
+        // Aggiungi informazioni sul sito
+        enhancedContent.fonte_sito = {
+            nome: 'Brainplayng',
+            url: siteUrl,
+            descrizione: 'Piattaforma di studio intelligente'
+        };
+        
+        return enhancedContent;
+    }
+    
+    return content;
+};
+
 // Funzione per integrare la ricerca nel sistema di generazione
 window.enhanceWithGoogleSearch = async function(topic, existingContent = null) {
     try {
@@ -181,16 +217,19 @@ window.enhanceWithGoogleSearch = async function(topic, existingContent = null) {
         
         // Se c'è contenuto esistente, integralo con le informazioni di ricerca
         if (existingContent) {
-            return {
+            const enhancedContent = {
                 ...existingContent,
                 googleSearchInfo: searchInfo,
                 spiegazione_semplice: searchInfo.summary || existingContent.spiegazione_semplice,
                 fonti_esterne: searchInfo.sources || [],
                 punti_chiave: searchInfo.keyPoints || []
             };
+            
+            // Aggiungi il link al sito
+            return window.addSiteLink(enhancedContent, topic);
         } else {
             // Crea contenuto basato solo sulla ricerca
-            return {
+            const baseContent = {
                 spiegazione_semplice: searchInfo.summary,
                 riassunto_esecutivo: `# **${topic.charAt(0).toUpperCase() + topic.slice(1)}**
 
@@ -214,16 +253,22 @@ ${searchInfo.keyPoints.map((point, index) => `${index + 1}. ${point}`).join('\n'
                 fonti_esterne: searchInfo.sources,
                 punti_chiave: searchInfo.keyPoints
             };
+            
+            // Aggiungi il link al sito
+            return window.addSiteLink(baseContent, topic);
         }
         
     } catch (error) {
         console.error('Errore integrazione ricerca:', error);
-        return existingContent || {
+        const errorContent = existingContent || {
             spiegazione_semplice: 'Errore nella ricerca delle informazioni.',
             riassunto_esecutivo: '**Errore**: Impossibile ottenere informazioni dalla ricerca.',
             schema_concettuale: '| Errore | Descrizione |\n|---------|-------------|\n| Ricerca | Non disponibile |',
             error: error.message
         };
+        
+        // Aggiungi il link al sito anche agli errori
+        return window.addSiteLink(errorContent, topic);
     }
 };
 

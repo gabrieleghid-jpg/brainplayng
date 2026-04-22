@@ -814,11 +814,12 @@
           console.log('Integrazione informazioni Google nel contenuto');
           return await window.enhanceWithGoogleSearch(userText, baseContent);
         } else {
-          return baseContent;
+          // Aggiungi il link al sito anche senza ricerca Google
+          return window.addSiteLink ? window.addSiteLink(baseContent, userText) : baseContent;
         }
       } catch (error) {
         console.error('Errore generazione materiali:', error);
-        return {
+        const errorContent = {
           spiegazione_semplice: "Errore nell'analisi della richiesta",
           riassunto_esecutivo: "**Errore**: Impossibile generare il riassunto richiesto.",
           schema_concettuale: "| Errore | Descrizione |\n|---------|-------------|\n| Analisi | Non disponibile |",
@@ -833,6 +834,9 @@
             soluzioni: "Soluzione: A - Riprova"
           }
         };
+        
+        // Aggiungi il link al sito anche agli errori
+        return window.addSiteLink ? window.addSiteLink(errorContent, userText) : errorContent;
       }
     }
 
@@ -926,6 +930,14 @@ REGOLE:
         if (jsonMatch) {
           const result = JSON.parse(jsonMatch[0]);
           console.log('Contenuto generato da Gemini:', result);
+          
+          // Aggiungi il link al sito anche ai contenuti Gemini
+          if (window.addSiteLink) {
+            const enhancedResult = window.addSiteLink(result, userText);
+            console.log('Contenuto Gemini con link al sito:', enhancedResult);
+            return enhancedResult;
+          }
+          
           return result;
         } else {
           throw new Error('Nessun JSON valido trovato nella risposta Gemini');
@@ -1732,6 +1744,11 @@ ${topic.charAt(0).toUpperCase() + topic.slice(1)} funge da riferimento fondament
         }
         
         console.log('Mock content generated:', result);
+        
+        // Aggiungi il link al sito alla fine di tutti i contenuti
+        if (window.addSiteLink) {
+          result = window.addSiteLink(result, topic);
+        }
         
         // Simula un leggero ritardo per realismo
         // await rimosso perché la funzione non è async

@@ -33,159 +33,120 @@
   </header>
 
   <div class="page-shell">
-    <aside class="sidebar">
-      <article class="session-card">
-        <header>
-          <h2>Prossima sessione</h2>
-          <span class="pill">Focus</span>
-        </header>
-        <div class="session-details">
-          <div class="session-item">
-            <strong>Mattinata di ripasso</strong>
-            <span>Biologia, matematica e inglese</span>
-          </div>
-          <div class="session-item">
-            <strong>45 min</strong>
-            <span>Tempo stimato</span>
-          </div>
-          <div class="progress-bar" aria-label="Progresso sessione">
-            <div class="progress-fill"></div>
-          </div>
-          <span style="color:var(--muted);font-size:0.95rem;">68% completato del piano giornaliero</span>
-        </div>
-      </article>
-
-      <article class="activity-card">
-        <header>
-          <h2>Attività recenti</h2>
-          <span class="pill">Aggiornamenti</span>
-        </header>
-        <ul class="activity-list">
-          <li class="activity-item">
-            <strong>Quiz completato</strong>
-            <span>Hai risposto correttamente all'88% delle domande.</span>
-          </li>
-          <li class="activity-item">
-            <strong>Nuova routine</strong>
-            <span>Definisci il tuo prossimo intervallo di focus da 50 minuti.</span>
-          </li>
-          <li class="activity-item">
-            <strong>Traguardo giornaliero</strong>
-            <span>Hai raggiunto il 75% dell'obiettivo di studio.</span>
-          </li>
-        </ul>
-      </article>
-
-      <div class="quick-item">
-        <h3>Modalità completa</h3>
-        <p>Attiva la modalità focus per eliminare le distrazioni e lavorare in blocchi con timer visivi.</p>
-      </div>
-
-      <div class="quick-item">
-        <h3>Campanello di progresso</h3>
-        <p>Imposta un obiettivo giornaliero e segui il tuo avanzamento direttamente dalla home.</p>
-      </div>
-    </aside>
-
     <main class="main-content">
 
-    <div class="hero-grid">
-      
-    </div>
-
-    <section class="feature-card">
-      <h2>Scopri brainplaying</h2>
-      <p>Rimani concentrato, organizza le tue sessioni e monitora i progressi con un’esperienza studiata per lo studio produttivo.</p>
-      <ul class="feature-list">
-        <li>Sessioni guidate per mantenere il ritmo</li>
-        <li>Ripetizione spaziata per fissare i concetti</li>
-        <li>Metascore di progressi e obiettivi giornalieri</li>
-        <li>Interfaccia pulita e focus mode</li>
-      </ul>
-    </section>
-
-    <div class="dashboard-grid">
-      <!-- Riquadro Avatar con Crediti -->
-      <div class="session-card" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(59, 130, 246, 0.08)); border: 2px solid rgba(79, 70, 229, 0.2);">
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem;">
-          <div style="display: flex; align-items: center; gap: 1rem;">
-          <!-- Avatar con Accessori -->
-          <div style="position: relative; width: 60px; height: 60px;">
-            <!-- Omino Grigio SVG -->
-            <svg width="60" height="60" viewBox="0 0 60 60" style="position: absolute; z-index: 1;">
-              <circle cx="30" cy="20" r="8" fill="#9CA3AF"/>
-              <path d="M30 30 C20 30, 15 35, 15 45 L45 45 C45 35, 40 30, 30 30 Z" fill="#9CA3AF"/>
-            </svg>
-            <!-- Accessori Acquistati -->
-            <div id="avatarAccessori" style="position: absolute; width: 60px; height: 60px; z-index: 2; pointer-events: none;">
-              <!-- Gli accessori verranno inseriti qui dinamicamente -->
+      <!-- Hero Section Pulita -->
+      <section class="hero-section">
+        <div class="hero-content">
+          <h1 class="hero-title">brainplaying</h1>
+          <p class="hero-subtitle">Il tuo compagno di studio intelligente per massimizzare la concentrazione e l'apprendimento</p>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-number">85%</span>
+              <span class="stat-label">Focus migliorato</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">2.5x</span>
+              <span class="stat-label">Apprendimento veloce</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-number">1000+</span>
+              <span class="stat-label">Studenti attivi</span>
             </div>
           </div>
-          <div>
-            <h3 style="margin: 0; font-size: 1.2rem; color: var(--text);">Il Tuo Avatar</h3>
-            <p id="creditiDisplay" style="margin: 0; font-size: 1rem; font-weight: 600; color: var(--accent);">0 crediti</p>
-          </div>
         </div>
-          <div style="text-align: center;">
-            <div style="font-size: 2rem;">??</div>
-            <div style="font-size: 0.8rem; color: var(--muted);">Livello 1</div>
+      </section>
+
+      <!-- Sezione Principale con Cards -->
+      <section class="main-section">
+        <h2 class="section-title">Strumenti di Studio</h2>
+        
+        <div class="tools-grid">
+          <!-- Riassunti AI -->
+          <a href="riassunti.html" class="tool-card primary">
+            <div class="tool-icon">AI</div>
+            <h3>Riassunti Intelligenti</h3>
+            <p>Genera riassunti automatici con ricerca Google e AI per qualsiasi argomento</p>
+            <div class="tool-badge">Potente</div>
+          </a>
+
+          <!-- Generatore Schemi -->
+          <a href="generatore-schemi.html" class="tool-card">
+            <div class="tool-icon">S</div>
+            <h3>Generatore Schemi</h3>
+            <p>Crea schemi visivi e mappe concettuali per studiare in modo efficace</p>
+            <div class="tool-badge">Visuale</div>
+          </a>
+
+          <!-- Minigiochi -->
+          <div class="tool-card" id="minigameCard">
+            <div class="tool-icon">G</div>
+            <h3>Minigiochi</h3>
+            <p>Allena la mente con Wordle, Sudoku e altri giochi educativi</p>
+            <div class="tool-badge">Interattivo</div>
           </div>
+
+          <!-- Classifica -->
+          <a href="classifica.html" class="tool-card">
+            <div class="tool-icon">C</div>
+            <h3>Classifica</h3>
+            <p>Confronta i tuoi progressi con altri studenti e motìvati a migliorare</p>
+            <div class="tool-badge">Competitivo</div>
+          </a>
         </div>
-        <div style="padding: 0 1rem 1rem;">
-          <div style="background: rgba(79, 70, 229, 0.1); border-radius: 8px; padding: 0.5rem; text-align: center;">
-            <div style="font-size: 0.9rem; color: var(--muted);">Prossimo livello</div>
-            <div style="background: var(--panel-strong); height: 8px; border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
-              <div id="progressBar" style="background: linear-gradient(90deg, var(--accent), #818cf8); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+      </section>
+
+      <!-- Sezione Profilo Utente -->
+      <section class="profile-section">
+        <h2 class="section-title">Il Tuo Progresso</h2>
+        
+        <div class="profile-grid">
+          <!-- Avatar e Livello -->
+          <div class="profile-card">
+            <div class="avatar-section">
+              <div class="avatar-container">
+                <div class="avatar-base">??</div>
+                <div class="level-badge">Lv.1</div>
+              </div>
+              <div class="avatar-info">
+                <h3>Tuo Profilo</h3>
+                <p id="creditiDisplay" class="credits">0 crediti</p>
+              </div>
             </div>
-            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;">10 / 100 crediti</div>
+            <div class="progress-section">
+              <div class="progress-header">
+                <span>Prossimo Livello</span>
+                <span>10 / 100</span>
+              </div>
+              <div class="progress-bar">
+                <div id="progressBar" class="progress-fill" style="width: 10%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistiche Giornaliere -->
+          <div class="stats-card">
+            <h3>Oggi</h3>
+            <div class="daily-stats">
+              <div class="daily-stat">
+                <span class="daily-value">45min</span>
+                <span class="daily-label">Tempo di studio</span>
+              </div>
+              <div class="daily-stat">
+                <span class="daily-value">3</span>
+                <span class="daily-label">Sessioni</span>
+              </div>
+              <div class="daily-stat">
+                <span class="daily-value">85%</span>
+                <span class="daily-label">Obiettivo raggiunto</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Shop Avatar -->
-      <div class="session-card" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(74, 144, 226, 0.08)); border: 2px solid rgba(255, 107, 107, 0.2);">
-        <header>
-          <h2>?? Shop Avatar</h2>
-          <span class="pill" style="background: linear-gradient(135deg, #FF6B6B, #4A90E2);">Nuovo</span>
-        </header>
-        <div id="shopAvatarContent" style="max-height: 300px; overflow-y: auto;">
-          <!-- Gli accessori verranno generati dinamicamente -->
-        </div>
-      </div>
-
-      <a href="generatore-schemi.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
-        <header>
-          <h2>Generatore Schemi</h2>
-          <span class="pill">Nuovo</span>
-        </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Crea schemi visivi con frecce e parole chiave</p>
-      </a>
-
-      <a href="riassunti.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
-        <header>
-          <h2>Riassunti</h2>
-        </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata ai riassunti</p>
-      </a>
-
-      <div class="session-card" id="minigameCard" style="cursor: pointer;">
-        <header>
-          <h2>Minigiochi</h2>
-          <span class="pill">Allenamento</span>
-        </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Allena la tua mente con giochi interattivi</p>
-      </div>
-
-      <a href="classifica.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
-        <header>
-          <h2>Classifica</h2>
-        </header>
-        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Scopri i migliori studenti di brainplaying</p>
-      </a>
-    </div>
-
+      <!-- Footer Semplificato -->
       <footer class="home-footer">
-        <p>Torna alla <a href="home.html">home</a> o ai <a href="riassunti.html">riassunti</a>.</p>
         <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
       </footer>
     </main>
