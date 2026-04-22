@@ -427,8 +427,11 @@
                      transition: border-color 0.3s ease;">
             </textarea>
             <div style="display: flex; gap: 1rem; margin-top: 1rem;">
-              <button class="analyze-btn" id="generateBtn">
+              <button class="analyze-btn" id="generateBtn" onclick="testClick()">
                 🤖 Genera Riassunto e Schema
+              </button>
+              <button onclick="testClick()" style="margin-left: 10px; padding: 12px 24px; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                🧪 TEST SEMPLICE
               </button>
               <button class="clear-btn" id="clearTextBtn">
                 🗑️ Cancella testo
@@ -503,6 +506,25 @@
   <script src="config.js"></script>
   <script src="auth-helper.js"></script>
   <script>
+    // Funzione di test definita subito
+    function testClick() {
+      console.log('=== TEST CLICK FUNZIONA ===');
+      alert('TEST: Il click funziona! Ora provo a generare...');
+      
+      const text = document.getElementById('textInput').value.trim();
+      console.log('Testo inserito:', text);
+      
+      if (!text) {
+        alert('TEST: Inserisci un argomento!');
+        return;
+      }
+      
+      alert('TEST: Testo trovato: ' + text);
+      
+      // Chiama la funzione di generazione
+      generateMaterials();
+    }
+    
     if (!checkAuthentication()) {
       window.location.href = 'index.html';
     }
@@ -632,6 +654,25 @@
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 
+    // Funzione di test semplice
+    window.testClick = function() {
+      console.log('=== TEST CLICK FUNZIONA ===');
+      alert('TEST: Il click funziona! Ora provo a generare...');
+      
+      const text = document.getElementById('textInput').value.trim();
+      console.log('Testo inserito:', text);
+      
+      if (!text) {
+        alert('TEST: Inserisci un argomento!');
+        return;
+      }
+      
+      alert('TEST: Testo trovato: ' + text);
+      
+      // Chiama la funzione di generazione
+      generateMaterials();
+    }
+
     // TEXT ANALYSIS SYSTEM
     const resultsSection = document.getElementById('resultsSection');
     const textInput = document.getElementById('textInput');
@@ -647,30 +688,71 @@
       resultsSection.style.display = 'none';
     });
 
-    // Generate from text
-    generateBtn?.addEventListener('click', async () => {
+    // Generate from text - DEBUG VERSION
+    console.log('DEBUG: Inizializzazione sistema pulsanti');
+    console.log('DEBUG: generateBtn:', generateBtn);
+    console.log('DEBUG: textInput:', textInput);
+    console.log('DEBUG: resultsSection:', resultsSection);
+    
+    generateBtn?.addEventListener('click', async (event) => {
+      console.log('=== CLICK PULSANTE RILEVATO ===');
+      console.log('DEBUG: Evento click:', event);
+      console.log('DEBUG: generateBtn cliccato:', generateBtn);
+      console.log('DEBUG: textInput element:', textInput);
+      
+      if (!textInput) {
+        console.error('ERRORE: textInput non trovato!');
+        alert('Errore: campo testo non trovato. Ricarica la pagina.');
+        return;
+      }
+      
       const text = textInput.value.trim();
+      console.log('DEBUG: Testo inserito:', text);
+      console.log('DEBUG: Lunghezza testo:', text.length);
+      
       if (!text) {
+        console.log('ERRORE: Testo vuoto');
         alert('Per favore inserisci il testo per generare riassunto e schema.');
         return;
       }
       
+      console.log('DEBUG: Inizio generazione...');
       generateBtn.disabled = true;
-      generateBtn.textContent = '?? Ricerca su Google...';
+      generateBtn.textContent = '?? Generazione in corso...';
       
       try {
+        console.log('DEBUG: Chiamo generateTextBasedMaterials con:', text);
         analysisResults = await generateTextBasedMaterials(text);
+        console.log('DEBUG: Risultati generati:', analysisResults);
+        
+        console.log('DEBUG: Chiamo displayResults');
         displayResults(analysisResults);
+        
+        console.log('DEBUG: Mostro risultati section');
         resultsSection.style.display = 'block';
         
+        console.log('=== GENERAZIONE COMPLETATA CON SUCCESSO ===');
+        
       } catch (error) {
-        console.error('Errore:', error);
+        console.error('ERRORE durante la generazione:', error);
+        console.error('Stack trace:', error.stack);
         alert('Errore durante la generazione: ' + error.message);
       } finally {
+        console.log('DEBUG: Reset pulsante');
         generateBtn.disabled = false;
         generateBtn.textContent = '?? Genera Riassunto e Schema';
       }
     });
+    
+    // Aggiungi anche un test manuale
+    console.log('DEBUG: Aggiungo test manuale del pulsante');
+    if (generateBtn) {
+      console.log('DEBUG: Pulsante trovato, aggiungo bordo rosso per debug');
+      generateBtn.style.border = '2px solid red';
+      generateBtn.title = 'DEBUG: Pulsante funzionante';
+    } else {
+      console.error('ERRORE GRAVE: generateBtn non trovato!');
+    }
 
     // Search Google for information about the topic
     async function searchGoogle(query) {
@@ -1048,8 +1130,7 @@ La fotosintesi è un processo biochimico che permette agli organismi fotosinteti
         console.log('Mock content generated:', result);
         
         // Simula un leggero ritardo per realismo
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
+        // await rimosso perché la funzione non è async
         return result;
       }
       
@@ -1677,8 +1758,7 @@ ${topic.charAt(0).toUpperCase() + topic.slice(1)} funge da riferimento fondament
         console.log('Mock content generated:', result);
         
         // Simula un leggero ritardo per realismo
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
+        // await rimosso perché la funzione non è async
         return result;
         
       } catch (error) {
