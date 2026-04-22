@@ -24,8 +24,7 @@
     </a>
     <div class="nav-actions">
       <button class="nav-link" type="button">Home</button>
-      <a href="generatore-schemi.html" class="nav-link">Generatore Schemi</a>
-            <a href="profile.html" class="profile-button">
+                  <a href="profile.html" class="profile-button">
         <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
       </a>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌙</button>
@@ -1093,58 +1092,18 @@
       
       gameState.guesses.push(guess);
       
-      // Implementazione corretta della logica Wordle
-      const targetWord = gameState.targetWord;
-      const result = ['gray', 'gray', 'gray', 'gray', 'gray'];
-      
-      // Prima passata: trova tutte le lettere nella posizione corretta (verdi)
-      const targetLetters = targetWord.split('');
-      const guessLetters = guess.split('');
-      const usedPositions = new Array(5).fill(false);
-      
-      for (let i = 0; i < 5; i++) {
-        if (guessLetters[i] === targetLetters[i]) {
-          result[i] = 'green';
-          usedPositions[i] = true;
-        }
-      }
-      
-      // Seconda passata: trova le lettere presenti ma in posizione sbagliata (gialle)
-      for (let i = 0; i < 5; i++) {
-        if (result[i] === 'green') continue; // Skip already marked as green
-        
-        // Cerca questa lettera nelle posizioni rimanenti della parola target
-        let found = false;
-        for (let j = 0; j < 5; j++) {
-          if (!usedPositions[j] && guessLetters[i] === targetLetters[j]) {
-            // Controlla se non abbiamo già troppe occorrenze di questa lettera
-            const guessLetterCount = guessLetters.filter((l, idx) => l === guessLetters[i] && idx <= i).length;
-            const targetLetterCount = targetLetters.filter((l, idx) => l === guessLetters[i]).length;
-            const greenCount = result.filter((r, idx) => r === 'green' && guessLetters[idx] === guessLetters[i]).length;
-            const yellowCount = result.filter((r, idx) => r === 'yellow' && guessLetters[idx] === guessLetters[i]).length;
-            
-            if (greenCount + yellowCount < targetLetterCount) {
-              result[i] = 'yellow';
-              usedPositions[j] = true;
-              found = true;
-              break;
-            }
-          }
-        }
-      }
-      
-      // Update the grid with the guess and correct colors
+      // Update the grid with the guess
       for (let i = 0; i < 5; i++) {
         const cell = document.querySelector(`[data-row="${currentRow}"][data-col="${i}"]`);
         cell.textContent = guess[i];
         
-        // Apply correct color coding
-        if (result[i] === 'green') {
+        // Apply color coding
+        if (guess[i] === gameState.targetWord[i]) {
           // Correct position (green)
           cell.style.background = '#6aaa64';
           cell.style.color = 'white';
           cell.style.borderColor = '#6aaa64';
-        } else if (result[i] === 'yellow') {
+        } else if (gameState.targetWord.includes(guess[i])) {
           // Wrong position (yellow)
           cell.style.background = '#c9b458';
           cell.style.color = 'white';
