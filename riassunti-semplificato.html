@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riassunti e Schemi - Versione Semplice</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .input-section h3 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            flex: 1;
+        }
+        
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+        
+        .generate-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background: #dc2626;
+        }
+        
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        .result-section {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .result-section h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-section h3::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #4f46e5;
+            border-radius: 2px;
+        }
+        
+        .result-content {
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .quiz-section {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+        
+        .quiz-question {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #92400e;
+        }
+        
+        .quiz-options {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .quiz-option {
+            padding: 10px 15px;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quiz-option:hover {
+            background: #f3f4f6;
+            border-color: #4f46e5;
+        }
+        
+        .quiz-option.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+        }
+        
+        .quiz-option.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Riassunti e Schemi</h1>
+            <p>Genera automaticamente riassunti e schemi di studio</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <h3>📝 Scrivi l'argomento che ti interessa</h3>
+                <textarea id="textInput" placeholder="Esempio: fotosintesi clorofilliana, storia del Rinascimento, programmazione Python..."></textarea>
+                
+                <div class="button-group">
+                    <button class="generate-btn" id="generateBtn" onclick="generateMaterials()">
+                        🚀 Genera Riassunto e Schema
+                    </button>
+                    <button class="clear-btn" onclick="clearResults()">
+                        🗑️ Cancella
+                    </button>
+                </div>
+            </div>
+            
+            <div id="loading" class="loading" style="display: none;">
+                Sto generando i materiali...
+            </div>
+            
+            <div id="results" class="results">
+                <div class="result-section">
+                    <h3>💡 Spiegazione Semplice</h3>
+                    <div id="spiegazione" class="result-content"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h3>📋 Riassunto Dettagliato</h3>
+                    <div id="riassunto" class="result-content"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h3>🧠 Schema Concettuale</h3>
+                    <div id="schema" class="result-content"></div>
+                </div>
+                
+                <div class="result-section quiz-section">
+                    <h3>🎯 Quiz di Verifica</h3>
+                    <div id="quiz" class="result-content"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database di contenuti pre-generati - ESPANSO
+        const contentDatabase = {
+            'fotosintesi': {
+                spiegazione: 'La fotosintesi è il processo biologico attraverso cui le piante convertono l\'energia solare in energia chimica, producendo glucosio e ossigeno.',
+                riassunto: `# **Fotosintesi Clorofilliana**
+
+## **Processo Fondamentale**
+
+La fotosintesi è un processo biochimico essenziale per la vita sulla Terra.
+
+### **Fasi Principali**
+
+#### **1. Fase Luminosa**
+- **Localizzazione**: Tilacoidi dei cloroplasti
+- **Scopo**: Catturare energia solare
+- **Prodotti**: ATP e NADPH
+
+#### **2. Fase Oscura (Ciclo di Calvin)**
+- **Localizzazione**: Stroma dei cloroplasti
+- **Scopo**: Sintetizzare glucosio
+- **Prodotto**: Glucosio (C6H12O6)
+
+### **Equazione Chimica**
+**6CO2 + 6H2O + energia luminosa = C6H12O6 + 6O2**`,
+                schema: `## **Schema della Fotosintesi**
+
+### **1. Input**
+- **Energia**: Luce solare
+- **Materie prime**: CO2, H2O
+- **Pigmenti**: Clorofilla
+
+### **2. Processo**
+- Fase luminosa: produzione ATP/NADPH
+- Fase oscura: sintesi glucosio
+
+### **3. Output**
+- **Prodotti**: Glucosio, Ossigeno
+- **Energia**: immagazzinata in legami chimici`,
+                quiz: {
+                    domanda: "Qual è il prodotto principale della fotosintesi?",
+                    opzioni: ["Ossigeno", "Glucosio", "Anidride carbonica", "Acqua"],
+                    risposta: 1
+                }
+            },
+            'cellula': {
+                spiegazione: 'La cellula è l\'unità fondamentale della vita, la più piccola struttura capace di svolgere tutte le funzioni vitali.',
+                riassunto: `# **La Cellula: Unità della Vita**
+
+## **Struttura Cellulare**
+
+### **Componenti Principali**
+- **Membrana cellulare**: Regola gli scambi
+- **Citoplasma**: Ambiente interno
+- **Nucleo**: Centro di controllo
+- **Mitochondrie**: Centrali energetiche
+
+### **Tipi di Cellule**
+#### **Cellule Eucariotiche**
+- **Animali**: Senza parete cellulare
+- **Vegetali**: Con parete cellulare e cloroplasti
+
+#### **Cellule Procariotiche**
+- **Batteri**: Senza nucleo definito`,
+                schema: `## **Organizzazione Cellulare**
+
+### **1. Membrana Plasmatica**
+- **Funzione**: Barriera selettiva
+- **Struttura**: Doppio strato fosfolipidico
+
+### **2. Citoplasma**
+- **Citosol**: Soluzione acquosa
+- **Organelle**: Strutture specializzate
+
+### **3. Nucleo (Eucarioti)**
+- **DNA**: Informazione genetica
+- **Nucleolo**: Sintesi ribosomi`,
+                quiz: {
+                    domanda: "Qual è la funzione principale del nucleo?",
+                    opzioni: ["Produzione energia", "Controllo genetico", "Digestione", "Sintesi proteica"],
+                    risposta: 1
+                }
+            },
+            'dna': {
+                spiegazione: 'Il DNA (acido desossiribonucleico) è la molecola che contiene l\'informazione genetica di tutti gli organismi viventi.',
+                riassunto: `# **DNA: Il Codice della Vita**
+
+## **Struttura Molecolare**
+
+### **Componenti Fondamentali**
+- **Basi azotate**: Adenina (A), Timina (T), Guanina (G), Citosina (C)
+- **Zuccheri**: Desossiribosio
+- **Gruppi fosfato**: Formano la spina dorsale
+
+### **Struttura a Doppia Elica**
+- **Modello**: Watson e Crick (1953)
+- **Complementarietà**: A-T, G-C
+- **Direzione**: Antiparallela 5'-3'
+
+### **Funzioni Principali**
+- **Archiviazione genetica**: Informazione ereditaria
+- **Replicazione**: Divisione cellulare
+- **Trascrizione**: Sintesi proteica`,
+                schema: `## **Organizzazione del DNA**
+
+### **1. Livello Molecolare**
+- **Nucleotidi**: Unità fondamentali
+- **Legami**: Idrogeno tra basi
+- **Elica**: Doppia spirale
+
+### **2. Livello Cromosomico**
+- **Cromatina**: DNA + istoni
+- **Cromosomi**: Condensazione durante mitosi
+- **Gene**: Segmento codificante
+
+### **3. Livello Funzionale**
+- **Espressione**: Trascrizione e traduzione
+- **Regolazione**: Fattori trascrizionali
+- **Mutazioni**: Cambiamenti sequenza`,
+                quiz: {
+                    domanda: "Quali basi si appaiano nel DNA?",
+                    opzioni: ["A-T e G-C", "A-U e G-C", "A-T e A-G", "A-C e G-T"],
+                    risposta: 0
+                }
+            },
+            'rinascimento': {
+                spiegazione: 'Il Rinascimento è stato un periodo di grande rinnovamento culturale, artistico e scientifico che si è sviluppato in Europa tra il XIV e il XVI secolo.',
+                riassunto: `# **Il Rinascimento: Rinascita della Cultura**
+
+## **Contesto Storico**
+
+### **Origini e Sviluppo**
+- **Periodo**: XIV-XVI secolo
+- **Luogo di nascita**: Italia (Firenze)
+- **Diffusione**: tutta Europa
+
+### **Caratteristiche Principali**
+#### **Umanesimo**
+- **Centralità dell'uomo**: Antropocentrismo
+- **Studi classici**: Greco-latini
+- **Secolarizzazione**: Cultura non religiosa
+
+#### **Arte e Architettura**
+- **Prospettiva**: Terza dimensione
+- **Proporzioni**: Corpo umano ideale
+- **Artisti**: Leonardo, Michelangelo, Raffaello
+
+### **Scienza e Innovazione**
+- **Metodo scientifico**: Osservazione e sperimentazione
+- **Invenzioni**: Stampa, polvere da sparo
+- **Esplorazioni**: Scoperte geografiche`,
+                schema: `## **Sviluppo del Rinascimento**
+
+### **1. Contesto Socio-Economico**
+- **Comune italiano**: Signorie, repubbliche
+- **Banche e commercio**: Ricchezza e mecenatismo
+- **Classe mercantile**: Nuovo potere economico
+
+### **2. Manifestazioni Culturali**
+- **Letteratura**: Volgare, poesia, teatro
+- **Arti visive**: Pittura, scultura, architettura
+- **Filosofia**: Ritorno all'antichità classica
+
+### **3. Eredità Moderna**
+- **Fondamenti**: Cultura occidentale
+- **Istituzioni**: Università, accademie
+- **Valori**: Individualismo, razionalità`,
+                quiz: {
+                    domanda: "Dove è nato il Rinascimento?",
+                    opzioni: ["Francia", "Germania", "Italia", "Spagna"],
+                    risposta: 2
+                }
+            },
+            'quantum computing': {
+                spiegazione: 'Il quantum computing è un paradigma di calcolo che utilizza i fenomeni della meccanica quantistica per elaborare informazioni in modi radicalmente nuovi.',
+                riassunto: `# **Quantum Computing: La Rivoluzione del Calcolo**
+
+## **Principi Quantistici**
+
+### **Fondamenti Teorici**
+- **Sovrapposizione**: Un qubit può essere 0 e 1 contemporaneamente
+- **Entanglement**: Qubit correlati istantaneamente
+- **Interferenza**: Amplificazione stati probabili
+
+### **Bit vs Qubit**
+- **Calcolo classico**: Bit (0 o 1)
+- **Calcolo quantistico**: Qubit (sovrapposizione)
+- **Potenziale**: Esponenziale per problemi complessi
+
+### **Applicazioni Principali**
+#### **Crittografia**
+- **RSA breaking**: Fattorizzazione rapida
+- **Quantum key distribution**: Comunicazione sicura
+- **Post-quantum cryptography**: Nuovi standard
+
+#### **Ottimizzazione**
+- **Problemi NP-hard**: Soluzioni efficienti
+- **Machine learning**: Addestramento accelerato
+- **Simulazione molecolare**: Design farmaci`,
+                schema: `## **Architettura Quantum**
+
+### **1. Livello Fisico**
+- **Sistemi**: Superconduttori, ioni, fotoni
+- **Isolamento**: Decoerenza minimale
+- **Controllo**: Laser, microonde
+
+### **2. Livello Logico**
+- **Gate quantistici**: Hadamard, CNOT, Toffoli
+- **Circuiti**: Algoritmi quantistici
+- **Correzione errori**: Codici stabilizzatori
+
+### **3. Livello Algoritmico**
+- **Algoritmi famosi**: Shor, Grover, Deutsch-Jozsa
+- **Complessità**: P vs BQP
+- **Vantaggio quantistico**: Speedup esponenziale`,
+                quiz: {
+                    domanda: "Qual è il principio fondamentale del quantum computing?",
+                    opzioni: ["Velocità di clock elevata", "Sovrapposizione quantistica", "Memoria RAM illimitata", "Processori multi-core"],
+                    risposta: 1
+                }
+            }
+        };
+
+        // Funzione per generare contenuti dinamici MIGLIORATA
+        function generateDynamicContent(topic) {
+            const topicLower = topic.toLowerCase();
+            
+            // Controlla se è nel database
+            for (const [key, content] of Object.entries(contentDatabase)) {
+                if (topicLower.includes(key)) {
+                    return content;
+                }
+            }
+            
+            // Sistema intelligente di generazione basato su parole chiave
+            const topicCapitalized = topic.charAt(0).toUpperCase() + topic.slice(1);
+            
+            // Rileva la categoria dell'argomento
+            let category = detectCategory(topicLower);
+            let content = generateContentByCategory(topic, category);
+            
+            return content;
+        }
+        
+        // Funzione per rilevare la categoria dell'argomento
+        function detectCategory(topic) {
+            const categories = {
+                scientific: ['atomo', 'molecola', 'gravità', 'energia', 'forza', 'velocità', 'temperatura', 'elettricità', 'magnetismo', 'meccanica', 'termodinamica', 'onde', 'particella', 'quantum', 'relatività'],
+                biology: ['dna', 'rna', 'proteina', 'enzima', 'ormone', 'genetica', 'evoluzione', 'ecosistema', 'batteri', 'virus', 'immunità', 'metabolismo', 'cellula'],
+                chemistry: ['elemento', 'composto', 'reazione', 'legame', 'ph', 'ossidazione', 'riduzione', 'soluzione', 'concentrazione', 'acido', 'base', 'sale'],
+                history: ['guerra', 'pace', 'rivoluzione', 'impero', 'medioevo', 'antichità', 'rinascimento', 'illuminismo', 'democrazia', 'monarchia', 'repubblica', 'colonialismo', 'industrializzazione'],
+                geography: ['continente', 'oceano', 'montagna', 'fiume', 'deserto', 'foresta', 'clima', 'atmosfera', 'vulcano', 'terremoto', 'ecosistema'],
+                literature: ['poesia', 'romanzo', 'teatro', 'narrativa', 'personaggio', 'trama', 'stile', 'genere', 'autore', 'letteratura'],
+                technology: ['computer', 'internet', 'software', 'hardware', 'intelligenza artificiale', 'robotica', 'algoritmo', 'programmazione', 'rete', 'database'],
+                art: ['pittura', 'scultura', 'architettura', 'musica', 'arte', 'disegno', 'colore', 'composizione', 'stile', 'movimento artistico'],
+                philosophy: ['etica', 'logica', 'metafisica', 'filosofia', 'pensiero', 'conoscenza', 'verità', 'esistenza', 'coscienza', 'libero arbitrio'],
+                economics: ['economia', 'mercato', 'inflazione', 'pil', 'domanda', 'offerta', 'capitale', 'lavoro', 'impresa', 'finanza', 'moneta']
+            };
+            
+            for (const [cat, keywords] of Object.entries(categories)) {
+                if (keywords.some(keyword => topic.includes(keyword))) {
+                    return cat;
+                }
+            }
+            
+            return 'general';
+        }
+        
+        // Funzione per generare contenuti specifici per categoria
+        function generateContentByCategory(topic, category) {
+            const topicCapitalized = topic.charAt(0).toUpperCase() + topic.slice(1);
+            
+            const templates = {
+                scientific: {
+                    spiegazione: `${topicCapitalized} è un fenomeno scientifico fondamentale che governa le leggi naturali dell'universo. Questo concetto è essenziale per comprendere il funzionamento della materia e dell'energia.`,
+                    riassunto: `# **${topicCapitalized}: Principi Scientifici**
+
+## **Fenomeno Fisico**
+
+${topicCapitalized} rappresenta un concetto fondamentale della fisica che descrive comportamenti specifici della materia e dell'energia.
+
+### **Leggi e Principi**
+- **Definizione operativa**: Descrizione quantitativa del fenomeno
+- **Equazioni fondamentali**: Relazioni matematiche che lo governano
+- **Costanti universali**: Parametri invarianti del fenomeno
+
+### **Applicazioni Pratiche**
+- **Tecnologia**: Sviluppo di dispositivi e strumenti
+- **Ingegneria**: Progettazione di sistemi e strutture
+- **Ricerca**: Sperimentazione e validazione teorica
+
+### **Impatto Scientifico**
+- **Teorie correlate**: Collegamenti con altri campi della fisica
+- **Sviluppi storici**: Evoluzione della comprensione del fenomeno
+- **Prospettive future**: Direzioni della ricerca attuale`,
+                    schema: `## **Struttura di ${topicCapitalized}**
+
+### **1. Definizione Teorica**
+- **Concetto base**: Principio fondamentale
+- **Formulazione matematica**: Equazioni descrittive
+- **Dominio di applicabilità**: Condizioni di validità
+
+### **2. Manifestazioni Fisiche**
+- **Comportamento osservabile**: Fenomeni misurabili
+- **Parametri rilevanti**: Grandezze fisiche coinvolte
+- **Relazioni causali**: Cause ed effetti
+
+### **3. Applicazioni Tecnologiche**
+- **Strumenti**: Dispositivi basati sul principio
+- **Sistemi**: Applicazioni complesse integrate
+- **Innovazioni**: Sviluppi recenti e futuri`,
+                    quiz: {
+                        domanda: `Quale descrizione meglio si adatta a ${topic}?`,
+                        opzioni: ["Fenomeno sociale", "Principio scientifico naturale", "Convenzione culturale", "Opinione personale"],
+                        risposta: 1
+                    }
+                },
+                
+                biology: {
+                    spiegazione: `${topicCapitalized} è un concetto biologico fondamentale che descrive processi o strutture essenziali per la vita. Questo elemento è cruciale per comprendere i meccanismi vitali degli organismi.`,
+                    riassunto: `# **${topicCapitalized}: Processi Biologici**
+
+## **Concetto Fondamentale**
+
+${topicCapitalized} rappresenta un aspetto essenziale della biologia che governa il funzionamento degli organismi viventi.
+
+### **Meccanismi Biologici**
+- **Processo molecolare**: Reazioni chimiche fondamentali
+- **Strutture cellulari**: Componenti specializzate
+- **Regolazione**: Sistemi di controllo e feedback
+
+### **Funzioni Vitali**
+- **Sopravvivenza**: Adattamento all'ambiente
+- **Riproduzione**: Trasmissione genetica
+- **Evoluzione**: Cambiamento nel tempo
+
+### **Rilevanza Biologica**
+- **Ecologia**: Ruolo negli ecosistemi
+- **Medicina**: Impatto sulla salute umana
+- **Biotecnologia**: Applicazioni pratiche`,
+                    schema: `## **Organizzazione di ${topicCapitalized}**
+
+### **1. Livello Molecolare**
+- **Componenti chimiche**: Molecole fondamentali
+- **Interazioni**: Legami e reazioni
+- **Energia**: Trasformazioni biochimiche
+
+### **2. Livello Cellulare**
+- **Strutture**: Organelle e compartimenti
+- **Processi**: Funzioni cellulari specifiche
+- **Comunicazione**: Segnalazione intra- ed inter-cellulare
+
+### **3. Livello Organismo**
+- **Integrazione**: Sistemi e apparati
+- **Omeostasi**: Equilibrio interno
+- **Adattamento**: Risposte ambientali`,
+                    quiz: {
+                        domanda: `Qual è il ruolo principale di ${topic} negli organismi?`,
+                        opzioni: ["Struttura di supporto", "Funzione biologica essenziale", "Elemento decorativo", "Componente opzionale"],
+                        risposta: 1
+                    }
+                },
+                
+                history: {
+                    spiegazione: `${topicCapitalized} rappresenta un periodo o fenomeno storico fondamentale che ha plasmato in modo significativo lo sviluppo della civiltà umana. Questo evento ha lasciato un'eredità duratura nella cultura, politica e società.`,
+                    riassunto: `# **${topicCapitalized}: Contesto Storico**
+
+## **Periodo o Fenomeno**
+
+${topicCapitalized} costituisce un momento cruciale della storia umana con implicazioni profonde per lo sviluppo successivo.
+
+### **Contesto Storico**
+- **Periodo**: Collocazione temporale precisa
+- **Geografia**: Aree geografiche coinvolte
+- **Antefatti**: Eventi precedenti rilevanti
+
+### **Sviluppi Principali**
+- **Politica**: Sistemi di governo e potere
+- **Economia**: Attività produttive e commerciali
+- **Cultura**: Arte, filosofia e scienze
+
+### **Eredità Storica**
+- **Influenze successive**: Impatto sul futuro
+- **Lessico storico**: Termini e concetti introdotti
+- **Modelli sociali**: Istituzioni e strutture create`,
+                    schema: `## **Sviluppo di ${topicCapitalized}**
+
+### **1. Cause e Fattori**
+- **Economici**: Risorse e scambi commerciali
+- **Sociali**: Strutture gerarchiche e movimenti
+- **Culturali**: Idee e innovazioni
+
+### **2. Eventi Chiave**
+- **Svolgimento**: Fasi principali del fenomeno
+- **Protagonisti**: Figure storiche rilevanti
+- **Conflitti**: Tensioni e risoluzioni
+
+### **3. Conseguenze**
+- **Immediate**: Risultati diretti dell'evento
+- **A lungo termine**: Trasformazioni strutturali
+- **Eredità culturale**: Valori e tradizioni trasmessi`,
+                    quiz: {
+                        domanda: `Quale caratteristica definisce meglio ${topic}?`,
+                        opzioni: ["Fenomeno naturale", "Periodo o evento storico", "Processo biologico", "Principio matematico"],
+                        risposta: 1
+                    }
+                },
+                
+                technology: {
+                    spiegazione: `${topicCapitalized} è una tecnologia o concetto informatico fondamentale che ha rivoluzionato il modo in cui elaboriamo, archiviamo e trasmettiamo informazioni. Questa innovazione rappresenta un punto di svolta nell'evoluzione digitale.`,
+                    riassunto: `# **${topicCapitalized}: Innovazione Tecnologica**
+
+## **Concetto Informatico**
+
+${topicCapitalized} rappresenta un paradigma tecnologico che ha trasformato il panorama dell'informatica e della comunicazione digitale.
+
+### **Architettura Tecnica**
+- **Principi di funzionamento**: Fondamenti teorici e pratici
+- **Componenti hardware**: Elementi fisici essenziali
+- **Software**: Programmi e algoritmi dedicati
+
+### **Applicazioni Pratiche**
+- **Settore industriale**: Implementazioni professionali
+- **Consumo**: Uso quotidiano e domestico
+- **Sviluppo futuro**: Tendenze e innovazioni
+
+### **Impatto Sociale**
+- **Trasformazione digitale**: Cambiamenti nei comportamenti
+- **Nuove opportunità**: Lavoro e creatività
+- **Sfide etiche**: Privacy e sicurezza`,
+                    schema: `## **Struttura di ${topicCapitalized}**
+
+### **1. Livello Fisico**
+- **Hardware**: Componenti elettroniche
+- **Infrastruttura**: Reti e sistemi
+- **Interfacce**: Interazione utente
+
+### **2. Livello Logico**
+- **Algoritmi**: Procedure di elaborazione
+- **Protocolli**: Standard di comunicazione
+- **Architetture**: Organizzazione dei sistemi
+
+### **3. Livello Applicativo**
+- **Software**: Programmi e applicazioni
+- **Servizi**: Funzionalità accessibili
+- **Piattaforme**: Ecosistemi integrati`,
+                    quiz: {
+                        domanda: `Quale descrizione meglio si adatta a ${topic}?`,
+                        opzioni: ["Tecnologia informatica", "Scienza naturale", "Arte visiva", "Fenomeno storico"],
+                        risposta: 0
+                    }
+                },
+                
+                general: {
+                    spiegazione: `${topicCapitalized} è un concetto importante che merita approfondimento. Questo argomento presenta caratteristiche specifiche e applicazioni pratiche rilevanti nel suo campo di riferimento.`,
+                    riassunto: `# **${topicCapitalized}: Analisi Completa**
+
+## **Concetto Principale**
+
+${topicCapitalized} rappresenta un elemento significativo che richiede un'analisi approfondita per comprenderne appieno la natura e le implicazioni.
+
+### **Caratteristiche Fondamentali**
+- **Definizione**: Descrizione chiara e univoca del concetto
+- **Proprietà essenziali**: Attributi distintivi e qualificanti
+- **Contesto**: Ambito di applicazione e rilevanza
+
+### **Sviluppi e Applicazioni**
+- **Evoluzione storica**: Sviluppo del concetto nel tempo
+- **Utilizzi pratici**: Applicazioni concrete e reali
+- **Impatto**: Influenza su altri campi o discipline
+
+### **Prospettive Future**
+- **Tendenze attuali**: Direzioni contemporanee
+- **Potenziale di sviluppo**: Possibilità future
+- **Sfide aperte**: Questioni ancora da risolvere`,
+                    schema: `## **Struttura di ${topicCapitalized}**
+
+### **1. Definizione e Concetti Base**
+- **Significato fondamentale**: Natura essenziale del concetto
+- **Terminologia specifica**: Lessico tecnico e specialistico
+- **Contestualizzazione**: Quadro di riferimento generale
+
+### **2. Sviluppo e Articolazione**
+- **Componenti principali**: Elementi costitutivi fondamentali
+- **Relazioni strutturali**: Collegamenti e dipendenze
+- **Processi correlati**: Dinamiche e meccanismi
+
+### **3. Applicazioni e Implicazioni**
+- **Utilizzi pratici**: Implementazioni concrete
+- **Rilevanza teorica**: Importanza concettuale
+- **Sviluppi futuri**: Prospettive e tendenze`,
+                    quiz: {
+                        domanda: `Quale aspetto caratterizza principalmente ${topic}?`,
+                        opzioni: ["Elemento significativo con applicazioni pratiche", "Fenomeno trascurabile", "Concetto irrilevante", "Dettaglio secondario"],
+                        risposta: 0
+                    }
+                }
+            };
+            
+            return templates[category] || templates.general;
+        }
+
+        // Funzione di ricerca su Wikipedia API
+        async function searchWikipedia(topic) {
+            try {
+                const searchUrl = `https://it.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`;
+                
+                const response = await fetch(searchUrl);
+                if (!response.ok) {
+                    throw new Error('Wikipedia page not found');
+                }
+                
+                const data = await response.json();
+                console.log('Risposta Wikipedia:', data);
+                
+                return {
+                    abstract: data.extract || '',
+                    title: data.title || topic,
+                    url: data.content_urls?.desktop?.page || '',
+                    thumbnail: data.thumbnail?.source || '',
+                    hasInfo: data.extract && data.extract.length > 0,
+                    source: 'Wikipedia'
+                };
+                
+            } catch (error) {
+                console.error('Errore Wikipedia:', error);
+                return {
+                    abstract: '',
+                    title: topic,
+                    url: '',
+                    thumbnail: '',
+                    hasInfo: false,
+                    source: 'Wikipedia Errore'
+                };
+            }
+        }
+
+        // Funzione di ricerca reale su DuckDuckGo MIGLIORATA
+        async function searchRealInfo(topic) {
+            try {
+                // Prima prova DuckDuckGo
+                const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(topic)}&format=json&pretty=1&no_html=1&skip_disambig=1`;
+                
+                const response = await fetch(searchUrl);
+                if (!response.ok) {
+                    throw new Error('Errore nella ricerca');
+                }
+                
+                const data = await response.json();
+                console.log('Risposta DuckDuckGo:', data);
+                
+                // Estrai informazioni complete e strutturate
+                const abstract = data.Abstract || '';
+                const relatedTopics = data.RelatedTopics || [];
+                const infobox = data.Infobox || {};
+                
+                // Estrai dati aggiuntivi dall'infobox se presente
+                const additionalInfo = Object.keys(infobox).length > 0 ? infobox : {};
+                
+                // Crea testo strutturato per i topic correlati
+                const structuredTopics = relatedTopics
+                    .slice(0, 8)
+                    .map((topic, index) => {
+                        const text = topic.Text || '';
+                        const firstURL = topic.FirstURL || '';
+                        return text ? `${index + 1}. ${text}` : '';
+                    })
+                    .filter(text => text.length > 0)
+                    .join('\n');
+                
+                // Estrai definizioni e dati chiave
+                const definitions = [];
+                if (abstract) {
+                    const sentences = abstract.split('. ');
+                    sentences.forEach(sentence => {
+                        if (sentence.includes('è') || sentence.includes('sono')) {
+                            definitions.push(sentence.trim());
+                        }
+                    });
+                }
+                
+                // Se DuckDuckGo ha informazioni buone, restituiscile
+                if (abstract.length > 50 || structuredTopics.length > 3) {
+                    return {
+                        abstract: abstract,
+                        definitions: definitions,
+                        relatedTopics: structuredTopics,
+                        additionalInfo: additionalInfo,
+                        hasInfo: true,
+                        source: 'DuckDuckGo',
+                        relatedURLs: relatedTopics.slice(0, 5).map(topic => ({
+                            text: topic.Text || '',
+                            url: topic.FirstURL || ''
+                        })).filter(item => item.text.length > 0)
+                    };
+                } else {
+                    // Fallback a Wikipedia se DuckDuckGo non ha abbastanza informazioni
+                    console.log('DuckDuckGo insufficiente, provo Wikipedia...');
+                    const wikiData = await searchWikipedia(topic);
+                    
+                    // Estrai definizioni da Wikipedia
+                    const wikiDefinitions = [];
+                    if (wikiData.abstract) {
+                        const sentences = wikiData.abstract.split('. ');
+                        sentences.forEach(sentence => {
+                            if (sentence.includes('è') || sentence.includes('sono') || sentence.includes('sono')) {
+                                wikiDefinitions.push(sentence.trim());
+                            }
+                        });
+                    }
+                    
+                    return {
+                        abstract: wikiData.abstract,
+                        definitions: wikiDefinitions,
+                        relatedTopics: `Fonte: Wikipedia\n\nArticolo completo disponibile su: ${wikiData.url}`,
+                        additionalInfo: wikiData,
+                        hasInfo: wikiData.hasInfo,
+                        source: 'Wikipedia',
+                        relatedURLs: wikiData.url ? [{text: 'Articolo Wikipedia completo', url: wikiData.url}] : []
+                    };
+                }
+                
+            } catch (error) {
+                console.error('Errore ricerca DuckDuckGo, provo Wikipedia:', error);
+                
+                // Fallback totale a Wikipedia
+                try {
+                    const wikiData = await searchWikipedia(topic);
+                    const wikiDefinitions = [];
+                    if (wikiData.abstract) {
+                        const sentences = wikiData.abstract.split('. ');
+                        sentences.forEach(sentence => {
+                            if (sentence.includes('è') || sentence.includes('sono')) {
+                                wikiDefinitions.push(sentence.trim());
+                            }
+                        });
+                    }
+                    
+                    return {
+                        abstract: wikiData.abstract,
+                        definitions: wikiDefinitions,
+                        relatedTopics: `Fonte: Wikipedia\n\nArticolo completo disponibile su: ${wikiData.url}`,
+                        additionalInfo: wikiData,
+                        hasInfo: wikiData.hasInfo,
+                        source: 'Wikipedia (Fallback)',
+                        relatedURLs: wikiData.url ? [{text: 'Articolo Wikipedia completo', url: wikiData.url}] : []
+                    };
+                } catch (wikiError) {
+                    console.error('Errore anche Wikipedia:', wikiError);
+                    return {
+                        abstract: '',
+                        definitions: [],
+                        relatedTopics: '',
+                        additionalInfo: {},
+                        hasInfo: false,
+                        source: 'Errore completo',
+                        relatedURLs: []
+                    };
+                }
+            }
+        }
+
+        // Funzione per generare contenuti basati su ricerca reale MIGLIORATA
+        function generateContentFromSearch(topic, searchInfo) {
+            const topicCapitalized = topic.charAt(0).toUpperCase() + topic.slice(1);
+            
+            if (searchInfo.hasInfo) {
+                // Ho informazioni reali dalla ricerca
+                const abstract = searchInfo.abstract;
+                const definitions = searchInfo.definitions || [];
+                const relatedTopics = searchInfo.relatedTopics;
+                const additionalInfo = searchInfo.additionalInfo || {};
+                const source = searchInfo.source;
+                
+                // Estrai dati chiave dall'infobox
+                const keyFacts = [];
+                if (additionalInfo.Type) keyFacts.push(`**Tipo**: ${additionalInfo.Type}`);
+                if (additionalInfo.Area) keyFacts.push(`**Area**: ${additionalInfo.Area}`);
+                if (additionalInfo.Population) keyFacts.push(`**Popolazione**: ${additionalInfo.Population}`);
+                if (additionalInfo.Currency) keyFacts.push(`**Valuta**: ${additionalInfo.Currency}`);
+                if (additionalInfo.Capital) keyFacts.push(`**Capitale**: ${additionalInfo.Capital}`);
+                
+                // Crea definizioni strutturate
+                let structuredDefinitions = definitions;
+                if (definitions.length > 0) {
+                    structuredDefinitions = definitions.slice(0, 6); // Limita a 6 definizioni
+                }
+                
+                // Crea lista di topic correlati con URL
+                const relatedWithUrls = searchInfo.relatedURLs || [];
+                const structuredRelated = relatedWithUrls
+                    .slice(0, 6) // Limita a 6 topic
+                    .map(item => `• ${item.text}${item.url ? ` (${item.url})` : ''}`)
+                    .join('\n');
+                
+                return {
+                    spiegazione: `Ho trovato informazioni complete su "${topic}" tramite ricerca web. ${abstract.substring(0, 150)}${abstract.length > 150 ? '...' : ''}`,
+                    
+                    riassunto: `# **${topicCapitalized}: Analisi Completa dalla Ricerca**
+
+## **Fonte: ${source}**
+
+---
+
+## **📋 Definizione Principale**
+
+${abstract}
+
+${structuredDefinitions.length > 0 ? `
+### **🔍 Definizioni Chiave**
+
+${structuredDefinitions.map((def, index) => `${index + 1}. ${def}`).join('\n')}` : ''}
+
+${keyFacts.length > 0 ? `
+### **📊 Dati Chiave**
+
+${keyFacts.join('\n')}` : ''}
+
+---
+
+## **🔗 Argomenti Correlati**
+
+${structuredRelated}
+
+---
+
+## **💡 Contesto e Applicazioni**
+
+### **Rilevanza Attuale**
+L'argomento "${topic}" riveste un ruolo significativo nel panorama contemporaneo, influenzando:
+
+- **Sviluppi recenti** nel settore
+- **Innovazioni tecnologiche** collegate
+- **Debatti accademici** e scientifici
+
+### **Applicazioni Pratiche**
+- **Settore professionale**: Utilizzi concreti nel mondo del lavoro
+- **Ricerca accademica**: Studi approfonditi e sviluppi teorici
+- **Impatto sociale**: Influenza su società e cultura
+
+### **Prospettive Future**
+- **Tendenze emergenti**: Direzioni di sviluppo probabili
+- **Sfide aperte**: Questioni ancora da risolvere
+- **Opportunità**: Aree di crescita e innovazione`,
+
+                    schema: `## **🗺️ Mappa Concettuale di ${topicCapitalized}**
+
+### **1. 📍 Nucleo Concettuale**
+- **Definizione centrale**: Concetto fondamentale di ${topicCapitalized}
+- **Caratteristiche distintive**: Attributi unici e qualificanti
+- **Principi base**: Leggi e regole fondamentali
+
+### **2. 🔗 Connessioni Tematiche**
+${structuredRelated}
+
+### **3. 📈 Sviluppo Storico**
+- **Origini**: Sviluppo storico del concetto
+- **Evoluzione**: Trasformazioni nel tempo
+- **Milestones**: Momenti chiave dello sviluppo
+
+### **4. 🎯 Applicazioni e Impatto**
+- **Utilizzi pratici**: Come si applica nella realtà
+- **Settore specifico**: Campi di applicazione principali
+- **Influenza**: Effetto su altri ambiti disciplinari
+
+### **5. 📚 Fonti e Risorse**
+- **Fonte primaria**: ${source}
+- **Documentazione**: Materiale specialistico di riferimento
+- **Approfondimenti**: Percorsi di ulteriore studio
+
+### **6. 🔮 Prospettive Future**
+- **Sviluppi attesi**: Direzioni di evoluzione probabili
+- **Innovazioni previste**: Nuove applicazioni possibili
+- **Sfide emergenti**: Questioni da affrontare nel futuro`,
+
+                    quiz: {
+                        domanda: `Quale informazione chiave ho trovato su "${topic}"?`,
+                        opzioni: [
+                            "Definizione completa e dati strutturati",
+                            "Argomenti correlati con fonti verificabili",
+                            "Contesto storico e applicazioni pratiche",
+                            "Analisi completa delle fonti e prospettive"
+                        ],
+                        risposta: 0
+                    }
+                };
+            } else {
+                // Fallback al sistema precedente ma migliorato
+                return generateDynamicContent(topic);
+            }
+        }
+
+        // Funzione principale di generazione CON RICERCA REALE
+        async function generateMaterials() {
+            const text = document.getElementById('textInput').value.trim();
+            
+            if (!text) {
+                alert('Per favore inserisci un argomento!');
+                return;
+            }
+            
+            // Mostra loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            
+            try {
+                console.log('Inizio ricerca per:', text);
+                
+                // Esegui ricerca reale
+                const searchInfo = await searchRealInfo(text);
+                console.log('Info trovate:', searchInfo);
+                
+                // Genera contenuti basati sulla ricerca
+                const content = generateContentFromSearch(text, searchInfo);
+                
+                // Mostra risultati
+                displayResults(content);
+                
+                // Nascondi loading e mostra risultati
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results').style.display = 'block';
+                
+                console.log('Generazione completata con successo');
+                
+            } catch (error) {
+                console.error('Errore generazione:', error);
+                document.getElementById('loading').style.display = 'none';
+                alert(`Errore durante la generazione: ${error.message}`);
+            }
+        }
+
+        // Funzione per visualizzare i risultati
+        function displayResults(content) {
+            // Spiegazione
+            document.getElementById('spiegazione').innerHTML = content.spiegazione;
+            
+            // Riassunto (con supporto markdown base)
+            let formattedRiassunto = content.riassunto
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/## (.*?)/g, '<h3>$1</h3>')
+                .replace(/# (.*?)/g, '<h2>$1</h2>')
+                .replace(/\n- (.*?)/g, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+            
+            document.getElementById('riassunto').innerHTML = formattedRiassunto;
+            
+            // Schema
+            let formattedSchema = content.schema
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/## (.*?)/g, '<h3>$1</h3>')
+                .replace(/### (.*?)/g, '<h4>$1</h4>')
+                .replace(/\n- (.*?)/g, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+            
+            document.getElementById('schema').innerHTML = formattedSchema;
+            
+            // Quiz
+            const quizHtml = `
+                <div class="quiz-question">${content.quiz.domanda}</div>
+                <div class="quiz-options">
+                    ${content.quiz.opzioni.map((option, index) => 
+                        `<div class="quiz-option" onclick="checkAnswer(${index}, ${content.quiz.risposta}, this)">${option}</div>`
+                    ).join('')}
+                </div>
+            `;
+            document.getElementById('quiz').innerHTML = quizHtml;
+        }
+
+        // Funzione per verificare le risposte del quiz
+        function checkAnswer(selected, correct, element) {
+            const options = document.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt === element) {
+                    opt.classList.add(selected === correct ? 'correct' : 'incorrect');
+                } else if (options.indexOf(opt) === correct) {
+                    opt.classList.add('correct');
+                }
+            });
+        }
+
+        // Funzione per cancellare i risultati
+        function clearResults() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Pagina riassunti semplificata caricata!');
+        });
+    </script>
+</body>
+</html>
