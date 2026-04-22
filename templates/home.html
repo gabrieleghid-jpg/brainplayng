@@ -110,10 +110,27 @@
           <div style="display: flex; align-items: center; gap: 1rem;">
           <!-- Avatar con Accessori -->
           <div style="position: relative; width: 60px; height: 60px;">
-            <!-- Omino Grigio SVG -->
+            <!-- Cervello con Braccia e Gambe SVG -->
             <svg width="60" height="60" viewBox="0 0 60 60" style="position: absolute; z-index: 1;">
-              <circle cx="30" cy="20" r="8" fill="#9CA3AF"/>
-              <path d="M30 30 C20 30, 15 35, 15 45 L45 45 C45 35, 40 30, 30 30 Z" fill="#9CA3AF"/>
+              <!-- Cervello -->
+              <path d="M30 8 C22 8, 16 14, 16 22 C16 24, 16.5 26, 17.5 27.5 C15.5 28, 14 30, 14 32.5 C14 34.5, 15 36, 16.5 37 C16 38, 15.5 39, 15.5 40 C15.5 43, 18 45.5, 21 45.5 C22 45.5, 23 45, 23.5 44.5 C24.5 45.5, 26 46, 27.5 46 L32.5 46 C34 46, 35.5 45.5, 36.5 44.5 C37 45, 38 45.5, 39 45.5 C42 45.5, 44.5 43, 44.5 40 C44.5 39, 44 38, 43.5 37 C45 36, 46 34.5, 46 32.5 C46 30, 44.5 28, 42.5 27.5 C43.5 26, 44 24, 44 22 C44 14, 38 8, 30 8 Z" fill="#FF69B4" stroke="#FF1493" stroke-width="1"/>
+              <!-- Occhi del cervello -->
+              <circle cx="26" cy="25" r="2" fill="#000"/>
+              <circle cx="34" cy="25" r="2" fill="#000"/>
+              <!-- Bocca del cervello -->
+              <path d="M27 30 Q30 32, 33 30" stroke="#000" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+              <!-- Braccia -->
+              <line x1="20" y1="35" x2="12" y2="42" stroke="#FF69B4" stroke-width="3" stroke-linecap="round"/>
+              <line x1="40" y1="35" x2="48" y2="42" stroke="#FF69B4" stroke-width="3" stroke-linecap="round"/>
+              <!-- Mani -->
+              <circle cx="12" cy="42" r="3" fill="#FFB6C1"/>
+              <circle cx="48" cy="42" r="3" fill="#FFB6C1"/>
+              <!-- Gambe -->
+              <line x1="25" y1="45" x2="22" y2="55" stroke="#FF69B4" stroke-width="3" stroke-linecap="round"/>
+              <line x1="35" y1="45" x2="38" y2="55" stroke="#FF69B4" stroke-width="3" stroke-linecap="round"/>
+              <!-- Piedi -->
+              <ellipse cx="22" cy="56" rx="4" ry="2" fill="#FFB6C1"/>
+              <ellipse cx="38" cy="56" rx="4" ry="2" fill="#FFB6C1"/>
             </svg>
             <!-- Accessori Acquistati -->
             <div id="avatarAccessori" style="position: absolute; width: 60px; height: 60px; z-index: 2; pointer-events: none;">
