@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>brainplaying — Home</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="dashboard.css" />
+
+</head>
+<body>
+  <header class="nav">
+    <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Apri menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <a href="home.html" class="brand">
+      <span class="brand-icon">🧠</span>
+      <span>brainplaying</span>
+    </a>
+    <div class="nav-actions">
+      <button class="nav-link" type="button">Home</button>
+      <a href="generatore-schemi.html" class="nav-link">Generatore Schemi</a>
+            <a href="profile.html" class="profile-button">
+        <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
+      </a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌙</button>
+    </div>
+  </header>
+
+  <div class="page-shell">
+    <aside class="sidebar">
+      <article class="session-card">
+        <header>
+          <h2>Prossima sessione</h2>
+          <span class="pill">Focus</span>
+        </header>
+        <div class="session-details">
+          <div class="session-item">
+            <strong>Mattinata di ripasso</strong>
+            <span>Biologia, matematica e inglese</span>
+          </div>
+          <div class="session-item">
+            <strong>45 min</strong>
+            <span>Tempo stimato</span>
+          </div>
+          <div class="progress-bar" aria-label="Progresso sessione">
+            <div class="progress-fill"></div>
+          </div>
+          <span style="color:var(--muted);font-size:0.95rem;">68% completato del piano giornaliero</span>
+        </div>
+      </article>
+
+      <article class="activity-card">
+        <header>
+          <h2>Attività recenti</h2>
+          <span class="pill">Aggiornamenti</span>
+        </header>
+        <ul class="activity-list">
+          <li class="activity-item">
+            <strong>Quiz completato</strong>
+            <span>Hai risposto correttamente all'88% delle domande.</span>
+          </li>
+          <li class="activity-item">
+            <strong>Nuova routine</strong>
+            <span>Definisci il tuo prossimo intervallo di focus da 50 minuti.</span>
+          </li>
+          <li class="activity-item">
+            <strong>Traguardo giornaliero</strong>
+            <span>Hai raggiunto il 75% dell'obiettivo di studio.</span>
+          </li>
+        </ul>
+      </article>
+
+      <div class="quick-item">
+        <h3>Modalità completa</h3>
+        <p>Attiva la modalità focus per eliminare le distrazioni e lavorare in blocchi con timer visivi.</p>
+      </div>
+
+      <div class="quick-item">
+        <h3>Campanello di progresso</h3>
+        <p>Imposta un obiettivo giornaliero e segui il tuo avanzamento direttamente dalla home.</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+
+    <div class="hero-grid">
+      
+    </div>
+
+    <section class="feature-card">
+      <h2>Scopri brainplaying</h2>
+      <p>Rimani concentrato, organizza le tue sessioni e monitora i progressi con un’esperienza studiata per lo studio produttivo.</p>
+      <ul class="feature-list">
+        <li>Sessioni guidate per mantenere il ritmo</li>
+        <li>Ripetizione spaziata per fissare i concetti</li>
+        <li>Metascore di progressi e obiettivi giornalieri</li>
+        <li>Interfaccia pulita e focus mode</li>
+      </ul>
+    </section>
+
+    <div class="dashboard-grid">
+      <!-- Riquadro Avatar con Crediti -->
+      <div class="session-card" style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(59, 130, 246, 0.08)); border: 2px solid rgba(79, 70, 229, 0.2);">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+          <!-- Avatar con Accessori -->
+          <div style="position: relative; width: 60px; height: 60px;">
+            <!-- Omino Grigio SVG -->
+            <svg width="60" height="60" viewBox="0 0 60 60" style="position: absolute; z-index: 1;">
+              <circle cx="30" cy="20" r="8" fill="#9CA3AF"/>
+              <path d="M30 30 C20 30, 15 35, 15 45 L45 45 C45 35, 40 30, 30 30 Z" fill="#9CA3AF"/>
+            </svg>
+            <!-- Accessori Acquistati -->
+            <div id="avatarAccessori" style="position: absolute; width: 60px; height: 60px; z-index: 2; pointer-events: none;">
+              <!-- Gli accessori verranno inseriti qui dinamicamente -->
+            </div>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 1.2rem; color: var(--text);">Il Tuo Avatar</h3>
+            <p id="creditiDisplay" style="margin: 0; font-size: 1rem; font-weight: 600; color: var(--accent);">0 crediti</p>
+          </div>
+        </div>
+          <div style="text-align: center;">
+            <div style="font-size: 2rem;">??</div>
+            <div style="font-size: 0.8rem; color: var(--muted);">Livello 1</div>
+          </div>
+        </div>
+        <div style="padding: 0 1rem 1rem;">
+          <div style="background: rgba(79, 70, 229, 0.1); border-radius: 8px; padding: 0.5rem; text-align: center;">
+            <div style="font-size: 0.9rem; color: var(--muted);">Prossimo livello</div>
+            <div style="background: var(--panel-strong); height: 8px; border-radius: 4px; margin-top: 0.5rem; overflow: hidden;">
+              <div id="progressBar" style="background: linear-gradient(90deg, var(--accent), #818cf8); height: 100%; width: 0%; transition: width 0.3s ease;"></div>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem;">10 / 100 crediti</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop Avatar -->
+      <div class="session-card" style="background: linear-gradient(135deg, rgba(255, 107, 107, 0.08), rgba(74, 144, 226, 0.08)); border: 2px solid rgba(255, 107, 107, 0.2);">
+        <header>
+          <h2>?? Shop Avatar</h2>
+          <span class="pill" style="background: linear-gradient(135deg, #FF6B6B, #4A90E2);">Nuovo</span>
+        </header>
+        <div id="shopAvatarContent" style="max-height: 300px; overflow-y: auto;">
+          <!-- Gli accessori verranno generati dinamicamente -->
+        </div>
+      </div>
+
+      <a href="generatore-schemi.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
+        <header>
+          <h2>Generatore Schemi</h2>
+          <span class="pill">Nuovo</span>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Crea schemi visivi con frecce e parole chiave</p>
+      </a>
+
+      <a href="riassunti.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
+        <header>
+          <h2>Riassunti</h2>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Apri la pagina dedicata ai riassunti</p>
+      </a>
+
+      <div class="session-card" id="minigameCard" style="cursor: pointer;">
+        <header>
+          <h2>Minigiochi</h2>
+          <span class="pill">Allenamento</span>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Allena la tua mente con giochi interattivi</p>
+      </div>
+
+      <a href="classifica.html" class="session-card" style="cursor: pointer; text-decoration: none; color: inherit;">
+        <header>
+          <h2>Classifica</h2>
+        </header>
+        <p style="color: var(--muted); margin: 0; padding: 1rem 0;">Scopri i migliori studenti di brainplaying</p>
+      </a>
+    </div>
+
+      <footer class="home-footer">
+        <p>Torna alla <a href="home.html">home</a> o ai <a href="riassunti.html">riassunti</a>.</p>
+        <p>&copy; 2026 brainplaying · Creato per concentrazione ed efficienza.</p>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Minigame Modal -->
+  <div id="minigameModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Minigiochi per Allenare la Mente</h2>
+        <button class="modal-close" id="closeModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="minigame-grid">
+          <div class="minigame-item" data-game="sudoku">
+            <div class="minigame-icon">🧠</div>
+            <h3>Sudoku</h3>
+            <p>Risolvi il puzzle numerico per allenare la logica e la concentrazione</p>
+            <button class="play-button">Gioca</button>
+          </div>
+          <div class="minigame-item" data-game="wordle">
+            <div class="minigame-icon">📖</div>
+            <h3>Wordle</h3>
+            <p>Indovina la parola segreta in 6 tentativi per allenare il vocabolario</p>
+            <button class="play-button">Gioca</button>
+          </div>
+          <div class="minigame-item" data-game="math">
+            <div class="minigame-icon">➕</div>
+            <h3>Calcolo Veloce</h3>
+            <p>Risolvi operazioni matematiche sotto tempo</p>
+            <button class="play-button">Gioca</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Container -->
+  <div id="gameContainer" class="game-container" style="display: none;">
+    <div class="game-header">
+      <button class="back-button" id="backToMenu">&larr; Torna ai minigiochi</button>
+      <div class="game-info">
+        <span id="gameTitle">Memory Cards</span>
+        <div class="game-stats">
+          <span id="gameScore">Punteggio: 0</span>
+          <span id="gameTimer">Tempo: 0:00</span>
+        </div>
+      </div>
+    </div>
+    <div class="game-area" id="gameArea">
+      <!-- Game content will be dynamically inserted here -->
+    </div>
+  </div>
+
+  <script src="auth-helper.js"></script>
+  <script>
+    if (!checkAuthentication()) {
+      window.location.href = 'index.html';
+    }
+
+    // SISTEMA CREDITI AVATAR
+    const STORAGE_CREDITI_KEY = 'bp_crediti';
+    const STORAGE_ACCESSORI_KEY = 'bp_accessori';
+    
+    // Inizializza crediti se non esistono
+    function initCrediti() {
+      if (!localStorage.getItem(STORAGE_CREDITI_KEY)) {
+        localStorage.setItem(STORAGE_CREDITI_KEY, '0');
+      }
+    }
+    
+    // Array degli accessori disponibili
+    const accessoriDisponibili = [
+      { id: 'cappello', nome: 'Cappello', prezzo: 50, svg: '<path d="M25 10 L35 10 L35 5 L25 5 Z" fill="#FF6B6B"/><path d="M20 10 L40 10 L35 5 L25 5 Z" fill="#FF6B6B"/>' },
+      { id: 'occhiali', nome: 'Occhiali', prezzo: 30, svg: '<circle cx="22" cy="18" r="8" fill="none" stroke="#4A90E2" stroke-width="2"/><circle cx="38" cy="18" r="8" fill="none" stroke="#4A90E2" stroke-width="2"/><path d="M30 18 L30 18" stroke="#4A90E2" stroke-width="2"/>' },
+      { id: 'mantello', nome: 'Mantello', prezzo: 80, svg: '<path d="M15 25 L45 25 L40 50 L20 50 Z" fill="#9B59B6" opacity="0.8"/><path d="M15 25 L45 25 L45 30 L15 30 Z" fill="#8E44AD"/>' },
+      { id: 'corona', nome: 'Corona', prezzo: 100, svg: '<path d="M20 15 L25 5 L30 12 L35 5 L40 15 L35 20 L25 20 Z" fill="#FFD700"/><circle cx="25" cy="10" r="2" fill="#FFF"/><circle cx="35" cy="10" r="2" fill="#FFF"/><circle cx="30" cy="15" r="2" fill="#FFF"/>' },
+      { id: 'sciarpa', nome: 'Sciarpa', prezzo: 40, svg: '<path d="M15 28 L45 28 L45 35 L15 35 Z" fill="#E74C3C"/><path d="M15 31 L45 31 L45 32 L15 32 Z" fill="#C0392B"/>' },
+      { id: 'cuffia', nome: 'Cuffia', prezzo: 35, svg: '<ellipse cx="30" cy="12" rx="12" ry="8" fill="#34495E"/><path d="M18 12 L42 12" stroke="#2C3E50" stroke-width="1"/>' }
+    ];
+    
+    // Inizializza accessori acquistati
+    function initAccessori() {
+      if (!localStorage.getItem(STORAGE_ACCESSORI_KEY)) {
+        localStorage.setItem(STORAGE_ACCESSORI_KEY, JSON.stringify([]));
+      }
+    }
+    
+    // Ottieni accessori acquistati
+    function getAccessoriAcquistati() {
+      return JSON.parse(localStorage.getItem(STORAGE_ACCESSORI_KEY) || '[]');
+    }
+    
+    // Controlla se un accessorio è acquistato
+    function isAccessorioAcquistato(accessorioId) {
+      return getAccessoriAcquistati().includes(accessorioId);
+    }
+    
+    // Acquista accessorio
+    function acquistaAccessorio(accessorioId, prezzo) {
+      const crediti = getCrediti();
+      if (crediti >= prezzo) {
+        // Sottrai crediti
+        const nuoviCrediti = crediti - prezzo;
+        localStorage.setItem(STORAGE_CREDITI_KEY, nuoviCrediti.toString());
+        
+        // Aggiungi accessorio
+        const accessori = getAccessoriAcquistati();
+        if (!accessori.includes(accessorioId)) {
+          accessori.push(accessorioId);
+          localStorage.setItem(STORAGE_ACCESSORI_KEY, JSON.stringify(accessori));
+        }
+        
+        updateAvatarDisplay();
+        renderShopAvatar();
+        showCreditNotification(-prezzo);
+        return true;
+      }
+      return false;
+    }
+    
+    // Ottieni crediti attuali
+    function getCrediti() {
+      return parseInt(localStorage.getItem(STORAGE_CREDITI_KEY) || '0');
+    }
+    
+    // Aggiungi crediti
+    function aggiungiCrediti(importo) {
+      const attuali = getCrediti();
+      const nuovi = attuali + importo;
+      localStorage.setItem(STORAGE_CREDITI_KEY, nuovi.toString());
+      updateAvatarDisplay();
+      
+      // Mostra notifica
+      showCreditNotification(importo);
+    }
+    
+    // Mostra notifica crediti
+    function showCreditNotification(importo) {
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+      `;
+      notification.textContent = `+${importo} crediti!`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+      }, 2000);
+    }
+    
+    // Aggiorna display avatar
+    function updateAvatarDisplay() {
+      const creditiElement = document.getElementById('creditiDisplay');
+      const progressBar = document.getElementById('progressBar');
+      const crediti = getCrediti();
+      
+      if (creditiElement) {
+        creditiElement.textContent = crediti + ' crediti';
+      }
+      
+      // Aggiorna barra di progresso (ogni 100 crediti = nuovo livello)
+      if (progressBar) {
+        const progress = (crediti % 100);
+        progressBar.style.width = progress + '%';
+        
+        // Aggiorna testo progresso
+        const progressText = progressBar.parentElement?.nextElementSibling;
+        if (progressText) {
+          progressText.textContent = `${progress} / 100 crediti`;
+        }
+      }
+    }
+    
+    // Renderizza Shop Avatar
+    function renderShopAvatar() {
+      const shopContent = document.getElementById('shopAvatarContent');
+      if (!shopContent) return;
+      
+      const crediti = getCrediti();
+      const accessoriAcquistati = getAccessoriAcquistati();
+      
+      let shopHTML = '<div style="display: grid; gap: 0.5rem;">';
+      
+      accessoriDisponibili.forEach(accessorio => {
+        const isAcquistato = accessoriAcquistati.includes(accessorio.id);
+        const puoAcquistare = crediti >= accessorio.prezzo && !isAcquistato;
+        
+        shopHTML += `
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: ${isAcquistato ? 'rgba(76, 175, 80, 0.1)' : 'rgba(79, 70, 229, 0.05)'}; border-radius: 12px; border: 1px solid ${isAcquistato ? '#4CAF50' : 'var(--border)'};">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <svg width="40" height="40" viewBox="0 0 60 60" style="fill: none;">
+                  ${accessorio.svg}
+                </svg>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: var(--text); font-size: 0.9rem;">${accessorio.nome}</div>
+                <div style="color: ${isAcquistato ? '#4CAF50' : 'var(--accent)'}; font-size: 0.8rem; font-weight: 500;">
+                  ${isAcquistato ? '?? Acquistato' : `${accessorio.prezzo} crediti`}
+                </div>
+              </div>
+            </div>
+            ${!isAcquistato ? `
+              <button 
+                onclick="handleAcquista('${accessorio.id}', ${accessorio.prezzo})"
+                style="
+                  padding: 0.4rem 0.8rem;
+                  border: none;
+                  border-radius: 8px;
+                  font-size: 0.8rem;
+                  font-weight: 600;
+                  cursor: ${puoAcquistare ? 'pointer' : 'not-allowed'};
+                  background: ${puoAcquistare ? 'linear-gradient(135deg, var(--accent), #818cf8)' : 'rgba(156, 163, 175, 0.3)'};
+                  color: ${puoAcquistare ? 'white' : '#9CA3AF'};
+                  transition: all 0.2s ease;
+                "
+                ${!puoAcquistare ? 'disabled' : ''}
+              >
+                ${puoAcquistare ? 'Acquista' : crediti < accessorio.prezzo ? 'Crediti insufficienti' : 'Già tuo'}
+              </button>
+            ` : `
+              <div style="color: #4CAF50; font-size: 0.8rem; font-weight: 600;">??</div>
+            `}
+          </div>
+        `;
+      });
+      
+      shopHTML += '</div>';
+      shopContent.innerHTML = shopHTML;
+    }
+    
+    // Renderizza accessori sull'avatar
+    function renderAvatarAccessori() {
+      const avatarAccessori = document.getElementById('avatarAccessori');
+      if (!avatarAccessori) return;
+      
+      const accessoriAcquistati = getAccessoriAcquistati();
+      let accessoriHTML = '';
+      
+      accessoriAcquistati.forEach(accessorioId => {
+        const accessorio = accessoriDisponibili.find(a => a.id === accessorId);
+        if (accessorio) {
+          accessoriHTML += `
+            <svg width="60" height="60" viewBox="0 0 60 60" style="position: absolute; z-index: 2;">
+              ${accessorio.svg}
+            </svg>
+          `;
+        }
+      });
+      
+      avatarAccessori.innerHTML = accessoriHTML;
+    }
+    
+    // Gestione acquisto accessorio
+    function handleAcquista(accessorioId, prezzo) {
+      if (acquistaAccessorio(accessorioId, prezzo)) {
+        renderAvatarAccessori();
+      } else {
+        // Mostra messaggio di errore
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: linear-gradient(135deg, #ef4444, #dc2626);
+          color: white;
+          padding: 1rem 1.5rem;
+          border-radius: 12px;
+          font-weight: 600;
+          box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+          z-index: 10000;
+          animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = 'Crediti insufficienti!';
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          notification.style.animation = 'slideOut 0.3s ease';
+          setTimeout(() => notification.remove(), 300);
+        }, 2000);
+      }
+    }
+    
+    // Inizializza
+    initCrediti();
+    initAccessori();
+    updateAvatarDisplay();
+    renderShopAvatar();
+    renderAvatarAccessori();
+
+    // HAMBURGER MENU
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar = document.querySelector('.sidebar');
+    const body = document.body;
+
+    hamburgerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sidebar.classList.toggle('active');
+      body.classList.toggle('menu-open');
+    });
+
+    // Chiudi il menu quando clicchi sull'overlay
+    body.addEventListener('click', (e) => {
+      if (body.classList.contains('menu-open') && !sidebar.contains(e.target) && e.target !== hamburgerBtn) {
+        sidebar.classList.remove('active');
+        body.classList.remove('menu-open');
+      }
+    });
+
+    // Chiudi il menu quando clicchi su un elemento della sidebar
+    sidebar.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A' || e.target.tagName === 'BUTTON') {
+        sidebar.classList.remove('active');
+        body.classList.remove('menu-open');
+      }
+    });
+
+    const themeToggle = document.getElementById('themeToggle');
+    const navAvatar = document.getElementById('navAvatar');
+    const guestNotice = document.getElementById('guestNotice');
+    const heroButton = document.querySelector('.hero-button');
+    const secondaryButton = document.querySelector('.secondary-button');
+
+    const user = {
+      username: sessionStorage.getItem('username') || 'Studente',
+      profileImage: sessionStorage.getItem('profileImage') || ''
+    };
+
+    function getInitials(name) {
+      return name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0].toUpperCase())
+        .join('');
+    }
+
+    function updateProfileUI() {
+      if (navAvatar) {
+        if (user.profileImage) {
+          navAvatar.style.backgroundImage = `url(${user.profileImage})`;
+          navAvatar.textContent = '';
+        } else {
+          navAvatar.style.backgroundImage = '';
+          navAvatar.textContent = getInitials(user.username);
+        }
+      }
+    }
+
+    function updateGuestMode() {
+      const role = sessionStorage.getItem('role') || 'user';
+      if (role === 'guest') {
+        if (guestNotice) {
+          guestNotice.style.display = 'block';
+          guestNotice.textContent = 'Sei connesso come ospite: alcune funzionalità sono limitate e le modifiche al profilo non saranno salvate.';
+        }
+        if (heroButton) {
+          heroButton.disabled = true;
+          heroButton.textContent = 'Non disponibile per ospiti';
+        }
+        if (secondaryButton) {
+          secondaryButton.disabled = true;
+          secondaryButton.textContent = 'Area riservata agli utenti';
+        }
+      }
+    }
+
+    updateProfileUI();
+    updateGuestMode();
+
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark');
+      themeToggle.textContent = '☀️'; // Sole per tema scuro
+    } else {
+      themeToggle.textContent = '🌙'; // Luna per tema chiaro
+    }
+    themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+      themeToggle.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'; // Cambia icona dinamicamente
+      themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
+    });
+
+    // MINIGAME FUNCTIONALITY
+    const minigameCard = document.getElementById('minigameCard');
+    const minigameModal = document.getElementById('minigameModal');
+    const closeModal = document.getElementById('closeModal');
+    const gameContainer = document.getElementById('gameContainer');
+    const backToMenu = document.getElementById('backToMenu');
+    const gameArea = document.getElementById('gameArea');
+    const gameTitle = document.getElementById('gameTitle');
+    const gameScore = document.getElementById('gameScore');
+    const gameTimer = document.getElementById('gameTimer');
+
+    let currentGame = null;
+    let gameInterval = null;
+    let gameState = {};
+    let wonGames = JSON.parse(localStorage.getItem('wonGames') || '{}');
+
+    // Open minigame modal
+    minigameCard.addEventListener('click', () => {
+      updateMinigameIcons();
+      minigameModal.classList.add('active');
+    });
+
+    // Close modal
+    closeModal.addEventListener('click', () => {
+      minigameModal.classList.remove('active');
+    });
+
+    // Close modal on overlay click
+    minigameModal.addEventListener('click', (e) => {
+      if (e.target === minigameModal) {
+        minigameModal.classList.remove('active');
+      }
+    });
+
+    // Back to menu from game
+    backToMenu.addEventListener('click', () => {
+      stopGame();
+      gameContainer.style.display = 'none';
+      minigameModal.classList.add('active');
+    });
+
+    // Game selection
+    document.querySelectorAll('.minigame-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const gameType = item.dataset.game;
+        startGame(gameType);
+      });
+    });
+
+    function startGame(gameType) {
+      currentGame = gameType;
+      minigameModal.classList.remove('active');
+      gameContainer.style.display = 'flex';
+      
+      // Reset game state
+      gameState = {
+        score: 0,
+        time: 0,
+        moves: 0,
+        ...getGameInitialState(gameType)
+      };
+      
+      updateGameUI();
+      startTimer();
+      
+      switch(gameType) {
+        case 'sudoku':
+          initSudokuGame();
+          break;
+        case 'wordle':
+          initWordleGame();
+          break;
+        case 'math':
+          initMathGame();
+          break;
+        default:
+          gameArea.innerHTML = '<p>Gioco in sviluppo...</p>';
+      }
+    }
+
+    function stopGame() {
+      if (gameInterval) {
+        clearInterval(gameInterval);
+        gameInterval = null;
+      }
+      currentGame = null;
+      gameState = {};
+    }
+
+    function startTimer() {
+      gameState.time = 0;
+      gameInterval = setInterval(() => {
+        gameState.time++;
+        const minutes = Math.floor(gameState.time / 60);
+        const seconds = gameState.time % 60;
+        gameTimer.textContent = `Tempo: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function updateGameUI() {
+      gameScore.textContent = `Punteggio: ${gameState.score}`;
+      
+      const gameTitles = {
+        sudoku: 'Sudoku',
+        wordle: 'Wordle',
+        sequence: 'Sequence Memory',
+        math: 'Calcolo Veloce',
+        word: 'Word Puzzle',
+        reaction: 'Reaction Time'
+      };
+      
+      gameTitle.textContent = gameTitles[currentGame] || 'Minigioco';
+    }
+
+    function getGameInitialState(gameType) {
+      const states = {
+        sudoku: { grid: [], solution: [], selectedCell: null, difficulty: 'easy' },
+        wordle: { targetWord: '', currentGuess: '', guesses: [], gameOver: false },
+        sequence: { sequence: [], userSequence: [], level: 1 },
+        math: { currentProblem: null, correctAnswers: 0 },
+        word: { currentWord: null, foundWords: [] },
+        reaction: { startTime: null, reactions: [] }
+      };
+      return states[gameType] || {};
+    }
+
+    // Sudoku Game Implementation
+    function initSudokuGame() {
+      const puzzle = generateSudokuPuzzle();
+      gameState.grid = puzzle.grid;
+      gameState.solution = puzzle.solution;
+      gameState.selectedCell = null;
+      
+      const container = document.createElement('div');
+      container.style.textAlign = 'center';
+      
+      const title = document.createElement('h3');
+      title.textContent = 'Sudoku - Riempi la griglia';
+      title.style.marginBottom = '1rem';
+      
+      const grid = document.createElement('div');
+      grid.className = 'sudoku-grid';
+      grid.style.display = 'grid';
+      grid.style.gridTemplateColumns = 'repeat(9, 1fr)';
+      grid.style.gap = '2px';
+      grid.style.maxWidth = '450px';
+      grid.style.margin = '0 auto';
+      grid.style.padding = '10px';
+      grid.style.background = 'var(--border)';
+      grid.style.borderRadius = '12px';
+      
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'sudoku-cell';
+          cell.dataset.row = i;
+          cell.dataset.col = j;
+          cell.style.width = '40px';
+          cell.style.height = '40px';
+          cell.style.display = 'flex';
+          cell.style.alignItems = 'center';
+          cell.style.justifyContent = 'center';
+          cell.style.fontSize = '18px';
+          cell.style.fontWeight = 'bold';
+          cell.style.border = '1px solid var(--border)';
+          cell.style.background = 'var(--panel-strong)';
+          cell.style.color = 'var(--text)';
+          cell.style.cursor = 'pointer';
+          cell.style.borderRadius = '4px';
+          
+          // Add thicker borders for 3x3 sections
+          if (i % 3 === 0 && i !== 0) cell.style.borderTop = '2px solid var(--accent)';
+          if (j % 3 === 0 && j !== 0) cell.style.borderLeft = '2px solid var(--accent)';
+          
+          const value = gameState.grid[i][j];
+          if (value !== 0) {
+            cell.textContent = value;
+            cell.style.background = 'var(--input-bg)';
+            cell.style.cursor = 'default';
+            cell.style.color = 'var(--accent)';
+          }
+          
+          cell.addEventListener('click', () => selectSudokuCell(cell));
+          grid.appendChild(cell);
+        }
+      }
+      
+      const numberPad = document.createElement('div');
+      numberPad.style.display = 'grid';
+      numberPad.style.gridTemplateColumns = 'repeat(5, 1fr)';
+      numberPad.style.gap = '8px';
+      numberPad.style.maxWidth = '300px';
+      numberPad.style.margin = '20px auto 0';
+      
+      for (let i = 1; i <= 9; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        btn.className = 'number-btn';
+        btn.style.padding = '12px';
+        btn.style.fontSize = '16px';
+        btn.style.fontWeight = 'bold';
+        btn.style.border = '2px solid var(--border)';
+        btn.style.borderRadius = '8px';
+        btn.style.background = 'var(--panel-strong)';
+        btn.style.color = 'var(--text)';
+        btn.style.cursor = 'pointer';
+        btn.style.transition = 'all 0.2s';
+        btn.addEventListener('click', () => placeSudokuNumber(i));
+        btn.addEventListener('mouseenter', () => {
+          btn.style.background = 'var(--accent-soft)';
+          btn.style.borderColor = 'var(--accent)';
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.background = 'var(--panel-strong)';
+          btn.style.borderColor = 'var(--border)';
+        });
+        numberPad.appendChild(btn);
+      }
+      
+      const clearBtn = document.createElement('button');
+      clearBtn.textContent = 'Cancella';
+      clearBtn.style.padding = '12px';
+      clearBtn.style.fontSize = '14px';
+      clearBtn.style.border = '2px solid var(--border)';
+      clearBtn.style.borderRadius = '8px';
+      clearBtn.style.background = 'rgba(255, 59, 48, 0.1)';
+      clearBtn.style.color = 'rgb(255, 59, 48)';
+      clearBtn.style.cursor = 'pointer';
+      clearBtn.style.transition = 'all 0.2s';
+      clearBtn.addEventListener('click', () => clearSudokuCell());
+      clearBtn.addEventListener('mouseenter', () => {
+        clearBtn.style.background = 'rgba(255, 59, 48, 0.2)';
+      });
+      clearBtn.addEventListener('mouseleave', () => {
+        clearBtn.style.background = 'rgba(255, 59, 48, 0.1)';
+      });
+      numberPad.appendChild(clearBtn);
+      
+      container.appendChild(title);
+      container.appendChild(grid);
+      container.appendChild(numberPad);
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(container);
+    }
+
+    function generateSudokuPuzzle() {
+      // Simple sudoku puzzle (easy difficulty)
+      const solution = [
+        [5,3,4,6,7,8,9,1,2],
+        [6,7,2,1,9,5,3,4,8],
+        [1,9,8,3,4,2,5,6,7],
+        [8,5,9,7,6,1,4,2,3],
+        [4,2,6,8,5,3,7,9,1],
+        [7,1,3,9,2,4,8,5,6],
+        [9,6,1,5,3,7,2,8,4],
+        [2,8,7,4,1,9,6,3,5],
+        [3,4,5,2,8,6,1,7,9]
+      ];
+      
+      // Create puzzle by removing some numbers
+      const grid = solution.map(row => [...row]);
+      const cellsToRemove = 40; // Easy difficulty
+      
+      let removed = 0;
+      while (removed < cellsToRemove) {
+        const row = Math.floor(Math.random() * 9);
+        const col = Math.floor(Math.random() * 9);
+        if (grid[row][col] !== 0) {
+          grid[row][col] = 0;
+          removed++;
+        }
+      }
+      
+      return { grid, solution };
+    }
+
+    function selectSudokuCell(cell) {
+      if (cell.textContent && cell.style.color === 'var(--accent)') return; // Can't select fixed cells
+      
+      // Deselect previous cell
+      if (gameState.selectedCell) {
+        gameState.selectedCell.style.background = 'var(--panel-strong)';
+      }
+      
+      gameState.selectedCell = cell;
+      cell.style.background = 'var(--accent-soft)';
+    }
+
+    function placeSudokuNumber(number) {
+      if (!gameState.selectedCell) return;
+      
+      const row = parseInt(gameState.selectedCell.dataset.row);
+      const col = parseInt(gameState.selectedCell.dataset.col);
+      
+      // Check if the number is valid
+      if (isValidSudokuMove(row, col, number)) {
+        gameState.selectedCell.textContent = number;
+        gameState.selectedCell.style.color = 'var(--text)';
+        gameState.grid[row][col] = number;
+        gameState.score += 5;
+        updateGameUI();
+        
+        // Check if puzzle is complete
+        if (isSudokuComplete()) {
+          gameState.score += 100;
+          updateGameUI();
+          endGame(true);
+        }
+      } else {
+        // Invalid move - shake animation
+        gameState.selectedCell.style.animation = 'shake 0.5s';
+        setTimeout(() => {
+          gameState.selectedCell.style.animation = '';
+        }, 500);
+        gameState.score = Math.max(0, gameState.score - 2);
+        updateGameUI();
+      }
+    }
+
+    function clearSudokuCell() {
+      if (!gameState.selectedCell) return;
+      
+      const row = parseInt(gameState.selectedCell.dataset.row);
+      const col = parseInt(gameState.selectedCell.dataset.col);
+      
+      if (gameState.selectedCell.style.color !== 'var(--accent)') {
+        gameState.selectedCell.textContent = '';
+        gameState.grid[row][col] = 0;
+      }
+    }
+
+    function isValidSudokuMove(row, col, number) {
+      // Check row
+      for (let x = 0; x < 9; x++) {
+        if (x !== col && gameState.grid[row][x] === number) return false;
+      }
+      
+      // Check column
+      for (let x = 0; x < 9; x++) {
+        if (x !== row && gameState.grid[x][col] === number) return false;
+      }
+      
+      // Check 3x3 box
+      const boxRow = Math.floor(row / 3) * 3;
+      const boxCol = Math.floor(col / 3) * 3;
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if ((boxRow + i !== row || boxCol + j !== col) && 
+              gameState.grid[boxRow + i][boxCol + j] === number) {
+            return false;
+          }
+        }
+      }
+      
+      return true;
+    }
+
+    function isSudokuComplete() {
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          if (gameState.grid[i][j] === 0 || gameState.grid[i][j] !== gameState.solution[i][j]) {
+            return false;
+          }
+        }
+      }
+      return true;
+    }
+
+    // Wordle Game Implementation
+    function initWordleGame() {
+      const wordList = [
+        'NOTTE', 'GATTO', 'LIBRO', 'PIZZA', 'AMICI', 'FIORE', 
+       'PORTA', 'MAMMA', 'NONNO', 
+       'TRENO', 'BARCA', 'PONTE', 'PAESE', 'FIUME',
+         'VENTO', 'CIANO', 'ROSSO',
+        'LIMONE', 'ARANCIA', 'BIRRA', 'VINO', 'CAFFE', 'SALTO', 'BALLO', 'CANTO', 'CUCINA', 'FORNO', 'PIATTO', 'FRIGO',
+        'BOCCA', 'MAREE', 'GIOCO', 'SPORT', 'LETTO', 'CAMICE', 'OCCHIO', 'MANO', 'DITO', 'GAMBA', 'CUORE', 'TESTA', 'GINE', 'RENE', 'LUNEDI', 'SABATO', 'MESE', 'ANNO', 'AMORE', 'ODIO', 'PAURA', 'GIOIA', 'RABBIA', 'SORPRE', 'PACE', 'GUERRA', 'PROGET', 'CLIENT', 'COMPIT', 'ESAME', 'BANCO', 'PREZZO', 'SALDO', 'DOLCE', 'CINEMA', 'FILM', 'ATTORE', 'REGIST', 'CANZONE', 'PIANO', 'DISCO', 'RADIO', 'TAVOLO', 'MONTE', 'VALLE', 'COLLE', 'FRUTTA', 'MELA', 'PERA', 'CILIEG', 'ZUCCHER', 'FORMAG', 'SALUME', 'PROSCI', 'POLLO', 'MANZO', 'VITELL', 'PASTA', 'CARNE', 'UOVA', 'PATATA', 'POMODO', 'INSALA', 'CEBOLL', 'CAROTA', 'AGLIO', 'BASILI', 'ROSMAR', 'ORIGAN', 'PEPERO', 'CUCINA', 'FRIGOR', 'LAVARE', 'ASCIUG', 'STIRAR', 'PASTO', 'SCEND', 'SALIR', 'ENTRA', 'ESCI', 'APRI', 'CHIUD', 'SCRIV', 'LEGGI', 'PARLA', 'SENTI', 'VEDER', 'UDIRE', 'SAPER', 'VIVER', 'MORIR', 'DORMI', 'MANGI', 'BERE', 'FARE', 'DARE', 'AVERE', 'ESSER', 'ANDAR', 'VENIR', 'STARE', 'TENER', 'VOLER', 'DOVER', 'POTER', 'BASTA', 'SERVE', 'PIACE', 'GRAND', 'PICCO', 'BELLO', 'BRUTT', 'BUONO', 'CATTIV', 'FACIL', 'DIFFIC', 'LUNGO', 'CORTO', 'LARGO', 'STRET', 'ALTO', 'BASSO', 'GROSS', 'SOTTO', 'DESTRO', 'SINIS', 'DIETR', 'FRONT', 'AVANT', 'INDIE', 'TORN', 'RESTA', 'CAMBI', 'MUOVI', 'CORRI', 'SALTI', 'BALLI', 'NUOTI', 'CANTI', 'PULIR', 'CUCI', 'STIRI', 'SORRI', 'PIANG', 'RIDI', 'SALTO', 'BALLO', 'NUOTO', 'CANTO', 'DANZO', 'LAVOR', 'STUDI', 'SCRIV', 'PENS', 'ASPET', 'ARRIV', 'PARTI', 'RESTO', 'MANCO', 'RIMAN', 'VADAN', 'VENGO', 'VENG', 'STAI', 'ABBI', 'SIAM', 'SIATE', 'SENZA', 'SOTTO', 'SOVRA', 'FUORI', 'DENTR', 'LASSU', 'QUI', 'QUA', 'DOVE', 'COME', 'QUAND', 'QUANT', 'PERCH', 'PERCH', 'COSA', 'INFAT', 'POICH', 'ALLOR', 'CIOE', 'GRADI', 'PEGGIO', 'SERVI', 'VIENI', 'FACCI', 'DICHI', 'QUELL', 'QUEGLI', 'QUEST', 'TUTTO', 'NESSUN', 'QUALSI', 'QUALUN', 'QUALCO',
+      ];
+      const filteredWordList = wordList.filter(word => word.length === 5);
+      gameState.targetWord = filteredWordList[Math.floor(Math.random() * filteredWordList.length)];
+      gameState.currentGuess = '';
+      gameState.guesses = [];
+      gameState.gameOver = false;
+      
+      const container = document.createElement('div');
+      container.style.textAlign = 'center';
+      container.style.maxWidth = '400px';
+      container.style.margin = '0 auto';
+      
+      const title = document.createElement('h3');
+      title.textContent = 'Wordle - Indovina la parola';
+      title.style.marginBottom = '1rem';
+      title.style.color = 'var(--accent)';
+      
+      const subtitle = document.createElement('p');
+      subtitle.textContent = 'Hai 6 tentativi per indovinare la parola segreta di 5 lettere';
+      subtitle.style.marginBottom = '2rem';
+      subtitle.style.color = 'var(--muted)';
+      subtitle.style.fontSize = '14px';
+      
+      const grid = document.createElement('div');
+      grid.className = 'wordle-grid';
+      grid.style.display = 'grid';
+      grid.style.gridTemplateRows = 'repeat(6, 1fr)';
+      grid.style.gap = '8px';
+      grid.style.marginBottom = '2rem';
+      
+      // Create 6 rows of 5 letters each
+      for (let i = 0; i < 6; i++) {
+        const row = document.createElement('div');
+        row.style.display = 'grid';
+        row.style.gridTemplateColumns = 'repeat(5, 1fr)';
+        row.style.gap = '8px';
+        
+        for (let j = 0; j < 5; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'wordle-cell';
+          cell.dataset.row = i;
+          cell.dataset.col = j;
+          cell.style.width = '60px';
+          cell.style.height = '60px';
+          cell.style.display = 'flex';
+          cell.style.alignItems = 'center';
+          cell.style.justifyContent = 'center';
+          cell.style.fontSize = '24px';
+          cell.style.fontWeight = 'bold';
+          cell.style.border = '2px solid var(--border)';
+          cell.style.borderRadius = '8px';
+          cell.style.background = 'var(--panel-strong)';
+          cell.style.color = 'var(--text)';
+          cell.style.textTransform = 'uppercase';
+          row.appendChild(cell);
+        }
+        
+        grid.appendChild(row);
+      }
+      
+      const inputContainer = document.createElement('div');
+      inputContainer.style.marginBottom = '2rem';
+      
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.id = 'wordleInput';
+      input.placeholder = 'Inserisci 5 lettere';
+      input.maxLength = 5;
+      input.style.fontSize = '18px';
+      input.style.padding = '12px';
+      input.style.textAlign = 'center';
+      input.style.border = '2px solid var(--border)';
+      input.style.borderRadius = '8px';
+      input.style.background = 'var(--panel-strong)';
+      input.style.color = 'var(--text)';
+      input.style.textTransform = 'uppercase';
+      input.style.width = '200px';
+      
+      const submitBtn = document.createElement('button');
+      submitBtn.textContent = 'Invia';
+      submitBtn.className = 'play-button';
+      submitBtn.style.marginLeft = '10px';
+      submitBtn.style.padding = '12px 20px';
+      submitBtn.addEventListener('click', () => submitWordleGuess());
+      
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          submitWordleGuess();
+        }
+      });
+      
+      inputContainer.appendChild(input);
+      inputContainer.appendChild(submitBtn);
+      
+      const message = document.createElement('div');
+      message.id = 'wordleMessage';
+      message.style.marginTop = '1rem';
+      message.style.fontSize = '16px';
+      message.style.fontWeight = 'bold';
+      message.style.minHeight = '24px';
+      
+      container.appendChild(title);
+      container.appendChild(subtitle);
+      container.appendChild(grid);
+      container.appendChild(inputContainer);
+      container.appendChild(message);
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(container);
+      
+      // Focus on input
+      input.focus();
+    }
+
+    function submitWordleGuess() {
+      if (gameState.gameOver) return;
+      
+      const input = document.getElementById('wordleInput');
+      const guess = input.value.toUpperCase();
+      
+      if (guess.length !== 5) {
+        showWordleMessage('Inserisci esattamente 5 lettere!', 'error');
+        return;
+      }
+      
+      // Add guess to the grid
+      const currentRow = gameState.guesses.length;
+      if (currentRow >= 6) return;
+      
+      gameState.guesses.push(guess);
+      
+      // Update the grid with the guess
+      for (let i = 0; i < 5; i++) {
+        const cell = document.querySelector(`[data-row="${currentRow}"][data-col="${i}"]`);
+        cell.textContent = guess[i];
+        
+        // Apply color coding
+        if (guess[i] === gameState.targetWord[i]) {
+          // Correct position (green)
+          cell.style.background = '#6aaa64';
+          cell.style.color = 'white';
+          cell.style.borderColor = '#6aaa64';
+        } else if (gameState.targetWord.includes(guess[i])) {
+          // Wrong position (yellow)
+          cell.style.background = '#c9b458';
+          cell.style.color = 'white';
+          cell.style.borderColor = '#c9b458';
+        } else {
+          // Not in word (gray)
+          cell.style.background = '#787c7e';
+          cell.style.color = 'white';
+          cell.style.borderColor = '#787c7e';
+        }
+        
+        // Add flip animation
+        cell.style.animation = 'flip 0.5s ease-in-out';
+        setTimeout(() => {
+          cell.style.animation = '';
+        }, 500);
+      }
+      
+      // Check if won
+      if (guess === gameState.targetWord) {
+        gameState.gameOver = true;
+        gameState.score += 100 - (currentRow * 10); // More points for fewer guesses
+        updateGameUI();
+        showWordleMessage(`Complimenti! Hai indovinato in ${currentRow + 1} tentativi!`, 'success');
+        setTimeout(() => endGame(true), 2000);
+      } else if (currentRow === 5) {
+        // Last guess, game over
+        gameState.gameOver = true;
+        showWordleMessage(`Game Over! La parola era: ${gameState.targetWord}`, 'error');
+        setTimeout(() => endGame(false), 3000);
+      } else {
+        gameState.score += 5;
+        updateGameUI();
+        showWordleMessage('Riprova!', 'normal');
+      }
+      
+      // Clear input for next guess
+      input.value = '';
+      input.focus();
+    }
+
+    function showWordleMessage(text, type) {
+      const message = document.getElementById('wordleMessage');
+      message.textContent = text;
+      
+      if (type === 'success') {
+        message.style.color = '#6aaa64';
+      } else if (type === 'error') {
+        message.style.color = '#dc3545';
+      } else {
+        message.style.color = 'var(--muted)';
+      }
+    }
+
+    // Math Game Implementation
+    function initMathGame() {
+      generateMathProblem();
+    }
+
+    function generateMathProblem() {
+      const operations = ['+', '-', '*'];
+      const operation = operations[Math.floor(Math.random() * operations.length)];
+      let a, b, answer;
+      
+      switch(operation) {
+        case '+':
+          a = Math.floor(Math.random() * 50) + 1;
+          b = Math.floor(Math.random() * 50) + 1;
+          answer = a + b;
+          break;
+        case '-':
+          a = Math.floor(Math.random() * 50) + 10;
+          b = Math.floor(Math.random() * a) + 1;
+          answer = a - b;
+          break;
+        case '*':
+          a = Math.floor(Math.random() * 12) + 1;
+          b = Math.floor(Math.random() * 12) + 1;
+          answer = a * b;
+          break;
+      }
+      
+      gameState.currentProblem = { a, b, operation, answer };
+      
+      const container = document.createElement('div');
+      container.style.textAlign = 'center';
+      
+      const problem = document.createElement('div');
+      problem.style.fontSize = '2.5rem';
+      problem.style.marginBottom = '2rem';
+      problem.textContent = `${a} ${operation} ${b} = ?`;
+      
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.placeholder = 'Risposta';
+      input.style.fontSize = '1.5rem';
+      input.style.padding = '1rem';
+      input.style.textAlign = 'center';
+      input.style.border = '2px solid var(--border)';
+      input.style.borderRadius = '12px';
+      input.style.background = 'var(--panel-strong)';
+      input.style.color = 'var(--text)';
+      
+      const button = document.createElement('button');
+      button.textContent = 'Verifica';
+      button.className = 'play-button';
+      button.style.marginTop = '1rem';
+      button.addEventListener('click', () => checkMathAnswer(parseInt(input.value)));
+      
+      container.appendChild(problem);
+      container.appendChild(input);
+      container.appendChild(button);
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(container);
+    }
+
+    function checkMathAnswer(userAnswer) {
+      if (userAnswer === gameState.currentProblem.answer) {
+        gameState.score += 10;
+        gameState.correctAnswers++;
+        updateGameUI();
+        generateMathProblem();
+      } else {
+        gameState.score = Math.max(0, gameState.score - 5);
+        updateGameUI();
+        alert('Risposta errata! Riprova.');
+      }
+    }
+
+    // Placeholder functions for other games
+    function initSequenceGame() {
+      gameArea.innerHTML = '<p style="font-size: 1.5rem;">Sequence Memory - In sviluppo...</p>';
+    }
+
+    function initWordGame() {
+      gameArea.innerHTML = '<p style="font-size: 1.5rem;">Word Puzzle - In sviluppo...</p>';
+    }
+
+    function initReactionGame() {
+      gameArea.innerHTML = '<p style="font-size: 1.5rem;">Reaction Time - In sviluppo...</p>';
+    }
+
+    function endGame(won) {
+      clearInterval(gameInterval);
+      const message = won ? 
+        `Complimenti! Hai completato il gioco con ${gameState.score} punti in ${gameState.time} secondi!` :
+        `Gioco terminato. Punteggio finale: ${gameState.score}`;
+      
+      // Save win status and update icons
+      if (won && currentGame) {
+        wonGames[currentGame] = true;
+        localStorage.setItem('wonGames', JSON.stringify(wonGames));
+        updateMinigameIcons();
+      }
+      
+      const resultDiv = document.createElement('div');
+      resultDiv.style.textAlign = 'center';
+      resultDiv.style.fontSize = '1.5rem';
+      resultDiv.innerHTML = `
+        <h3>${won ? '🏆 Vittoria!' : '?? Fine Gioco'}</h3>
+        <p>${message}</p>
+        <button class="play-button" onclick="location.reload()">Gioca ancora</button>
+      `;
+      
+      gameArea.innerHTML = '';
+      gameArea.appendChild(resultDiv);
+    }
+    function updateMinigameIcons() {
+      const gameIcons = {
+        'sudoku': '🧠',
+        'wordle': '�', 
+        'math': '➕'
+      };
+      
+      document.querySelectorAll('.minigame-item').forEach(item => {
+        const gameType = item.dataset.game;
+        const iconElement = item.querySelector('.minigame-icon');
+        if (iconElement) {
+          iconElement.textContent = gameIcons[gameType];
+        }
+      });
+    }
+
+    // Initialize icons on page load
+    updateMinigameIcons();
+  </script>
+</body>
+</html>
