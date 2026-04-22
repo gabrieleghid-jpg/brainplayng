@@ -803,129 +803,446 @@ ${topicCapitalized} rappresenta un elemento significativo che richiede un'analis
             }
         }
 
-        // Funzione di ricerca reale su DuckDuckGo MIGLIORATA
-        async function searchRealInfo(topic) {
-            try {
-                // Prima prova DuckDuckGo
-                const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(topic)}&format=json&pretty=1&no_html=1&skip_disambig=1`;
-                
-                const response = await fetch(searchUrl);
-                if (!response.ok) {
-                    throw new Error('Errore nella ricerca');
+        // Funzione di analisi intelligente delle query
+        function analyzeQuery(query) {
+            const queryLower = query.toLowerCase();
+            const words = queryLower.split(' ').filter(word => word.length > 0);
+            
+            // Pattern comuni per query complesse
+            const patterns = {
+                // "invenzione X", "scoperta X", "storia X"
+                invention: ['invenzione', 'scoperta', 'storia', 'origini', 'creazione'],
+                // "tipi di X", "specie di X", "categorie X"
+                types: ['tipi', 'specie', 'categorie', 'classificazione', 'generi'],
+                // "come funziona X", "funzionamento X"
+                how: ['come funziona', 'funzionamento', 'meccanismo', 'processo'],
+                // "perché X", "motivo X", "causa X"
+                why: ['perché', 'motivo', 'causa', 'ragione', 'scopo'],
+                // "dove X", "luogo X", "posizione X"
+                where: ['dove', 'luogo', 'posizione', 'localizzazione'],
+                // "quando X", "epoca X", "periodo X"
+                when: ['quando', 'epoca', 'periodo', 'tempo', 'data'],
+                // "chi X", "persona X", "autore X"
+                who: ['chi', 'persona', 'autore', 'inventore', 'scopritore']
+            };
+            
+            // Identifica il tipo di query
+            let queryType = 'general';
+            let mainTopic = '';
+            let context = '';
+            
+            for (const [type, keywords] of Object.entries(patterns)) {
+                for (const keyword of keywords) {
+                    if (queryLower.includes(keyword)) {
+                        queryType = type;
+                        // Estrai il topic principale
+                        const parts = queryLower.split(keyword);
+                        if (parts.length > 1) {
+                            mainTopic = parts[1].trim();
+                        }
+                        context = keyword;
+                        break;
+                    }
                 }
+                if (queryType !== 'general') break;
+            }
+            
+            // Se non trovato pattern, usa la parola più lunga come topic principale
+            if (mainTopic === '') {
+                mainTopic = words.reduce((longest, current) => 
+                    current.length > longest.length ? current : longest, '');
+            }
+            
+            return {
+                originalQuery: query,
+                queryType: queryType,
+                mainTopic: mainTopic,
+                context: context,
+                words: words,
+                isComplex: words.length > 1
+            };
+        }
+
+        // Funzione di ricerca reale su DuckDuckGo MIGLIORATA con analisi query
+        async function searchRealInfo(topic) {
+            const queryAnalysis = analyzeQuery(topic);
+            console.log('Analisi query:', queryAnalysis);
+            
+            // Prova diverse strategie di ricerca
+            const searchStrategies = [
+                // 1. Query originale
+                topic,
+                // 2. Topic principale se è una query complessa
+                queryAnalysis.mainTopic,
+                // 3. Query ricostruita per tipi specifici
+                queryAnalysis.queryType === 'invention' ? `${queryAnalysis.mainTopic} invention` : topic,
+                queryAnalysis.queryType === 'types' ? `types of ${queryAnalysis.mainTopic}` : topic,
+                queryAnalysis.queryType === 'how' ? `how ${queryAnalysis.mainTopic} works` : topic,
+                // 4. Parole chiave separate per query molto complesse
+                ...queryAnalysis.words.slice(0, 3)
+            ];
+            
+            // Rimuovi duplicati
+            const uniqueStrategies = [...new Set(searchStrategies)];
+            
+            for (const strategy of uniqueStrategies) {
+                if (!strategy || strategy.length < 2) continue;
                 
-                const data = await response.json();
-                console.log('Risposta DuckDuckGo:', data);
+                console.log(`Tento strategia: "${strategy}"`);
                 
-                // Estrai informazioni complete e strutturate
-                const abstract = data.Abstract || '';
-                const relatedTopics = data.RelatedTopics || [];
-                const infobox = data.Infobox || {};
-                
-                // Estrai dati aggiuntivi dall'infobox se presente
-                const additionalInfo = Object.keys(infobox).length > 0 ? infobox : {};
-                
-                // Crea testo strutturato per i topic correlati
-                const structuredTopics = relatedTopics
-                    .slice(0, 8)
-                    .map((topic, index) => {
-                        const text = topic.Text || '';
-                        const firstURL = topic.FirstURL || '';
-                        return text ? `${index + 1}. ${text}` : '';
-                    })
-                    .filter(text => text.length > 0)
-                    .join('\n');
-                
-                // Estrai definizioni e dati chiave
-                const definitions = [];
-                if (abstract) {
-                    const sentences = abstract.split('. ');
+                try {
+                    // Prova DuckDuckGo
+                    const duckduckgoResult = await tryDuckDuckGo(strategy);
+                    if (duckduckgoResult.hasInfo) {
+                        return {
+                            ...duckduckgoResult,
+                            originalQuery: topic,
+                            queryAnalysis: queryAnalysis,
+                            searchStrategy: strategy,
+                            source: duckduckgoResult.source + ' (Intelligent Search)'
+                        };
+                    }
+                    
+                    // Fallback a Wikipedia con variazioni
+                    console.log(`DuckDuckGo insufficiente per "${strategy}", provo Wikipedia con variazioni...`);
+                    const wikiVariationResult = await tryWikipediaVariations(strategy);
+                    if (wikiVariationResult && wikiVariationResult.hasInfo) {
+                        const wikiDefinitions = [];
+                        if (wikiVariationResult.abstract) {
+                            const sentences = wikiVariationResult.abstract.split('. ');
+                            sentences.forEach(sentence => {
+                                if (sentence.includes('è') || sentence.includes('sono')) {
+                                    wikiDefinitions.push(sentence.trim());
+                                }
+                            });
+                        }
+                        
+                        return {
+                            abstract: wikiVariationResult.abstract,
+                            definitions: wikiDefinitions,
+                            relatedTopics: `Fonte: Wikipedia\n\nQuery originale: "${topic}"\n\nVariazione trovata: "${wikiVariationResult.searchVariation}"\n\nArticolo completo disponibile su: ${wikiVariationResult.url}`,
+                            additionalInfo: wikiVariationResult,
+                            hasInfo: wikiVariationResult.hasInfo,
+                            source: wikiVariationResult.source,
+                            relatedURLs: wikiVariationResult.url ? [{text: 'Articolo Wikipedia completo', url: wikiVariationResult.url}] : [],
+                            originalQuery: topic,
+                            queryAnalysis: queryAnalysis,
+                            searchStrategy: `${strategy} -> Wikipedia (${wikiVariationResult.searchVariation})`
+                        };
+                    }
+                    
+                } catch (error) {
+                    console.log(`Errore con strategia "${strategy}":`, error);
+                    continue;
+                }
+            }
+            
+            // Se nessuna strategia funziona, prova un tentativo finale con Wikipedia variazioni sull'argomento originale
+            console.log(`Tutte le strategie fallite, provo ultima risorsa Wikipedia variazioni per "${topic}"...`);
+            const finalWikiResult = await tryWikipediaVariations(topic);
+            if (finalWikiResult && finalWikiResult.hasInfo) {
+                const wikiDefinitions = [];
+                if (finalWikiResult.abstract) {
+                    const sentences = finalWikiResult.abstract.split('. ');
                     sentences.forEach(sentence => {
                         if (sentence.includes('è') || sentence.includes('sono')) {
-                            definitions.push(sentence.trim());
+                            wikiDefinitions.push(sentence.trim());
                         }
                     });
                 }
                 
-                // Se DuckDuckGo ha informazioni buone, restituiscile
-                if (abstract.length > 50 || structuredTopics.length > 3) {
-                    return {
-                        abstract: abstract,
-                        definitions: definitions,
-                        relatedTopics: structuredTopics,
-                        additionalInfo: additionalInfo,
-                        hasInfo: true,
-                        source: 'DuckDuckGo',
-                        relatedURLs: relatedTopics.slice(0, 5).map(topic => ({
-                            text: topic.Text || '',
-                            url: topic.FirstURL || ''
-                        })).filter(item => item.text.length > 0)
-                    };
-                } else {
-                    // Fallback a Wikipedia se DuckDuckGo non ha abbastanza informazioni
-                    console.log('DuckDuckGo insufficiente, provo Wikipedia...');
-                    const wikiData = await searchWikipedia(topic);
-                    
-                    // Estrai definizioni da Wikipedia
-                    const wikiDefinitions = [];
-                    if (wikiData.abstract) {
-                        const sentences = wikiData.abstract.split('. ');
-                        sentences.forEach(sentence => {
-                            if (sentence.includes('è') || sentence.includes('sono') || sentence.includes('sono')) {
-                                wikiDefinitions.push(sentence.trim());
-                            }
-                        });
+                return {
+                    abstract: finalWikiResult.abstract,
+                    definitions: wikiDefinitions,
+                    relatedTopics: `Fonte: Wikipedia\n\nQuery originale: "${topic}"\n\nVariazione trovata: "${finalWikiResult.searchVariation}"\n\nArticolo completo disponibile su: ${finalWikiResult.url}`,
+                    additionalInfo: finalWikiResult,
+                    hasInfo: finalWikiResult.hasInfo,
+                    source: finalWikiResult.source + ' (Final Attempt)',
+                    relatedURLs: finalWikiResult.url ? [{text: 'Articolo Wikipedia completo', url: finalWikiResult.url}] : [],
+                    originalQuery: topic,
+                    queryAnalysis: queryAnalysis,
+                    searchStrategy: `Final: Wikipedia (${finalWikiResult.searchVariation})`
+                };
+            }
+            
+            // Se nessuna strategia funziona, ritorna fallback
+            return {
+                abstract: '',
+                definitions: [],
+                relatedTopics: '',
+                additionalInfo: {},
+                hasInfo: false,
+                source: 'Nessuna informazione trovata',
+                relatedURLs: [],
+                originalQuery: topic,
+                queryAnalysis: queryAnalysis,
+                searchStrategy: 'none'
+            };
+        }
+
+        // Funzione helper per DuckDuckGo migliorata
+        async function tryDuckDuckGo(query) {
+            const searchUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&pretty=1&no_html=1&skip_disambig=1`;
+            
+            const response = await fetch(searchUrl);
+            if (!response.ok) {
+                throw new Error('Errore nella ricerca');
+            }
+            
+            const data = await response.json();
+            console.log(`Risposta DuckDuckGo per "${query}":`, data);
+            
+            const abstract = data.Abstract || '';
+            const relatedTopics = data.RelatedTopics || [];
+            const infobox = data.Infobox || {};
+            
+            const additionalInfo = Object.keys(infobox).length > 0 ? infobox : {};
+            
+            const structuredTopics = relatedTopics
+                .slice(0, 8)
+                .map((topic, index) => {
+                    const text = topic.Text || '';
+                    const firstURL = topic.FirstURL || '';
+                    return text ? `${index + 1}. ${text}` : '';
+                })
+                .filter(text => text.length > 0)
+                .join('\n');
+            
+            const definitions = [];
+            if (abstract) {
+                const sentences = abstract.split('. ');
+                sentences.forEach(sentence => {
+                    if (sentence.includes('è') || sentence.includes('sono')) {
+                        definitions.push(sentence.trim());
                     }
-                    
-                    return {
-                        abstract: wikiData.abstract,
-                        definitions: wikiDefinitions,
-                        relatedTopics: `Fonte: Wikipedia\n\nArticolo completo disponibile su: ${wikiData.url}`,
-                        additionalInfo: wikiData,
-                        hasInfo: wikiData.hasInfo,
-                        source: 'Wikipedia',
-                        relatedURLs: wikiData.url ? [{text: 'Articolo Wikipedia completo', url: wikiData.url}] : []
-                    };
+                });
+            }
+            
+            // Verifica se ci sono abbastanza informazioni
+            const hasEnoughInfo = abstract.length > 50 || structuredTopics.length > 3 || Object.keys(additionalInfo).length > 0;
+            
+            return {
+                abstract: abstract,
+                definitions: definitions,
+                relatedTopics: structuredTopics,
+                additionalInfo: additionalInfo,
+                hasInfo: hasEnoughInfo,
+                source: 'DuckDuckGo',
+                relatedURLs: relatedTopics.slice(0, 5).map(topic => ({
+                    text: topic.Text || '',
+                    url: topic.FirstURL || ''
+                })).filter(item => item.text.length > 0),
+                // Aggiungi dati grezzi per debugging
+                rawData: {
+                    abstractLength: abstract.length,
+                    relatedTopicsCount: relatedTopics.length,
+                    infoboxKeys: Object.keys(infobox)
                 }
-                
-            } catch (error) {
-                console.error('Errore ricerca DuckDuckGo, provo Wikipedia:', error);
-                
-                // Fallback totale a Wikipedia
+            };
+        }
+
+        // Funzione per provare Wikipedia con variazioni del topic
+        async function tryWikipediaVariations(topic) {
+            const variations = [
+                topic,                                    // tastiera
+                topic.charAt(0).toUpperCase() + topic.slice(1), // Tastiera
+                `${topic}_computer`,                       // tastiera_computer
+                `${topic}_informatica`,                    // tastiera_informatica
+                `computer_keyboard`,                        // computer_keyboard
+                `keyboard_computer`,                       // keyboard_computer
+                `keyboard`,                                // keyboard
+                `${topic}_musical`,                        // tastiera_musical
+                `musical_keyboard`,                        // musical_keyboard
+            ];
+            
+            for (const variation of variations) {
                 try {
-                    const wikiData = await searchWikipedia(topic);
-                    const wikiDefinitions = [];
-                    if (wikiData.abstract) {
-                        const sentences = wikiData.abstract.split('. ');
-                        sentences.forEach(sentence => {
-                            if (sentence.includes('è') || sentence.includes('sono')) {
-                                wikiDefinitions.push(sentence.trim());
-                            }
-                        });
+                    console.log(`Tento Wikipedia con: "${variation}"`);
+                    const result = await searchWikipedia(variation);
+                    if (result.hasInfo) {
+                        return {
+                            ...result,
+                            searchVariation: variation,
+                            source: `Wikipedia (Variation: ${variation})`
+                        };
                     }
-                    
-                    return {
-                        abstract: wikiData.abstract,
-                        definitions: wikiDefinitions,
-                        relatedTopics: `Fonte: Wikipedia\n\nArticolo completo disponibile su: ${wikiData.url}`,
-                        additionalInfo: wikiData,
-                        hasInfo: wikiData.hasInfo,
-                        source: 'Wikipedia (Fallback)',
-                        relatedURLs: wikiData.url ? [{text: 'Articolo Wikipedia completo', url: wikiData.url}] : []
-                    };
-                } catch (wikiError) {
-                    console.error('Errore anche Wikipedia:', wikiError);
-                    return {
-                        abstract: '',
-                        definitions: [],
-                        relatedTopics: '',
-                        additionalInfo: {},
-                        hasInfo: false,
-                        source: 'Errore completo',
-                        relatedURLs: []
-                    };
+                } catch (error) {
+                    console.log(`Variation "${variation}" failed:`, error);
+                    continue;
                 }
             }
+            
+            return null;
+        }
+
+        // Funzione per estrarre dati specifici dal testo
+        function extractSpecificData(text, topic) {
+            const data = {
+                numbers: [],
+                dates: [],
+                measurements: [],
+                locations: [],
+                people: [],
+                facts: [],
+                characteristics: [],
+                processes: [],
+                classifications: []
+            };
+            
+            // Estrai numeri e misurazioni
+            const numberPattern = /\b\d+(?:[.,]\d+)?\s*(?:%|kg|g|mg|cm|m|mm|km|°C|°F|anni|anni fa|sec|min|ore|giorni|mesi|secoli|mila|milioni|miliardi)\b/gi;
+            const numbers = text.match(numberPattern) || [];
+            data.numbers = [...new Set(numbers)];
+            
+            // Estrai date
+            const datePattern = /\b\d{1,4}\s*(?:a\.C\.|d\.C\.|BC|AD)?\s*(?:a\.C\.|d\.C\.|BC|AD)?\b|\b(?:gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)\s+\d{1,4}\b|\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/gi;
+            const dates = text.match(datePattern) || [];
+            data.dates = [...new Set(dates)];
+            
+            // Estrai luoghi
+            const locationPattern = /\b(?:Italia|Francia|Germania|Spagna|Regno Unito|Stati Uniti|Cina|Giappone|India|Brasile|Russia|Europa|Asia|Africa|America|Oceania|Antartide|Mediterraneo|Atlantico|Pacifico|Oceano Indiano|Artico)\b|\b[A-Z][a-z]+(?:[A-Z][a-z]+)*(?:\s+[A-Z][a-z]+(?:[A-Z][a-z]+)*)*\s*(?:città|paese|regione|continente|stato|nazione|provincia|comune)\b/gi;
+            const locations = text.match(locationPattern) || [];
+            data.locations = [...new Set(locations)];
+            
+            // Estrai persone
+            const peoplePattern = /\b[A-Z][a-z]+\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b/g;
+            const people = text.match(peoplePattern) || [];
+            data.people = [...new Set(people)];
+            
+            // Estrai fatti specifici
+            const sentences = text.split(/[.!?]+/);
+            sentences.forEach(sentence => {
+                sentence = sentence.trim();
+                if (sentence.length > 20 && (
+                    sentence.includes('è') || sentence.includes('sono') || 
+                    sentence.includes('fu') || sentence.includes('furono') ||
+                    sentence.includes('ha') || sentence.includes('hanno') ||
+                    sentence.includes('comprende') || sentence.includes('include') ||
+                    sentence.includes('consiste') || sentence.includes('caratterizza')
+                )) {
+                    data.facts.push(sentence);
+                }
+            });
+            
+            // Estrai caratteristiche
+            const charPattern = /\b(?:principale|secondario|primario|essenziale|fondamentale|caratteristico|tipico|specifico|unico|distintivo|rilevante|importante|significativo)\s+[a-z]+\b/gi;
+            const characteristics = text.match(charPattern) || [];
+            data.characteristics = [...new Set(characteristics)];
+            
+            // Estrai processi
+            const processPattern = /\b(?:processo|procedura|metodo|tecnica|meccanismo|sistema|ciclo|fase|stadio|passaggio|transizione|trasformazione|evoluzione|sviluppo)\b/gi;
+            const processes = text.match(processPattern) || [];
+            data.processes = [...new Set(processes)];
+            
+            // Estrai classificazioni
+            const classPattern = /\b(?:tipo|specie|genere|categoria|classe|gruppo|famiglia|ordine|divisione|sezione|partizione|suddivisione|classificazione|tipologia)\b/gi;
+            const classifications = text.match(classPattern) || [];
+            data.classifications = [...new Set(classifications)];
+            
+            return data;
+        }
+
+        // Funzione per generare schemi specifici basati sui dati estratti
+        function generateSpecificSchema(topic, extractedData, queryAnalysis) {
+            let schema = `## **Schema Dettagliato di ${topic.charAt(0).toUpperCase() + topic.slice(1)}**\n\n`;
+            
+            // Sezione Dati Quantitativi
+            if (extractedData.numbers.length > 0) {
+                schema += `### **Dati Quantitativi**\n`;
+                extractedData.numbers.slice(0, 8).forEach(num => {
+                    schema += `- **${num}**: Dato numerico rilevante\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione Temporale
+            if (extractedData.dates.length > 0) {
+                schema += `### **Timeline Cronologica**\n`;
+                extractedData.dates.slice(0, 5).forEach(date => {
+                    schema += `- **${date}**: Evento o periodo significativo\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione Geografica
+            if (extractedData.locations.length > 0) {
+                schema += `### **Contesto Geografico**\n`;
+                extractedData.locations.slice(0, 6).forEach(location => {
+                    schema += `- **${location}**: Luogo rilevante\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione Persone
+            if (extractedData.people.length > 0) {
+                schema += `### **Figure Chiave**\n`;
+                extractedData.people.slice(0, 5).forEach(person => {
+                    schema += `- **${person}**: Personaggio importante\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione Fatti Specifici
+            if (extractedData.facts.length > 0) {
+                schema += `### **Fatti Specifici**\n`;
+                extractedData.facts.slice(0, 8).forEach((fact, index) => {
+                    schema += `${index + 1}. ${fact}\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione Caratteristiche
+            if (extractedData.characteristics.length > 0) {
+                schema += `### **Caratteristiche Distintive**\n`;
+                extractedData.characteristics.slice(0, 6).forEach(char => {
+                    schema += `- **${char}**: Attributo specifico\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione Processi
+            if (extractedData.processes.length > 0) {
+                schema += `### **Processi e Meccanismi**\n`;
+                extractedData.processes.slice(0, 5).forEach(process => {
+                    schema += `- **${process}**: Procedura o meccanismo\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione Classificazioni
+            if (extractedData.classifications.length > 0) {
+                schema += `### **Classificazioni e Tipologie**\n`;
+                extractedData.classifications.slice(0, 5).forEach(classification => {
+                    schema += `- **${classification}**: Categoria o tipo\n`;
+                });
+                schema += `\n`;
+            }
+            
+            // Sezione specifica basata sul tipo di query
+            if (queryAnalysis.queryType === 'invention') {
+                schema += `### **Dettagli dell'Invenzione**\n`;
+                schema += `- **Inventore**: Persona o gruppo che ha sviluppato l'idea\n`;
+                schema += `- **Periodo**: Epoca dello sviluppo\n`;
+                schema += `- **Funzione**: Scopo principale dell'invenzione\n`;
+                schema += `- **Impatto**: Influenza sulla società o tecnologia\n`;
+                schema += `- **Evoluzione**: Sviluppi successivi e miglioramenti\n\n`;
+            } else if (queryAnalysis.queryType === 'types') {
+                schema += `### **Classificazione Dettagliata**\n`;
+                schema += `- **Categorie principali**: Divisioni fondamentali\n`;
+                schema += `- **Sottotipi**: Varianti e specializzazioni\n`;
+                schema += `- **Caratteristiche distintive**: Elementi che differenziano i tipi\n`;
+                schema += `- **Criteri di classificazione**: Parametri usati per categorizzare\n`;
+                schema += `- **Esempi**: Casi specifici per ogni categoria\n\n`;
+            } else if (queryAnalysis.queryType === 'how') {
+                schema += `### **Funzionamento Dettagliato**\n`;
+                schema += `- **Principi base**: Leggi fondamentali che governano il funzionamento\n`;
+                schema += `- **Componenti**: Parti o elementi costitutivi\n`;
+                schema += `- **Processo**: Sequenza di operazioni\n`;
+                schema += `- **Meccanismi**: Sistemi di interazione\n`;
+                schema += `- **Risultati**: Output o effetti prodotti\n\n`;
+            }
+            
+            return schema;
         }
 
         // Funzione per generare contenuti basati su ricerca reale MIGLIORATA
@@ -939,6 +1256,10 @@ ${topicCapitalized} rappresenta un elemento significativo che richiede un'analis
                 const relatedTopics = searchInfo.relatedTopics;
                 const additionalInfo = searchInfo.additionalInfo || {};
                 const source = searchInfo.source;
+                const queryAnalysis = searchInfo.queryAnalysis || analyzeQuery(topic);
+                
+                // Estrai dati specifici dal testo
+                const extractedData = extractSpecificData(abstract, topic);
                 
                 // Estrai dati chiave dall'infobox
                 const keyFacts = [];
@@ -951,103 +1272,105 @@ ${topicCapitalized} rappresenta un elemento significativo che richiede un'analis
                 // Crea definizioni strutturate
                 let structuredDefinitions = definitions;
                 if (definitions.length > 0) {
-                    structuredDefinitions = definitions.slice(0, 6); // Limita a 6 definizioni
+                    structuredDefinitions = definitions.slice(0, 6);
                 }
                 
                 // Crea lista di topic correlati con URL
                 const relatedWithUrls = searchInfo.relatedURLs || [];
                 const structuredRelated = relatedWithUrls
-                    .slice(0, 6) // Limita a 6 topic
-                    .map(item => `• ${item.text}${item.url ? ` (${item.url})` : ''}`)
+                    .slice(0, 6)
+                    .map(item => `· ${item.text}${item.url ? ` (${item.url})` : ''}`)
                     .join('\n');
                 
+                // Genera schema specifico basato sui dati estratti
+                const specificSchema = generateSpecificSchema(topic, extractedData, queryAnalysis);
+                
                 return {
-                    spiegazione: `Ho trovato informazioni complete su "${topic}" tramite ricerca web. ${abstract.substring(0, 150)}${abstract.length > 150 ? '...' : ''}`,
+                    spiegazione: `Ho analizzato in profondità "${topic}" estraendo dati specifici e quantitativi. ${abstract.substring(0, 200)}${abstract.length > 200 ? '...' : ''}`,
                     
-                    riassunto: `# **${topicCapitalized}: Analisi Completa dalla Ricerca**
+                    riassunto: `# **${topicCapitalized}: Analisi Dettagliata e Dati Specifici**
 
-## **Fonte: ${source}**
+## **Fonte: ${source}** | **Query Analizzata**: ${queryAnalysis.searchStrategy || topic}
 
 ---
 
-## **📋 Definizione Principale**
+## **Definizione Completa**
 
 ${abstract}
 
 ${structuredDefinitions.length > 0 ? `
-### **🔍 Definizioni Chiave**
+### **Definizioni Tecniche**
 
 ${structuredDefinitions.map((def, index) => `${index + 1}. ${def}`).join('\n')}` : ''}
 
 ${keyFacts.length > 0 ? `
-### **📊 Dati Chiave**
+### **Dati Chiave**
 
 ${keyFacts.join('\n')}` : ''}
 
 ---
 
-## **🔗 Argomenti Correlati**
+## **Dati Estratti dalla Ricerca**
+
+${extractedData.numbers.length > 0 ? `
+### **Dati Quantitativi**
+${extractedData.numbers.slice(0, 6).map(num => `· **${num}**`).join('\n')}` : ''}
+
+${extractedData.dates.length > 0 ? `
+### **Timeline**
+${extractedData.dates.slice(0, 4).map(date => `· **${date}**`).join('\n')}` : ''}
+
+${extractedData.locations.length > 0 ? `
+### **Luoghi Rilevanti**
+${extractedData.locations.slice(0, 5).map(loc => `· **${loc}**`).join('\n')}` : ''}
+
+${extractedData.people.length > 0 ? `
+### **Figure Chiave**
+${extractedData.people.slice(0, 4).map(person => `· **${person}**`).join('\n')}` : ''}
+
+${extractedData.facts.length > 0 ? `
+### **Fatti Specifici**
+${extractedData.facts.slice(0, 5).map((fact, index) => `${index + 1}. ${fact}`).join('\n')}` : ''}
+
+---
+
+## **Argomenti Correlati**
 
 ${structuredRelated}
 
 ---
 
-## **💡 Contesto e Applicazioni**
+## **Analisi Contestuale**
 
-### **Rilevanza Attuale**
-L'argomento "${topic}" riveste un ruolo significativo nel panorama contemporaneo, influenzando:
-
-- **Sviluppi recenti** nel settore
-- **Innovazioni tecnologiche** collegate
-- **Debatti accademici** e scientifici
-
-### **Applicazioni Pratiche**
-- **Settore professionale**: Utilizzi concreti nel mondo del lavoro
-- **Ricerca accademica**: Studi approfonditi e sviluppi teorici
-- **Impatto sociale**: Influenza su società e cultura
-
-### **Prospettive Future**
-- **Tendenze emergenti**: Direzioni di sviluppo probabili
-- **Sfide aperte**: Questioni ancora da risolvere
-- **Opportunità**: Aree di crescita e innovazione`,
-
-                    schema: `## **🗺️ Mappa Concettuale di ${topicCapitalized}**
-
-### **1. 📍 Nucleo Concettuale**
-- **Definizione centrale**: Concetto fondamentale di ${topicCapitalized}
-- **Caratteristiche distintive**: Attributi unici e qualificanti
-- **Principi base**: Leggi e regole fondamentali
-
-### **2. 🔗 Connessioni Tematiche**
-${structuredRelated}
-
-### **3. 📈 Sviluppo Storico**
-- **Origini**: Sviluppo storico del concetto
-- **Evoluzione**: Trasformazioni nel tempo
-- **Milestones**: Momenti chiave dello sviluppo
-
-### **4. 🎯 Applicazioni e Impatto**
-- **Utilizzi pratici**: Come si applica nella realtà
-- **Settore specifico**: Campi di applicazione principali
+### **Impatto e Rilevanza**
+- **Importanza**: ${queryAnalysis.queryType === 'invention' ? 'Innovazione tecnologica o scientifica' : 'Concetto fondamentale nel campo'}
+- **Applicazioni**: Utilizzi pratici e teorici
 - **Influenza**: Effetto su altri ambiti disciplinari
 
-### **5. 📚 Fonti e Risorse**
-- **Fonte primaria**: ${source}
-- **Documentazione**: Materiale specialistico di riferimento
-- **Approfondimenti**: Percorsi di ulteriore studio
+### **Sviluppi e Evoluzione**
+- **Origini**: Sviluppo storico del concetto
+- **Evoluzione**: Trasformazioni nel tempo
+- **Stato attuale**: Situazione contemporanea
 
-### **6. 🔮 Prospettive Future**
-- **Sviluppi attesi**: Direzioni di evoluzione probabili
-- **Innovazioni previste**: Nuove applicazioni possibili
-- **Sfide emergenti**: Questioni da affrontare nel futuro`,
+### **Prospettive Future**
+- **Tendenze**: Direzioni di sviluppo
+- **Innovazioni**: Nuove applicazioni possibili
+- **Sfide**: Questioni aperte da risolvere`,
+
+                    schema: specificSchema,
 
                     quiz: {
-                        domanda: `Quale informazione chiave ho trovato su "${topic}"?`,
-                        opzioni: [
-                            "Definizione completa e dati strutturati",
-                            "Argomenti correlati con fonti verificabili",
-                            "Contesto storico e applicazioni pratiche",
-                            "Analisi completa delle fonti e prospettive"
+                        domanda: `Quale dato specifico ho estratto su "${topic}"?`,
+                        opzioni: extractedData.numbers.length > 0 ? [
+                            `Dato numerico: ${extractedData.numbers[0]}`,
+                            `Informazione generale: ${topic}`,
+                            `Concetto astratto`,
+                            `Opzione non valida`
+                        ] : [
+                            "Informazioni dettagliate e specifiche",
+                            "Dati generali e superficiali",
+                            "Concetti teorici",
+                            "Informazioni base"
                         ],
                         risposta: 0
                     }
