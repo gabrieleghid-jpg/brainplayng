@@ -18,8 +18,8 @@ const CONFIG = {
   PROXY_URL: 'http://localhost:3001/api/hf-proxy',
   
   // Google Search API for research
-  GOOGLE_SEARCH_API_KEY: 'AIzaSyD4J5Qk3j4sP8r2v3m7Q1n6w8x9z0yX2t',
-  GOOGLE_SEARCH_CX: '017576662512726037846:ofuaa_lk1x8',
+  GOOGLE_API_KEY: 'AIzaSyD4J5Qk3j4sP8r2v3m7Q1n6w8x9z0yX2t',
+  SEARCH_ENGINE_ID: '017576662512726037846:ofuaa_lk1x8',
   
   // App settings
   APP_NAME: 'BrainPlay',

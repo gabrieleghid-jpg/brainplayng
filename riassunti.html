@@ -505,6 +505,7 @@
 
   <script src="config.js"></script>
   <script src="auth-helper.js"></script>
+  <script src="google-search.js"></script>
   <script>
     // Funzione di test definita subito
     function testClick() {
@@ -654,25 +655,7 @@
       themeToggle.setAttribute('aria-label', document.body.classList.contains('dark') ? 'Attiva modalità chiara' : 'Attiva modalità scura');
     });
 
-    // Funzione di test semplice
-    window.testClick = function() {
-      console.log('=== TEST CLICK FUNZIONA ===');
-      alert('TEST: Il click funziona! Ora provo a generare...');
-      
-      const text = document.getElementById('textInput').value.trim();
-      console.log('Testo inserito:', text);
-      
-      if (!text) {
-        alert('TEST: Inserisci un argomento!');
-        return;
-      }
-      
-      alert('TEST: Testo trovato: ' + text);
-      
-      // Chiama la funzione di generazione
-      generateMaterials();
-    }
-
+    
     // TEXT ANALYSIS SYSTEM
     const resultsSection = document.getElementById('resultsSection');
     const textInput = document.getElementById('textInput');
@@ -787,10 +770,10 @@
       }
     }
 
-    // Generate study materials from user text input - SISTEMA INTELLIGENTE CON GEMINI API
+    // Generate study materials from user text input - SISTEMA INTELLIGENTE CON GEMINI API E RICERCA GOOGLE
     async function generateTextBasedMaterials(userText) {
       try {
-        console.log('Generazione con AI per:', userText);
+        console.log('Generazione con AI e Google Search per:', userText);
         
         // Check if input is too vague
         function isInputVague(input) {
@@ -803,16 +786,35 @@
           throw new Error('Input troppo vago. Per favore, specifica meglio l\'argomento che ti interessa. Esempio: "fotosintesi clorofilliana" invece di "voglio imparare qualcosa"');
         }
         
+        // Prima ottieni informazioni da Google Search
+        let googleInfo = null;
+        try {
+          console.log('Ricerca Google per informazioni su:', userText);
+          googleInfo = await window.searchTopicInfo(userText);
+          console.log('Informazioni Google ottenute:', googleInfo);
+        } catch (searchError) {
+          console.warn('Ricerca Google fallita, procedo senza:', searchError);
+        }
+        
         // Prova prima con Gemini API, fallback su mock
+        let baseContent;
         if (CONFIG.USE_REAL_AI && CONFIG.AI_PROVIDER === 'gemini') {
           try {
-            return await generateWithGemini(userText);
+            baseContent = await generateWithGemini(userText);
           } catch (error) {
             console.warn('Gemini API fallita, uso fallback mock:', error);
-            return await generateMockContent(userText);
+            baseContent = await generateMockContent(userText);
           }
         } else {
-          return await generateMockContent(userText);
+          baseContent = await generateMockContent(userText);
+        }
+        
+        // Integra le informazioni di Google se disponibili
+        if (googleInfo && !googleInfo.error) {
+          console.log('Integrazione informazioni Google nel contenuto');
+          return await window.enhanceWithGoogleSearch(userText, baseContent);
+        } else {
+          return baseContent;
         }
       } catch (error) {
         console.error('Errore generazione materiali:', error);
@@ -1107,32 +1109,6 @@ La fotosintesi è un processo biochimico che permette agli organismi fotosinteti
         }
       };
         
-        // Funzione per generare contenuti dinamici specifici
-        function generateDynamicContent(topic) {
-          console.log('DEBUG: Topic ricevuto:', topic);
-          
-          // Seleziona il contenuto appropriato
-        let result;
-        
-        // Controlla se l'argomento è nel database
-        for (const [key, content] of Object.entries(contentDatabase)) {
-          if (topic.includes(key)) {
-            result = content;
-            break;
-          }
-        }
-        
-        // Se non trovato, genera contenuti dinamici
-        if (!result) {
-          result = generateDynamicContent(topic);
-        }
-        
-        console.log('Mock content generated:', result);
-        
-        // Simula un leggero ritardo per realismo
-        // await rimosso perché la funzione non è async
-        return result;
-      }
       
       // Funzione per generare contenuti dinamici specifici
       function generateDynamicContent(topic) {
@@ -1752,7 +1728,7 @@ ${topic.charAt(0).toUpperCase() + topic.slice(1)} funge da riferimento fondament
         
         // Se non trovato, genera contenuti dinamici
         if (!result) {
-          result = generateDynamicContent(userText);
+          result = generateDynamicContent(topic);
         }
         
         console.log('Mock content generated:', result);
@@ -1760,26 +1736,7 @@ ${topic.charAt(0).toUpperCase() + topic.slice(1)} funge da riferimento fondament
         // Simula un leggero ritardo per realismo
         // await rimosso perché la funzione non è async
         return result;
-        
-      } catch (error) {
-        console.error('Errore generazione materiali:', error);
-        return {
-          spiegazione_semplice: "Errore nell'analisi della richiesta",
-          riassunto_esecutivo: "**Errore**: Impossibile generare il riassunto richiesto.",
-          schema_concettuale: "| Errore | Descrizione |\n|---------|-------------|\n| Analisi | Non disponibile |",
-          quiz: {
-            domande: [
-              {
-                domanda: "Errore nel sistema",
-                opzioni: ["Riprova", "Esci", "Contatta supporto", "Ignora"],
-                risposta_corretta: 0
-              }
-            ],
-            soluzioni: "Soluzione: A - Riprova"
-          }
-        };
       }
-    }
 
     
     // Display analysis results - MODALITÀ TUTOR DIDATTICO
