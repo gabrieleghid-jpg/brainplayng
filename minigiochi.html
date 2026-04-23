@@ -643,12 +643,11 @@
             <div class="math-game">
                 <div class="math-timer">Tempo: <span id="mathTimer">60</span>s</div>
                 <div class="math-question" id="mathQuestion">2 + 2 = ?</div>
-                <input type="number" class="math-input" id="mathInput" placeholder="?">
+                <div class="math-input" id="mathInput"></div>
                 <div class="math-buttons">
-                    <button class="math-btn submit-btn" onclick="checkMathAnswer()">INVIA</button>
-                    <button class="math-btn skip-btn" onclick="skipMathQuestion()">SALTA</button>
+                    <button class="math-btn submit-btn" onclick="submitMathAnswer()">Invia</button>
+                    <button class="math-btn skip-btn" onclick="skipMathQuestion()">Salta</button>
                 </div>
-                <div class="math-score">Risposte corrette: <span id="mathCorrect">0</span></div>
             </div>
         </div>
 
@@ -696,11 +695,14 @@
         </div>
     </div>
 
+    <script src="config.js"></script>
+    <script src="auth-helper.js"></script>
+    <script src="mascotte-growth.js"></script>
     <script>
         // Variabili globali
         let currentGame = null;
-        let userCredits = parseInt(localStorage.getItem('credits') || '0');
-        let userLevel = parseInt(localStorage.getItem('level') || '1');
+        let userCredits = parseInt(localStorage.getItem('bp_crediti') || '0');
+        let userLevel = 1;
         let gameScores = {
             sudoku: 0,
             wordle: 0,
@@ -711,11 +713,16 @@
         // Inizializzazione
         document.addEventListener('DOMContentLoaded', function() {
             updateUserInfo();
+            // Inizializza il sistema di crescita mascotte
+            if (window.mascotteGrowth) {
+                window.mascotteGrowth.loadCurrentLevel();
+                window.mascotteGrowth.updateAllDisplays(userCredits);
+            }
         });
 
         function updateUserInfo() {
             document.getElementById('userCredits').textContent = userCredits;
-            document.getElementById('userLevel').textContent = userLevel;
+            document.getElementById('userLevel').textContent = 'Lv.' + userLevel;
         }
 
         function startGame(gameType) {
@@ -774,10 +781,14 @@
             }
             
             // Salva nel localStorage
-            localStorage.setItem('credits', userCredits.toString());
-            localStorage.setItem('level', userLevel.toString());
+            localStorage.setItem('bp_crediti', userCredits.toString());
             
             updateUserInfo();
+            
+            // Aggiorna sistema mascotte
+            if (window.mascotteGrowth) {
+                window.mascotteGrowth.checkForGrowth(userCredits);
+            }
             
             // Mostra punteggio finale
             showFinalScore(currentGame, score, creditsEarned);
