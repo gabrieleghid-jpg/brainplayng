@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Personalizzato - BrainPlay</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .avatar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .home-button {
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .avatar-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .avatar-preview-section {
+            text-align: center;
+        }
+
+        .avatar-preview-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .avatar-canvas {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .avatar-base {
+            width: 100px;
+            height: 100px;
+            background: #888;
+            border-radius: 50%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar-accessory {
+            position: absolute;
+            font-size: 40px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .accessory-hat {
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .accessory-glasses {
+            top: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .accessory-crown {
+            top: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .accessory-wings {
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 80px;
+            opacity: 0.8;
+        }
+
+        .accessories-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .accessories-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .accessories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .accessory-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            position: relative;
+        }
+
+        .accessory-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .accessory-item.equipped {
+            border: 3px solid #27ae60;
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .accessory-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .accessory-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .accessory-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .accessory-price {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .credits-display {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .theme-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .theme-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .theme-item {
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .theme-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .theme-item.active {
+            border-color: #27ae60;
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .theme-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .theme-dark {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+        }
+
+        .theme-ocean {
+            background: linear-gradient(135deg, #006994 0%, #004d6b 100%);
+        }
+
+        .theme-forest {
+            background: linear-gradient(135deg, #2d5016 0%, #1a3009 100%);
+        }
+
+        .theme-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .theme-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stats-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .notification.info {
+            background: #3498db;
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .avatar-workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <a href="home.html" class="home-button">🏠 Torna alla Home</a>
+            <h1 style="margin: 0;">👤 Avatar Personalizzato</h1>
+            <div class="credits-display">
+                <span>💰 Crediti: <span id="userCredits">0</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="avatar-container">
+        <!-- Temi Disponibili -->
+        <div class="theme-section">
+            <div class="theme-title">🎨 Temi del Sito</div>
+            <div class="themes-grid" id="themesGrid">
+                <!-- I temi verranno generati dinamicamente -->
+            </div>
+        </div>
+
+        <!-- Area Avatar -->
+        <div class="avatar-workspace">
+            <div class="avatar-preview-section">
+                <div class="avatar-preview-title">Il Tuo Avatar</div>
+                <div class="avatar-canvas" id="avatarCanvas">
+                    <div class="avatar-base"></div>
+                    <!-- Gli accessori verranno aggiunti dinamicamente -->
+                </div>
+            </div>
+
+            <div class="accessories-section">
+                <div class="accessories-title">🎩 Accessori Avatar</div>
+                <div class="accessories-grid" id="accessoriesGrid">
+                    <!-- Gli accessori verranno generati dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiche -->
+        <div class="stats-section">
+            <div class="stats-title">📊 Le Tue Statistiche</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="ownedAccessories">0</span>
+                    <span class="stat-label">Accessori Posseduti</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="ownedThemes">0</span>
+                    <span class="stat-label">Temi Sbloccati</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="totalSpent">0</span>
+                    <span class="stat-label">Crediti Spesi</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="avatarLevel">1</span>
+                    <span class="stat-label">Livello Avatar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database accessori e temi
+        const accessories = [
+            {
+                id: 'avatar_hat_1',
+                name: 'Cappello da Studente',
+                icon: '🎓',
+                price: 50,
+                position: 'hat'
+            },
+            {
+                id: 'avatar_glasses_1',
+                name: 'Occhiali da Sole',
+                icon: '🕶️',
+                price: 30,
+                position: 'glasses'
+            },
+            {
+                id: 'avatar_crown_1',
+                name: 'Corona Reale',
+                icon: '👑',
+                price: 100,
+                position: 'crown'
+            },
+            {
+                id: 'avatar_wings_1',
+                name: 'Ali Angeliche',
+                icon: '👼',
+                price: 150,
+                position: 'wings'
+            }
+        ];
+
+        const themes = [
+            {
+                id: 'theme_dark_1',
+                name: 'Tema Scuro Premium',
+                icon: '🌙',
+                price: 75,
+                className: 'theme-dark-premium'
+            },
+            {
+                id: 'theme_ocean_1',
+                name: 'Tema Oceano',
+                icon: '🌊',
+                price: 60,
+                className: 'theme-ocean'
+            },
+            {
+                id: 'theme_forest_1',
+                name: 'Tema Foresta',
+                icon: '🌲',
+                price: 60,
+                className: 'theme-forest'
+            }
+        ];
+
+        // Variabili globali
+        let userCredits = parseInt(localStorage.getItem('credits') || '0');
+        let ownedProducts = JSON.parse(localStorage.getItem('ownedProducts') || '[]');
+        let equippedAccessories = JSON.parse(localStorage.getItem('equippedAccessories') || '{}');
+        let activeTheme = localStorage.getItem('activeTheme') || null;
+        let totalSpent = parseInt(localStorage.getItem('totalSpent') || '0');
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfo();
+            renderAccessories();
+            renderThemes();
+            updateAvatar();
+            applySavedTheme();
+            updateStats();
+        });
+
+        function updateUserInfo() {
+            document.getElementById('userCredits').textContent = userCredits;
+        }
+
+        function renderAccessories() {
+            const grid = document.getElementById('accessoriesGrid');
+            grid.innerHTML = '';
+
+            accessories.forEach(accessory => {
+                const isOwned = ownedProducts.includes(accessory.id);
+                const isEquipped = equippedAccessories[accessory.position] === accessory.id;
+
+                const item = document.createElement('div');
+                item.className = `accessory-item ${isOwned ? '' : 'locked'} ${isEquipped ? 'equipped' : ''}`;
+                
+                item.innerHTML = `
+                    ${!isOwned ? `<div class="lock-overlay">${accessory.price} 💰</div>` : ''}
+                    <div class="accessory-icon">${accessory.icon}</div>
+                    <div class="accessory-name">${accessory.name}</div>
+                    <div class="accessory-price">${isOwned ? 'Posseduto' : `${accessory.price} crediti`}</div>
+                `;
+
+                if (isOwned) {
+                    item.onclick = () => toggleAccessory(accessory);
+                } else {
+                    item.onclick = () => purchaseAccessory(accessory);
+                }
+
+                grid.appendChild(item);
+            });
+        }
+
+        function renderThemes() {
+            const grid = document.getElementById('themesGrid');
+            grid.innerHTML = '';
+
+            themes.forEach(theme => {
+                const isOwned = ownedProducts.includes(theme.id);
+                const isActive = activeTheme === theme.className;
+
+                const item = document.createElement('div');
+                item.className = `theme-item ${theme.className} ${isOwned ? '' : 'locked'} ${isActive ? 'active' : ''}`;
+                
+                item.innerHTML = `
+                    ${!isOwned ? `<div class="lock-overlay">${theme.price} 💰</div>` : ''}
+                    <div class="theme-icon">${theme.icon}</div>
+                    <div class="theme-name">${theme.name}</div>
+                `;
+
+                if (isOwned) {
+                    item.onclick = () => applyTheme(theme);
+                } else {
+                    item.onclick = () => purchaseTheme(theme);
+                }
+
+                grid.appendChild(item);
+            });
+        }
+
+        function updateAvatar() {
+            const canvas = document.getElementById('avatarCanvas');
+            
+            // Rimuovi tutti gli accessori esistenti
+            canvas.querySelectorAll('.avatar-accessory').forEach(el => el.remove());
+
+            // Aggiungi accessori equipaggiati
+            Object.values(equippedAccessories).forEach(accessoryId => {
+                const accessory = accessories.find(a => a.id === accessoryId);
+                if (accessory) {
+                    const element = document.createElement('div');
+                    element.className = `avatar-accessory accessory-${accessory.position}`;
+                    element.textContent = accessory.icon;
+                    canvas.appendChild(element);
+                }
+            });
+        }
+
+        function toggleAccessory(accessory) {
+            const position = accessory.position;
+            
+            if (equippedAccessories[position] === accessory.id) {
+                // Desequipaggia
+                delete equippedAccessories[position];
+                showNotification(`${accessory.name} rimosso`, 'info');
+            } else {
+                // Equipaggia
+                equippedAccessories[position] = accessory.id;
+                showNotification(`${accessory.name} equipaggiato!`, 'success');
+            }
+
+            localStorage.setItem('equippedAccessories', JSON.stringify(equippedAccessories));
+            renderAccessories();
+            updateAvatar();
+        }
+
+        function purchaseAccessory(accessory) {
+            if (userCredits < accessory.price) {
+                showNotification('Crediti insufficienti!', 'error');
+                return;
+            }
+
+            if (ownedProducts.includes(accessory.id)) {
+                showNotification('Hai già acquistato questo accessorio!', 'info');
+                return;
+            }
+
+            // Processa acquisto
+            userCredits -= accessory.price;
+            totalSpent += accessory.price;
+            ownedProducts.push(accessory.id);
+
+            // Salva
+            localStorage.setItem('credits', userCredits.toString());
+            localStorage.setItem('totalSpent', totalSpent.toString());
+            localStorage.setItem('ownedProducts', JSON.stringify(ownedProducts));
+
+            // Aggiorna UI
+            updateUserInfo();
+            updateStats();
+            renderAccessories();
+            
+            showNotification(`Acquisto completato: ${accessory.name}!`, 'success');
+        }
+
+        function purchaseTheme(theme) {
+            if (userCredits < theme.price) {
+                showNotification('Crediti insufficienti!', 'error');
+                return;
+            }
+
+            if (ownedProducts.includes(theme.id)) {
+                showNotification('Hai già acquistato questo tema!', 'info');
+                return;
+            }
+
+            // Processa acquisto
+            userCredits -= theme.price;
+            totalSpent += theme.price;
+            ownedProducts.push(theme.id);
+
+            // Salva
+            localStorage.setItem('credits', userCredits.toString());
+            localStorage.setItem('totalSpent', totalSpent.toString());
+            localStorage.setItem('ownedProducts', JSON.stringify(ownedProducts));
+
+            // Applica tema immediatamente
+            applyTheme(theme);
+
+            // Aggiorna UI
+            updateUserInfo();
+            updateStats();
+            renderThemes();
+            
+            showNotification(`Acquisto completato: ${theme.name}!`, 'success');
+        }
+
+        function applyTheme(theme) {
+            // Rimuovi tutti i temi esistenti
+            document.body.classList.remove('theme-dark-premium', 'theme-ocean', 'theme-forest');
+            
+            // Applica il nuovo tema
+            document.body.classList.add(theme.className);
+            localStorage.setItem('activeTheme', theme.className);
+            activeTheme = theme.className;
+
+            // Aggiorna UI
+            renderThemes();
+            showNotification(`Tema applicato: ${theme.name}!`, 'success');
+        }
+
+        function applySavedTheme() {
+            if (activeTheme) {
+                document.body.classList.add(activeTheme);
+            }
+        }
+
+        function updateStats() {
+            const ownedAccessoriesCount = accessories.filter(a => ownedProducts.includes(a.id)).length;
+            const ownedThemesCount = themes.filter(t => ownedProducts.includes(t.id)).length;
+            const avatarLevel = Math.floor(totalSpent / 100) + 1;
+
+            document.getElementById('ownedAccessories').textContent = ownedAccessoriesCount;
+            document.getElementById('ownedThemes').textContent = ownedThemesCount;
+            document.getElementById('totalSpent').textContent = totalSpent;
+            document.getElementById('avatarLevel').textContent = avatarLevel;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Aggiungi animazione slideOut
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
