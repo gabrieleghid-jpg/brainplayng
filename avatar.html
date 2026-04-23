@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Personalizzato - BrainPlay</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .avatar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .home-button {
+            text-decoration: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .home-button:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .avatar-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .avatar-preview-section {
+            text-align: center;
+        }
+
+        .avatar-preview-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .avatar-canvas {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .avatar-base {
+            width: 120px;
+            height: 180px;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .avatar-character {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .brain-character {
+            animation: brain-bounce 3s ease-in-out infinite;
+        }
+
+        @keyframes brain-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .eye-pupil {
+            animation: eye-move 4s ease-in-out infinite;
+        }
+
+        @keyframes eye-move {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
+        }
+
+        .mouth {
+            animation: smile 5s ease-in-out infinite;
+        }
+
+        @keyframes smile {
+            0%, 100% { d: path("M 35 58 Q 50 68, 65 58"); }
+            50% { d: path("M 35 58 Q 50 72, 65 58"); }
+        }
+
+        .brain-wrinkles {
+            animation: brain-pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes brain-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .cheek {
+            animation: blush 3s ease-in-out infinite;
+        }
+
+        @keyframes blush {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.8; }
+        }
+
+        .hair-strand {
+            animation: hair-sway 6s ease-in-out infinite;
+        }
+
+        @keyframes hair-sway {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(1px); }
+        }
+
+        .avatar-accessory {
+            position: absolute;
+            font-size: 40px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .accessory-hat {
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+        }
+
+        .accessory-glasses {
+            top: 22%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 35px;
+        }
+
+        .accessory-crown {
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 55px;
+        }
+
+        .accessory-wings {
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            opacity: 0.8;
+        }
+
+        .customization-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .customization-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .color-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .color-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .color-group label {
+            font-weight: bold;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .color-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .color-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+            border-color: #667eea;
+        }
+
+        .color-btn.selected {
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .hair-style-btn {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .hair-style-btn:hover {
+            transform: scale(1.05);
+            border-color: #667eea;
+        }
+
+        .hair-style-btn.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .accessories-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .accessories-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .accessories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .accessory-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            position: relative;
+        }
+
+        .accessory-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .accessory-item.equipped {
+            border: 3px solid #27ae60;
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .accessory-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .accessory-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .accessory-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .accessory-price {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .lock-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .credits-display {
+            background: rgba(255,255,255,0.2);
+            padding: 15px 25px;
+            border-radius: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .theme-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .theme-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .theme-item {
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            position: relative;
+            border: 3px solid transparent;
+        }
+
+        .theme-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .theme-item.active {
+            border-color: #27ae60;
+            box-shadow: 0 0 20px rgba(39, 174, 96, 0.3);
+        }
+
+        .theme-item.locked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .theme-dark {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+        }
+
+        .theme-ocean {
+            background: linear-gradient(135deg, #006994 0%, #004d6b 100%);
+        }
+
+        .theme-forest {
+            background: linear-gradient(135deg, #2d5016 0%, #1a3009 100%);
+        }
+
+        .theme-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .theme-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stats-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .notification.error {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .notification.info {
+            background: #3498db;
+            color: white;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .avatar-workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <a href="home.html" class="home-button">🏠 Torna alla Home</a>
+            <h1 style="margin: 0;">👤 Avatar Personalizzato</h1>
+            <div class="credits-display">
+                <span>💰 Crediti: <span id="userCredits">0</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="avatar-container">
+        <!-- Temi Disponibili -->
+        <div class="theme-section">
+            <div class="theme-title">🎨 Temi del Sito</div>
+            <div class="themes-grid" id="themesGrid">
+                <!-- I temi verranno generati dinamicamente -->
+            </div>
+        </div>
+
+        <!-- Area Avatar -->
+        <div class="avatar-workspace">
+            <div class="avatar-preview-section">
+                <div class="avatar-preview-title">Il Tuo Avatar</div>
+                <div class="avatar-canvas" id="avatarCanvas">
+                    <div class="avatar-base">
+                        <svg class="avatar-character human-character" viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Corpo -->
+                            <rect class="avatar-shirt" x="35" y="70" width="30" height="40" rx="5" fill="#4a90e2" stroke="#2c5aa0" stroke-width="2"/>
+                            
+                            <!-- Braccia -->
+                            <rect class="avatar-sleeves" x="20" y="75" width="12" height="30" rx="6" fill="#4a90e2" stroke="#2c5aa0" stroke-width="2"/>
+                            <rect class="avatar-sleeves" x="68" y="75" width="12" height="30" rx="6" fill="#4a90e2" stroke="#2c5aa0" stroke-width="2"/>
+                            
+                            <!-- Gambe -->
+                            <rect class="avatar-pants" x="40" y="105" width="10" height="35" rx="5" fill="#2c5aa0" stroke="#1a3d6d" stroke-width="2"/>
+                            <rect class="avatar-pants" x="50" y="105" width="10" height="35" rx="5" fill="#2c5aa0" stroke="#1a3d6d" stroke-width="2"/>
+                            
+                            <!-- Scarpe -->
+                            <ellipse class="avatar-shoes" cx="45" cy="142" rx="8" ry="5" fill="#333"/>
+                            <ellipse class="avatar-shoes" cx="55" cy="142" rx="8" ry="5" fill="#333"/>
+                            
+                            <!-- Testa -->
+                            <circle class="avatar-head" cx="50" cy="35" r="20" fill="#fdbcb4" stroke="#e8a298" stroke-width="2"/>
+                            
+                            <!-- Capelli -->
+                            <g class="hair-container">
+                                <!-- Capelli base -->
+                                <path class="hair-base" d="M 30 30 Q 30 15, 50 13 Q 70 15, 70 30 Q 68 25, 50 23 Q 32 25, 30 30" fill="#8b4513" stroke="#6b3410" stroke-width="1"/>
+                                
+                                <!-- Capelli styling -->
+                                <path class="hair-style" d="M 28 25 Q 25 20, 28 15" fill="#8b4513" stroke="#6b3410" stroke-width="1"/>
+                                <path class="hair-style" d="M 72 25 Q 75 20, 72 15" fill="#8b4513" stroke="#6b3410" stroke-width="1"/>
+                                <path class="hair-style" d="M 35 20 Q 33 15, 35 10" fill="#8b4513" stroke="#6b3410" stroke-width="1"/>
+                                <path class="hair-style" d="M 65 20 Q 67 15, 65 10" fill="#8b4513" stroke="#6b3410" stroke-width="1"/>
+                                <path class="hair-style" d="M 50 18 Q 50 12, 52 8" fill="#8b4513" stroke="#6b3410" stroke-width="1"/>
+                            </g>
+                            
+                            <!-- Occhi -->
+                            <g class="eyes-container">
+                                <!-- Occhio sinistro -->
+                                <ellipse class="eye-white" cx="42" cy="33" rx="6" ry="8" fill="white" stroke="#333" stroke-width="1"/>
+                                <circle class="eye-pupil" cx="42" cy="35" r="3" fill="#333"/>
+                                <circle class="eye-shine" cx="43" cy="33" r="1" fill="white"/>
+                                
+                                <!-- Occhio destro -->
+                                <ellipse class="eye-white" cx="58" cy="33" rx="6" ry="8" fill="white" stroke="#333" stroke-width="1"/>
+                                <circle class="eye-pupil" cx="58" cy="35" r="3" fill="#333"/>
+                                <circle class="eye-shine" cx="59" cy="33" r="1" fill="white"/>
+                            </g>
+                            
+                            <!-- Sopraciglia -->
+                            <path class="eyebrow" d="M 35 28 Q 42 25, 49 28" stroke="#8b4513" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <path class="eyebrow" d="M 51 28 Q 58 25, 65 28" stroke="#8b4513" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            
+                            <!-- Naso -->
+                            <path class="nose" d="M 50 38 L 48 42 L 52 42 Z" fill="#f8a5a2" stroke="#e8a298" stroke-width="1"/>
+                            
+                            <!-- Bocca -->
+                            <path class="mouth" d="M 42 48 Q 50 52, 58 48" stroke="#d63384" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                            
+                            <!-- Mani -->
+                            <circle class="avatar-hands" cx="26" cy="105" r="5" fill="#fdbcb4" stroke="#e8a298" stroke-width="1"/>
+                            <circle class="avatar-hands" cx="74" cy="105" r="5" fill="#fdbcb4" stroke="#e8a298" stroke-width="1"/>
+                        </svg>
+                    </div>
+                    <!-- Gli accessori verranno aggiunti dinamicamente -->
+                </div>
+                
+                <!-- Personalizzazione Colori -->
+                <div class="customization-section">
+                    <div class="customization-title">🎨 Personalizza Colori</div>
+                    <div class="color-options">
+                        <div class="color-group">
+                            <label>Colore Pelle:</label>
+                            <div class="color-buttons">
+                                <button class="color-btn" data-color="#fdbcb4" data-type="skin" style="background: #fdbcb4;">🟠</button>
+                                <button class="color-btn" data-color="#f8a5a2" data-type="skin" style="background: #f8a5a2;">🍑</button>
+                                <button class="color-btn" data-color="#d4a574" data-type="skin" style="background: #d4a574;">�</button>
+                                <button class="color-btn" data-color="#8d5524" data-type="skin" style="background: #8d5524;">🟫</button>
+                                <button class="color-btn" data-color="#ffe0bd" data-type="skin" style="background: #ffe0bd;">🟨</button>
+                            </div>
+                        </div>
+                        <div class="color-group">
+                            <label>Colore Occhi:</label>
+                            <div class="color-buttons">
+                                <button class="color-btn" data-color="#333333" data-type="eyes" style="background: #333333;">⚫</button>
+                                <button class="color-btn" data-color="#4169e1" data-type="eyes" style="background: #4169e1;">🔵</button>
+                                <button class="color-btn" data-color="#228b22" data-type="eyes" style="background: #228b22;">�</button>
+                                <button class="color-btn" data-color="#8b4513" data-type="eyes" style="background: #8b4513;">🟤</button>
+                                <button class="color-btn" data-color="#808080" data-type="eyes" style="background: #808080;">�</button>
+                            </div>
+                        </div>
+                        <div class="color-group">
+                            <label>Colore Capelli:</label>
+                            <div class="color-buttons">
+                                <button class="color-btn" data-color="#8b4513" data-type="hair" style="background: #8b4513;">🟤</button>
+                                <button class="color-btn" data-color="#000000" data-type="hair" style="background: #000000;">⚫</button>
+                                <button class="color-btn" data-color="#ffd700" data-type="hair" style="background: #ffd700;">🟡</button>
+                                <button class="color-btn" data-color="#ff6b6b" data-type="hair" style="background: #ff6b6b;">🔴</button>
+                                <button class="color-btn" data-color="#4169e1" data-type="hair" style="background: #4169e1;">🔵</button>
+                            </div>
+                        </div>
+                        <div class="color-group">
+                            <label>Forma Capelli:</label>
+                            <div class="color-buttons">
+                                <button class="hair-style-btn" data-style="short" data-type="hair-style">👦 Corto</button>
+                                <button class="hair-style-btn" data-style="long" data-type="hair-style">👧 Lungo</button>
+                                <button class="hair-style-btn" data-style="spiky" data-type="hair-style">🦹 Punteggiato</button>
+                                <button class="hair-style-btn" data-style="curly" data-type="hair-style">👨 Riccio</button>
+                                <button class="hair-style-btn" data-style="bald" data-type="hair-style">👨‍🦲 Calvo</button>
+                            </div>
+                        </div>
+                        <div class="color-group">
+                            <label>Colore Maglietta:</label>
+                            <div class="color-buttons">
+                                <button class="color-btn" data-color="#4a90e2" data-type="shirt" style="background: #4a90e2;">🔵</button>
+                                <button class="color-btn" data-color="#27ae60" data-type="shirt" style="background: #27ae60;">🟢</button>
+                                <button class="color-btn" data-color="#e74c3c" data-type="shirt" style="background: #e74c3c;">🔴</button>
+                                <button class="color-btn" data-color="#9b59b6" data-type="shirt" style="background: #9b59b6;">🟣</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="accessories-section">
+                <div class="accessories-title">🎩 Accessori Avatar</div>
+                <div class="accessories-grid" id="accessoriesGrid">
+                    <!-- Gli accessori verranno generati dinamicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiche -->
+        <div class="stats-section">
+            <div class="stats-title">📊 Le Tue Statistiche</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number" id="ownedAccessories">0</span>
+                    <span class="stat-label">Accessori Posseduti</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="ownedThemes">0</span>
+                    <span class="stat-label">Temi Sbloccati</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="totalSpent">0</span>
+                    <span class="stat-label">Crediti Spesi</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="avatarLevel">1</span>
+                    <span class="stat-label">Livello Avatar</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Database accessori e temi
+        const accessories = [
+            {
+                id: 'avatar_hat_1',
+                name: 'Cappello da Studente',
+                icon: '🎓',
+                price: 50,
+                position: 'hat'
+            },
+            {
+                id: 'avatar_glasses_1',
+                name: 'Occhiali da Sole',
+                icon: '🕶️',
+                price: 30,
+                position: 'glasses'
+            },
+            {
+                id: 'avatar_crown_1',
+                name: 'Corona Reale',
+                icon: '👑',
+                price: 100,
+                position: 'crown'
+            },
+            {
+                id: 'avatar_wings_1',
+                name: 'Ali Angeliche',
+                icon: '👼',
+                price: 150,
+                position: 'wings'
+            }
+        ];
+
+        const themes = [
+            {
+                id: 'theme_dark_1',
+                name: 'Tema Scuro Premium',
+                icon: '🌙',
+                price: 75,
+                className: 'theme-dark-premium'
+            },
+            {
+                id: 'theme_ocean_1',
+                name: 'Tema Oceano',
+                icon: '🌊',
+                price: 60,
+                className: 'theme-ocean'
+            },
+            {
+                id: 'theme_forest_1',
+                name: 'Tema Foresta',
+                icon: '🌲',
+                price: 60,
+                className: 'theme-forest'
+            }
+        ];
+
+        // Variabili globali
+        let userCredits = parseInt(localStorage.getItem('credits') || '0');
+        let ownedProducts = JSON.parse(localStorage.getItem('ownedProducts') || '[]');
+        let equippedAccessories = JSON.parse(localStorage.getItem('equippedAccessories') || '{}');
+        let activeTheme = localStorage.getItem('activeTheme') || null;
+        let totalSpent = parseInt(localStorage.getItem('totalSpent') || '0');
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfo();
+            renderAccessories();
+            renderThemes();
+            updateAvatar();
+            applySavedTheme();
+            updateStats();
+            setupColorCustomization();
+            loadSavedColors();
+        });
+
+        function updateUserInfo() {
+            document.getElementById('userCredits').textContent = userCredits;
+        }
+
+        function renderAccessories() {
+            const grid = document.getElementById('accessoriesGrid');
+            grid.innerHTML = '';
+
+            accessories.forEach(accessory => {
+                const isOwned = ownedProducts.includes(accessory.id);
+                const isEquipped = equippedAccessories[accessory.position] === accessory.id;
+
+                const item = document.createElement('div');
+                item.className = `accessory-item ${isOwned ? '' : 'locked'} ${isEquipped ? 'equipped' : ''}`;
+                
+                item.innerHTML = `
+                    ${!isOwned ? `<div class="lock-overlay">${accessory.price} 💰</div>` : ''}
+                    <div class="accessory-icon">${accessory.icon}</div>
+                    <div class="accessory-name">${accessory.name}</div>
+                    <div class="accessory-price">${isOwned ? 'Posseduto' : `${accessory.price} crediti`}</div>
+                `;
+
+                if (isOwned) {
+                    item.onclick = () => toggleAccessory(accessory);
+                } else {
+                    item.onclick = () => purchaseAccessory(accessory);
+                }
+
+                grid.appendChild(item);
+            });
+        }
+
+        function renderThemes() {
+            const grid = document.getElementById('themesGrid');
+            grid.innerHTML = '';
+
+            themes.forEach(theme => {
+                const isOwned = ownedProducts.includes(theme.id);
+                const isActive = activeTheme === theme.className;
+
+                const item = document.createElement('div');
+                item.className = `theme-item ${theme.className} ${isOwned ? '' : 'locked'} ${isActive ? 'active' : ''}`;
+                
+                item.innerHTML = `
+                    ${!isOwned ? `<div class="lock-overlay">${theme.price} 💰</div>` : ''}
+                    <div class="theme-icon">${theme.icon}</div>
+                    <div class="theme-name">${theme.name}</div>
+                `;
+
+                if (isOwned) {
+                    item.onclick = () => applyTheme(theme);
+                } else {
+                    item.onclick = () => purchaseTheme(theme);
+                }
+
+                grid.appendChild(item);
+            });
+        }
+
+        function updateAvatar() {
+            const canvas = document.getElementById('avatarCanvas');
+            
+            // Rimuovi tutti gli accessori esistenti
+            canvas.querySelectorAll('.avatar-accessory').forEach(el => el.remove());
+
+            // Aggiungi accessori equipaggiati
+            Object.values(equippedAccessories).forEach(accessoryId => {
+                const accessory = accessories.find(a => a.id === accessoryId);
+                if (accessory) {
+                    const element = document.createElement('div');
+                    element.className = `avatar-accessory accessory-${accessory.position}`;
+                    element.textContent = accessory.icon;
+                    canvas.appendChild(element);
+                }
+            });
+        }
+
+        function toggleAccessory(accessory) {
+            const position = accessory.position;
+            
+            if (equippedAccessories[position] === accessory.id) {
+                // Desequipaggia
+                delete equippedAccessories[position];
+                showNotification(`${accessory.name} rimosso`, 'info');
+            } else {
+                // Equipaggia
+                equippedAccessories[position] = accessory.id;
+                showNotification(`${accessory.name} equipaggiato!`, 'success');
+            }
+
+            localStorage.setItem('equippedAccessories', JSON.stringify(equippedAccessories));
+            renderAccessories();
+            updateAvatar();
+        }
+
+        function purchaseAccessory(accessory) {
+            if (userCredits < accessory.price) {
+                showNotification('Crediti insufficienti!', 'error');
+                return;
+            }
+
+            if (ownedProducts.includes(accessory.id)) {
+                showNotification('Hai già acquistato questo accessorio!', 'info');
+                return;
+            }
+
+            // Processa acquisto
+            userCredits -= accessory.price;
+            totalSpent += accessory.price;
+            ownedProducts.push(accessory.id);
+
+            // Salva
+            localStorage.setItem('credits', userCredits.toString());
+            localStorage.setItem('totalSpent', totalSpent.toString());
+            localStorage.setItem('ownedProducts', JSON.stringify(ownedProducts));
+
+            // Aggiorna UI
+            updateUserInfo();
+            updateStats();
+            renderAccessories();
+            
+            showNotification(`Acquisto completato: ${accessory.name}!`, 'success');
+        }
+
+        function purchaseTheme(theme) {
+            if (userCredits < theme.price) {
+                showNotification('Crediti insufficienti!', 'error');
+                return;
+            }
+
+            if (ownedProducts.includes(theme.id)) {
+                showNotification('Hai già acquistato questo tema!', 'info');
+                return;
+            }
+
+            // Processa acquisto
+            userCredits -= theme.price;
+            totalSpent += theme.price;
+            ownedProducts.push(theme.id);
+
+            // Salva
+            localStorage.setItem('credits', userCredits.toString());
+            localStorage.setItem('totalSpent', totalSpent.toString());
+            localStorage.setItem('ownedProducts', JSON.stringify(ownedProducts));
+
+            // Applica tema immediatamente
+            applyTheme(theme);
+
+            // Aggiorna UI
+            updateUserInfo();
+            updateStats();
+            renderThemes();
+            
+            showNotification(`Acquisto completato: ${theme.name}!`, 'success');
+        }
+
+        function applyTheme(theme) {
+            // Rimuovi tutti i temi esistenti
+            document.body.classList.remove('theme-dark-premium', 'theme-ocean', 'theme-forest');
+            
+            // Applica il nuovo tema
+            document.body.classList.add(theme.className);
+            localStorage.setItem('activeTheme', theme.className);
+            activeTheme = theme.className;
+
+            // Aggiorna UI
+            renderThemes();
+            showNotification(`Tema applicato: ${theme.name}!`, 'success');
+        }
+
+        function applySavedTheme() {
+            if (activeTheme) {
+                document.body.classList.add(activeTheme);
+            }
+        }
+
+        function updateStats() {
+            const ownedAccessoriesCount = accessories.filter(a => ownedProducts.includes(a.id)).length;
+            const ownedThemesCount = themes.filter(t => ownedProducts.includes(t.id)).length;
+            const avatarLevel = Math.floor(totalSpent / 100) + 1;
+
+            document.getElementById('ownedAccessories').textContent = ownedAccessoriesCount;
+            document.getElementById('ownedThemes').textContent = ownedThemesCount;
+            document.getElementById('totalSpent').textContent = totalSpent;
+            document.getElementById('avatarLevel').textContent = avatarLevel;
+        }
+
+        function setupColorCustomization() {
+            // Gestione pulsanti colore
+            const colorButtons = document.querySelectorAll('.color-btn');
+            
+            colorButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const color = this.dataset.color;
+                    const type = this.dataset.type;
+                    
+                    // Rimuovi classe selected da tutti i pulsanti dello stesso tipo
+                    document.querySelectorAll(`.color-btn[data-type="${type}"]`).forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    
+                    // Aggiungi classe selected al pulsante cliccato
+                    this.classList.add('selected');
+                    
+                    // Applica il colore
+                    applyAvatarColor(type, color);
+                    
+                    // Salva la preferenza
+                    saveColorPreference(type, color);
+                    
+                    // Mostra notifica
+                    let typeLabel;
+                    if (type === 'skin') typeLabel = 'pelle';
+                    else if (type === 'eyes') typeLabel = 'occhi';
+                    else if (type === 'hair') typeLabel = 'capelli';
+                    else typeLabel = 'maglietta';
+                    showNotification(`Colore ${typeLabel} aggiornato!`, 'success');
+                });
+            });
+
+            // Gestione pulsanti stile capelli
+            const hairStyleButtons = document.querySelectorAll('.hair-style-btn');
+            
+            hairStyleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const style = this.dataset.style;
+                    
+                    // Rimuovi classe selected da tutti i pulsanti di stile
+                    document.querySelectorAll('.hair-style-btn').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    
+                    // Aggiungi classe selected al pulsante cliccato
+                    this.classList.add('selected');
+                    
+                    // Applica lo stile dei capelli
+                    applyHairStyle(style);
+                    
+                    // Salva la preferenza
+                    saveColorPreference('hair-style', style);
+                    
+                    // Mostra notifica
+                    let styleLabel;
+                    if (style === 'short') styleLabel = 'corto';
+                    else if (style === 'long') styleLabel = 'lungo';
+                    else if (style === 'spiky') styleLabel = 'punteggiato';
+                    else if (style === 'curly') styleLabel = 'riccio';
+                    else if (style === 'bald') styleLabel = 'calvo';
+                    showNotification(`Stile capelli: ${styleLabel}!`, 'success');
+                });
+            });
+        }
+
+        function applyAvatarColor(type, color) {
+            if (type === 'skin') {
+                // Cambia colore pelle (testa, mani, naso)
+                const skinElements = document.querySelectorAll('.avatar-head, .avatar-hands, .nose');
+                skinElements.forEach(element => {
+                    element.setAttribute('fill', color);
+                    // Aggiorna anche il colore del bordo
+                    const darkerColor = darkenColor(color, 15);
+                    element.setAttribute('stroke', darkerColor);
+                });
+            } else if (type === 'eyes') {
+                // Cambia colore occhi
+                const eyeElements = document.querySelectorAll('.eye-pupil');
+                eyeElements.forEach(element => {
+                    element.setAttribute('fill', color);
+                });
+            } else if (type === 'hair') {
+                // Cambia colore capelli
+                const hairElements = document.querySelectorAll('.hair-base, .hair-style, .eyebrow');
+                hairElements.forEach(element => {
+                    element.setAttribute('fill', color);
+                    element.setAttribute('stroke', color);
+                });
+            } else if (type === 'shirt') {
+                // Cambia colore maglietta e maniche
+                const shirtElements = document.querySelectorAll('.avatar-shirt, .avatar-sleeves');
+                shirtElements.forEach(element => {
+                    element.setAttribute('fill', color);
+                    // Aggiorna anche il colore del bordo
+                    const darkerColor = darkenColor(color, 20);
+                    element.setAttribute('stroke', darkerColor);
+                });
+            }
+        }
+
+        function lightenColor(color, percent) {
+            // Funzione per schiarire un colore
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255))
+                .toString(16).slice(1);
+        }
+
+        function darkenColor(color, percent) {
+            // Funzione per scurire un colore
+            const num = parseInt(color.replace('#', ''), 16);
+            const amt = Math.round(2.55 * percent);
+            const R = (num >> 16) - amt;
+            const G = (num >> 8 & 0x00FF) - amt;
+            const B = (num & 0x0000FF) - amt;
+            return '#' + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255))
+                .toString(16).slice(1);
+        }
+
+        function saveColorPreference(type, color) {
+            const colors = JSON.parse(localStorage.getItem('avatarColors') || '{}');
+            colors[type] = color;
+            localStorage.setItem('avatarColors', JSON.stringify(colors));
+        }
+
+        function applyHairStyle(style) {
+            const hairContainer = document.querySelector('.hair-container');
+            const currentHairColor = document.querySelector('.hair-base')?.getAttribute('fill') || '#8b4513';
+            
+            let hairHTML = '';
+            
+            switch(style) {
+                case 'short':
+                    hairHTML = `
+                        <path class="hair-base" d="M 35 30 Q 35 20, 50 18 Q 65 20, 65 30 Q 63 25, 50 23 Q 37 25, 35 30" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <path class="hair-style" d="M 33 25 Q 30 20, 33 15" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <path class="hair-style" d="M 67 25 Q 70 20, 67 15" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                    `;
+                    break;
+                case 'long':
+                    hairHTML = `
+                        <path class="hair-base" d="M 30 30 Q 30 15, 50 13 Q 70 15, 70 30 Q 68 25, 50 23 Q 32 25, 30 30" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <path class="hair-style" d="M 28 25 Q 25 15, 28 10 Q 30 8, 32 10" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <path class="hair-style" d="M 72 25 Q 75 15, 72 10 Q 70 8, 68 10" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <path class="hair-style" d="M 35 45 Q 33 55, 35 65" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <path class="hair-style" d="M 65 45 Q 67 55, 65 65" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                    `;
+                    break;
+                case 'spiky':
+                    hairHTML = `
+                        <path class="hair-base" d="M 35 30 Q 35 20, 50 18 Q 65 20, 65 30 Q 63 25, 50 23 Q 37 25, 35 30" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <path class="hair-style" d="M 32 25 L 30 15" stroke="${currentHairColor}" stroke-width="3"/>
+                        <path class="hair-style" d="M 40 22 L 38 12" stroke="${currentHairColor}" stroke-width="3"/>
+                        <path class="hair-style" d="M 50 20 L 50 10" stroke="${currentHairColor}" stroke-width="3"/>
+                        <path class="hair-style" d="M 60 22 L 62 12" stroke="${currentHairColor}" stroke-width="3"/>
+                        <path class="hair-style" d="M 68 25 L 70 15" stroke="${currentHairColor}" stroke-width="3"/>
+                    `;
+                    break;
+                case 'curly':
+                    hairHTML = `
+                        <path class="hair-base" d="M 30 30 Q 30 15, 50 13 Q 70 15, 70 30 Q 68 25, 50 23 Q 32 25, 30 30" fill="${currentHairColor}" stroke="${darkenColor(currentHairColor, 20)}" stroke-width="1"/>
+                        <circle class="hair-style" cx="35" cy="20" r="4" fill="${currentHairColor}"/>
+                        <circle class="hair-style" cx="45" cy="18" r="3" fill="${currentHairColor}"/>
+                        <circle class="hair-style" cx="55" cy="18" r="3" fill="${currentHairColor}"/>
+                        <circle class="hair-style" cx="65" cy="20" r="4" fill="${currentHairColor}"/>
+                        <circle class="hair-style" cx="40" cy="25" r="3" fill="${currentHairColor}"/>
+                        <circle class="hair-style" cx="60" cy="25" r="3" fill="${currentHairColor}"/>
+                    `;
+                    break;
+                case 'bald':
+                    hairHTML = '';
+                    break;
+            }
+            
+            hairContainer.innerHTML = hairHTML;
+        }
+
+        function loadSavedColors() {
+            const colors = JSON.parse(localStorage.getItem('avatarColors') || '{}');
+            
+            // Applica colori salvati
+            if (colors.skin) {
+                applyAvatarColor('skin', colors.skin);
+                const skinButton = document.querySelector(`.color-btn[data-type="skin"][data-color="${colors.skin}"]`);
+                if (skinButton) {
+                    document.querySelectorAll('.color-btn[data-type="skin"]').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    skinButton.classList.add('selected');
+                }
+            }
+            
+            if (colors.eyes) {
+                applyAvatarColor('eyes', colors.eyes);
+                const eyesButton = document.querySelector(`.color-btn[data-type="eyes"][data-color="${colors.eyes}"]`);
+                if (eyesButton) {
+                    document.querySelectorAll('.color-btn[data-type="eyes"]').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    eyesButton.classList.add('selected');
+                }
+            }
+            
+            if (colors.hair) {
+                applyAvatarColor('hair', colors.hair);
+                const hairButton = document.querySelector(`.color-btn[data-type="hair"][data-color="${colors.hair}"]`);
+                if (hairButton) {
+                    document.querySelectorAll('.color-btn[data-type="hair"]').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    hairButton.classList.add('selected');
+                }
+            }
+            
+            if (colors['hair-style']) {
+                applyHairStyle(colors['hair-style']);
+                const styleButton = document.querySelector(`.hair-style-btn[data-style="${colors['hair-style']}"]`);
+                if (styleButton) {
+                    document.querySelectorAll('.hair-style-btn').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    styleButton.classList.add('selected');
+                }
+            }
+            
+            if (colors.shirt) {
+                applyAvatarColor('shirt', colors.shirt);
+                const shirtButton = document.querySelector(`.color-btn[data-type="shirt"][data-color="${colors.shirt}"]`);
+                if (shirtButton) {
+                    document.querySelectorAll('.color-btn[data-type="shirt"]').forEach(btn => {
+                        btn.classList.remove('selected');
+                    });
+                    shirtButton.classList.add('selected');
+                }
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Aggiungi animazione slideOut
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideOut {
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
