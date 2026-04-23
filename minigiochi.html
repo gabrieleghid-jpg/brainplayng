@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minigiochi - BrainPlay</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .minigames-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            color: white;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .game-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+        }
+
+        .game-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .game-description {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .play-button {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            background: white;
+            color: #667eea;
+        }
+
+        .game-area {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .back-button {
+            background: #f0f0f0;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #e0e0e0;
+        }
+
+        .score-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* SUDOKU STYLES */
+        .sudoku-grid {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 2px;
+            max-width: 450px;
+            margin: 0 auto;
+            background: #333;
+            padding: 2px;
+            border-radius: 10px;
+        }
+
+        .sudoku-cell {
+            aspect-ratio: 1;
+            background: white;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sudoku-cell:hover {
+            background: #f0f8ff;
+        }
+
+        .sudoku-cell.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .sudoku-cell.fixed {
+            background: #f0f0f0;
+            color: #333;
+            cursor: not-allowed;
+        }
+
+        .sudoku-cell:nth-child(3n+3) {
+            border-right: 2px solid #333;
+        }
+
+        .sudoku-cell:nth-child(n+19):nth-child(-n+27),
+        .sudoku-cell:nth-child(n+46):nth-child(-n+54) {
+            border-bottom: 2px solid #333;
+        }
+
+        .number-pad {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+
+        .number-btn {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .number-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+
+        /* WORDLE STYLES */
+        .wordle-grid {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 5px;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+
+        .wordle-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        .wordle-cell {
+            aspect-ratio: 1;
+            border: 2px solid #d3d6da;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .wordle-cell.filled {
+            border-color: #878a8c;
+            animation: pop 0.1s ease;
+        }
+
+        .wordle-cell.correct {
+            background: #6aaa64;
+            border-color: #6aaa64;
+            color: white;
+        }
+
+        .wordle-cell.present {
+            background: #c9b458;
+            border-color: #c9b458;
+            color: white;
+        }
+
+        .wordle-cell.absent {
+            background: #787c7e;
+            border-color: #787c7e;
+            color: white;
+        }
+
+        @keyframes pop {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .keyboard {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .key {
+            padding: 10px;
+            min-width: 30px;
+            background: #d3d6da;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .key:hover {
+            background: #bbb;
+        }
+
+        .key.wide {
+            min-width: 65px;
+        }
+
+        .key.correct {
+            background: #6aaa64;
+            color: white;
+        }
+
+        .key.present {
+            background: #c9b458;
+            color: white;
+        }
+
+        .key.absent {
+            background: #787c7e;
+            color: white;
+        }
+
+        /* MATH STYLES */
+        .math-game {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .math-question {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .math-input {
+            font-size: 24px;
+            padding: 15px;
+            width: 150px;
+            text-align: center;
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .math-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .math-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: #5a67d8;
+        }
+
+        .skip-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .skip-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .math-timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+            margin: 20px 0;
+        }
+
+        .math-score {
+            font-size: 20px;
+            font-weight: bold;
+            color: #27ae60;
+            margin: 20px 0;
+        }
+
+        .game-over {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .final-score {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .play-again-btn {
+            background: #667eea;
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-again-btn:hover {
+            background: #5a67d8;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .credits-display {
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="user-info">
+            <a href="home.html" class="home-button" style="text-decoration: none; background: rgba(255,255,255,0.2); color: white; padding: 10px 20px; border-radius: 10px; font-weight: bold; transition: all 0.3s ease; margin-right: 20px;">🏠 Torna alla Home</a>
+            <h1 style="margin: 0;">🎮 Minigiochi BrainPlay</h1>
+            <div class="credits-display">
+                <span>💰 Crediti: <span id="userCredits">0</span></span>
+                <span style="margin-left: 20px;">⭐ Livello: <span id="userLevel">1</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="minigames-container">
+        <!-- Menu Principale -->
+        <div id="gameMenu" class="games-grid">
+            <div class="game-card" onclick="startGame('sudoku')">
+                <div class="game-icon">🔢</div>
+                <div class="game-title">SUDOKU</div>
+                <div class="game-description">Risolvi il classico puzzle numerico giapponese</div>
+                <button class="play-button">GIOCA</button>
+            </div>
+
+            <div class="game-card" onclick="startGame('wordle')">
+                <div class="game-icon">📝</div>
+                <div class="game-title">WORDLE</div>
+                <div class="game-description">Indovina la parola segreta in 6 tentativi</div>
+                <button class="play-button">GIOCA</button>
+            </div>
+
+            <div class="game-card" onclick="startGame('math')">
+                <div class="game-icon">🧮</div>
+                <div class="game-title">CALCOLI MATEMATICI</div>
+                <div class="game-description">Testa le tue abilità con calcoli a tempo</div>
+                <button class="play-button">GIOCA</button>
+            </div>
+        </div>
+
+        <!-- Area di Gioco SUDOKU -->
+        <div id="sudokuGame" class="game-area">
+            <div class="game-header">
+                <button class="back-button" onclick="backToMenu()">← Torna al Menu</button>
+                <div class="score-display">Punteggio: <span id="sudokuScore">0</span></div>
+            </div>
+            <div class="sudoku-grid" id="sudokuGrid"></div>
+            <div class="number-pad">
+                <button class="number-btn" onclick="selectNumber(1)">1</button>
+                <button class="number-btn" onclick="selectNumber(2)">2</button>
+                <button class="number-btn" onclick="selectNumber(3)">3</button>
+                <button class="number-btn" onclick="selectNumber(4)">4</button>
+                <button class="number-btn" onclick="selectNumber(5)">5</button>
+                <button class="number-btn" onclick="selectNumber(6)">6</button>
+                <button class="number-btn" onclick="selectNumber(7)">7</button>
+                <button class="number-btn" onclick="selectNumber(8)">8</button>
+                <button class="number-btn" onclick="selectNumber(9)">9</button>
+                <button class="number-btn" onclick="clearCell()">Canc</button>
+            </div>
+        </div>
+
+        <!-- Area di Gioco WORDLE -->
+        <div id="wordleGame" class="game-area">
+            <div class="game-header">
+                <button class="back-button" onclick="backToMenu()">← Torna al Menu</button>
+                <div class="score-display">Punteggio: <span id="wordleScore">0</span></div>
+            </div>
+            <div class="wordle-grid" id="wordleGrid"></div>
+            <div class="keyboard" id="wordleKeyboard"></div>
+        </div>
+
+        <!-- Area di Gioco MATH -->
+        <div id="mathGame" class="game-area">
+            <div class="game-header">
+                <button class="back-button" onclick="backToMenu()">← Torna al Menu</button>
+                <div class="score-display">Punteggio: <span id="mathScore">0</span></div>
+            </div>
+            <div class="math-game">
+                <div class="math-timer">Tempo: <span id="mathTimer">60</span>s</div>
+                <div class="math-question" id="mathQuestion">2 + 2 = ?</div>
+                <input type="number" class="math-input" id="mathInput" placeholder="?">
+                <div class="math-buttons">
+                    <button class="math-btn submit-btn" onclick="checkMathAnswer()">INVIA</button>
+                    <button class="math-btn skip-btn" onclick="skipMathQuestion()">SALTA</button>
+                </div>
+                <div class="math-score">Risposte corrette: <span id="mathCorrect">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variabili globali
+        let currentGame = null;
+        let userCredits = parseInt(localStorage.getItem('credits') || '0');
+        let userLevel = parseInt(localStorage.getItem('level') || '1');
+        let gameScores = {
+            sudoku: 0,
+            wordle: 0,
+            math: 0
+        };
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', function() {
+            updateUserInfo();
+        });
+
+        function updateUserInfo() {
+            document.getElementById('userCredits').textContent = userCredits;
+            document.getElementById('userLevel').textContent = userLevel;
+        }
+
+        function startGame(gameType) {
+            currentGame = gameType;
+            
+            // Nascondi menu e mostra il gioco corretto
+            document.getElementById('gameMenu').style.display = 'none';
+            document.querySelectorAll('.game-area').forEach(area => {
+                area.style.display = 'none';
+            });
+            
+            switch(gameType) {
+                case 'sudoku':
+                    document.getElementById('sudokuGame').style.display = 'block';
+                    initSudoku();
+                    break;
+                case 'wordle':
+                    document.getElementById('wordleGame').style.display = 'block';
+                    initWordle();
+                    break;
+                case 'math':
+                    document.getElementById('mathGame').style.display = 'block';
+                    initMath();
+                    break;
+            }
+        }
+
+        function backToMenu() {
+            // Salva i punteggi prima di tornare al menu
+            if (currentGame && gameScores[currentGame] > 0) {
+                finalizeGameScore();
+            }
+            
+            currentGame = null;
+            document.getElementById('gameMenu').style.display = 'grid';
+            document.querySelectorAll('.game-area').forEach(area => {
+                area.style.display = 'none';
+            });
+        }
+
+        function finalizeGameScore() {
+            const score = gameScores[currentGame];
+            const creditsEarned = Math.floor(score / 10); // 1 credito ogni 10 punti
+            
+            userCredits += creditsEarned;
+            
+            // Calcola nuovo livello (1 livello ogni 100 crediti)
+            const newLevel = Math.floor(userCredits / 100) + 1;
+            if (newLevel > userLevel) {
+                userLevel = newLevel;
+                showLevelUp();
+            }
+            
+            // Salva nel localStorage
+            localStorage.setItem('credits', userCredits.toString());
+            localStorage.setItem('level', userLevel.toString());
+            
+            updateUserInfo();
+            
+            // Mostra punteggio finale
+            showFinalScore(currentGame, score, creditsEarned);
+        }
+
+        function showLevelUp() {
+            const message = document.createElement('div');
+            message.innerHTML = `
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
+                     color: white; padding: 30px; border-radius: 20px; text-align: center; 
+                     z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+                    <h2 style="font-size: 28px; margin: 0 0 15px 0;">🎉 LIVELLO SUPERATO!</h2>
+                    <p style="font-size: 20px; margin: 0;">Sei ora al livello ${userLevel}!</p>
+                </div>
+            `;
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                document.body.removeChild(message);
+            }, 3000);
+        }
+
+        function showFinalScore(game, score, credits) {
+            const gameNames = {
+                sudoku: 'Sudoku',
+                wordle: 'Wordle',
+                math: 'Calcoli Matematici'
+            };
+            
+            const message = document.createElement('div');
+            message.innerHTML = `
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                     background: white; padding: 30px; border-radius: 20px; text-align: center; 
+                     z-index: 1000; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+                    <h2 style="color: #667eea; font-size: 24px; margin: 0 0 15px 0;">${gameNames[game]} Completato!</h2>
+                    <div class="final-score">Punteggio: ${score}</div>
+                    <p style="font-size: 18px; color: #27ae60; margin: 10px 0;">Crediti guadagnati: +${credits}</p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: #667eea; color: white; border: none; padding: 10px 20px; 
+                                   border-radius: 10px; cursor: pointer; font-weight: bold;">
+                        OK
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(message);
+        }
+
+        // ===== SUDOKU =====
+        let sudokuGrid = [];
+        let selectedCell = null;
+
+        function initSudoku() {
+            generateSudoku();
+            renderSudoku();
+        }
+
+        function generateSudoku() {
+            // Genera una griglia Sudoku semplice (4x4 per semplicità)
+            const baseGrid = [
+                [5,3,0,0,7,0,0,0,0],
+                [6,0,0,1,9,5,0,0,0],
+                [0,9,8,0,0,0,0,6,0],
+                [8,0,0,0,6,0,0,0,3],
+                [4,0,0,8,0,3,0,0,1],
+                [7,0,0,0,2,0,0,0,6],
+                [0,6,0,0,0,0,2,8,0],
+                [0,0,0,4,1,9,0,0,5],
+                [0,0,0,0,8,0,0,7,9]
+            ];
+            
+            sudokuGrid = baseGrid.map(row => [...row]);
+            gameScores.sudoku = 0;
+            document.getElementById('sudokuScore').textContent = '0';
+        }
+
+        function renderSudoku() {
+            const gridElement = document.getElementById('sudokuGrid');
+            gridElement.innerHTML = '';
+            
+            for (let i = 0; i < 9; i++) {
+                for (let j = 0; j < 9; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'sudoku-cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    
+                    if (sudokuGrid[i][j] !== 0) {
+                        cell.textContent = sudokuGrid[i][j];
+                        cell.classList.add('fixed');
+                    } else {
+                        cell.onclick = () => selectSudokuCell(i, j);
+                    }
+                    
+                    gridElement.appendChild(cell);
+                }
+            }
+        }
+
+        function selectSudokuCell(row, col) {
+            if (sudokuGrid[row][col] !== 0) return;
+            
+            // Deseleziona cella precedente
+            if (selectedCell) {
+                const prevCell = document.querySelector(`[data-row="${selectedCell.row}"][data-col="${selectedCell.col}"]`);
+                prevCell.classList.remove('selected');
+            }
+            
+            selectedCell = { row, col };
+            const currentCell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            currentCell.classList.add('selected');
+        }
+
+        function selectNumber(num) {
+            if (!selectedCell) return;
+            
+            const { row, col } = selectedCell;
+            sudokuGrid[row][col] = num;
+            
+            const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            cell.textContent = num;
+            
+            // Controlla se il numero è corretto (semplice per demo)
+            if (num > 0 && num <= 9) {
+                gameScores.sudoku += 10;
+                document.getElementById('sudokuScore').textContent = gameScores.sudoku;
+            }
+            
+            // Deseleziona
+            cell.classList.remove('selected');
+            selectedCell = null;
+        }
+
+        function clearCell() {
+            if (!selectedCell) return;
+            
+            const { row, col } = selectedCell;
+            sudokuGrid[row][col] = 0;
+            
+            const cell = document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+            cell.textContent = '';
+            cell.classList.remove('selected');
+            selectedCell = null;
+        }
+
+        // ===== WORDLE =====
+        let wordleTarget = '';
+        let wordleCurrentRow = 0;
+        let wordleCurrentCol = 0;
+        let wordleGameOver = false;
+
+        function initWordle() {
+            const words = ['BRAIN', 'PLAY', 'GAME', 'WORD', 'THINK', 'SMART', 'LEARN', 'STUDY', 'FOCUS', 'MIND'];
+            wordleTarget = words[Math.floor(Math.random() * words.length)];
+            wordleCurrentRow = 0;
+            wordleCurrentCol = 0;
+            wordleGameOver = false;
+            gameScores.wordle = 0;
+            document.getElementById('wordleScore').textContent = '0';
+            
+            renderWordleGrid();
+            renderWordleKeyboard();
+        }
+
+        function renderWordleGrid() {
+            const grid = document.getElementById('wordleGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('div');
+                row.className = 'wordle-row';
+                
+                for (let j = 0; j < 5; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'wordle-cell';
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    row.appendChild(cell);
+                }
+                
+                grid.appendChild(row);
+            }
+        }
+
+        function renderWordleKeyboard() {
+            const keyboard = document.getElementById('wordleKeyboard');
+            keyboard.innerHTML = '';
+            
+            const rows = [
+                ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+                ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+                ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'BACK']
+            ];
+            
+            rows.forEach(row => {
+                const rowElement = document.createElement('div');
+                rowElement.className = 'keyboard-row';
+                
+                row.forEach(key => {
+                    const keyElement = document.createElement('button');
+                    keyElement.className = key.length > 1 ? 'key wide' : 'key';
+                    keyElement.textContent = key;
+                    keyElement.onclick = () => handleWordleKey(key);
+                    rowElement.appendChild(keyElement);
+                });
+                
+                keyboard.appendChild(rowElement);
+            });
+        }
+
+        function handleWordleKey(key) {
+            if (wordleGameOver) return;
+            
+            if (key === 'ENTER') {
+                submitWordleGuess();
+            } else if (key === 'BACK') {
+                deleteWordleLetter();
+            } else if (wordleCurrentCol < 5) {
+                addWordleLetter(key);
+            }
+        }
+
+        function addWordleLetter(letter) {
+            const cell = document.querySelector(`[data-row="${wordleCurrentRow}"][data-col="${wordleCurrentCol}"]`);
+            cell.textContent = letter;
+            cell.classList.add('filled');
+            wordleCurrentCol++;
+        }
+
+        function deleteWordleLetter() {
+            if (wordleCurrentCol > 0) {
+                wordleCurrentCol--;
+                const cell = document.querySelector(`[data-row="${wordleCurrentRow}"][data-col="${wordleCurrentCol}"]`);
+                cell.textContent = '';
+                cell.classList.remove('filled');
+            }
+        }
+
+        function submitWordleGuess() {
+            if (wordleCurrentCol !== 5) return;
+            
+            // Costruisci la parola indovinata
+            let guess = '';
+            for (let i = 0; i < 5; i++) {
+                const cell = document.querySelector(`[data-row="${wordleCurrentRow}"][data-col="${i}"]`);
+                guess += cell.textContent;
+            }
+            
+            // Controlla la parola
+            for (let i = 0; i < 5; i++) {
+                const cell = document.querySelector(`[data-row="${wordleCurrentRow}"][data-col="${i}"]`);
+                const letter = guess[i];
+                
+                if (wordleTarget[i] === letter) {
+                    cell.classList.add('correct');
+                    gameScores.wordle += 20;
+                } else if (wordleTarget.includes(letter)) {
+                    cell.classList.add('present');
+                    gameScores.wordle += 10;
+                } else {
+                    cell.classList.add('absent');
+                }
+            }
+            
+            document.getElementById('wordleScore').textContent = gameScores.wordle;
+            
+            // Controlla se ha vinto
+            if (guess === wordleTarget) {
+                wordleGameOver = true;
+                gameScores.wordle += 100; // Bonus vittoria
+                document.getElementById('wordleScore').textContent = gameScores.wordle;
+                setTimeout(() => {
+                    alert('Complimenti! Hai indovinato la parola!');
+                    finalizeGameScore();
+                }, 1000);
+            } else if (wordleCurrentRow === 5) {
+                wordleGameOver = true;
+                setTimeout(() => {
+                    alert(`Game Over! La parola era: ${wordleTarget}`);
+                    finalizeGameScore();
+                }, 1000);
+            } else {
+                wordleCurrentRow++;
+                wordleCurrentCol = 0;
+            }
+        }
+
+        // ===== MATH GAME =====
+        let mathTimer = null;
+        let mathTimeLeft = 60;
+        let mathCorrect = 0;
+        let mathCurrentAnswer = 0;
+
+        function initMath() {
+            mathTimeLeft = 60;
+            mathCorrect = 0;
+            gameScores.math = 0;
+            document.getElementById('mathScore').textContent = '0';
+            document.getElementById('mathCorrect').textContent = '0';
+            document.getElementById('mathTimer').textContent = mathTimeLeft;
+            
+            generateMathQuestion();
+            startMathTimer();
+        }
+
+        function startMathTimer() {
+            mathTimer = setInterval(() => {
+                mathTimeLeft--;
+                document.getElementById('mathTimer').textContent = mathTimeLeft;
+                
+                if (mathTimeLeft <= 0) {
+                    clearInterval(mathTimer);
+                    endMathGame();
+                }
+            }, 1000);
+        }
+
+        function generateMathQuestion() {
+            const operations = ['+', '-', '*'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            let a, b;
+            
+            switch(operation) {
+                case '+':
+                    a = Math.floor(Math.random() * 50) + 1;
+                    b = Math.floor(Math.random() * 50) + 1;
+                    mathCurrentAnswer = a + b;
+                    break;
+                case '-':
+                    a = Math.floor(Math.random() * 50) + 10;
+                    b = Math.floor(Math.random() * a) + 1;
+                    mathCurrentAnswer = a - b;
+                    break;
+                case '*':
+                    a = Math.floor(Math.random() * 12) + 1;
+                    b = Math.floor(Math.random() * 12) + 1;
+                    mathCurrentAnswer = a * b;
+                    break;
+            }
+            
+            document.getElementById('mathQuestion').textContent = `${a} ${operation} ${b} = ?`;
+            document.getElementById('mathInput').value = '';
+            document.getElementById('mathInput').focus();
+        }
+
+        function checkMathAnswer() {
+            const userAnswer = parseInt(document.getElementById('mathInput').value);
+            
+            if (userAnswer === mathCurrentAnswer) {
+                mathCorrect++;
+                gameScores.math += 15;
+                document.getElementById('mathCorrect').textContent = mathCorrect;
+                document.getElementById('mathScore').textContent = gameScores.math;
+                
+                // Feedback positivo
+                document.getElementById('mathInput').style.borderColor = '#27ae60';
+                setTimeout(() => {
+                    document.getElementById('mathInput').style.borderColor = '#667eea';
+                    generateMathQuestion();
+                }, 500);
+            } else {
+                // Feedback negativo
+                document.getElementById('mathInput').style.borderColor = '#e74c3c';
+                setTimeout(() => {
+                    document.getElementById('mathInput').style.borderColor = '#667eea';
+                }, 500);
+            }
+        }
+
+        function skipMathQuestion() {
+            generateMathQuestion();
+        }
+
+        function endMathGame() {
+            clearInterval(mathTimer);
+            
+            // Bonus per risposte corrette
+            gameScores.math += mathCorrect * 5;
+            document.getElementById('mathScore').textContent = gameScores.math;
+            
+            setTimeout(() => {
+                alert(`Tempo scaduto! Risposte corrette: ${mathCorrect}`);
+                finalizeGameScore();
+            }, 1000);
+        }
+
+        // Supporto per tastiera
+        document.addEventListener('keydown', function(e) {
+            if (currentGame === 'wordle' && !wordleGameOver) {
+                if (e.key === 'Enter') {
+                    submitWordleGuess();
+                } else if (e.key === 'Backspace') {
+                    deleteWordleLetter();
+                } else if (/^[a-zA-Z]$/.test(e.key)) {
+                    addWordleLetter(e.key.toUpperCase());
+                }
+            } else if (currentGame === 'math') {
+                if (e.key === 'Enter') {
+                    checkMathAnswer();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
