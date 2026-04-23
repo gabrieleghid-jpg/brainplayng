@@ -9,6 +9,178 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="dashboard.css" />
+  <style>
+    /* Hero Section Migliorata */
+    .hero-section {
+      position: relative;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      overflow: hidden;
+    }
+    
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.1;
+    }
+    
+    .hero-particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.3) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.2) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 20%, rgba(255,255,255,0.2) 0%, transparent 50%);
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .hero-cta {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .cta-button {
+      padding: 12px 24px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .cta-button.primary {
+      background: white;
+      color: #667eea;
+    }
+    
+    .cta-button.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    
+    .cta-button.secondary {
+      background: transparent;
+      color: white;
+      border-color: white;
+    }
+    
+    .cta-button.secondary:hover {
+      background: white;
+      color: #667eea;
+      transform: translateY(-2px);
+    }
+    
+    .stat-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    /* Sezioni Migliorate */
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .section-description {
+      color: #666;
+      font-size: 16px;
+      max-width: 600px;
+      margin: 10px auto 0;
+      opacity: 0.8;
+    }
+    
+    /* Tool Cards Migliorate */
+    .tool-card {
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .tool-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .tool-card:hover::before {
+      opacity: 1;
+    }
+    
+    .tool-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    
+    /* Animazioni per le sezioni */
+    .main-section {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    
+    .main-section:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .main-section:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-cta {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .cta-button {
+        width: 200px;
+        text-align: center;
+      }
+      
+      .hero-stats {
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+  </style>
 
 </head>
 <body>
@@ -35,31 +207,45 @@
   <div class="page-shell">
     <main class="main-content">
 
-      <!-- Hero Section Pulita -->
+      <!-- Hero Section Migliorata -->
       <section class="hero-section">
+        <div class="hero-background">
+          <div class="hero-particles"></div>
+        </div>
         <div class="hero-content">
+          <div class="hero-badge">🚀 Nuova Versione 2026</div>
           <h1 class="hero-title">brainplaying</h1>
-          <p class="hero-subtitle">Il tuo compagno di studio intelligente per massimizzare la concentrazione e l'apprendimento</p>
+          <p class="hero-subtitle">La piattaforma di studio intelligente che trasforma il tuo apprendimento</p>
           <div class="hero-stats">
             <div class="stat-item">
+              <div class="stat-icon">🎯</div>
               <span class="stat-number">85%</span>
               <span class="stat-label">Focus migliorato</span>
             </div>
             <div class="stat-item">
+              <div class="stat-icon">⚡</div>
               <span class="stat-number">2.5x</span>
               <span class="stat-label">Apprendimento veloce</span>
             </div>
             <div class="stat-item">
+              <div class="stat-icon">👥</div>
               <span class="stat-number">1000+</span>
               <span class="stat-label">Studenti attivi</span>
             </div>
           </div>
+          <div class="hero-cta">
+            <a href="#apprendimento" class="cta-button primary">Inizia a Studiare</a>
+            <a href="#giochi" class="cta-button secondary">Gioca e Impara</a>
+          </div>
         </div>
       </section>
 
-      <!-- Sezione Principale con Cards -->
-      <section class="main-section">
-        <h2 class="section-title">Strumenti di Studio</h2>
+      <!-- Sezione Apprendimento -->
+      <section id="apprendimento" class="main-section">
+        <div class="section-header">
+          <h2 class="section-title">📚 Apprendimento</h2>
+          <p class="section-description">Strumenti intelligenti per massimizzare il tuo studio</p>
+        </div>
         
         <div class="tools-grid">
           <!-- Riassunti AI -->
@@ -78,6 +264,24 @@
             <div class="tool-badge">Visuale</div>
           </a>
 
+          <!-- Classifica -->
+          <a href="classifica.html" class="tool-card">
+            <div class="tool-icon">C</div>
+            <h3>Classifica</h3>
+            <p>Confronta i tuoi progressi con altri studenti e motìvati a migliorare</p>
+            <div class="tool-badge">Competitivo</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Sezione Giochi -->
+      <section id="giochi" class="main-section">
+        <div class="section-header">
+          <h2 class="section-title">🎮 Giochi</h2>
+          <p class="section-description">Allena la mente mentre ti diverti con i nostri giochi educativi</p>
+        </div>
+        
+        <div class="tools-grid">
           <!-- Minigiochi -->
           <a href="minigiochi.html" class="tool-card">
             <div class="tool-icon">G</div>
@@ -86,12 +290,31 @@
             <div class="tool-badge">Interattivo</div>
           </a>
 
-          <!-- Classifica -->
-          <a href="classifica.html" class="tool-card">
-            <div class="tool-icon">C</div>
-            <h3>Classifica</h3>
-            <p>Confronta i tuoi progressi con altri studenti e motìvati a migliorare</p>
-            <div class="tool-badge">Competitivo</div>
+          <!-- Quiz Game -->
+          <a href="quiz.html" class="tool-card">
+            <div class="tool-icon">Q</div>
+            <h3>Quiz Game</h3>
+            <p>Metti alla prova le tue conoscenze con quiz su diverse materie</p>
+            <div class="tool-badge">Sfida</div>
+          </a>
+
+                  </div>
+      </section>
+
+      <!-- Sezione Personalizzazione -->
+      <section id="personalizzazione" class="main-section">
+        <div class="section-header">
+          <h2 class="section-title">🎨 Personalizzazione</h2>
+          <p class="section-description">Crea la tua esperienza unica con avatar personalizzati e temi esclusivi</p>
+        </div>
+        
+        <div class="tools-grid">
+          <!-- Avatar -->
+          <a href="avatar.html" class="tool-card">
+            <div class="tool-icon">👤</div>
+            <h3>Avatar</h3>
+            <p>Personalizza il tuo avatar con accessori e temi acquistati</p>
+            <div class="tool-badge">Personalizzazione</div>
           </a>
 
           <!-- Negozio -->
@@ -102,20 +325,12 @@
             <div class="tool-badge">Shopping</div>
           </a>
 
-          <!-- Avatar -->
-          <a href="avatar.html" class="tool-card">
-            <div class="tool-icon">👤</div>
-            <h3>Avatar</h3>
-            <p>Personalizza il tuo avatar con accessori e temi acquistati</p>
-            <div class="tool-badge">Personalizzazione</div>
-          </a>
-
-          <!-- Codice Segreto -->
-          <a href="codice.html" class="tool-card" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);">
-            <div class="tool-icon">🔐</div>
-            <h3>Codice Segreto</h3>
-            <p>Inserisci il codice segreto per ottenere crediti extra</p>
-            <div class="tool-badge">Bonus</div>
+          <!-- Profilo -->
+          <a href="profile.html" class="tool-card">
+            <div class="tool-icon">P</div>
+            <h3>Profilo</h3>
+            <p>Gestisci il tuo account e visualizza i tuoi progressi</p>
+            <div class="tool-badge">Account</div>
           </a>
         </div>
       </section>

@@ -10,6 +10,82 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .shop-main {
+            flex: 1;
+        }
+
+        .shop-sidebar {
+            width: 250px;
+        }
+
+        .secret-code-section {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .secret-code-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+
+        .secret-code-section p {
+            margin: 0 0 15px 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .secret-code-btn {
+            background: white;
+            color: #e67e22;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .secret-code-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .stats-sidebar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            color: white;
+        }
+
+        .stats-sidebar h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .stats-sidebar .stat-item {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .stats-sidebar .stat-number {
+            display: block;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stats-sidebar .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
         }
 
         .shop-header {
@@ -350,22 +426,30 @@
     </div>
 
     <div class="shop-container">
-        <div class="shop-header">
-            <p>Spendi i tuoi crediti per sbloccare contenuti esclusivi e personalizzare la tua esperienza!</p>
+        <div class="shop-sidebar">
+            <div class="secret-code-section">
+                <h3>🔐 Codice Segreto</h3>
+                <p>Inserisci il codice segreto per ottenere crediti extra!</p>
+                <button class="secret-code-btn" onclick="window.location.href='codice.html'">Apri Codice</button>
+            </div>
+            
+            <div class="stats-sidebar">
+                <h3>📊 Le Tue Statistiche</h3>
+                <div class="stat-item">
+                    <span class="stat-number" id="ownedItems">0</span>
+                    <span class="stat-label">Oggetti Posseduti</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="totalSpent">0</span>
+                    <span class="stat-label">Crediti Spesi</span>
+                </div>
+            </div>
         </div>
-
-        <div class="shop-stats">
-            <div class="stat-card">
-                <span class="stat-number" id="totalItems">0</span>
-                <span class="stat-label">Oggetti Totali</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number" id="ownedItems">0</span>
-                <span class="stat-label">Oggetti Posseduti</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number" id="totalSpent">0</span>
-                <span class="stat-label">Crediti Spesi</span>
+        <div class="shop-main">
+            <div class="shop-header">
+                <h1>🛍️ Negozio BrainPlay</h1>
+                <p>Usa i tuoi crediti per acquistare accessori e power-up esclusivi</p>
+                <div class="credits-display">💰 Crediti: <span id="shopCredits">0</span></div>
             </div>
         </div>
 

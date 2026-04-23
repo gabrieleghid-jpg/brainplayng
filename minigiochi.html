@@ -387,6 +387,150 @@
             background: #5a67d8;
         }
 
+        /* MEMORY GAME STYLES */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .memory-card:hover {
+            transform: scale(1.05);
+        }
+
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.matched {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            cursor: default;
+            animation: matchPulse 0.5s ease;
+            transform: rotateY(180deg); /* Mantiene la carta girata */
+        }
+
+        .memory-card.matched:hover {
+            transform: rotateY(180deg) scale(1); /* Mantiene la carta girata anche nell'hover */
+        }
+
+        .memory-card-front,
+        .memory-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            border-radius: 10px;
+        }
+
+        .memory-card-front {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .memory-card-back {
+            background: white;
+            border: 2px solid #ddd;
+            transform: rotateY(180deg);
+            font-size: 30px;
+        }
+
+        @keyframes matchPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .memory-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .memory-stat {
+            text-align: center;
+        }
+
+        .memory-stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .memory-stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .memory-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .memory-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .memory-btn:hover {
+            background: #5a67d8;
+            transform: scale(1.05);
+        }
+
+        .memory-difficulty {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .difficulty-btn {
+            padding: 8px 15px;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #5a67d8;
+        }
+
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -450,6 +594,13 @@
                 <div class="game-description">Testa le tue abilità con calcoli a tempo</div>
                 <button class="play-button">GIOCA</button>
             </div>
+
+            <div class="game-card" onclick="startGame('memory')">
+                <div class="game-icon">🧠</div>
+                <div class="game-title">MEMORY GAME</div>
+                <div class="game-description">Trova le coppie di carte uguali per allenare la memoria</div>
+                <button class="play-button">GIOCA</button>
+            </div>
         </div>
 
         <!-- Area di Gioco SUDOKU -->
@@ -500,6 +651,49 @@
                 <div class="math-score">Risposte corrette: <span id="mathCorrect">0</span></div>
             </div>
         </div>
+
+        <!-- Area di Gioco MEMORY -->
+        <div id="memoryGame" class="game-area">
+            <div class="game-header">
+                <button class="back-button" onclick="backToMenu()">← Torna al Menu</button>
+                <div class="score-display">Punteggio: <span id="memoryScore">0</span></div>
+            </div>
+            
+            <div class="memory-difficulty">
+                <button class="difficulty-btn active" onclick="setDifficulty('easy')">Facile (4x3)</button>
+                <button class="difficulty-btn" onclick="setDifficulty('medium')">Medio (4x4)</button>
+                <button class="difficulty-btn" onclick="setDifficulty('hard')">Difficile (6x4)</button>
+            </div>
+
+            <div class="memory-stats">
+                <div class="memory-stat">
+                    <div class="memory-stat-label">Mosse</div>
+                    <div class="memory-stat-value" id="memoryMoves">0</div>
+                </div>
+                <div class="memory-stat">
+                    <div class="memory-stat-label">Coppie</div>
+                    <div class="memory-stat-value" id="memoryPairs">0/6</div>
+                </div>
+                <div class="memory-stat">
+                    <div class="memory-stat-label">Tempo</div>
+                    <div class="memory-stat-value" id="memoryTime">00:00</div>
+                </div>
+            </div>
+
+            <div class="memory-grid" id="memoryGrid"></div>
+
+            <div class="memory-controls">
+                <button class="memory-btn" onclick="restartMemoryGame()">Nuovo Gioco</button>
+                <button class="memory-btn" onclick="showMemoryHint()">Suggerimento (-5)</button>
+            </div>
+
+            <div class="game-over" id="memoryGameOver" style="display: none;">
+                <h3>🎉 Completato!</h3>
+                <div class="final-score">Punteggio: <span id="finalMemoryScore">0</span></div>
+                <div style="margin: 10px 0;">Tempo: <span id="finalMemoryTime">00:00</span> | Mosse: <span id="finalMemoryMoves">0</span></div>
+                <button class="play-again-btn" onclick="restartMemoryGame()">Gioca Ancora</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -510,7 +704,8 @@
         let gameScores = {
             sudoku: 0,
             wordle: 0,
-            math: 0
+            math: 0,
+            memory: 0
         };
 
         // Inizializzazione
@@ -544,6 +739,10 @@
                 case 'math':
                     document.getElementById('mathGame').style.display = 'block';
                     initMath();
+                    break;
+                case 'memory':
+                    document.getElementById('memoryGame').style.display = 'block';
+                    initMemory();
                     break;
             }
         }
@@ -963,6 +1162,234 @@
                 alert(`Tempo scaduto! Risposte corrette: ${mathCorrect}`);
                 finalizeGameScore();
             }, 1000);
+        }
+
+        // ========== MEMORY GAME ==========
+        let memoryCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let memoryMoves = 0;
+        let memoryTimer = null;
+        let memoryStartTime = null;
+        let memoryDifficulty = 'easy';
+        let memoryGridSize = { rows: 3, cols: 4 };
+
+        const memoryEmojis = ['🎈', '🎨', '🎭', '🎪', '🎯', '🎲', '🎸', '🎺', '🥁', '🎻', '🎹', '🎼'];
+
+        function initMemory() {
+            memoryCards = [];
+            flippedCards = [];
+            matchedPairs = 0;
+            memoryMoves = 0;
+            memoryStartTime = Date.now();
+            
+            updateMemoryStats();
+            createMemoryGrid();
+            startMemoryTimer();
+        }
+
+        function setDifficulty(level) {
+            memoryDifficulty = level;
+            
+            // Aggiorna pulsanti attivi
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Imposta dimensioni griglia
+            switch(level) {
+                case 'easy':
+                    memoryGridSize = { rows: 3, cols: 4 };
+                    break;
+                case 'medium':
+                    memoryGridSize = { rows: 4, cols: 4 };
+                    break;
+                case 'hard':
+                    memoryGridSize = { rows: 4, cols: 6 };
+                    break;
+            }
+            
+            restartMemoryGame();
+        }
+
+        function createMemoryGrid() {
+            const grid = document.getElementById('memoryGrid');
+            const totalCards = memoryGridSize.rows * memoryGridSize.cols;
+            const pairsNeeded = totalCards / 2;
+            
+            // Aggiorna CSS della griglia
+            grid.style.gridTemplateColumns = `repeat(${memoryGridSize.cols}, 1fr)`;
+            
+            // Crea array di carte
+            const selectedEmojis = memoryEmojis.slice(0, pairsNeeded);
+            const cardPairs = [...selectedEmojis, ...selectedEmojis];
+            
+            // Mescola le carte
+            memoryCards = shuffleArray(cardPairs);
+            
+            // Svuota la griglia
+            grid.innerHTML = '';
+            
+            // Crea le carte
+            memoryCards.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'memory-card';
+                card.dataset.index = index;
+                card.dataset.emoji = emoji;
+                card.innerHTML = `
+                    <div class="memory-card-front">🎯</div>
+                    <div class="memory-card-back">${emoji}</div>
+                `;
+                card.addEventListener('click', flipMemoryCard);
+                grid.appendChild(card);
+            });
+            
+            // Aggiorna statistiche
+            document.getElementById('memoryPairs').textContent = `0/${pairsNeeded}`;
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function flipMemoryCard(event) {
+            const card = event.currentTarget;
+            
+            // Ignora se la carta è già girata o matched
+            if (card.classList.contains('flipped') || card.classList.contains('matched')) {
+                return;
+            }
+            
+            // Ignora se ci sono già 2 carte girate
+            if (flippedCards.length >= 2) {
+                return;
+            }
+            
+            // Girata la carta
+            card.classList.add('flipped');
+            flippedCards.push(card);
+            
+            // Controlla se abbiamo 2 carte girate
+            if (flippedCards.length === 2) {
+                memoryMoves++;
+                updateMemoryStats();
+                checkMemoryMatch();
+            }
+        }
+
+        function checkMemoryMatch() {
+            const [card1, card2] = flippedCards;
+            const emoji1 = card1.dataset.emoji;
+            const emoji2 = card2.dataset.emoji;
+            
+            if (emoji1 === emoji2) {
+                // Coppia trovata!
+                setTimeout(() => {
+                    card1.classList.add('matched');
+                    card2.classList.add('matched');
+                    // NON rimuovere la classe flipped - le carte devono rimanere girate
+                    
+                    matchedPairs++;
+                    gameScores.memory += 10;
+                    updateMemoryStats();
+                    document.getElementById('memoryScore').textContent = gameScores.memory;
+                    
+                    // Controlla se il gioco è finito
+                    const totalPairs = memoryGridSize.rows * memoryGridSize.cols / 2;
+                    if (matchedPairs === totalPairs) {
+                        setTimeout(() => {
+                            endMemoryGame();
+                        }, 800); // Ritardo per mostrare la vittoria dopo l'animazione
+                    }
+                    
+                    flippedCards = [];
+                }, 600);
+            } else {
+                // Coppia non trovata, rigira le carte
+                setTimeout(() => {
+                    card1.classList.remove('flipped');
+                    card2.classList.remove('flipped');
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+
+        function updateMemoryStats() {
+            document.getElementById('memoryMoves').textContent = memoryMoves;
+            const totalPairs = memoryGridSize.rows * memoryGridSize.cols / 2;
+            document.getElementById('memoryPairs').textContent = `${matchedPairs}/${totalPairs}`;
+        }
+
+        function startMemoryTimer() {
+            memoryTimer = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - memoryStartTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                document.getElementById('memoryTime').textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function endMemoryGame() {
+            clearInterval(memoryTimer);
+            
+            const elapsed = Math.floor((Date.now() - memoryStartTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            const timeStr = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Calcola punteggio bonus
+            const timeBonus = Math.max(0, 300 - elapsed) * 2;
+            const movesBonus = Math.max(0, 100 - memoryMoves) * 3;
+            gameScores.memory += timeBonus + movesBonus;
+            
+            // Mostra schermata di vittoria
+            document.getElementById('finalMemoryScore').textContent = gameScores.memory;
+            document.getElementById('finalMemoryTime').textContent = timeStr;
+            document.getElementById('finalMemoryMoves').textContent = memoryMoves;
+            document.getElementById('memoryGameOver').style.display = 'block';
+        }
+
+        function restartMemoryGame() {
+            clearInterval(memoryTimer);
+            document.getElementById('memoryGameOver').style.display = 'none';
+            initMemory();
+        }
+
+        function showMemoryHint() {
+            if (gameScores.memory >= 5) {
+                gameScores.memory -= 5;
+                document.getElementById('memoryScore').textContent = gameScores.memory;
+                
+                // Trova una carta non matched e la sua coppia
+                const unmatchedCards = document.querySelectorAll('.memory-card:not(.matched)');
+                if (unmatchedCards.length >= 2) {
+                    const randomCard = unmatchedCards[Math.floor(Math.random() * unmatchedCards.length)];
+                    const targetEmoji = randomCard.dataset.emoji;
+                    const matchingCard = Array.from(unmatchedCards).find(card => 
+                        card !== randomCard && card.dataset.emoji === targetEmoji
+                    );
+                    
+                    if (matchingCard) {
+                        // Mostra brevemente le carte
+                        randomCard.classList.add('flipped');
+                        matchingCard.classList.add('flipped');
+                        
+                        setTimeout(() => {
+                            randomCard.classList.remove('flipped');
+                            matchingCard.classList.remove('flipped');
+                        }, 1000);
+                    }
+                }
+            } else {
+                alert('Crediti insufficienti per un suggerimento!');
+            }
         }
 
         // Supporto per tastiera
