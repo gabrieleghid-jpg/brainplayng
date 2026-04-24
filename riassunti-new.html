@@ -180,9 +180,8 @@
                     this.showResults();
                     this.addToHistory(this.currentResult);
                     
-                    // Award credits
-                    CreditsModule.aggiungiCrediti(20);
-                    NotificationsModule.showSuccess('Riassunto generato! +20 crediti');
+                    // Award credits with new system
+                    CreditsModule.earnCrediti(20, 'Generazione Riassunto');
 
                 } catch (error) {
                     console.error('Error generating summary:', error);

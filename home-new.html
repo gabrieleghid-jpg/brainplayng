@@ -168,6 +168,9 @@
             }
 
             initializeSystems() {
+                // Initialize credits system
+                CreditsModule.initializeCredits(100);
+                
                 // Initialize mascotte growth
                 if (window.mascotteGrowth) {
                     window.mascotteGrowth.loadCurrentLevel();
@@ -193,6 +196,9 @@
                 stats.sessions += 1;
                 localStorage.setItem('bp_home_stats', JSON.stringify(stats));
                 this.updateStats();
+                
+                // Award credits for study session
+                CreditsModule.earnCrediti(3, 'Sessione di Studio');
             }
 
             // Method to add study time
@@ -203,6 +209,12 @@
                 stats.time = Math.floor(newHours) + 'h';
                 localStorage.setItem('bp_home_stats', JSON.stringify(stats));
                 this.updateStats();
+                
+                // Award credits for study time (1 credit per 10 minutes)
+                const creditsEarned = Math.floor(minutes / 10);
+                if (creditsEarned > 0) {
+                    CreditsModule.earnCrediti(creditsEarned, 'Tempo di Studio');
+                }
             }
 
             // Method to complete task
@@ -212,9 +224,8 @@
                 localStorage.setItem('bp_home_stats', JSON.stringify(stats));
                 this.updateStats();
                 
-                // Award credits for completing tasks
-                CreditsModule.aggiungiCrediti(10);
-                NotificationsModule.showSuccess('Compito completato! +10 crediti');
+                // Award credits for completing tasks with new system
+                CreditsModule.earnCrediti(10, 'Compito Completato');
             }
         }
 

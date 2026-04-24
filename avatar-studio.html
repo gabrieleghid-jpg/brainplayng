@@ -217,15 +217,41 @@
                 // Initialize gallery
                 this.gallery = new AvatarGallery();
                 
+                // Initialize credits system
+                CreditsModule.initializeCredits(100);
+                
                 // Load saved avatar data
                 this.loadSavedAvatar();
                 
                 // Update credits display
                 CreditsModule.updateCreditDisplay();
                 
+                // Update avatar info display
+                this.updateAvatarInfo();
+                
                 // Initialize theme
                 if (window.themeManager) {
                     window.themeManager.loadTheme();
+                }
+            }
+
+            updateAvatarInfo() {
+                const creditsElement = document.getElementById('avatarCredits');
+                const levelElement = document.getElementById('avatarLevel');
+                const accessoriesElement = document.getElementById('avatarAccessories');
+                
+                if (creditsElement) {
+                    creditsElement.textContent = CreditsModule.getCrediti();
+                }
+                
+                if (levelElement && window.mascotteGrowth) {
+                    const levelInfo = window.mascotteGrowth.getCurrentLevelInfo();
+                    levelElement.textContent = levelInfo.level;
+                }
+                
+                if (accessoriesElement && this.renderer) {
+                    const avatarData = this.renderer.getAvatarData();
+                    accessoriesElement.textContent = avatarData.accessories.length;
                 }
             }
 
@@ -276,9 +302,8 @@
                 if (success) {
                     NotificationsModule.showSuccess('Avatar salvato con successo!');
                     
-                    // Award credits for saving avatar
-                    CreditsModule.aggiungiCrediti(5);
-                    NotificationsModule.showInfo('+5 crediti per aver salvato l\'avatar!');
+                    // Award credits for saving avatar with new system
+                    CreditsModule.earnCrediti(5, 'Salvataggio Avatar');
                 } else {
                     NotificationsModule.showError('Errore nel salvataggio dell\'avatar');
                 }
@@ -295,9 +320,8 @@
                 
                 NotificationsModule.showInfo('Avatar randomizzato!');
                 
-                // Award credits for randomizing
-                CreditsModule.aggiungiCrediti(2);
-                NotificationsModule.showInfo('+2 crediti per aver randomizzato!');
+                // Award credits for randomizing with new system
+                CreditsModule.earnCrediti(2, 'Randomizza Avatar');
             }
 
             resetAvatar() {
