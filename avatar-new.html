@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Personalizzabile - Image Layering</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="avatar-layering.css">
+</head>
+<body>
+    <!-- Header Navigazione -->
+    <header class="nav">
+        <button class="hamburger-btn" id="hamburgerBtn" type="button" aria-label="Apri menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <a href="home.html" class="brand">
+            <span class="brand-icon">🧠</span>
+            <span>brainplaying</span>
+        </a>
+        <div class="nav-actions">
+            <a href="home.html" class="nav-link">Home</a>
+            <a href="negozio.html" class="nav-link">Negozio</a>
+            <a href="profile.html" class="profile-button">
+                <span class="profile-avatar profile-avatar-small" id="navAvatar">BP</span>
+            </a>
+            <button class="theme-toggle" id="themeToggle" type="button" aria-label="Attiva modalità scura">🌙</button>
+        </div>
+    </header>
+
+    <div class="page-shell">
+        <main class="main-content">
+            <div class="avatar-customizer">
+                <h1 class="page-title">👤 Avatar Personalizzabile</h1>
+                
+                <!-- Container Avatar con Image Layering -->
+                <div class="avatar-showcase">
+                    <div class="avatar-container" id="avatarContainer">
+                        <!-- Layer 1: Corpo Base (z-index: 1) -->
+                        <img class="avatar-layer body-layer" 
+                             id="bodyLayer" 
+                             src="assets/avatar/base_corpo.png" 
+                             alt="Corpo Base"
+                             style="z-index: 1;">
+                        
+                        <!-- Layer 2: Vestiti (z-index: 2) -->
+                        <img class="avatar-layer clothes-layer" 
+                             id="clothesLayer" 
+                             src="assets/avatar/vestito_default.png" 
+                             alt="Vestiti"
+                             style="z-index: 2;">
+                        
+                        <!-- Layer 3: Capelli (z-index: 3) -->
+                        <img class="avatar-layer hair-layer" 
+                             id="hairLayer" 
+                             src="assets/avatar/nessun_capello.png" 
+                             alt="Capelli"
+                             style="z-index: 3;">
+                        
+                        <!-- Layer 4: Accessori Testa (z-index: 4) -->
+                        <img class="avatar-layer head-accessory-layer" 
+                             id="headAccessoryLayer" 
+                             src="assets/avatar/nessun_cappello.png" 
+                             alt="Accessorio Testa"
+                             style="z-index: 4;">
+                        
+                        <!-- Layer 5: Occhiali (z-index: 5) -->
+                        <img class="avatar-layer glasses-layer" 
+                             id="glassesLayer" 
+                             src="assets/avatar/nessun_occhiale.png" 
+                             alt="Occhiali"
+                             style="z-index: 5;">
+                    </div>
+                    
+                    <!-- Info Avatar -->
+                    <div class="avatar-info">
+                        <h3>Il Tuo Avatar</h3>
+                        <div class="avatar-stats">
+                            <div class="stat-item">
+                                <span class="stat-label">Crediti:</span>
+                                <span class="stat-value" id="avatarCredits">0</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-label">Oggetti:</span>
+                                <span class="stat-value" id="ownedItems">0</span>
+                            </div>
+                        </div>
+                        <button class="save-avatar-btn" onclick="saveAvatar()">💾 Salva Avatar</button>
+                    </div>
+                </div>
+
+                <!-- Pannello Negozio -->
+                <div class="shop-panel">
+                    <h2>🛍️ Negozio Avatar</h2>
+                    
+                    <!-- Tabs Categoria -->
+                    <div class="category-tabs">
+                        <button class="tab-btn active" data-category="clothes" onclick="switchCategory('clothes')">👕 Vestiti</button>
+                        <button class="tab-btn" data-category="hair" onclick="switchCategory('hair')">💇 Capelli</button>
+                        <button class="tab-btn" data-category="head-accessories" onclick="switchCategory('head-accessories')">🎩 Cappelli</button>
+                        <button class="tab-btn" data-category="glasses" onclick="switchCategory('glasses')">👓 Occhiali</button>
+                    </div>
+
+                    <!-- Griglia Prodotti -->
+                    <div class="shop-grid" id="shopGrid">
+                        <!-- Prodotti caricati dinamicamente -->
+                    </div>
+
+                    <!-- Filtro Posseduti -->
+                    <div class="filter-controls">
+                        <label class="filter-checkbox">
+                            <input type="checkbox" id="showOwnedOnly" onchange="filterProducts()">
+                            Mostra solo posseduti
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Pannello Inventario -->
+                <div class="inventory-panel">
+                    <h2>🎒 Inventario</h2>
+                    <div class="inventory-grid" id="inventoryGrid">
+                        <!-- Oggetti posseduti caricati dinamicamente -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="avatar-shop-data.js"></script>
+    <script src="avatar-layering.js"></script>
+    <script src="config.js"></script>
+    <script src="auth-helper.js"></script>
+</body>
+</html>

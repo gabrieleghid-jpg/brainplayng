@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Studio - BrainPlay</title>
+    <link rel="stylesheet" href="avatar-game-simple.css">
+</head>
+<body>
+    <!-- Game Header -->
+    <header class="game-header">
+        <nav class="game-nav">
+            <a href="home.html" class="game-logo">
+                <div class="game-logo-icon">🧠</div>
+                <span>BrainPlay</span>
+            </a>
+            
+            <div class="game-stats">
+                <div class="stat-item">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="creditsDisplay">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">🎒</div>
+                    <div class="stat-value" id="itemsCount">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="levelDisplay">1</div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Game Container -->
+    <div class="game-container">
+        <!-- Avatar Showcase -->
+        <section class="avatar-showcase">
+            <h2 class="showcase-title">Avatar Studio</h2>
+            
+            <div class="avatar-stage">
+                <div class="avatar-container" id="avatarContainer">
+                    <!-- Layer 1: Corpo Base (z-index: 1) -->
+                    <div class="avatar-layer body-layer" 
+                         id="bodyLayer" 
+                         style="z-index: 1; background: linear-gradient(135deg, #fdbcb4, #ff9999); border: 2px dashed #ff0000;">
+                        <div style="position: absolute; top: 50px; left: 50%; transform: translateX(-50%); color: #333; font-weight: bold;">CORPO</div>
+                    </div>
+                    
+                    <!-- Layer 2: Vestiti (z-index: 2) -->
+                    <div class="avatar-layer clothes-layer" 
+                         id="clothesLayer" 
+                         style="z-index: 2; background: linear-gradient(135deg, #4169e1, #1e90ff); border: 2px dashed #00ff00;">
+                        <div style="position: absolute; top: 150px; left: 50%; transform: translateX(-50%); color: white; font-weight: bold;">VESTITI</div>
+                    </div>
+                    
+                    <!-- Layer 3: Capelli (z-index: 3) -->
+                    <div class="avatar-layer hair-layer" 
+                         id="hairLayer" 
+                         style="z-index: 3; background: linear-gradient(135deg, #8b4513, #d2691e); border: 2px dashed #ffff00;">
+                        <div style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); color: white; font-weight: bold;">CAPELLI</div>
+                    </div>
+                    
+                    <!-- Layer 4: Accessori Testa (z-index: 4) -->
+                    <div class="avatar-layer head-accessory-layer" 
+                         id="headAccessoryLayer" 
+                         style="z-index: 4; background: linear-gradient(135deg, #ffd700, #ffaa00); border: 2px dashed #00ffff;">
+                        <div style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: #333; font-weight: bold;">CAPP. ACC.</div>
+                    </div>
+                    
+                    <!-- Layer 5: Occhiali (z-index: 5) -->
+                    <div class="avatar-layer glasses-layer" 
+                         id="glassesLayer" 
+                         style="z-index: 5; background: linear-gradient(135deg, #333, #666); border: 2px dashed #ff00ff;">
+                        <div style="position: absolute; top: 70px; left: 50%; transform: translateX(-50%); color: white; font-weight: bold;">OCCHIALI</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="avatar-controls">
+                <button class="control-btn" onclick="saveAvatar()">💾 Salva</button>
+                <button class="control-btn" onclick="resetAvatar()">🔄 Reset</button>
+                <button class="control-btn" onclick="randomizeAvatar()">🎲 Random</button>
+            </div>
+        </section>
+
+        <!-- Shop Panel -->
+        <section class="shop-panel">
+            <h2 class="panel-title">🛍️ Shop Avatar</h2>
+            
+            <!-- Category Tabs -->
+            <div class="category-tabs">
+                <button class="category-tab active" data-category="clothes" onclick="switchCategory('clothes')">👕 Vestiti</button>
+                <button class="category-tab" data-category="hair" onclick="switchCategory('hair')">💇 Capelli</button>
+                <button class="category-tab" data-category="head-accessories" onclick="switchCategory('head-accessories')">🎩 Cappelli</button>
+                <button class="category-tab" data-category="glasses" onclick="switchCategory('glasses')">👓 Occhiali</button>
+            </div>
+
+            <!-- Shop Grid -->
+            <div class="shop-grid" id="shopGrid">
+                <!-- Items loaded dynamically -->
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="filter-controls">
+                <label class="filter-checkbox">
+                    <input type="checkbox" id="showOwnedOnly" onchange="filterProducts()">
+                    <span>Mostra solo posseduti</span>
+                </label>
+            </div>
+
+            <!-- Secret Code Section -->
+            <div class="secret-code-section">
+                <h3>🔐 Codice Segreto</h3>
+                <p>Ottieni crediti extra con il codice segreto!</p>
+                <button class="secret-code-btn" onclick="window.location.href='codice.html'">Apri Codice</button>
+            </div>
+        </section>
+
+        <!-- Inventory Panel -->
+        <section class="inventory-panel">
+            <h2 class="panel-title">🎒 Inventario</h2>
+            <div class="inventory-grid" id="inventoryGrid">
+                <!-- Inventory items loaded dynamically -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Debug Info -->
+    <div class="debug-info" id="debugInfo">
+        Avatar Debug: Loading...
+    </div>
+
+    <!-- Scripts -->
+    <script src="avatar-shop-data.js"></script>
+    <script src="avatar-game-logic.js"></script>
+    <script>
+        // Debug script per verificare layer DIV
+        document.addEventListener('DOMContentLoaded', function() {
+            const debugInfo = document.getElementById('debugInfo');
+            const avatarLayers = document.querySelectorAll('.avatar-layer');
+            
+            let status = 'Avatar Debug: ';
+            avatarLayers.forEach((layer, index) => {
+                if (layer && layer.id) {
+                    status += `Layer${index+1}(${layer.id}) OK `;
+                } else {
+                    status += `Layer${index+1} ERROR `;
+                }
+                debugInfo.textContent = status;
+            });
+            
+            // Verifica finale
+            setTimeout(() => {
+                debugInfo.textContent += ' - Avatar VISIBILE!';
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
