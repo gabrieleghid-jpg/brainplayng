@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrainPlay - Home</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+    <!-- Header Component -->
+    <div id="header-container"></div>
+
+    <div class="page-shell">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">brainplaying</h1>
+                    <p class="hero-subtitle">Il tuo compagno di studio intelligente per massimizzare la concentrazione e l'apprendimento</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">85%</span>
+                            <span class="stat-label">Focus migliorato</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">2.5x</span>
+                            <span class="stat-label">Apprendimento veloce</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">1000+</span>
+                            <span class="stat-label">Studenti attivi</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Tools Section -->
+            <section class="main-section">
+                <h2 class="section-title">Strumenti di Studio</h2>
+                <div id="tools-grid-container"></div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <h2 class="section-title">Le Tue Statistiche</h2>
+                <div class="daily-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="studySessions">0</div>
+                            <div class="stat-label">Sessioni di studio</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="studyTime">0h</div>
+                            <div class="stat-label">Tempo totale</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-info">
+                            <div class="stat-number" id="completedTasks">0</div>
+                            <div class="stat-label">Compiti completati</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="modules/auth.js"></script>
+    <script src="modules/credits.js"></script>
+    <script src="modules/notifications.js"></script>
+    <script src="modules/utils.js"></script>
+    <script src="mascotte-growth.js"></script>
+    <script src="animated-avatar.js"></script>
+    <script src="theme-manager.js"></script>
+    <script src="sidebar.js"></script>
+
+    <script>
+        // Home Page Controller
+        class HomeController {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                if (!AuthModule.checkAuthentication()) return;
+                
+                this.loadComponents();
+                this.setupEventListeners();
+                this.updateStats();
+                this.initializeSystems();
+            }
+
+            async loadComponents() {
+                try {
+                    // Load header
+                    const headerResponse = await fetch('components/header.html');
+                    const headerHtml = await headerResponse.text();
+                    document.getElementById('header-container').innerHTML = headerHtml;
+                    document.getElementById('pageTitle').textContent = 'BrainPlay - Home';
+
+                    // Load sidebar
+                    const sidebarResponse = await fetch('components/sidebar.html');
+                    const sidebarHtml = await sidebarResponse.text();
+                    document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+
+                    // Load tools grid
+                    const toolsResponse = await fetch('components/tools-grid.html');
+                    const toolsHtml = await toolsResponse.text();
+                    document.getElementById('tools-grid-container').innerHTML = toolsHtml;
+
+                    // Load footer
+                    const footerResponse = await fetch('components/footer.html');
+                    const footerHtml = await footerResponse.text();
+                    document.getElementById('footer-container').innerHTML = footerHtml;
+
+                } catch (error) {
+                    console.error('Error loading components:', error);
+                    NotificationsModule.showError('Errore nel caricamento dei componenti');
+                }
+            }
+
+            setupEventListeners() {
+                // Event listeners will be set up after components load
+                setTimeout(() => {
+                    if (window.sidebarManager) {
+                        window.sidebarManager.updateUserInfo();
+                    }
+                }, 100);
+            }
+
+            updateStats() {
+                // Update credits display
+                CreditsModule.updateCreditDisplay();
+
+                // Load user statistics
+                const stats = this.loadUserStats();
+                document.getElementById('studySessions').textContent = stats.sessions;
+                document.getElementById('studyTime').textContent = stats.time;
+                document.getElementById('completedTasks').textContent = stats.tasks;
+            }
+
+            loadUserStats() {
+                const savedStats = localStorage.getItem('bp_home_stats');
+                if (savedStats) {
+                    return JSON.parse(savedStats);
+                }
+                
+                // Default stats
+                return {
+                    sessions: 0,
+                    time: '0h',
+                    tasks: 0
+                };
+            }
+
+            initializeSystems() {
+                // Initialize mascotte growth
+                if (window.mascotteGrowth) {
+                    window.mascotteGrowth.loadCurrentLevel();
+                    const credits = CreditsModule.getCrediti();
+                    window.mascotteGrowth.updateAllDisplays(credits);
+                }
+
+                // Initialize animated avatar
+                if (window.animatedAvatar && window.mascotteGrowth) {
+                    const levelInfo = window.mascotteGrowth.getCurrentLevelInfo();
+                    window.animatedAvatar.updateColors(levelInfo);
+                }
+
+                // Initialize theme
+                if (window.themeManager) {
+                    window.themeManager.loadTheme();
+                }
+            }
+
+            // Method to add study session
+            addStudySession() {
+                const stats = this.loadUserStats();
+                stats.sessions += 1;
+                localStorage.setItem('bp_home_stats', JSON.stringify(stats));
+                this.updateStats();
+            }
+
+            // Method to add study time
+            addStudyTime(minutes) {
+                const stats = this.loadUserStats();
+                const currentHours = parseInt(stats.time) || 0;
+                const newHours = currentHours + (minutes / 60);
+                stats.time = Math.floor(newHours) + 'h';
+                localStorage.setItem('bp_home_stats', JSON.stringify(stats));
+                this.updateStats();
+            }
+
+            // Method to complete task
+            completeTask() {
+                const stats = this.loadUserStats();
+                stats.tasks += 1;
+                localStorage.setItem('bp_home_stats', JSON.stringify(stats));
+                this.updateStats();
+                
+                // Award credits for completing tasks
+                CreditsModule.aggiungiCrediti(10);
+                NotificationsModule.showSuccess('Compito completato! +10 crediti');
+            }
+        }
+
+        // Initialize home page
+        document.addEventListener('DOMContentLoaded', () => {
+            window.homeController = new HomeController();
+        });
+
+        // Global functions for external calls
+        window.addStudySession = function() {
+            if (window.homeController) {
+                window.homeController.addStudySession();
+            }
+        };
+
+        window.addStudyTime = function(minutes) {
+            if (window.homeController) {
+                window.homeController.addStudyTime(minutes);
+            }
+        };
+
+        window.completeTask = function() {
+            if (window.homeController) {
+                window.homeController.completeTask();
+            }
+        };
+
+        console.log('Home page modular loaded!');
+    </script>
+</body>
+</html>

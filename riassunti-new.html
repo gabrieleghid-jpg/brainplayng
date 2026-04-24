@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riassunti AI - BrainPlay</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <!-- Header Component -->
+    <div id="header-container"></div>
+
+    <div class="page-shell">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <!-- Page Header -->
+            <section class="page-header">
+                <h1 class="page-title">📝 Riassunti Intelligenti</h1>
+                <p class="page-subtitle">Genera riassunti automatici con ricerca Google e AI per qualsiasi argomento</p>
+            </section>
+
+            <!-- Input Section -->
+            <section class="input-section">
+                <div class="input-container">
+                    <textarea 
+                        id="textInput" 
+                        placeholder="Inserisci l'argomento su cui vuoi un riassunto..."
+                        rows="4"
+                    ></textarea>
+                    <div class="input-actions">
+                        <button id="generateBtn" class="btn-primary">
+                            <span class="btn-icon">🤖</span>
+                            Genera Riassunto
+                        </button>
+                        <button id="clearBtn" class="btn-secondary">
+                            <span class="btn-icon">🗑️</span>
+                            Pulisci
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Loading Section -->
+            <section id="loadingSection" class="loading-section" style="display: none;">
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p class="loading-text">Sto generando il riassunto...</p>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                <div class="results-header">
+                    <h2 class="results-title">Riassunto Generato</h2>
+                    <div class="results-actions">
+                        <button id="copyBtn" class="btn-icon-only" title="Copia">
+                            📋
+                        </button>
+                        <button id="downloadBtn" class="btn-icon-only" title="Download">
+                            💾
+                        </button>
+                    </div>
+                </div>
+                <div id="resultContent" class="result-content"></div>
+            </section>
+
+            <!-- History Section -->
+            <section class="history-section">
+                <h2 class="section-title">Cronologia Riassunti</h2>
+                <div id="historyContainer" class="history-container">
+                    <p class="empty-state">Nessun riassunto ancora generato</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="modules/auth.js"></script>
+    <script src="modules/credits.js"></script>
+    <script src="modules/notifications.js"></script>
+    <script src="modules/utils.js"></script>
+    <script src="google-search.js"></script>
+    <script src="mascotte-growth.js"></script>
+    <script src="theme-manager.js"></script>
+    <script src="sidebar.js"></script>
+
+    <script>
+        // Riassunti Page Controller
+        class RiassuntiController {
+            constructor() {
+                this.history = [];
+                this.currentResult = null;
+                this.init();
+            }
+
+            init() {
+                if (!AuthModule.checkAuthentication()) return;
+                
+                this.loadComponents();
+                this.setupEventListeners();
+                this.loadHistory();
+                this.updateCredits();
+            }
+
+            async loadComponents() {
+                try {
+                    // Load header
+                    const headerResponse = await fetch('components/header.html');
+                    const headerHtml = await headerResponse.text();
+                    document.getElementById('header-container').innerHTML = headerHtml;
+                    document.getElementById('pageTitle').textContent = 'Riassunti AI - BrainPlay';
+
+                    // Load sidebar
+                    const sidebarResponse = await fetch('components/sidebar.html');
+                    const sidebarHtml = await sidebarResponse.text();
+                    document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+
+                    // Load footer
+                    const footerResponse = await fetch('components/footer.html');
+                    const footerHtml = await footerResponse.text();
+                    document.getElementById('footer-container').innerHTML = footerHtml;
+
+                } catch (error) {
+                    console.error('Error loading components:', error);
+                    NotificationsModule.showError('Errore nel caricamento dei componenti');
+                }
+            }
+
+            setupEventListeners() {
+                const generateBtn = document.getElementById('generateBtn');
+                const clearBtn = document.getElementById('clearBtn');
+                const copyBtn = document.getElementById('copyBtn');
+                const downloadBtn = document.getElementById('downloadBtn');
+                const textInput = document.getElementById('textInput');
+
+                generateBtn.addEventListener('click', () => this.generateSummary());
+                clearBtn.addEventListener('click', () => this.clearInput());
+                copyBtn.addEventListener('click', () => this.copyResult());
+                downloadBtn.addEventListener('click', () => this.downloadResult());
+                
+                textInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && e.ctrlKey) {
+                        this.generateSummary();
+                    }
+                });
+            }
+
+            async generateSummary() {
+                const textInput = document.getElementById('textInput');
+                const topic = textInput.value.trim();
+
+                if (!topic) {
+                    NotificationsModule.showError('Inserisci un argomento per il riassunto');
+                    return;
+                }
+
+                this.showLoading(true);
+                this.hideResults();
+
+                try {
+                    // Use Google Search to get information
+                    const searchResult = await this.performGoogleSearch(topic);
+                    
+                    // Generate summary using the search results
+                    const summary = await this.generateSummaryFromSearch(topic, searchResult);
+                    
+                    this.currentResult = {
+                        topic: topic,
+                        summary: summary,
+                        timestamp: new Date().toISOString(),
+                        credits: 20
+                    };
+
+                    this.showResults();
+                    this.addToHistory(this.currentResult);
+                    
+                    // Award credits
+                    CreditsModule.aggiungiCrediti(20);
+                    NotificationsModule.showSuccess('Riassunto generato! +20 crediti');
+
+                } catch (error) {
+                    console.error('Error generating summary:', error);
+                    NotificationsModule.showError('Errore nella generazione del riassunto');
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+
+            async performGoogleSearch(topic) {
+                // Mock implementation - replace with actual Google Search API call
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        resolve({
+                            title: `Informazioni su ${topic}`,
+                            content: `Contenuto di esempio per ${topic}. Questo è un risultato di ricerca mock che verrebbe sostituito con dati reali dall'API Google Search.`
+                        });
+                    }, 1500);
+                });
+            }
+
+            async generateSummaryFromSearch(topic, searchResult) {
+                // Mock implementation - replace with actual AI generation
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        const summary = `
+## Riassunto: ${topic}
+
+${searchResult.content}
+
+### Punti chiave:
+- Concetto principale dell'argomento
+- Dettagli importanti da ricordare
+- Applicazioni pratiche
+
+### Note aggiuntive:
+Questo riassunto è stato generato automaticamente utilizzando l'intelligenza artificiale e la ricerca Google per fornirti informazioni accurate e aggiornate su ${topic}.
+                        `.trim();
+                        resolve(summary);
+                    }, 1000);
+                });
+            }
+
+            showLoading(show) {
+                const loadingSection = document.getElementById('loadingSection');
+                loadingSection.style.display = show ? 'block' : 'none';
+            }
+
+            showResults() {
+                const resultsSection = document.getElementById('resultsSection');
+                const resultContent = document.getElementById('resultContent');
+                
+                resultContent.innerHTML = this.currentResult.summary;
+                resultsSection.style.display = 'block';
+                
+                // Scroll to results
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            hideResults() {
+                const resultsSection = document.getElementById('resultsSection');
+                resultsSection.style.display = 'none';
+            }
+
+            clearInput() {
+                document.getElementById('textInput').value = '';
+                this.hideResults();
+            }
+
+            copyResult() {
+                if (!this.currentResult) return;
+                
+                UtilsModule.copyToClipboard(this.currentResult.summary)
+                    .then(() => {
+                        NotificationsModule.showSuccess('Riassunto copiato negli appunti!');
+                    })
+                    .catch(() => {
+                        NotificationsModule.showError('Errore nella copia del riassunto');
+                    });
+            }
+
+            downloadResult() {
+                if (!this.currentResult) return;
+                
+                const content = this.currentResult.summary;
+                const filename = `riassunto_${this.currentResult.topic.replace(/\s+/g, '_')}_${Date.now()}.txt`;
+                
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                NotificationsModule.showSuccess('Riassunto scaricato!');
+            }
+
+            addToHistory(result) {
+                this.history.unshift(result);
+                if (this.history.length > 10) {
+                    this.history.pop();
+                }
+                
+                localStorage.setItem('bp_riassunti_history', JSON.stringify(this.history));
+                this.renderHistory();
+            }
+
+            loadHistory() {
+                const saved = localStorage.getItem('bp_riassunti_history');
+                if (saved) {
+                    this.history = JSON.parse(saved);
+                    this.renderHistory();
+                }
+            }
+
+            renderHistory() {
+                const container = document.getElementById('historyContainer');
+                
+                if (this.history.length === 0) {
+                    container.innerHTML = '<p class="empty-state">Nessun riassunto ancora generato</p>';
+                    return;
+                }
+
+                container.innerHTML = this.history.map((item, index) => `
+                    <div class="history-item">
+                        <div class="history-header">
+                            <h3 class="history-title">${UtilsModule.truncateText(item.topic, 50)}</h3>
+                            <span class="history-date">${UtilsModule.getRelativeTime(new Date(item.timestamp))}</span>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn-small" onclick="riassuntiController.viewHistoryItem(${index})">
+                                👁️ Visualizza
+                            </button>
+                            <button class="btn-small btn-danger" onclick="riassuntiController.deleteHistoryItem(${index})">
+                                🗑️ Elimina
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            viewHistoryItem(index) {
+                const item = this.history[index];
+                this.currentResult = item;
+                this.showResults();
+            }
+
+            deleteHistoryItem(index) {
+                this.history.splice(index, 1);
+                localStorage.setItem('bp_riassunti_history', JSON.stringify(this.history));
+                this.renderHistory();
+                NotificationsModule.showInfo('Riassunto eliminato dalla cronologia');
+            }
+
+            updateCredits() {
+                CreditsModule.updateCreditDisplay();
+            }
+        }
+
+        // Initialize riassunti page
+        document.addEventListener('DOMContentLoaded', () => {
+            window.riassuntiController = new RiassuntiController();
+        });
+
+        console.log('Riassunti page modular loaded!');
+    </script>
+</body>
+</html>
