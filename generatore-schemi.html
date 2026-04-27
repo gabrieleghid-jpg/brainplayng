@@ -1,1107 +1,456 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>brainplaying - Generatore Schemi</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="dashboard.css" />
-  
-  <style>
-    /* Layout Moderno per Schemi */
-    .schemi-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .schemi-layout {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 2rem;
-      height: 100%;
-    }
-
-    /* Pannello Input */
-    .input-panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2rem;
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow);
-      height: fit-content;
-      position: sticky;
-      top: 2rem;
-    }
-
-    .input-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .input-icon {
-      font-size: 2rem;
-      background: linear-gradient(135deg, var(--accent), #818cf8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .input-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    .topic-input {
-      width: 100%;
-      min-height: 150px;
-      padding: 1.5rem;
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      background: var(--panel-strong);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 1rem;
-      resize: vertical;
-      transition: all 0.3s ease;
-      margin-bottom: 1.5rem;
-      line-height: 1.6;
-    }
-    
-    .topic-input:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-    }
-    
-    .topic-input::placeholder {
-      color: var(--muted);
-      font-style: italic;
-    }
-
-    /* Opzioni Schema */
-    .schema-options {
-      margin-bottom: 2rem;
-    }
-
-    .options-title {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .option-group {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .option-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      background: var(--background);
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .option-item:hover {
-      border-color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .option-item.selected {
-      background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), var(--background));
-      border-color: var(--accent);
-    }
-
-    .option-radio {
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--border);
-      border-radius: 50%;
-      position: relative;
-      transition: all 0.3s ease;
-    }
-
-    .option-item.selected .option-radio {
-      border-color: var(--accent);
-    }
-
-    .option-item.selected .option-radio::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 8px;
-      height: 8px;
-      background: var(--accent);
-      border-radius: 50%;
-    }
-
-    .option-label {
-      flex: 1;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .option-description {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 0.25rem;
-    }
-
-    /* Pulsanti Azione */
-    .action-buttons {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .generate-btn, .clear-btn {
-      padding: 1rem 1.5rem;
-      border: none;
-      border-radius: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      font-size: 1rem;
-    }
-    
-    .generate-btn {
-      background: linear-gradient(135deg, var(--accent), #818cf8);
-      color: white;
-      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.2);
-      grid-column: span 2;
-    }
-    
-    .generate-btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(79, 70, 229, 0.3);
-    }
-    
-    .generate-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-    
-    .clear-btn {
-      background: rgba(239, 68, 68, 0.1);
-      color: #ef4444;
-      border: 1px solid rgba(239, 68, 68, 0.2);
-    }
-    
-    .clear-btn:hover {
-      background: rgba(239, 68, 68, 0.15);
-      transform: translateY(-1px);
-    }
-
-    /* Pannello Schema */
-    .schema-panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .schema-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid var(--border);
-    }
-
-    .schema-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .schema-actions {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .schema-action-btn {
-      padding: 0.5rem 1rem;
-      border: 1px solid var(--border);
-      background: var(--background);
-      color: var(--text);
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .schema-action-btn:hover {
-      border-color: var(--accent);
-      background: var(--accent);
-      color: white;
-      transform: translateY(-1px);
-    }
-
-    .schema-canvas {
-      background: white;
-      border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem;
-      min-height: 600px;
-      position: relative;
-      overflow: auto;
-      flex: 1;
-      margin-bottom: 2rem;
-    }
-    
-    .dark .schema-canvas {
-      background: var(--panel-strong);
-    }
-
-    /* Nodi Schema Migliorati */
-    .schema-node {
-      position: absolute;
-      padding: 16px 24px;
-      background: linear-gradient(135deg, var(--accent), #818cf8);
-      color: white;
-      border-radius: 16px;
-      font-weight: 600;
-      font-size: 14px;
-      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
-      cursor: move;
-      transition: all 0.3s ease;
-      z-index: 10;
-      text-align: center;
-      max-width: 220px;
-      word-wrap: break-word;
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .schema-node:hover {
-      transform: scale(1.05) translateY(-2px);
-      z-index: 20;
-      box-shadow: 0 12px 32px rgba(79, 70, 229, 0.4);
-    }
-    
-    .schema-node.main {
-      background: linear-gradient(135deg, #f59e0b, #f97316);
-      font-size: 16px;
-      padding: 20px 28px;
-      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
-      border: 2px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .schema-node.secondary {
-      background: linear-gradient(135deg, #10b981, #059669);
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .schema-node.tertiary {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-    
-    .arrow {
-      position: absolute;
-      background: var(--border);
-      height: 3px;
-      transform-origin: left center;
-      z-index: 1;
-      border-radius: 2px;
-    }
-    
-    .arrow::after {
-      content: '';
-      position: absolute;
-      right: -10px;
-      top: -4px;
-      width: 0;
-      height: 0;
-      border-left: 10px solid var(--border);
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-    }
-
-    /* Controlli Schema */
-    .schema-controls {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    
-    .download-btn, .regenerate-btn {
-      padding: 1rem 1.5rem;
-      border: none;
-      border-radius: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    
-    .download-btn {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: white;
-      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
-    }
-    
-    .download-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(16, 185, 129, 0.3);
-    }
-    
-    .regenerate-btn {
-      background: linear-gradient(135deg, #f59e0b, #f97316);
-      color: white;
-      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
-    }
-    
-    .regenerate-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(245, 158, 11, 0.3);
-    }
-
-    /* Loading State */
-    .loading-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 16px;
-      z-index: 100;
-    }
-
-    .dark .loading-overlay {
-      background: rgba(0, 0, 0, 0.8);
-    }
-
-    .loading-content {
-      text-align: center;
-    }
-
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid var(--border);
-      border-top: 4px solid var(--accent);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1rem;
-    }
-
-    .loading-text {
-      color: var(--text);
-      font-weight: 600;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-      .schemi-layout {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-      }
-      
-      .input-panel {
-        position: static;
-      }
-      
-      .action-buttons {
-        grid-template-columns: 1fr;
-      }
-      
-      .generate-btn {
-        grid-column: span 1;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .schemi-container {
-        padding: 1rem;
-      }
-      
-      .input-panel, .schema-panel {
-        padding: 1.5rem;
-      }
-      
-      .schema-header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-      }
-      
-      .schema-actions {
-        width: 100%;
-        justify-content: space-between;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generatore Schemi - BrainPlay</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
-<body class="schemi-page">
-  <!-- Header Component -->
-  <div id="header-container"></div>
+<body>
+    <!-- Header Component -->
+    <div id="header-container"></div>
 
-  <div class="page-shell">
-    <!-- Sidebar Component -->
-    <div id="sidebar-container"></div>
+    <div class="page-shell">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
 
-    <main class="main-content">
-      <!-- Page Header -->
-      <section class="page-header">
-        <h1 class="page-title">🎯 Generatore Schemi</h1>
-        <p class="page-subtitle">Crea schemi concettuali interattivi e personalizzati per qualsiasi argomento</p>
-      </section>
-
-      <!-- Nuovo Layout Schemi -->
-      <div class="schemi-container">
-        <div class="schemi-layout">
-          <!-- Pannello Input -->
-          <div class="input-panel">
-            <div class="input-header">
-              <div class="input-icon">🎯</div>
-              <h2 class="input-title">Configura Schema</h2>
-            </div>
-
-            <textarea 
-              id="topicInput" 
-              class="topic-input"
-              placeholder="Inserisci l'argomento principale per il tuo schema...&#10;&#10;Esempi:&#10;• Il sistema solare e i pianeti&#10;• La fotosintesi clorofilliana&#10;• La Seconda Guerra Mondiale&#10;• Il ciclo dell'acqua"
-            ></textarea>
-
-            <!-- Opzioni Schema -->
-            <div class="schema-options">
-              <h3 class="options-title">
-                <span>⚙️</span>
-                <span>Tipo di Schema</span>
-              </h3>
-              <div class="option-group">
-                <div class="option-item selected" data-type="conceptual">
-                  <div class="option-radio"></div>
-                  <div>
-                    <div class="option-label">Schema Concettuale</div>
-                    <div class="option-description">Organizza concetti per importanza e relazioni</div>
-                  </div>
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">🎯 Generatore Schemi</h1>
+                    <p class="hero-subtitle">Crea schemi concettuali interattivi e personalizzati per qualsiasi argomento</p>
                 </div>
-                <div class="option-item" data-type="hierarchical">
-                  <div class="option-radio"></div>
-                  <div>
-                    <div class="option-label">Schema Gerarchico</div>
-                    <div class="option-description">Struttura ad albero con categorie e sottocategorie</div>
-                  </div>
+            </section>
+
+            <!-- Schema Generator Layout -->
+            <div class="schemi-container">
+                <div class="schemi-layout">
+                    <!-- Input Panel -->
+                    <div class="input-panel">
+                        <div class="input-header">
+                            <div class="input-icon">🎯</div>
+                            <h2 class="input-title">Configura Schema</h2>
+                        </div>
+
+                        <textarea 
+                            id="topicInput" 
+                            class="topic-input"
+                            placeholder="Inserisci l'argomento principale per il tuo schema...&#10;&#10;Esempi:&#10;• Il sistema solare e i pianeti&#10;• La fotosintesi clorofilliana&#10;• La Seconda Guerra Mondiale&#10;• Il ciclo dell'acqua"
+                        ></textarea>
+
+                        <!-- Schema Options -->
+                        <div class="schema-options">
+                            <h3 class="options-title">
+                                <span>⚙️</span>
+                                <span>Tipo di Schema</span>
+                            </h3>
+                            <div class="option-group">
+                                <div class="option-item selected" data-type="conceptual">
+                                    <div class="option-radio"></div>
+                                    <div>
+                                        <div class="option-label">Schema Concettuale</div>
+                                        <div class="option-description">Organizza concetti per importanza e relazioni</div>
+                                    </div>
+                                </div>
+                                <div class="option-item" data-type="hierarchical">
+                                    <div class="option-radio"></div>
+                                    <div>
+                                        <div class="option-label">Schema Gerarchico</div>
+                                        <div class="option-description">Struttura ad albero con categorie e sottocategorie</div>
+                                    </div>
+                                </div>
+                                <div class="option-item" data-type="process">
+                                    <div class="option-radio"></div>
+                                    <div>
+                                        <div class="option-label">Schema di Processo</div>
+                                        <div class="option-description">Mostra passaggi sequenziali e flussi</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button id="generateBtn" class="generate-btn">
+                                <span>🚀</span>
+                                <span>Genera Schema</span>
+                            </button>
+                            <button id="clearBtn" class="clear-btn">
+                                <span>🗑️</span>
+                                <span>Pulisci</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Schema Panel -->
+                    <div class="schema-panel">
+                        <div class="schema-header">
+                            <h2 class="schema-title">
+                                <span>📊</span>
+                                <span>Schema Generato</span>
+                            </h2>
+                            <div class="schema-actions">
+                                <button class="schema-action-btn" id="zoomInBtn">
+                                    <span>🔍</span>
+                                    <span>Zoom</span>
+                                </button>
+                                <button class="schema-action-btn" id="centerBtn">
+                                    <span>🎯</span>
+                                    <span>Centra</span>
+                                </button>
+                                <button class="schema-action-btn" id="fullscreenBtn">
+                                    <span>⛶</span>
+                                    <span>Fullscreen</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="schema-canvas" id="schemaCanvas">
+                            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                                <div class="loading-content">
+                                    <div class="loading-spinner"></div>
+                                    <div class="loading-text">Generazione schema in corso...</div>
+                                </div>
+                            </div>
+                            <!-- Schema nodes will be generated here -->
+                        </div>
+
+                        <div class="schema-controls">
+                            <button id="downloadBtn" class="download-btn">
+                                <span>💾</span>
+                                <span>Download Schema</span>
+                            </button>
+                            <button id="regenerateBtn" class="regenerate-btn">
+                                <span>🔄</span>
+                                <span>Regenera</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="option-item" data-type="process">
-                  <div class="option-radio"></div>
-                  <div>
-                    <div class="option-label">Schema di Processo</div>
-                    <div class="option-description">Mostra passaggi sequenziali e flussi</div>
-                  </div>
-                </div>
-              </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Pulsanti Azione -->
-            <div class="action-buttons">
-              <button id="generateBtn" class="generate-btn">
-                <span>🚀</span>
-                <span>Genera Schema</span>
-              </button>
-              <button id="clearBtn" class="clear-btn">
-                <span>🗑️</span>
-                <span>Pulisci</span>
-              </button>
-            </div>
-          </div>
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
 
-          <!-- Pannello Schema -->
-          <div class="schema-panel">
-            <div class="schema-header">
-              <h2 class="schema-title">
-                <span>📊</span>
-                <span>Schema Generato</span>
-              </h2>
-              <div class="schema-actions">
-                <button class="schema-action-btn" id="zoomInBtn">
-                  <span>🔍</span>
-                  <span>Zoom</span>
-                </button>
-                <button class="schema-action-btn" id="centerBtn">
-                  <span>🎯</span>
-                  <span>Centra</span>
-                </button>
-                <button class="schema-action-btn" id="fullscreenBtn">
-                  <span>⛶</span>
-                  <span>Fullscreen</span>
-                </button>
-              </div>
-            </div>
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="modules/auth.js"></script>
+    <script src="modules/credits.js"></script>
+    <script src="modules/notifications.js"></script>
+    <script src="modules/utils.js"></script>
+    <script src="mascotte-growth.js"></script>
+    <script src="theme-manager.js"></script>
+    <script src="sidebar.js"></script>
 
-            <div class="schema-canvas" id="schemaCanvas">
-              <div class="loading-overlay" id="loadingOverlay" style="display: none;">
-                <div class="loading-content">
-                  <div class="loading-spinner"></div>
-                  <div class="loading-text">Generazione schema in corso...</div>
-                </div>
-              </div>
-              <!-- Schema nodes will be generated here -->
-            </div>
-
-            <div class="schema-controls">
-              <button id="downloadBtn" class="download-btn">
-                <span>💾</span>
-                <span>Download Schema</span>
-              </button>
-              <button id="regenerateBtn" class="regenerate-btn">
-                <span>🔄</span>
-                <span>Regenera</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <!-- Footer Component -->
-  <div id="footer-container"></div>
-
-  <!-- Scripts -->
-  <script src="config.js"></script>
-  <script src="modules/auth.js"></script>
-  <script src="modules/credits.js"></script>
-  <script src="modules/notifications.js"></script>
-  <script src="modules/utils.js"></script>
-  <script src="mascotte-growth.js"></script>
-  <script src="theme-manager.js"></script>
-  <script src="sidebar.js"></script>
-  <script src="js/schemi.js"></script>
-
-  <script>
-    // Enhanced Schema Controller
-    class EnhancedSchemaController {
-      constructor() {
-        this.schemaType = 'conceptual';
-        this.nodes = [];
-        this.arrows = [];
-        this.isDragging = false;
-        this.draggedNode = null;
-        this.init();
-      }
-
-      init() {
-        this.setupEventListeners();
-        this.loadComponents();
-      }
-
-      setupEventListeners() {
-        // Opzioni schema
-        document.querySelectorAll('.option-item').forEach(item => {
-          item.addEventListener('click', () => this.selectSchemaType(item));
-        });
-
-        // Pulsanti principali
-        document.getElementById('generateBtn').addEventListener('click', () => this.generateSchema());
-        document.getElementById('clearBtn').addEventListener('click', () => this.clearSchema());
-        document.getElementById('downloadBtn').addEventListener('click', () => this.downloadSchema());
-        document.getElementById('regenerateBtn').addEventListener('click', () => this.regenerateSchema());
-
-        // Controlli canvas
-        document.getElementById('zoomInBtn').addEventListener('click', () => this.zoomIn());
-        document.getElementById('centerBtn').addEventListener('click', () => this.centerSchema());
-        document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
-
-        // Drag and drop per nodi
-        this.setupDragAndDrop();
-      }
-
-      selectSchemaType(selectedItem) {
-        document.querySelectorAll('.option-item').forEach(item => {
-          item.classList.remove('selected');
-        });
-        selectedItem.classList.add('selected');
-        this.schemaType = selectedItem.dataset.type;
-      }
-
-      async generateSchema() {
-        const topic = document.getElementById('topicInput').value.trim();
-        if (!topic) {
-          NotificationsModule.showError('Inserisci un argomento per generare lo schema');
-          return;
-        }
-
-        this.showLoading(true);
-        
-        try {
-          // Simula generazione schema
-          await this.simulateSchemaGeneration(topic);
-          this.createSchemaNodes(topic);
-          this.showLoading(false);
-          NotificationsModule.showSuccess('Schema generato con successo!');
-          
-          // Award credits
-          CreditsModule.earnCrediti(10, 'Generazione Schema');
-        } catch (error) {
-          this.showLoading(false);
-          NotificationsModule.showError('Errore nella generazione dello schema');
-        }
-      }
-
-      async simulateSchemaGeneration(topic) {
-        // Simula delay per generazione
-        return new Promise(resolve => setTimeout(resolve, 2000));
-      }
-
-      createSchemaNodes(topic) {
-        const canvas = document.getElementById('schemaCanvas');
-        
-        // Clear existing schema
-        this.clearCanvas();
-
-        // Generate nodes based on schema type
-        const nodes = this.generateNodesByType(topic);
-        
-        // Create DOM elements
-        nodes.forEach((node, index) => {
-          const nodeElement = this.createNodeElement(node, index);
-          canvas.appendChild(nodeElement);
-        });
-
-        // Create arrows
-        this.createArrows();
-      }
-
-      generateNodesByType(topic) {
-        const baseNodes = [
-          { text: topic, type: 'main', x: 400, y: 100 }
-        ];
-
-        switch(this.schemaType) {
-          case 'conceptual':
-            return [
-              ...baseNodes,
-              { text: 'Concetto 1', type: 'secondary', x: 200, y: 250 },
-              { text: 'Concetto 2', type: 'secondary', x: 600, y: 250 },
-              { text: 'Dettaglio A', type: 'tertiary', x: 100, y: 400 },
-              { text: 'Dettaglio B', type: 'tertiary', x: 300, y: 400 },
-              { text: 'Dettaglio C', type: 'tertiary', x: 500, y: 400 },
-              { text: 'Dettaglio D', type: 'tertiary', x: 700, y: 400 }
-            ];
-          
-          case 'hierarchical':
-            return [
-              ...baseNodes,
-              { text: 'Categoria 1', type: 'secondary', x: 200, y: 250 },
-              { text: 'Categoria 2', type: 'secondary', x: 600, y: 250 },
-              { text: 'Sotto-cat 1.1', type: 'tertiary', x: 100, y: 400 },
-              { text: 'Sotto-cat 1.2', type: 'tertiary', x: 300, y: 400 },
-              { text: 'Sotto-cat 2.1', type: 'tertiary', x: 500, y: 400 },
-              { text: 'Sotto-cat 2.2', type: 'tertiary', x: 700, y: 400 }
-            ];
-          
-          case 'process':
-            return [
-              ...baseNodes,
-              { text: 'Passo 1', type: 'secondary', x: 200, y: 250 },
-              { text: 'Passo 2', type: 'secondary', x: 400, y: 250 },
-              { text: 'Passo 3', type: 'secondary', x: 600, y: 250 },
-              { text: 'Risultato', type: 'tertiary', x: 400, y: 400 }
-            ];
-          
-          default:
-            return baseNodes;
-        }
-      }
-
-      createNodeElement(node, index) {
-        const element = document.createElement('div');
-        element.className = `schema-node ${node.type}`;
-        element.textContent = node.text;
-        element.style.left = `${node.x}px`;
-        element.style.top = `${node.y}px`;
-        element.dataset.nodeId = index;
-        element.draggable = true;
-        
-        return element;
-      }
-
-      createArrows() {
-        // Create arrows between nodes (simplified)
-        const canvas = document.getElementById('schemaCanvas');
-        const nodes = canvas.querySelectorAll('.schema-node');
-        
-        // Add simple connections
-        if (nodes.length > 1) {
-          for (let i = 0; i < nodes.length - 1; i++) {
-            const arrow = document.createElement('div');
-            arrow.className = 'arrow';
-            // Position arrow between nodes (simplified)
-            canvas.appendChild(arrow);
-          }
-        }
-      }
-
-      setupDragAndDrop() {
-        const canvas = document.getElementById('schemaCanvas');
-        
-        canvas.addEventListener('mousedown', (e) => {
-          if (e.target.classList.contains('schema-node')) {
-            this.isDragging = true;
-            this.draggedNode = e.target;
-            this.dragOffset = {
-              x: e.clientX - this.draggedNode.offsetLeft,
-              y: e.clientY - this.draggedNode.offsetTop
-            };
-            this.draggedNode.style.zIndex = 1000;
-          }
-        });
-
-        document.addEventListener('mousemove', (e) => {
-          if (this.isDragging && this.draggedNode) {
-            const canvas = document.getElementById('schemaCanvas');
-            const rect = canvas.getBoundingClientRect();
-            
-            const newX = e.clientX - rect.left - this.dragOffset.x;
-            const newY = e.clientY - rect.top - this.dragOffset.y;
-            
-            this.draggedNode.style.left = `${Math.max(0, newX)}px`;
-            this.draggedNode.style.top = `${Math.max(0, newY)}px`;
-            
-            // Update arrows
-            this.updateArrows();
-          }
-        });
-
-        document.addEventListener('mouseup', () => {
-          if (this.draggedNode) {
-            this.draggedNode.style.zIndex = '';
-          }
-          this.isDragging = false;
-          this.draggedNode = null;
-        });
-      }
-
-      updateArrows() {
-        // Update arrow positions based on node positions
-        // Implementation would go here
-      }
-
-      clearSchema() {
-        document.getElementById('topicInput').value = '';
-        this.clearCanvas();
-        NotificationsModule.showInfo('Schema pulito');
-      }
-
-      clearCanvas() {
-        const canvas = document.getElementById('schemaCanvas');
-        const nodes = canvas.querySelectorAll('.schema-node, .arrow');
-        nodes.forEach(node => node.remove());
-      }
-
-      downloadSchema() {
-        // Implementation for downloading schema as image
-        NotificationsModule.showInfo('Download schema (in development)');
-      }
-
-      regenerateSchema() {
-        this.generateSchema();
-      }
-
-      zoomIn() {
-        // Implementation for zoom functionality
-        NotificationsModule.showInfo('Zoom (in development)');
-      }
-
-      centerSchema() {
-        // Implementation for centering schema
-        NotificationsModule.showInfo('Schema centrato');
-      }
-
-      toggleFullscreen() {
-        const canvas = document.getElementById('schemaCanvas');
-        if (!document.fullscreenElement) {
-          canvas.requestFullscreen();
-        } else {
-          document.exitFullscreen();
-        }
-      }
-
-      showLoading(show) {
-        const overlay = document.getElementById('loadingOverlay');
-        overlay.style.display = show ? 'flex' : 'none';
-      }
-
-      loadComponents() {
-        // Load header, sidebar, footer
-        setTimeout(() => {
-          if (window.sidebarManager) {
-            window.sidebarManager.updateUserInfo();
-          }
-        }, 100);
-      }
-    }
-
-    // Initialize enhanced schema controller
-    document.addEventListener('DOMContentLoaded', () => {
-      window.enhancedSchemaController = new EnhancedSchemaController();
-    });
-    {"from": "secondary_1", "to": "tertiary_2"},
-    {"from": "secondary_1", "to": "tertiary_3"}
-  ]
-}
-
-Le coordinate x,y devono essere posizionate logicamente nel canvas (800x500). USA TERMINI SPECIFICI DELL'ARGOMENTO, NON CONCETTI GENERICI!`;
-
-        const response = await fetch(CONFIG.HF_API_URL_TEXT, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${CONFIG.HF_TOKEN}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            inputs: prompt,
-            parameters: {
-              max_new_tokens: 1000,
-              temperature: 0.7,
-              return_full_text: false
+    <script>
+        // Enhanced Schema Controller
+        class EnhancedSchemaController {
+            constructor() {
+                this.schemaType = 'conceptual';
+                this.nodes = [];
+                this.arrows = [];
+                this.isDragging = false;
+                this.draggedNode = null;
+                this.init();
             }
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Errore nella generazione dello schema');
+
+            init() {
+                if (!AuthModule.checkAuthentication()) return;
+                
+                this.setupEventListeners();
+                this.loadComponents();
+            }
+
+            async loadComponents() {
+                try {
+                    // Load header
+                    const headerResponse = await fetch('components/header.html');
+                    const headerHtml = await headerResponse.text();
+                    document.getElementById('header-container').innerHTML = headerHtml;
+                    document.getElementById('pageTitle').textContent = 'Generatore Schemi - BrainPlay';
+
+                    // Load sidebar
+                    const sidebarResponse = await fetch('components/sidebar.html');
+                    const sidebarHtml = await sidebarResponse.text();
+                    document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+
+                    // Load footer
+                    const footerResponse = await fetch('components/footer.html');
+                    const footerHtml = await footerResponse.text();
+                    document.getElementById('footer-container').innerHTML = footerHtml;
+
+                } catch (error) {
+                    console.error('Error loading components:', error);
+                    NotificationsModule.showError('Errore nel caricamento dei componenti');
+                }
+            }
+
+            setupEventListeners() {
+                // Schema type options
+                document.querySelectorAll('.option-item').forEach(item => {
+                    item.addEventListener('click', () => this.selectSchemaType(item));
+                });
+
+                // Main buttons
+                document.getElementById('generateBtn').addEventListener('click', () => this.generateSchema());
+                document.getElementById('clearBtn').addEventListener('click', () => this.clearSchema());
+                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadSchema());
+                document.getElementById('regenerateBtn').addEventListener('click', () => this.regenerateSchema());
+
+                // Canvas controls
+                document.getElementById('zoomInBtn').addEventListener('click', () => this.zoomIn());
+                document.getElementById('centerBtn').addEventListener('click', () => this.centerSchema());
+                document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
+
+                // Drag and drop for nodes
+                this.setupDragAndDrop();
+
+                // Update sidebar after components load
+                setTimeout(() => {
+                    if (window.sidebarManager) {
+                        window.sidebarManager.updateUserInfo();
+                    }
+                }, 100);
+            }
+
+            selectSchemaType(selectedItem) {
+                document.querySelectorAll('.option-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                selectedItem.classList.add('selected');
+                this.schemaType = selectedItem.dataset.type;
+            }
+
+            async generateSchema() {
+                const topic = document.getElementById('topicInput').value.trim();
+                if (!topic) {
+                    NotificationsModule.showError('Inserisci un argomento per generare lo schema');
+                    return;
+                }
+
+                this.showLoading(true);
+                
+                try {
+                    // Simulate schema generation
+                    await this.simulateSchemaGeneration(topic);
+                    this.createSchemaNodes(topic);
+                    this.showLoading(false);
+                    NotificationsModule.showSuccess('Schema generato con successo!');
+                    
+                    // Award credits with global system integration
+                    if (typeof CreditsModule !== 'undefined' && CreditsModule.earnCrediti) {
+                        CreditsModule.earnCrediti(10, 'Generazione Schema');
+                        
+                        // Update sidebar display
+                        if (window.sidebarManager) {
+                            window.sidebarManager.updateUserInfo();
+                        }
+                        
+                        // Update mascotte growth if available
+                        if (window.mascotteGrowth) {
+                            const credits = CreditsModule.getCrediti();
+                            window.mascotteGrowth.updateAllDisplays(credits);
+                        }
+                    }
+                } catch (error) {
+                    this.showLoading(false);
+                    NotificationsModule.showError('Errore nella generazione dello schema');
+                }
+            }
+
+            async simulateSchemaGeneration(topic) {
+                // Simulate delay for generation
+                return new Promise(resolve => setTimeout(resolve, 2000));
+            }
+
+            createSchemaNodes(topic) {
+                const canvas = document.getElementById('schemaCanvas');
+                
+                // Clear existing schema
+                this.clearCanvas();
+
+                // Generate nodes based on schema type
+                const nodes = this.generateNodesByType(topic);
+                
+                // Create DOM elements
+                nodes.forEach((node, index) => {
+                    const nodeElement = this.createNodeElement(node, index);
+                    canvas.appendChild(nodeElement);
+                });
+
+                // Create arrows
+                this.createArrows();
+            }
+
+            generateNodesByType(topic) {
+                const baseNodes = [
+                    { text: topic, type: 'main', x: 400, y: 100 }
+                ];
+
+                switch(this.schemaType) {
+                    case 'conceptual':
+                        return [
+                            ...baseNodes,
+                            { text: 'Concetto 1', type: 'secondary', x: 200, y: 250 },
+                            { text: 'Concetto 2', type: 'secondary', x: 600, y: 250 },
+                            { text: 'Dettaglio A', type: 'tertiary', x: 100, y: 400 },
+                            { text: 'Dettaglio B', type: 'tertiary', x: 300, y: 400 },
+                            { text: 'Dettaglio C', type: 'tertiary', x: 500, y: 400 },
+                            { text: 'Dettaglio D', type: 'tertiary', x: 700, y: 400 }
+                        ];
+                    
+                    case 'hierarchical':
+                        return [
+                            ...baseNodes,
+                            { text: 'Categoria 1', type: 'secondary', x: 200, y: 250 },
+                            { text: 'Categoria 2', type: 'secondary', x: 600, y: 250 },
+                            { text: 'Sotto-cat 1.1', type: 'tertiary', x: 100, y: 400 },
+                            { text: 'Sotto-cat 1.2', type: 'tertiary', x: 300, y: 400 },
+                            { text: 'Sotto-cat 2.1', type: 'tertiary', x: 500, y: 400 },
+                            { text: 'Sotto-cat 2.2', type: 'tertiary', x: 700, y: 400 }
+                        ];
+                    
+                    case 'process':
+                        return [
+                            ...baseNodes,
+                            { text: 'Passo 1', type: 'secondary', x: 200, y: 250 },
+                            { text: 'Passo 2', type: 'secondary', x: 400, y: 250 },
+                            { text: 'Passo 3', type: 'secondary', x: 600, y: 250 },
+                            { text: 'Risultato', type: 'tertiary', x: 400, y: 400 }
+                        ];
+                    
+                    default:
+                        return baseNodes;
+                }
+            }
+
+            createNodeElement(node, index) {
+                const element = document.createElement('div');
+                element.className = `schema-node ${node.type}`;
+                element.textContent = node.text;
+                element.style.left = `${node.x}px`;
+                element.style.top = `${node.y}px`;
+                element.dataset.nodeId = index;
+                element.draggable = true;
+                
+                return element;
+            }
+
+            createArrows() {
+                // Create arrows between nodes (simplified)
+                const canvas = document.getElementById('schemaCanvas');
+                const nodes = canvas.querySelectorAll('.schema-node');
+                
+                // Add simple connections
+                if (nodes.length > 1) {
+                    for (let i = 0; i < nodes.length - 1; i++) {
+                        const arrow = document.createElement('div');
+                        arrow.className = 'arrow';
+                        // Position arrow between nodes (simplified)
+                        canvas.appendChild(arrow);
+                    }
+                }
+            }
+
+            setupDragAndDrop() {
+                const canvas = document.getElementById('schemaCanvas');
+                
+                canvas.addEventListener('mousedown', (e) => {
+                    if (e.target.classList.contains('schema-node')) {
+                        this.isDragging = true;
+                        this.draggedNode = e.target;
+                        this.dragOffset = {
+                            x: e.clientX - this.draggedNode.offsetLeft,
+                            y: e.clientY - this.draggedNode.offsetTop
+                        };
+                        this.draggedNode.style.zIndex = 1000;
+                    }
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (this.isDragging && this.draggedNode) {
+                        const canvas = document.getElementById('schemaCanvas');
+                        const rect = canvas.getBoundingClientRect();
+                        
+                        const newX = e.clientX - rect.left - this.dragOffset.x;
+                        const newY = e.clientY - rect.top - this.dragOffset.y;
+                        
+                        this.draggedNode.style.left = `${Math.max(0, newX)}px`;
+                        this.draggedNode.style.top = `${Math.max(0, newY)}px`;
+                        
+                        // Update arrows
+                        this.updateArrows();
+                    }
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (this.draggedNode) {
+                        this.draggedNode.style.zIndex = '';
+                    }
+                    this.isDragging = false;
+                    this.draggedNode = null;
+                });
+            }
+
+            updateArrows() {
+                // Update arrow positions based on node positions
+                // Implementation would go here
+            }
+
+            clearSchema() {
+                document.getElementById('topicInput').value = '';
+                this.clearCanvas();
+                NotificationsModule.showInfo('Schema pulito');
+            }
+
+            clearCanvas() {
+                const canvas = document.getElementById('schemaCanvas');
+                const nodes = canvas.querySelectorAll('.schema-node, .arrow');
+                nodes.forEach(node => node.remove());
+            }
+
+            downloadSchema() {
+                // Implementation for downloading schema as image
+                NotificationsModule.showInfo('Download schema (in development)');
+            }
+
+            regenerateSchema() {
+                this.generateSchema();
+            }
+
+            zoomIn() {
+                // Implementation for zoom functionality
+                NotificationsModule.showInfo('Zoom (in development)');
+            }
+
+            centerSchema() {
+                // Implementation for centering schema
+                NotificationsModule.showInfo('Schema centrato');
+            }
+
+            toggleFullscreen() {
+                const canvas = document.getElementById('schemaCanvas');
+                if (!document.fullscreenElement) {
+                    canvas.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+
+            showLoading(show) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = show ? 'flex' : 'none';
+            }
         }
-        
-        const result = await response.json();
-        const generatedText = result[0]?.generated_text || '{}';
-        
-        // Try to parse JSON response
-        try {
-          return JSON.parse(generatedText);
-        } catch {
-          // Fallback: create basic structure
-          return createFallbackSchema(topic);
-        }
-      } catch (error) {
-        console.error('Errore generazione schema:', error);
-        return createFallbackSchema(topic);
-      }
-    }
 
-    function createFallbackSchema(topic) {
-      return {
-        main: {
-          text: topic,
-          x: 400,
-          y: 250
-        },
-        secondary: [
-          { text: "Concetto chiave 1", x: 200, y: 150 },
-          { text: "Concetto chiave 2", x: 600, y: 150 },
-          { text: "Concetto chiave 3", x: 400, y: 100 }
-        ],
-        tertiary: [
-          { text: "Dettaglio 1", x: 100, y: 80, parent: 0 },
-          { text: "Dettaglio 2", x: 300, y: 80, parent: 0 },
-          { text: "Dettaglio 3", x: 500, y: 80, parent: 1 },
-          { text: "Dettaglio 4", x: 700, y: 80, parent: 1 }
-        ],
-        connections: [
-          { from: "main", to: "secondary_0" },
-          { from: "main", to: "secondary_1" },
-          { from: "main", to: "secondary_2" },
-          { from: "secondary_0", to: "tertiary_0" },
-          { from: "secondary_0", to: "tertiary_1" },
-          { from: "secondary_1", to: "tertiary_2" },
-          { from: "secondary_1", to: "tertiary_3" }
-        ]
-      };
-    }
-
-    function renderSchema(schema) {
-      schemaCanvas.innerHTML = '';
-      
-      // Create arrows first (so they appear behind nodes)
-      if (schema.connections) {
-        schema.connections.forEach(connection => {
-          createArrow(connection, schema);
+        // Initialize enhanced schema controller
+        document.addEventListener('DOMContentLoaded', () => {
+            window.enhancedSchemaController = new EnhancedSchemaController();
         });
-      }
-      
-      // Create main node
-      if (schema.main) {
-        createNode(schema.main, 'main');
-      }
-      
-      // Create secondary nodes
-      if (schema.secondary) {
-        schema.secondary.forEach((node, index) => {
-          createNode(node, 'secondary', index);
-        });
-      }
-      
-      // Create tertiary nodes
-      if (schema.tertiary) {
-        schema.tertiary.forEach((node, index) => {
-          createNode(node, 'tertiary', index);
-        });
-      }
-    }
-
-    function createNode(nodeData, type, index = 0) {
-      const node = document.createElement('div');
-      node.className = `schema-node ${type}`;
-      node.textContent = nodeData.text;
-      node.style.left = nodeData.x + 'px';
-      node.style.top = nodeData.y + 'px';
-      node.dataset.type = type;
-      node.dataset.index = index;
-      
-      // Make nodes draggable
-      node.addEventListener('mousedown', startDrag);
-      
-      schemaCanvas.appendChild(node);
-    }
-
-    function createArrow(connection, schema) {
-      const arrow = document.createElement('div');
-      arrow.className = 'arrow';
-      
-      let fromNode, toNode;
-      
-      if (connection.from === 'main') {
-        fromNode = schema.main;
-      } else if (connection.from.startsWith('secondary_')) {
-        const index = parseInt(connection.from.split('_')[1]);
-        fromNode = schema.secondary[index];
-      } else if (connection.from.startsWith('tertiary_')) {
-        const index = parseInt(connection.from.split('_')[1]);
-        fromNode = schema.tertiary[index];
-      }
-      
-      if (connection.to.startsWith('secondary_')) {
-        const index = parseInt(connection.to.split('_')[1]);
-        toNode = schema.secondary[index];
-      } else if (connection.to.startsWith('tertiary_')) {
-        const index = parseInt(connection.to.split('_')[1]);
-        toNode = schema.tertiary[index];
-      }
-      
-      if (fromNode && toNode) {
-        const dx = toNode.x - fromNode.x;
-        const dy = toNode.y - fromNode.y;
-        const length = Math.sqrt(dx * dx + dy * dy);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-        
-        arrow.style.width = length + 'px';
-        arrow.style.left = fromNode.x + 'px';
-        arrow.style.top = fromNode.y + 'px';
-        arrow.style.transform = `rotate(${angle}deg)`;
-      }
-      
-      schemaCanvas.appendChild(arrow);
-    }
-
-    // Drag and drop functionality
-    function startDrag(e) {
-      isDragging = true;
-      draggedNode = e.target;
-      const rect = draggedNode.getBoundingClientRect();
-      const canvasRect = schemaCanvas.getBoundingClientRect();
-      dragOffset.x = e.clientX - rect.left;
-      dragOffset.y = e.clientY - rect.top;
-      
-      document.addEventListener('mousemove', drag);
-      document.addEventListener('mouseup', stopDrag);
-      
-      e.preventDefault();
-    }
-
-    function drag(e) {
-      if (!isDragging || !draggedNode) return;
-      
-      const canvasRect = schemaCanvas.getBoundingClientRect();
-      const x = e.clientX - canvasRect.left - dragOffset.x;
-      const y = e.clientY - canvasRect.top - dragOffset.y;
-      
-      draggedNode.style.left = Math.max(0, Math.min(x, canvasRect.width - draggedNode.offsetWidth)) + 'px';
-      draggedNode.style.top = Math.max(0, Math.min(y, canvasRect.height - draggedNode.offsetHeight)) + 'px';
-    }
-
-    function stopDrag() {
-      isDragging = false;
-      draggedNode = null;
-      document.removeEventListener('mousemove', drag);
-      document.removeEventListener('mouseup', stopDrag);
-    }
-
-    // Download schema as image
-    downloadBtn?.addEventListener('click', () => {
-      if (!currentSchema) return;
-      
-      // Use html2canvas or similar library for real implementation
-      // For now, download as text representation
-      const schemaText = `SCHEMA: ${topicInput.value}\n\n` +
-        `CONCETTO PRINCIPALE: ${currentSchema.main.text}\n\n` +
-        `CONCETTI SECONDARI:\n${currentSchema.secondary.map((s, i) => `${i+1}. ${s.text}`).join('\n')}\n\n` +
-        `CONCETTI TERZIARI:\n${currentSchema.tertiary.map((t, i) => `${i+1}. ${t.text}`).join('\n')}`;
-      
-      downloadFile(schemaText, 'schema.txt');
-    });
-    
-    function downloadFile(content, filename) {
-      const blob = new Blob([content], { type: 'text/plain' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  </script>
+    </script>
 </body>
 </html>

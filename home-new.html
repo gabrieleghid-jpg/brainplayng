@@ -38,6 +38,74 @@
                 </div>
             </section>
 
+            <!-- Quick Riassunti Section -->
+            <section class="main-section">
+                <h2 class="section-title">Riassunti Veloce</h2>
+                <div class="quick-riassunti-container">
+                    <div class="quick-riassunti-panel">
+                        <div class="quick-input-header">
+                            <div class="quick-icon">⚡</div>
+                            <h3 class="quick-title">Riassunto Istantaneo</h3>
+                        </div>
+                        
+                        <textarea 
+                            id="quickTopicInput" 
+                            class="quick-topic-input"
+                            placeholder="Inserisci argomento per riassunto veloce...&#10;&#10;Esempi rapidi:&#10;• Fotosintesi&#10;• Roma antica&#10;• Matematica base"
+                        ></textarea>
+                        
+                        <div class="quick-options">
+                            <label class="quick-option">
+                                <input type="checkbox" id="quickConcise" checked>
+                                <span>Conciso</span>
+                            </label>
+                            <label class="quick-option">
+                                <input type="checkbox" id="quickAcademic">
+                                <span>Accademico</span>
+                            </label>
+                        </div>
+                        
+                        <button id="quickGenerateBtn" class="quick-generate-btn">
+                            <span>⚡</span>
+                            <span>Genera Veloce</span>
+                        </button>
+                        
+                        <div id="quickResult" class="quick-result" style="display: none;">
+                            <div class="quick-result-header">
+                                <h4>Riassunto Generato</h4>
+                                <div class="quick-actions">
+                                    <button id="quickCopyBtn" class="quick-action-btn">📋</button>
+                                    <button id="quickClearBtn" class="quick-action-btn">🗑️</button>
+                                </div>
+                            </div>
+                            <div id="quickResultContent" class="quick-result-content"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-templates">
+                        <h4>Template Popolari</h4>
+                        <div class="template-grid">
+                            <button class="template-btn" data-topic="Fotosintesi clorofilliana">
+                                <span>🌿</span>
+                                <span>Fotosintesi</span>
+                            </button>
+                            <button class="template-btn" data-topic="Seconda Guerra Mondiale">
+                                <span>⚔️</span>
+                                <span>Guerra Mondiale</span>
+                            </button>
+                            <button class="template-btn" data-topic="Sistema nervoso">
+                                <span>🧠</span>
+                                <span>Sistema Nervoso</span>
+                            </button>
+                            <button class="template-btn" data-topic="Rinascimento italiano">
+                                <span>🎨</span>
+                                <span>Rinascimento</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- Main Tools Section -->
             <section class="main-section">
                 <h2 class="section-title">Strumenti di Studio</h2>
@@ -88,6 +156,229 @@
     <script src="theme-manager.js"></script>
     <script src="sidebar.js"></script>
 
+    <style>
+        /* Quick Riassunti Styles */
+        .quick-riassunti-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .quick-riassunti-panel {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .quick-input-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .quick-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .quick-topic-input {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            background: var(--panel-strong);
+            color: var(--text);
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-topic-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .quick-options {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            color: var(--text);
+        }
+
+        .quick-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+        }
+
+        .quick-generate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .quick-generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+        }
+
+        .quick-result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--panel-strong);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .quick-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .quick-result-header h4 {
+            margin: 0;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .quick-action-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 8px;
+            background: var(--border);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .quick-action-btn:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .quick-result-content {
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .quick-templates {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .quick-templates h4 {
+            margin: 0 0 1.5rem 0;
+            color: var(--text);
+            font-size: 1.2rem;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .template-btn {
+            padding: 1rem;
+            background: var(--panel-strong);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .template-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .template-btn span:first-child {
+            font-size: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .quick-riassunti-container {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .quick-riassunti-panel,
+            .quick-templates {
+                padding: 1.5rem;
+            }
+
+            .quick-options {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .template-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+
     <script>
         // Home Page Controller
         class HomeController {
@@ -102,6 +393,7 @@
                 this.setupEventListeners();
                 this.updateStats();
                 this.initializeSystems();
+                this.setupQuickRiassunti();
             }
 
             async loadComponents() {
@@ -227,9 +519,17 @@
                 // Award credits for completing tasks with new system
                 CreditsModule.earnCrediti(10, 'Compito Completato');
             }
+
+            // Method to increment statistics
+            incrementStat(statName, amount = 1) {
+                const stats = this.loadUserStats();
+                stats[statName] = (stats[statName] || 0) + amount;
+                localStorage.setItem('bp_home_stats', JSON.stringify(stats));
+                this.updateStats();
+            }
         }
 
-        // Initialize home page
+        // Initialize home page controller
         document.addEventListener('DOMContentLoaded', () => {
             window.homeController = new HomeController();
         });

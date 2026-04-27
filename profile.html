@@ -1,13 +1,387 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>brainplaying — Profilo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilo - BrainPlay</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+</head>
+<body>
+    <!-- Header Component -->
+    <div id="header-container"></div>
+
+    <div class="page-shell">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1 class="hero-title">Il Tuo Profilo</h1>
+                    <p class="hero-subtitle">Gestisci il tuo account e personalizza la tua esperienza</p>
+                </div>
+            </section>
+
+            <!-- Profile Content -->
+            <section class="main-section">
+                <div class="profile-container">
+                    <!-- Profile Card -->
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar-large" id="profileAvatar">BP</div>
+                            <div class="profile-info">
+                                <h2 class="profile-name" id="profileName">BrainPlayer</h2>
+                                <p class="profile-email" id="profileEmail">studente@brainplay.com</p>
+                                <div class="profile-stats">
+                                    <div class="stat-item">
+                                        <span class="stat-number" id="profileCredits">0</span>
+                                        <span class="stat-label">Crediti</span>
+                                    </div>
+                                    <div class="stat-item">
+                                        <span class="stat-number" id="profileLevel">1</span>
+                                        <span class="stat-label">Livello</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <button class="btn-primary" id="uploadPhotoBtn">
+                                📷 Carica Foto
+                            </button>
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Settings Card -->
+                    <div class="settings-card">
+                        <h3 class="card-title">Impostazioni</h3>
+                        
+                        <div class="setting-item">
+                            <label class="setting-label">Nome Utente</label>
+                            <div class="setting-input-group">
+                                <input type="text" class="setting-input" id="usernameInput" placeholder="Inserisci nome utente">
+                                <button class="btn-secondary" id="saveUsernameBtn">Salva</button>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <label class="setting-label">Tema</label>
+                            <div class="theme-selector">
+                                <button class="theme-btn" id="lightThemeBtn">
+                                    ☀️ Chiaro
+                                </button>
+                                <button class="theme-btn" id="darkThemeBtn">
+                                    🌙 Scuro
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="setting-item">
+                            <label class="setting-label">Notifiche</label>
+                            <div class="toggle-group">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="notificationsToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <span class="toggle-label">Ricevi notifiche</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Card -->
+                    <div class="stats-card">
+                        <h3 class="card-title">Le Tue Statistiche</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon">📚</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="studySessions">0</div>
+                                    <div class="stat-label">Sessioni Studio</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">📝</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="summariesGenerated">0</div>
+                                    <div class="stat-label">Riassunti Generati</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">🎨</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="schemasCreated">0</div>
+                                    <div class="stat-label">Schemi Creati</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">⏱️</div>
+                                <div class="stat-info">
+                                    <div class="stat-number" id="totalTime">0h</div>
+                                    <div class="stat-label">Tempo Totale</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="modules/auth.js"></script>
+    <script src="modules/credits.js"></script>
+    <script src="modules/notifications.js"></script>
+    <script src="modules/utils.js"></script>
+    <script src="mascotte-growth.js"></script>
+    <script src="animated-avatar.js"></script>
+    <script src="theme-manager.js"></script>
+    <script src="sidebar.js"></script>
+
+    <script>
+        // Profile Controller
+        class ProfileController {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                if (!AuthModule.checkAuthentication()) return;
+                
+                this.loadComponents();
+                this.setupEventListeners();
+                this.updateProfileDisplay();
+                this.updateStatistics();
+            }
+
+            async loadComponents() {
+                try {
+                    // Load header
+                    const headerResponse = await fetch('components/header.html');
+                    const headerHtml = await headerResponse.text();
+                    document.getElementById('header-container').innerHTML = headerHtml;
+                    document.getElementById('pageTitle').textContent = 'Profilo - BrainPlay';
+
+                    // Load sidebar
+                    const sidebarResponse = await fetch('components/sidebar.html');
+                    const sidebarHtml = await sidebarResponse.text();
+                    document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+
+                    // Load footer
+                    const footerResponse = await fetch('components/footer.html');
+                    const footerHtml = await footerResponse.text();
+                    document.getElementById('footer-container').innerHTML = footerHtml;
+
+                } catch (error) {
+                    console.error('Error loading components:', error);
+                    NotificationsModule.showError('Errore nel caricamento dei componenti');
+                }
+            }
+
+            setupEventListeners() {
+                // Profile photo upload
+                document.getElementById('uploadPhotoBtn').addEventListener('click', () => {
+                    document.getElementById('avatarInput').click();
+                });
+
+                document.getElementById('avatarInput').addEventListener('change', (e) => {
+                    this.handlePhotoUpload(e);
+                });
+
+                // Username save
+                document.getElementById('saveUsernameBtn').addEventListener('click', () => {
+                    this.saveUsername();
+                });
+
+                // Theme buttons
+                document.getElementById('lightThemeBtn').addEventListener('click', () => {
+                    this.setTheme('light');
+                });
+
+                document.getElementById('darkThemeBtn').addEventListener('click', () => {
+                    this.setTheme('dark');
+                });
+
+                // Notifications toggle
+                document.getElementById('notificationsToggle').addEventListener('change', (e) => {
+                    this.toggleNotifications(e.target.checked);
+                });
+
+                // Update sidebar after components load
+                setTimeout(() => {
+                    if (window.sidebarManager) {
+                        window.sidebarManager.updateUserInfo();
+                    }
+                }, 100);
+            }
+
+            updateProfileDisplay() {
+                // Update credits
+                CreditsModule.updateCreditDisplay();
+                const credits = CreditsModule.getCrediti();
+                document.getElementById('profileCredits').textContent = credits;
+
+                // Update level from mascotte growth
+                if (window.mascotteGrowth) {
+                    const levelInfo = window.mascotteGrowth.getCurrentLevelInfo();
+                    document.getElementById('profileLevel').textContent = levelInfo.level;
+                }
+
+                // Update avatar
+                const username = sessionStorage.getItem('username') || 'BrainPlayer';
+                const profileImage = sessionStorage.getItem('profileImage');
+                const avatar = document.getElementById('profileAvatar');
+                
+                if (profileImage) {
+                    avatar.style.backgroundImage = `url(${profileImage})`;
+                    avatar.textContent = '';
+                } else {
+                    avatar.style.backgroundImage = '';
+                    avatar.textContent = this.getInitials(username);
+                }
+
+                document.getElementById('profileName').textContent = username;
+                document.getElementById('usernameInput').value = username;
+
+                // Update theme buttons
+                const currentTheme = localStorage.getItem('theme') || 'light';
+                this.updateThemeButtons(currentTheme);
+            }
+
+            updateStatistics() {
+                // Load statistics from localStorage
+                const stats = this.loadUserStats();
+                
+                document.getElementById('studySessions').textContent = stats.sessions;
+                document.getElementById('summariesGenerated').textContent = stats.summaries;
+                document.getElementById('schemasCreated').textContent = stats.schemas;
+                document.getElementById('totalTime').textContent = stats.time;
+            }
+
+            loadUserStats() {
+                const savedStats = localStorage.getItem('bp_profile_stats');
+                if (savedStats) {
+                    return JSON.parse(savedStats);
+                }
+                
+                // Default stats
+                return {
+                    sessions: 0,
+                    summaries: 0,
+                    schemas: 0,
+                    time: '0h'
+                };
+            }
+
+            saveUserStats(stats) {
+                localStorage.setItem('bp_profile_stats', JSON.stringify(stats));
+            }
+
+            handlePhotoUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const imageData = e.target.result;
+                    sessionStorage.setItem('profileImage', imageData);
+                    
+                    // Update avatar display
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.style.backgroundImage = `url(${imageData})`;
+                    avatar.textContent = '';
+
+                    // Update sidebar if available
+                    if (window.sidebarManager) {
+                        window.sidebarManager.updateUserInfo();
+                    }
+
+                    NotificationsModule.showSuccess('Foto profilo aggiornata!');
+                };
+                reader.readAsDataURL(file);
+            }
+
+            saveUsername() {
+                const newUsername = document.getElementById('usernameInput').value.trim();
+                if (!newUsername) {
+                    NotificationsModule.showError('Inserisci un nome utente valido');
+                    return;
+                }
+
+                sessionStorage.setItem('username', newUsername);
+                document.getElementById('profileName').textContent = newUsername;
+                
+                // Update avatar initials if no photo
+                const profileImage = sessionStorage.getItem('profileImage');
+                if (!profileImage) {
+                    const avatar = document.getElementById('profileAvatar');
+                    avatar.textContent = this.getInitials(newUsername);
+                }
+
+                // Update sidebar if available
+                if (window.sidebarManager) {
+                    window.sidebarManager.updateUserInfo();
+                }
+
+                NotificationsModule.showSuccess('Nome utente aggiornato!');
+            }
+
+            setTheme(theme) {
+                if (window.themeManager) {
+                    window.themeManager.setTheme(theme);
+                    this.updateThemeButtons(theme);
+                }
+            }
+
+            updateThemeButtons(theme) {
+                const lightBtn = document.getElementById('lightThemeBtn');
+                const darkBtn = document.getElementById('darkThemeBtn');
+                
+                if (theme === 'dark') {
+                    lightBtn.classList.remove('active');
+                    darkBtn.classList.add('active');
+                } else {
+                    lightBtn.classList.add('active');
+                    darkBtn.classList.remove('active');
+                }
+            }
+
+            toggleNotifications(enabled) {
+                localStorage.setItem('notifications_enabled', enabled);
+                NotificationsModule.showInfo(enabled ? 'Notifiche abilitate' : 'Notifiche disabilitate');
+            }
+
+            getInitials(name) {
+                return name
+                    .split(' ')
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map(part => part[0].toUpperCase())
+                    .join('');
+            }
+
+            // Method to increment statistics
+            incrementStat(statName, amount = 1) {
+                const stats = this.loadUserStats();
+                stats[statName] = (stats[statName] || 0) + amount;
+                this.saveUserStats(stats);
+                this.updateStatistics();
+            }
+        }
+
+        // Initialize profile controller
+        document.addEventListener('DOMContentLoaded', () => {
+            window.profileController = new ProfileController();
+        });
+    </script>
+</body>
+</html>
     :root {
       color-scheme: light;
       --bg: #f5f7ff;
