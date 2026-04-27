@@ -11,19 +11,60 @@
   <link rel="stylesheet" href="dashboard.css" />
   
   <style>
-    .input-section {
+    /* Layout Moderno per Schemi */
+    .schemi-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .schemi-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+      height: 100%;
+    }
+
+    /* Pannello Input */
+    .input-panel {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 32px;
+      border-radius: 20px;
       padding: 2rem;
-      margin-bottom: 2rem;
+      border: 1px solid var(--border);
       box-shadow: var(--shadow);
+      height: fit-content;
+      position: sticky;
+      top: 2rem;
     }
-    
+
+    .input-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .input-icon {
+      font-size: 2rem;
+      background: linear-gradient(135deg, var(--accent), #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .input-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
     .topic-input {
       width: 100%;
-      min-height: 120px;
-      padding: 1rem;
+      min-height: 150px;
+      padding: 1.5rem;
       border: 2px solid var(--border);
       border-radius: 16px;
       background: var(--panel-strong);
@@ -31,33 +72,128 @@
       font-family: inherit;
       font-size: 1rem;
       resize: vertical;
-      transition: border-color 0.3s ease;
-      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
     }
     
     .topic-input:focus {
       outline: none;
       border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
     }
     
     .topic-input::placeholder {
       color: var(--muted);
+      font-style: italic;
     }
-    
+
+    /* Opzioni Schema */
+    .schema-options {
+      margin-bottom: 2rem;
+    }
+
+    .options-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .option-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--background);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .option-item:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .option-item.selected {
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), var(--background));
+      border-color: var(--accent);
+    }
+
+    .option-radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .option-item.selected .option-radio {
+      border-color: var(--accent);
+    }
+
+    .option-item.selected .option-radio::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .option-label {
+      flex: 1;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .option-description {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    /* Pulsanti Azione */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
     .generate-btn, .clear-btn {
       padding: 1rem 1.5rem;
       border: none;
-      border-radius: 18px;
+      border-radius: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
-      min-width: 180px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 1rem;
     }
     
     .generate-btn {
       background: linear-gradient(135deg, var(--accent), #818cf8);
       color: white;
       box-shadow: 0 8px 24px rgba(79, 70, 229, 0.2);
+      grid-column: span 2;
     }
     
     .generate-btn:hover:not(:disabled) {
@@ -68,6 +204,7 @@
     .generate-btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+      transform: none;
     }
     
     .clear-btn {
@@ -78,102 +215,148 @@
     
     .clear-btn:hover {
       background: rgba(239, 68, 68, 0.15);
+      transform: translateY(-1px);
     }
-    
-    .controls-section {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    
-    .schema-section {
+
+    /* Pannello Schema */
+    .schema-panel {
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 32px;
+      border-radius: 20px;
       padding: 2rem;
       box-shadow: var(--shadow);
-      display: none;
+      display: flex;
+      flex-direction: column;
     }
-    
-    .schema-section.active {
-      display: block;
+
+    .schema-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
     }
-    
+
+    .schema-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .schema-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .schema-action-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--background);
+      color: var(--text);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .schema-action-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+      transform: translateY(-1px);
+    }
+
     .schema-canvas {
       background: white;
       border: 2px solid var(--border);
       border-radius: 16px;
       padding: 2rem;
-      min-height: 500px;
+      min-height: 600px;
       position: relative;
       overflow: auto;
+      flex: 1;
       margin-bottom: 2rem;
     }
     
     .dark .schema-canvas {
       background: var(--panel-strong);
     }
-    
+
+    /* Nodi Schema Migliorati */
     .schema-node {
       position: absolute;
-      padding: 12px 20px;
+      padding: 16px 24px;
       background: linear-gradient(135deg, var(--accent), #818cf8);
       color: white;
-      border-radius: 12px;
+      border-radius: 16px;
       font-weight: 600;
       font-size: 14px;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
       cursor: move;
-      transition: transform 0.2s ease;
+      transition: all 0.3s ease;
       z-index: 10;
       text-align: center;
-      max-width: 200px;
+      max-width: 220px;
       word-wrap: break-word;
+      border: 2px solid rgba(255, 255, 255, 0.2);
     }
     
     .schema-node:hover {
-      transform: scale(1.05);
+      transform: scale(1.05) translateY(-2px);
       z-index: 20;
+      box-shadow: 0 12px 32px rgba(79, 70, 229, 0.4);
     }
     
     .schema-node.main {
       background: linear-gradient(135deg, #f59e0b, #f97316);
       font-size: 16px;
-      padding: 16px 24px;
-      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.3);
+      padding: 20px 28px;
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.3);
     }
     
     .schema-node.secondary {
       background: linear-gradient(135deg, #10b981, #059669);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
     }
     
     .schema-node.tertiary {
       background: linear-gradient(135deg, #3b82f6, #2563eb);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
     }
     
     .arrow {
       position: absolute;
       background: var(--border);
-      height: 2px;
+      height: 3px;
       transform-origin: left center;
       z-index: 1;
+      border-radius: 2px;
     }
     
     .arrow::after {
       content: '';
       position: absolute;
-      right: -8px;
+      right: -10px;
       top: -4px;
       width: 0;
       height: 0;
-      border-left: 8px solid var(--border);
-      border-top: 5px solid transparent;
-      border-bottom: 5px solid transparent;
+      border-left: 10px solid var(--border);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
     }
-    
+
+    /* Controlli Schema */
     .schema-controls {
       display: flex;
       gap: 1rem;
@@ -184,10 +367,13 @@
     .download-btn, .regenerate-btn {
       padding: 1rem 1.5rem;
       border: none;
-      border-radius: 18px;
+      border-radius: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     
     .download-btn {
@@ -211,16 +397,501 @@
       transform: translateY(-2px);
       box-shadow: 0 12px 32px rgba(245, 158, 11, 0.3);
     }
-    
-    .loading-spinner {
-      display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(255,255,255,.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 1s ease-in-out infinite;
+
+    /* Loading State */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      z-index: 100;
     }
+
+    .dark .loading-overlay {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top: 4px solid var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    .loading-text {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .schemi-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .input-panel {
+        position: static;
+      }
+      
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .generate-btn {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .schemi-container {
+        padding: 1rem;
+      }
+      
+      .input-panel, .schema-panel {
+        padding: 1.5rem;
+      }
+      
+      .schema-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      
+      .schema-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body class="schemi-page">
+  <!-- Header Component -->
+  <div id="header-container"></div>
+
+  <div class="page-shell">
+    <!-- Sidebar Component -->
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+      <!-- Page Header -->
+      <section class="page-header">
+        <h1 class="page-title">🎯 Generatore Schemi</h1>
+        <p class="page-subtitle">Crea schemi concettuali interattivi e personalizzati per qualsiasi argomento</p>
+      </section>
+
+      <!-- Nuovo Layout Schemi -->
+      <div class="schemi-container">
+        <div class="schemi-layout">
+          <!-- Pannello Input -->
+          <div class="input-panel">
+            <div class="input-header">
+              <div class="input-icon">🎯</div>
+              <h2 class="input-title">Configura Schema</h2>
+            </div>
+
+            <textarea 
+              id="topicInput" 
+              class="topic-input"
+              placeholder="Inserisci l'argomento principale per il tuo schema...&#10;&#10;Esempi:&#10;• Il sistema solare e i pianeti&#10;• La fotosintesi clorofilliana&#10;• La Seconda Guerra Mondiale&#10;• Il ciclo dell'acqua"
+            ></textarea>
+
+            <!-- Opzioni Schema -->
+            <div class="schema-options">
+              <h3 class="options-title">
+                <span>⚙️</span>
+                <span>Tipo di Schema</span>
+              </h3>
+              <div class="option-group">
+                <div class="option-item selected" data-type="conceptual">
+                  <div class="option-radio"></div>
+                  <div>
+                    <div class="option-label">Schema Concettuale</div>
+                    <div class="option-description">Organizza concetti per importanza e relazioni</div>
+                  </div>
+                </div>
+                <div class="option-item" data-type="hierarchical">
+                  <div class="option-radio"></div>
+                  <div>
+                    <div class="option-label">Schema Gerarchico</div>
+                    <div class="option-description">Struttura ad albero con categorie e sottocategorie</div>
+                  </div>
+                </div>
+                <div class="option-item" data-type="process">
+                  <div class="option-radio"></div>
+                  <div>
+                    <div class="option-label">Schema di Processo</div>
+                    <div class="option-description">Mostra passaggi sequenziali e flussi</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pulsanti Azione -->
+            <div class="action-buttons">
+              <button id="generateBtn" class="generate-btn">
+                <span>🚀</span>
+                <span>Genera Schema</span>
+              </button>
+              <button id="clearBtn" class="clear-btn">
+                <span>🗑️</span>
+                <span>Pulisci</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pannello Schema -->
+          <div class="schema-panel">
+            <div class="schema-header">
+              <h2 class="schema-title">
+                <span>📊</span>
+                <span>Schema Generato</span>
+              </h2>
+              <div class="schema-actions">
+                <button class="schema-action-btn" id="zoomInBtn">
+                  <span>🔍</span>
+                  <span>Zoom</span>
+                </button>
+                <button class="schema-action-btn" id="centerBtn">
+                  <span>🎯</span>
+                  <span>Centra</span>
+                </button>
+                <button class="schema-action-btn" id="fullscreenBtn">
+                  <span>⛶</span>
+                  <span>Fullscreen</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="schema-canvas" id="schemaCanvas">
+              <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div class="loading-content">
+                  <div class="loading-spinner"></div>
+                  <div class="loading-text">Generazione schema in corso...</div>
+                </div>
+              </div>
+              <!-- Schema nodes will be generated here -->
+            </div>
+
+            <div class="schema-controls">
+              <button id="downloadBtn" class="download-btn">
+                <span>💾</span>
+                <span>Download Schema</span>
+              </button>
+              <button id="regenerateBtn" class="regenerate-btn">
+                <span>🔄</span>
+                <span>Regenera</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer Component -->
+  <div id="footer-container"></div>
+
+  <!-- Scripts -->
+  <script src="config.js"></script>
+  <script src="modules/auth.js"></script>
+  <script src="modules/credits.js"></script>
+  <script src="modules/notifications.js"></script>
+  <script src="modules/utils.js"></script>
+  <script src="mascotte-growth.js"></script>
+  <script src="theme-manager.js"></script>
+  <script src="sidebar.js"></script>
+  <script src="js/schemi.js"></script>
+
+  <script>
+    // Enhanced Schema Controller
+    class EnhancedSchemaController {
+      constructor() {
+        this.schemaType = 'conceptual';
+        this.nodes = [];
+        this.arrows = [];
+        this.isDragging = false;
+        this.draggedNode = null;
+        this.init();
+      }
+
+      init() {
+        this.setupEventListeners();
+        this.loadComponents();
+      }
+
+      setupEventListeners() {
+        // Opzioni schema
+        document.querySelectorAll('.option-item').forEach(item => {
+          item.addEventListener('click', () => this.selectSchemaType(item));
+        });
+
+        // Pulsanti principali
+        document.getElementById('generateBtn').addEventListener('click', () => this.generateSchema());
+        document.getElementById('clearBtn').addEventListener('click', () => this.clearSchema());
+        document.getElementById('downloadBtn').addEventListener('click', () => this.downloadSchema());
+        document.getElementById('regenerateBtn').addEventListener('click', () => this.regenerateSchema());
+
+        // Controlli canvas
+        document.getElementById('zoomInBtn').addEventListener('click', () => this.zoomIn());
+        document.getElementById('centerBtn').addEventListener('click', () => this.centerSchema());
+        document.getElementById('fullscreenBtn').addEventListener('click', () => this.toggleFullscreen());
+
+        // Drag and drop per nodi
+        this.setupDragAndDrop();
+      }
+
+      selectSchemaType(selectedItem) {
+        document.querySelectorAll('.option-item').forEach(item => {
+          item.classList.remove('selected');
+        });
+        selectedItem.classList.add('selected');
+        this.schemaType = selectedItem.dataset.type;
+      }
+
+      async generateSchema() {
+        const topic = document.getElementById('topicInput').value.trim();
+        if (!topic) {
+          NotificationsModule.showError('Inserisci un argomento per generare lo schema');
+          return;
+        }
+
+        this.showLoading(true);
+        
+        try {
+          // Simula generazione schema
+          await this.simulateSchemaGeneration(topic);
+          this.createSchemaNodes(topic);
+          this.showLoading(false);
+          NotificationsModule.showSuccess('Schema generato con successo!');
+          
+          // Award credits
+          CreditsModule.earnCrediti(10, 'Generazione Schema');
+        } catch (error) {
+          this.showLoading(false);
+          NotificationsModule.showError('Errore nella generazione dello schema');
+        }
+      }
+
+      async simulateSchemaGeneration(topic) {
+        // Simula delay per generazione
+        return new Promise(resolve => setTimeout(resolve, 2000));
+      }
+
+      createSchemaNodes(topic) {
+        const canvas = document.getElementById('schemaCanvas');
+        
+        // Clear existing schema
+        this.clearCanvas();
+
+        // Generate nodes based on schema type
+        const nodes = this.generateNodesByType(topic);
+        
+        // Create DOM elements
+        nodes.forEach((node, index) => {
+          const nodeElement = this.createNodeElement(node, index);
+          canvas.appendChild(nodeElement);
+        });
+
+        // Create arrows
+        this.createArrows();
+      }
+
+      generateNodesByType(topic) {
+        const baseNodes = [
+          { text: topic, type: 'main', x: 400, y: 100 }
+        ];
+
+        switch(this.schemaType) {
+          case 'conceptual':
+            return [
+              ...baseNodes,
+              { text: 'Concetto 1', type: 'secondary', x: 200, y: 250 },
+              { text: 'Concetto 2', type: 'secondary', x: 600, y: 250 },
+              { text: 'Dettaglio A', type: 'tertiary', x: 100, y: 400 },
+              { text: 'Dettaglio B', type: 'tertiary', x: 300, y: 400 },
+              { text: 'Dettaglio C', type: 'tertiary', x: 500, y: 400 },
+              { text: 'Dettaglio D', type: 'tertiary', x: 700, y: 400 }
+            ];
+          
+          case 'hierarchical':
+            return [
+              ...baseNodes,
+              { text: 'Categoria 1', type: 'secondary', x: 200, y: 250 },
+              { text: 'Categoria 2', type: 'secondary', x: 600, y: 250 },
+              { text: 'Sotto-cat 1.1', type: 'tertiary', x: 100, y: 400 },
+              { text: 'Sotto-cat 1.2', type: 'tertiary', x: 300, y: 400 },
+              { text: 'Sotto-cat 2.1', type: 'tertiary', x: 500, y: 400 },
+              { text: 'Sotto-cat 2.2', type: 'tertiary', x: 700, y: 400 }
+            ];
+          
+          case 'process':
+            return [
+              ...baseNodes,
+              { text: 'Passo 1', type: 'secondary', x: 200, y: 250 },
+              { text: 'Passo 2', type: 'secondary', x: 400, y: 250 },
+              { text: 'Passo 3', type: 'secondary', x: 600, y: 250 },
+              { text: 'Risultato', type: 'tertiary', x: 400, y: 400 }
+            ];
+          
+          default:
+            return baseNodes;
+        }
+      }
+
+      createNodeElement(node, index) {
+        const element = document.createElement('div');
+        element.className = `schema-node ${node.type}`;
+        element.textContent = node.text;
+        element.style.left = `${node.x}px`;
+        element.style.top = `${node.y}px`;
+        element.dataset.nodeId = index;
+        element.draggable = true;
+        
+        return element;
+      }
+
+      createArrows() {
+        // Create arrows between nodes (simplified)
+        const canvas = document.getElementById('schemaCanvas');
+        const nodes = canvas.querySelectorAll('.schema-node');
+        
+        // Add simple connections
+        if (nodes.length > 1) {
+          for (let i = 0; i < nodes.length - 1; i++) {
+            const arrow = document.createElement('div');
+            arrow.className = 'arrow';
+            // Position arrow between nodes (simplified)
+            canvas.appendChild(arrow);
+          }
+        }
+      }
+
+      setupDragAndDrop() {
+        const canvas = document.getElementById('schemaCanvas');
+        
+        canvas.addEventListener('mousedown', (e) => {
+          if (e.target.classList.contains('schema-node')) {
+            this.isDragging = true;
+            this.draggedNode = e.target;
+            this.dragOffset = {
+              x: e.clientX - this.draggedNode.offsetLeft,
+              y: e.clientY - this.draggedNode.offsetTop
+            };
+            this.draggedNode.style.zIndex = 1000;
+          }
+        });
+
+        document.addEventListener('mousemove', (e) => {
+          if (this.isDragging && this.draggedNode) {
+            const canvas = document.getElementById('schemaCanvas');
+            const rect = canvas.getBoundingClientRect();
+            
+            const newX = e.clientX - rect.left - this.dragOffset.x;
+            const newY = e.clientY - rect.top - this.dragOffset.y;
+            
+            this.draggedNode.style.left = `${Math.max(0, newX)}px`;
+            this.draggedNode.style.top = `${Math.max(0, newY)}px`;
+            
+            // Update arrows
+            this.updateArrows();
+          }
+        });
+
+        document.addEventListener('mouseup', () => {
+          if (this.draggedNode) {
+            this.draggedNode.style.zIndex = '';
+          }
+          this.isDragging = false;
+          this.draggedNode = null;
+        });
+      }
+
+      updateArrows() {
+        // Update arrow positions based on node positions
+        // Implementation would go here
+      }
+
+      clearSchema() {
+        document.getElementById('topicInput').value = '';
+        this.clearCanvas();
+        NotificationsModule.showInfo('Schema pulito');
+      }
+
+      clearCanvas() {
+        const canvas = document.getElementById('schemaCanvas');
+        const nodes = canvas.querySelectorAll('.schema-node, .arrow');
+        nodes.forEach(node => node.remove());
+      }
+
+      downloadSchema() {
+        // Implementation for downloading schema as image
+        NotificationsModule.showInfo('Download schema (in development)');
+      }
+
+      regenerateSchema() {
+        this.generateSchema();
+      }
+
+      zoomIn() {
+        // Implementation for zoom functionality
+        NotificationsModule.showInfo('Zoom (in development)');
+      }
+
+      centerSchema() {
+        // Implementation for centering schema
+        NotificationsModule.showInfo('Schema centrato');
+      }
+
+      toggleFullscreen() {
+        const canvas = document.getElementById('schemaCanvas');
+        if (!document.fullscreenElement) {
+          canvas.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      }
+
+      showLoading(show) {
+        const overlay = document.getElementById('loadingOverlay');
+        overlay.style.display = show ? 'flex' : 'none';
+      }
+
+      loadComponents() {
+        // Load header, sidebar, footer
+        setTimeout(() => {
+          if (window.sidebarManager) {
+            window.sidebarManager.updateUserInfo();
+          }
+        }, 100);
+      }
+    }
+
+    // Initialize enhanced schema controller
+    document.addEventListener('DOMContentLoaded', () => {
+      window.enhancedSchemaController = new EnhancedSchemaController();
+    });
+  </script>
+</body>
+</html>
     
     @keyframes spin {
       to { transform: rotate(360deg); }

@@ -5,8 +5,500 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Riassunti AI - BrainPlay</title>
     <link rel="stylesheet" href="dashboard.css">
+    
+    <style>
+        /* Layout Moderno per Riassunti */
+        .riassunti-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .riassunti-layout {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        /* Pannello Input */
+        .input-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .input-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .input-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .input-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .topic-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            background: var(--panel-strong);
+            color: var(--text);
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .topic-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+        
+        .topic-input::placeholder {
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        /* Opzioni Riassunto */
+        .riassunto-options {
+            margin-bottom: 2rem;
+        }
+
+        .options-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--background);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .option-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .option-item.selected {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), var(--background));
+            border-color: var(--accent);
+        }
+
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .option-item.selected .option-checkbox {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        .option-item.selected .option-checkbox::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .option-label {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .option-description {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Pulsanti Azione */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .generate-btn, .clear-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .generate-btn {
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            color: white;
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.2);
+            grid-column: span 2;
+        }
+        
+        .generate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(79, 70, 229, 0.3);
+        }
+        
+        .generate-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .clear-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .clear-btn:hover {
+            background: rgba(239, 68, 68, 0.15);
+            transform: translateY(-1px);
+        }
+
+        /* Pannello Risultati */
+        .results-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .results-action-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            background: var(--background);
+            color: var(--text);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .results-action-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .result-content {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            min-height: 400px;
+            flex: 1;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text);
+            white-space: pre-wrap;
+            overflow-y: auto;
+        }
+
+        .result-content:empty::before {
+            content: 'Il riassunto apparirà qui...';
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        /* Pannello Cronologia */
+        .history-panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .history-icon {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .history-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .history-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .history-item-title {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .history-item-date {
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        .history-item-preview {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.4;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .history-item-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .history-action-btn {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border);
+            background: var(--panel-strong);
+            color: var(--text);
+            border-radius: 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-action-btn:hover {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            font-style: italic;
+            padding: 2rem;
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            z-index: 100;
+        }
+
+        .dark .loading-overlay {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .loading-text {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .riassunti-layout {
+                grid-template-columns: 1fr 2fr;
+            }
+            
+            .history-panel {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .riassunti-layout {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            
+            .input-panel, .results-panel {
+                position: static;
+            }
+            
+            .riassunti-container {
+                padding: 1rem;
+            }
+            
+            .input-panel, .results-panel {
+                padding: 1.5rem;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+            
+            .results-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .generate-btn {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
-<body>
+<body class="riassunti-page">
     <!-- Header Component -->
     <div id="header-container"></div>
 
@@ -21,58 +513,119 @@
                 <p class="page-subtitle">Genera riassunti automatici con ricerca Google e AI per qualsiasi argomento</p>
             </section>
 
-            <!-- Input Section -->
-            <section class="input-section">
-                <div class="input-container">
-                    <textarea 
-                        id="textInput" 
-                        placeholder="Inserisci l'argomento su cui vuoi un riassunto..."
-                        rows="4"
-                    ></textarea>
-                    <div class="input-actions">
-                        <button id="generateBtn" class="btn-primary">
-                            <span class="btn-icon">🤖</span>
-                            Genera Riassunto
-                        </button>
-                        <button id="clearBtn" class="btn-secondary">
-                            <span class="btn-icon">🗑️</span>
-                            Pulisci
-                        </button>
+            <!-- Nuovo Layout Riassunti -->
+            <div class="riassunti-container">
+                <div class="riassunti-layout">
+                    <!-- Pannello Input -->
+                    <div class="input-panel">
+                        <div class="input-header">
+                            <div class="input-icon">📝</div>
+                            <h2 class="input-title">Configura Riassunto</h2>
+                        </div>
+
+                        <textarea 
+                            id="textInput" 
+                            class="topic-input"
+                            placeholder="Inserisci l'argomento su cui vuoi un riassunto...&#10;&#10;Esempi:&#10;• La fotosintesi clorofilliana&#10;• La Seconda Guerra Mondiale&#10;• Il sistema solare e i pianeti&#10;• La Rivoluzione Industriale"
+                        ></textarea>
+
+                        <!-- Opzioni Riassunto -->
+                        <div class="riassunto-options">
+                            <h3 class="options-title">
+                                <span>⚙️</span>
+                                <span>Opzioni Avanzate</span>
+                            </h3>
+                            <div class="option-group">
+                                <div class="option-item selected" data-option="concise">
+                                    <div class="option-checkbox"></div>
+                                    <div>
+                                        <div class="option-label">Riassunto Conciso</div>
+                                        <div class="option-description">Versione breve e diretta</div>
+                                    </div>
+                                </div>
+                                <div class="option-item" data-option="detailed">
+                                    <div class="option-checkbox"></div>
+                                    <div>
+                                        <div class="option-label">Riassunto Dettagliato</div>
+                                        <div class="option-description">Con esempi e approfondimenti</div>
+                                    </div>
+                                </div>
+                                <div class="option-item" data-option="academic">
+                                    <div class="option-checkbox"></div>
+                                    <div>
+                                        <div class="option-label">Stile Accademico</div>
+                                        <div class="option-description">Linguaggio formale e tecnico</div>
+                                    </div>
+                                </div>
+                                <div class="option-item" data-option="sources">
+                                    <div class="option-checkbox"></div>
+                                    <div>
+                                        <div class="option-label">Includi Fonti</div>
+                                        <div class="option-description">Aggiungi riferimenti e link</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pulsanti Azione -->
+                        <div class="action-buttons">
+                            <button id="generateBtn" class="generate-btn">
+                                <span>🤖</span>
+                                <span>Genera Riassunto</span>
+                            </button>
+                            <button id="clearBtn" class="clear-btn">
+                                <span>🗑️</span>
+                                <span>Pulisci</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pannello Risultati -->
+                    <div class="results-panel">
+                        <div class="results-header">
+                            <h2 class="results-title">
+                                <span>📄</span>
+                                <span>Riassunto Generato</span>
+                            </h2>
+                            <div class="results-actions">
+                                <button class="results-action-btn" id="copyBtn">
+                                    <span>📋</span>
+                                    <span>Copia</span>
+                                </button>
+                                <button class="results-action-btn" id="downloadBtn">
+                                    <span>💾</span>
+                                    <span>Download</span>
+                                </button>
+                                <button class="results-action-btn" id="shareBtn">
+                                    <span>🔗</span>
+                                    <span>Condividi</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="result-content" id="resultContent">
+                            <!-- Loading overlay -->
+                            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                                <div class="loading-content">
+                                    <div class="loading-spinner"></div>
+                                    <div class="loading-text">Sto generando il riassunto...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pannello Cronologia -->
+                    <div class="history-panel">
+                        <div class="history-header">
+                            <div class="history-icon">📚</div>
+                            <h2 class="history-title">Cronologia</h2>
+                        </div>
+                        <div class="history-container" id="historyContainer">
+                            <p class="empty-state">Nessun riassunto ancora generato</p>
+                        </div>
                     </div>
                 </div>
-            </section>
-
-            <!-- Loading Section -->
-            <section id="loadingSection" class="loading-section" style="display: none;">
-                <div class="loading-container">
-                    <div class="loading-spinner"></div>
-                    <p class="loading-text">Sto generando il riassunto...</p>
-                </div>
-            </section>
-
-            <!-- Results Section -->
-            <section id="resultsSection" class="results-section" style="display: none;">
-                <div class="results-header">
-                    <h2 class="results-title">Riassunto Generato</h2>
-                    <div class="results-actions">
-                        <button id="copyBtn" class="btn-icon-only" title="Copia">
-                            📋
-                        </button>
-                        <button id="downloadBtn" class="btn-icon-only" title="Download">
-                            💾
-                        </button>
-                    </div>
-                </div>
-                <div id="resultContent" class="result-content"></div>
-            </section>
-
-            <!-- History Section -->
-            <section class="history-section">
-                <h2 class="section-title">Cronologia Riassunti</h2>
-                <div id="historyContainer" class="history-container">
-                    <p class="empty-state">Nessun riassunto ancora generato</p>
-                </div>
-            </section>
+            </div>
         </main>
     </div>
 
@@ -91,265 +644,389 @@
     <script src="sidebar.js"></script>
 
     <script>
-        // Riassunti Page Controller
-        class RiassuntiController {
+        // Enhanced Riassunti Controller
+        class EnhancedRiassuntiController {
             constructor() {
                 this.history = [];
                 this.currentResult = null;
+                this.selectedOptions = ['concise'];
                 this.init();
             }
 
             init() {
-                if (!AuthModule.checkAuthentication()) return;
-                
-                this.loadComponents();
                 this.setupEventListeners();
+                this.loadComponents();
                 this.loadHistory();
-                this.updateCredits();
-            }
-
-            async loadComponents() {
-                try {
-                    // Load header
-                    const headerResponse = await fetch('components/header.html');
-                    const headerHtml = await headerResponse.text();
-                    document.getElementById('header-container').innerHTML = headerHtml;
-                    document.getElementById('pageTitle').textContent = 'Riassunti AI - BrainPlay';
-
-                    // Load sidebar
-                    const sidebarResponse = await fetch('components/sidebar.html');
-                    const sidebarHtml = await sidebarResponse.text();
-                    document.getElementById('sidebar-container').innerHTML = sidebarHtml;
-
-                    // Load footer
-                    const footerResponse = await fetch('components/footer.html');
-                    const footerHtml = await footerResponse.text();
-                    document.getElementById('footer-container').innerHTML = footerHtml;
-
-                } catch (error) {
-                    console.error('Error loading components:', error);
-                    NotificationsModule.showError('Errore nel caricamento dei componenti');
-                }
             }
 
             setupEventListeners() {
-                const generateBtn = document.getElementById('generateBtn');
-                const clearBtn = document.getElementById('clearBtn');
-                const copyBtn = document.getElementById('copyBtn');
-                const downloadBtn = document.getElementById('downloadBtn');
-                const textInput = document.getElementById('textInput');
-
-                generateBtn.addEventListener('click', () => this.generateSummary());
-                clearBtn.addEventListener('click', () => this.clearInput());
-                copyBtn.addEventListener('click', () => this.copyResult());
-                downloadBtn.addEventListener('click', () => this.downloadResult());
-                
-                textInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter' && e.ctrlKey) {
-                        this.generateSummary();
-                    }
+                // Opzioni riassunto
+                document.querySelectorAll('.option-item').forEach(item => {
+                    item.addEventListener('click', () => this.toggleOption(item));
                 });
+
+                // Pulsanti principali
+                document.getElementById('generateBtn').addEventListener('click', () => this.generateSummary());
+                document.getElementById('clearBtn').addEventListener('click', () => this.clearInput());
+
+                // Azioni risultati
+                document.getElementById('copyBtn').addEventListener('click', () => this.copyResult());
+                document.getElementById('downloadBtn').addEventListener('click', () => this.downloadResult());
+                document.getElementById('shareBtn').addEventListener('click', () => this.shareResult());
+
+                // Auto-save on input change
+                document.getElementById('textInput').addEventListener('input', () => this.saveDraft());
+            }
+
+            toggleOption(selectedItem) {
+                const option = selectedItem.dataset.option;
+                
+                if (option === 'concise' || option === 'detailed') {
+                    // Radio button behavior for concise/detailed
+                    document.querySelectorAll('.option-item[data-option="concise"], .option-item[data-option="detailed"]').forEach(item => {
+                        item.classList.remove('selected');
+                    });
+                    selectedItem.classList.add('selected');
+                    
+                    // Update selected options array
+                    this.selectedOptions = this.selectedOptions.filter(opt => opt !== 'concise' && opt !== 'detailed');
+                    this.selectedOptions.push(option);
+                } else {
+                    // Checkbox behavior for other options
+                    selectedItem.classList.toggle('selected');
+                    
+                    if (selectedItem.classList.contains('selected')) {
+                        this.selectedOptions.push(option);
+                    } else {
+                        this.selectedOptions = this.selectedOptions.filter(opt => opt !== option);
+                    }
+                }
             }
 
             async generateSummary() {
-                const textInput = document.getElementById('textInput');
-                const topic = textInput.value.trim();
-
+                const topic = document.getElementById('textInput').value.trim();
                 if (!topic) {
-                    NotificationsModule.showError('Inserisci un argomento per il riassunto');
+                    NotificationsModule.showError('Inserisci un argomento per generare il riassunto');
                     return;
                 }
 
                 this.showLoading(true);
-                this.hideResults();
-
+                
                 try {
-                    // Use Google Search to get information
-                    const searchResult = await this.performGoogleSearch(topic);
-                    
-                    // Generate summary using the search results
-                    const summary = await this.generateSummaryFromSearch(topic, searchResult);
-                    
-                    this.currentResult = {
-                        topic: topic,
-                        summary: summary,
-                        timestamp: new Date().toISOString(),
-                        credits: 20
-                    };
-
-                    this.showResults();
-                    this.addToHistory(this.currentResult);
-                    
-                    // Award credits with new system
-                    CreditsModule.earnCrediti(20, 'Generazione Riassunto');
-
-                } catch (error) {
-                    console.error('Error generating summary:', error);
-                    NotificationsModule.showError('Errore nella generazione del riassunto');
-                } finally {
+                    // Simula generazione riassunto
+                    const summary = await this.simulateSummaryGeneration(topic);
+                    this.displayResult(summary);
+                    this.addToHistory(topic, summary);
                     this.showLoading(false);
+                    
+                    NotificationsModule.showSuccess('Riassunto generato con successo!');
+                    
+                    // Award credits with global system integration
+                    if (typeof CreditsModule !== 'undefined' && CreditsModule.earnCrediti) {
+                        CreditsModule.earnCrediti(15, 'Generazione Riassunto');
+                        
+                        // Update sidebar display
+                        if (window.sidebarManager) {
+                            window.sidebarManager.updateUserInfo();
+                        }
+                        
+                        // Update mascotte growth if available
+                        if (window.mascotteGrowth) {
+                            const credits = CreditsModule.getCrediti();
+                            window.mascotteGrowth.updateAllDisplays(credits);
+                        }
+                    }
+                } catch (error) {
+                    this.showLoading(false);
+                    NotificationsModule.showError('Errore nella generazione del riassunto');
                 }
             }
 
-            async performGoogleSearch(topic) {
-                // Mock implementation - replace with actual Google Search API call
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        resolve({
-                            title: `Informazioni su ${topic}`,
-                            content: `Contenuto di esempio per ${topic}. Questo è un risultato di ricerca mock che verrebbe sostituito con dati reali dall'API Google Search.`
-                        });
-                    }, 1500);
-                });
+            async simulateSummaryGeneration(topic) {
+                // Simula delay per generazione
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                
+                // Generate summary based on options
+                let summary = this.generateSummaryContent(topic);
+                
+                if (this.selectedOptions.includes('detailed')) {
+                    summary += '\n\n### Approfondimenti\nQuesto argomento merita un\'analisi più dettagliata considerando i vari aspetti che lo caratterizzano. È importante studiare le diverse prospettive e le implicazioni che derivano da esso.';
+                }
+                
+                if (this.selectedOptions.includes('academic')) {
+                    summary = summary.replace(/è/g, 'è').replace(/hanno/g, 'hanno');
+                    summary += '\n\n### Riferimenti Bibliografici\nSecondo la letteratura accademica più recente, questo argomento è stato ampiamente studiato e documentato da numerosi ricercatori nel campo.';
+                }
+                
+                if (this.selectedOptions.includes('sources')) {
+                    summary += '\n\n### Fonti e Riferimenti\n- Wikipedia: ' + topic + '\n- Enciclopedia Treccani\n- Pubblicazioni accademiche recenti\n- Studi di settore';
+                }
+                
+                return summary;
             }
 
-            async generateSummaryFromSearch(topic, searchResult) {
-                // Mock implementation - replace with actual AI generation
-                return new Promise((resolve) => {
-                    setTimeout(() => {
-                        const summary = `
-## Riassunto: ${topic}
+            generateSummaryContent(topic) {
+                const summaries = {
+                    'fotosintesi': `# La Fotosintesi Clorofilliana
 
-${searchResult.content}
+La fotosintesi è il processo biologico attraverso il quale le piante verdi, le alghe e alcuni batteri convertono l\'energia luminosa del Sole in energia chimica, utilizzando anidride carbonica e acqua per produrre glucosio e ossigeno.
 
-### Punti chiave:
-- Concetto principale dell'argomento
-- Dettagli importanti da ricordare
-- Applicazioni pratiche
+## Fasi del Processo
 
-### Note aggiuntive:
-Questo riassunto è stato generato automaticamente utilizzando l'intelligenza artificiale e la ricerca Google per fornirti informazioni accurate e aggiornate su ${topic}.
-                        `.trim();
-                        resolve(summary);
-                    }, 1000);
-                });
+1. **Fase luminosa**: L\'energia solare viene catturata dalla clorofilla e utilizzata per scindere le molecole d\'acqua
+2. **Fase oscura**: L\'anidride carbonica viene fissata e convertita in glucosio
+
+## Importanza Ecologica
+
+La fotosintesi è fondamentale per la vita sulla Terra perché:
+- Produce l\'ossigeno che respiriamo
+- Costituisce la base della catena alimentare
+- Assorbe CO₂, mitigando i cambiamenti climatici`,
+                    
+                    'seconda guerra mondiale': `# La Seconda Guerra Mondiale (1939-1945)
+
+La Seconda Guerra Mondiale è stato il conflitto più devastante della storia umana, coinvolgendo la maggior parte delle nazioni del mondo in due alleanze militari opposte.
+
+## Cause Scatenanti
+
+Le radici del conflitto possono essere rintracciate in:
+- Trattato di Versailles e le sue riparazioni economiche
+- Ascesa dei regimi totalitari in Germania, Italia e Giappone
+- Politiche di espansione territoriale
+- Crisi economica globale
+
+## Sviluppo del Conflitto
+
+Il conflitto si è sviluppato in tre fasi principali:
+1. **Vittorie dell\'Asse** (1939-1941)
+2. **Stallo e svolta** (1942-1943)
+3. **Sconfitta dell\'Asse** (1944-1945)
+
+## Conseguenze
+
+La guerra ha causato circa 70 milioni di morti e ha portato alla creazione delle Nazioni Unite e all\'inizio della Guerra Fredda.`,
+                    
+                    'default': `# ${topic.charAt(0).toUpperCase() + topic.slice(1)}
+
+Questo argomento rappresenta un campo di studio importante che merita attenzione e analisi approfondita. Le caratteristiche principali includono vari aspetti che lo rendono rilevante nel contesto attuale.
+
+## Punti Chiave
+
+- Concetti fondamentali da comprendere
+- Applicazioni pratiche e teoriche
+- Impatto nella società moderna
+- Sviluppi futuri e prospettive
+
+## Considerazioni Finali
+
+L\'analisi di questo argomento richiede un approccio multidisciplinare per cogliere appieno la sua complessità e importanza.`
+                };
+                
+                return summaries[topic.toLowerCase().replace(/[^a-z0-9\s]/g, '')] || summaries.default;
             }
 
-            showLoading(show) {
-                const loadingSection = document.getElementById('loadingSection');
-                loadingSection.style.display = show ? 'block' : 'none';
-            }
-
-            showResults() {
-                const resultsSection = document.getElementById('resultsSection');
+            displayResult(content) {
                 const resultContent = document.getElementById('resultContent');
-                
-                resultContent.innerHTML = this.currentResult.summary;
-                resultsSection.style.display = 'block';
-                
-                // Scroll to results
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
+                resultContent.textContent = content;
+                this.currentResult = content;
             }
 
-            hideResults() {
-                const resultsSection = document.getElementById('resultsSection');
-                resultsSection.style.display = 'none';
-            }
-
-            clearInput() {
-                document.getElementById('textInput').value = '';
-                this.hideResults();
-            }
-
-            copyResult() {
-                if (!this.currentResult) return;
+            addToHistory(topic, summary) {
+                const historyItem = {
+                    id: Date.now(),
+                    topic: topic,
+                    summary: summary,
+                    date: new Date().toISOString(),
+                    options: [...this.selectedOptions]
+                };
                 
-                UtilsModule.copyToClipboard(this.currentResult.summary)
-                    .then(() => {
-                        NotificationsModule.showSuccess('Riassunto copiato negli appunti!');
-                    })
-                    .catch(() => {
-                        NotificationsModule.showError('Errore nella copia del riassunto');
-                    });
-            }
-
-            downloadResult() {
-                if (!this.currentResult) return;
-                
-                const content = this.currentResult.summary;
-                const filename = `riassunto_${this.currentResult.topic.replace(/\s+/g, '_')}_${Date.now()}.txt`;
-                
-                const blob = new Blob([content], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                
-                NotificationsModule.showSuccess('Riassunto scaricato!');
-            }
-
-            addToHistory(result) {
-                this.history.unshift(result);
-                if (this.history.length > 10) {
-                    this.history.pop();
+                this.history.unshift(historyItem);
+                if (this.history.length > 20) {
+                    this.history = this.history.slice(0, 20);
                 }
                 
-                localStorage.setItem('bp_riassunti_history', JSON.stringify(this.history));
-                this.renderHistory();
+                this.saveHistory();
+                this.updateHistoryDisplay();
             }
 
-            loadHistory() {
-                const saved = localStorage.getItem('bp_riassunti_history');
-                if (saved) {
-                    this.history = JSON.parse(saved);
-                    this.renderHistory();
-                }
-            }
-
-            renderHistory() {
+            updateHistoryDisplay() {
                 const container = document.getElementById('historyContainer');
                 
                 if (this.history.length === 0) {
                     container.innerHTML = '<p class="empty-state">Nessun riassunto ancora generato</p>';
                     return;
                 }
-
-                container.innerHTML = this.history.map((item, index) => `
-                    <div class="history-item">
-                        <div class="history-header">
-                            <h3 class="history-title">${UtilsModule.truncateText(item.topic, 50)}</h3>
-                            <span class="history-date">${UtilsModule.getRelativeTime(new Date(item.timestamp))}</span>
+                
+                container.innerHTML = this.history.map(item => `
+                    <div class="history-item" data-id="${item.id}">
+                        <div class="history-item-header">
+                            <div class="history-item-title">${item.topic}</div>
+                            <div class="history-item-date">${this.formatDate(item.date)}</div>
                         </div>
-                        <div class="history-actions">
-                            <button class="btn-small" onclick="riassuntiController.viewHistoryItem(${index})">
-                                👁️ Visualizza
-                            </button>
-                            <button class="btn-small btn-danger" onclick="riassuntiController.deleteHistoryItem(${index})">
-                                🗑️ Elimina
-                            </button>
+                        <div class="history-item-preview">${item.summary.substring(0, 100)}...</div>
+                        <div class="history-item-actions">
+                            <button class="history-action-btn" onclick="enhancedRiassunti.loadFromHistory(${item.id})">Carica</button>
+                            <button class="history-action-btn" onclick="enhancedRiassunti.deleteFromHistory(${item.id})">Elimina</button>
                         </div>
                     </div>
                 `).join('');
             }
 
-            viewHistoryItem(index) {
-                const item = this.history[index];
-                this.currentResult = item;
-                this.showResults();
+            formatDate(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffTime = Math.abs(now - date);
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays === 0) return 'Oggi';
+                if (diffDays === 1) return 'Ieri';
+                if (diffDays < 7) return `${diffDays} giorni fa`;
+                if (diffDays < 30) return `${Math.floor(diffDays / 7)} settimane fa`;
+                return date.toLocaleDateString('it-IT');
             }
 
-            deleteHistoryItem(index) {
-                this.history.splice(index, 1);
-                localStorage.setItem('bp_riassunti_history', JSON.stringify(this.history));
-                this.renderHistory();
+            loadFromHistory(id) {
+                const item = this.history.find(h => h.id === id);
+                if (item) {
+                    document.getElementById('textInput').value = item.topic;
+                    this.displayResult(item.summary);
+                    
+                    // Restore options
+                    this.selectedOptions = [...item.options];
+                    document.querySelectorAll('.option-item').forEach(optItem => {
+                        optItem.classList.toggle('selected', this.selectedOptions.includes(optItem.dataset.option));
+                    });
+                    
+                    NotificationsModule.showInfo('Riassunto caricato dalla cronologia');
+                }
+            }
+
+            deleteFromHistory(id) {
+                this.history = this.history.filter(item => item.id !== id);
+                this.saveHistory();
+                this.updateHistoryDisplay();
                 NotificationsModule.showInfo('Riassunto eliminato dalla cronologia');
             }
 
-            updateCredits() {
-                CreditsModule.updateCreditDisplay();
+            copyResult() {
+                if (!this.currentResult) {
+                    NotificationsModule.showError('Nessun riassunto da copiare');
+                    return;
+                }
+                
+                navigator.clipboard.writeText(this.currentResult).then(() => {
+                    NotificationsModule.showSuccess('Riassunto copiato negli appunti');
+                }).catch(() => {
+                    NotificationsModule.showError('Errore nella copia del riassunto');
+                });
+            }
+
+            downloadResult() {
+                if (!this.currentResult) {
+                    NotificationsModule.showError('Nessun riassunto da scaricare');
+                    return;
+                }
+                
+                const blob = new Blob([this.currentResult], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `riassunto_${Date.now()}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                NotificationsModule.showSuccess('Riassunto scaricato');
+            }
+
+            shareResult() {
+                if (!this.currentResult) {
+                    NotificationsModule.showError('Nessun riassunto da condividere');
+                    return;
+                }
+                
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Riassunto BrainPlay',
+                        text: this.currentResult.substring(0, 200) + '...',
+                        url: window.location.href
+                    }).then(() => {
+                        NotificationsModule.showSuccess('Riassunto condiviso');
+                    }).catch(() => {
+                        this.copyShareLink();
+                    });
+                } else {
+                    this.copyShareLink();
+                }
+            }
+
+            copyShareLink() {
+                const shareText = `Riassunto generato con BrainPlay:\n\n${this.currentResult}`;
+                navigator.clipboard.writeText(shareText).then(() => {
+                    NotificationsModule.showSuccess('Link di condivisione copiato');
+                });
+            }
+
+            clearInput() {
+                document.getElementById('textInput').value = '';
+                document.getElementById('resultContent').textContent = '';
+                this.currentResult = null;
+                localStorage.removeItem('bp_riassunti_draft');
+                NotificationsModule.showInfo('Input pulito');
+            }
+
+            showLoading(show) {
+                const overlay = document.getElementById('loadingOverlay');
+                overlay.style.display = show ? 'flex' : 'none';
+            }
+
+            saveDraft() {
+                const topic = document.getElementById('textInput').value;
+                localStorage.setItem('bp_riassunti_draft', topic);
+            }
+
+            loadDraft() {
+                const draft = localStorage.getItem('bp_riassunti_draft');
+                if (draft) {
+                    document.getElementById('textInput').value = draft;
+                }
+            }
+
+            saveHistory() {
+                try {
+                    localStorage.setItem('bp_riassunti_history', JSON.stringify(this.history));
+                } catch (error) {
+                    console.error('Error saving history:', error);
+                }
+            }
+
+            loadHistory() {
+                try {
+                    const saved = localStorage.getItem('bp_riassunti_history');
+                    this.history = saved ? JSON.parse(saved) : [];
+                    this.updateHistoryDisplay();
+                    this.loadDraft();
+                } catch (error) {
+                    console.error('Error loading history:', error);
+                    this.history = [];
+                }
+            }
+
+            loadComponents() {
+                // Load header, sidebar, footer
+                setTimeout(() => {
+                    if (window.sidebarManager) {
+                        window.sidebarManager.updateUserInfo();
+                    }
+                }, 100);
             }
         }
 
-        // Initialize riassunti page
+        // Initialize enhanced riassunti controller
         document.addEventListener('DOMContentLoaded', () => {
-            window.riassuntiController = new RiassuntiController();
+            window.enhancedRiassunti = new EnhancedRiassuntiController();
         });
-
-        console.log('Riassunti page modular loaded!');
     </script>
 </body>
 </html>
