@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Negozio Game - BrainPlay</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/avatar.css">
+    <style>
+        .game-shop-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .shop-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--accent), #818cf8);
+            padding: 2rem;
+            border-radius: 20px;
+            color: white;
+        }
+
+        .shop-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .shop-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+
+        .currency-display {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .currency-card {
+            background: rgba(255,255,255,0.2);
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .currency-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.3);
+        }
+
+        .currency-icon {
+            font-size: 1.5rem;
+        }
+
+        .currency-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .shop-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .shop-tab {
+            background: var(--panel);
+            border: 2px solid var(--border);
+            padding: 0.75rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-tab::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .shop-tab:hover::before {
+            left: 100%;
+        }
+
+        .shop-tab:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .shop-tab.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .shop-content {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .featured-section {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 20px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .featured-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--rarity-color, #9ca3af);
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--accent);
+        }
+
+        .product-card.owned {
+            border-color: #4ade80;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.05), var(--panel));
+        }
+
+        .product-card.equipped {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), var(--panel));
+        }
+
+        .product-rarity {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: white;
+            text-transform: uppercase;
+        }
+
+        .product-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+            text-align: center;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .product-description {
+            color: var(--muted);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .product-prices {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .price-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .price-credits {
+            background: rgba(74, 222, 128, 0.1);
+            color: #4ade80;
+            border: 1px solid #4ade80;
+        }
+
+        .price-premium {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .owned-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: #4ade80;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .equipped-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .limited-offer {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .stats-section {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--background);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .rarity-legend {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .rarity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .game-shop-container {
+                padding: 1rem;
+            }
+
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .shop-tabs {
+                justify-content: flex-start;
+            }
+
+            .currency-display {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .shop-title {
+                font-size: 2rem;
+            }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading animations */
+        .loading-skeleton {
+            background: linear-gradient(90deg, var(--background) 25%, var(--border) 50%, var(--background) 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Component -->
+    <div id="header-container"></div>
+
+    <div class="page-shell">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <!-- Shop Header -->
+            <section class="shop-header">
+                <h1 class="shop-title">🛍️ Negozio Game</h1>
+                <p class="shop-subtitle">Scopri oggetti esclusivi e personalizza la tua esperienza!</p>
+                
+                <div class="currency-display">
+                    <div class="currency-card">
+                        <span class="currency-icon">💰</span>
+                        <span class="currency-amount" id="creditsDisplay">0</span>
+                    </div>
+                    <div class="currency-card">
+                        <span class="currency-icon">💎</span>
+                        <span class="currency-amount" id="premiumDisplay">0</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Rarity Legend -->
+            <section class="rarity-legend" id="rarityLegend">
+                <!-- Rarity items will be loaded here -->
+            </section>
+
+            <!-- Shop Tabs -->
+            <section class="shop-tabs" id="shopTabs">
+                <!-- Tabs will be loaded here -->
+            </section>
+
+            <!-- Featured Section -->
+            <section class="featured-section" id="featuredSection">
+                <h2 class="featured-title">🔥 Offerte Speciali</h2>
+                <div class="featured-grid" id="featuredGrid">
+                    <!-- Featured items will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Products Grid -->
+            <section class="shop-content">
+                <div class="products-grid" id="productsGrid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Hidden Avatar Studio -->
+    <div id="hiddenAvatarStudio" style="display: none;">
+        <div class="hidden-avatar-container">
+            <h3>🎭 Personalizzazione Avatar</h3>
+            <div class="hidden-avatar-preview">
+                <div class="hidden-avatar-frame">
+                    <div class="hidden-avatar-background"></div>
+                    <svg width="150" height="150" viewBox="0 0 100 100" class="hidden-avatar-svg">
+                        <!-- Avatar Base -->
+                        <circle cx="50" cy="40" r="20" fill="#fdbcb4" stroke="#333" stroke-width="1"/>
+                        <circle cx="44" cy="38" r="2.5" fill="#333"/>
+                        <circle cx="56" cy="38" r="2.5" fill="#333"/>
+                        <path d="M 46 48 Q 50 51, 54 48" stroke="#333" stroke-width="1.5" fill="none"/>
+                        
+                        <!-- Containers -->
+                        <g id="hiddenHairContainer"></g>
+                        <g id="hiddenHatContainer"></g>
+                        <g id="hiddenAccessoriesContainer"></g>
+                        <rect x="30" y="65" width="40" height="25" fill="#4a90e2" rx="4"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="hidden-avatar-inventory" id="hiddenAvatarInventory">
+                <!-- Items will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="modules/auth.js"></script>
+    <script src="modules/credits.js"></script>
+    <script src="modules/notifications.js"></script>
+    <script src="modules/utils.js"></script>
+    <script src="modules/game-shop.js"></script>
+    <script src="mascotte-growth.js"></script>
+    <script src="theme-manager.js"></script>
+    <script src="sidebar.js"></script>
+
+    <script>
+        // Game Shop Controller
+        class GameShopController {
+            constructor() {
+                this.shop = null;
+                this.currentCategory = 'all';
+                this.init();
+            }
+
+            init() {
+                if (!AuthModule.checkAuthentication()) return;
+                
+                this.loadComponents();
+                this.setupEventListeners();
+                this.initializeSystems();
+            }
+
+            async loadComponents() {
+                try {
+                    // Load header
+                    const headerResponse = await fetch('components/header.html');
+                    const headerHtml = await headerResponse.text();
+                    document.getElementById('header-container').innerHTML = headerHtml;
+                    document.getElementById('pageTitle').textContent = 'Negozio Game - BrainPlay';
+
+                    // Load sidebar
+                    const sidebarResponse = await fetch('components/sidebar.html');
+                    const sidebarHtml = await sidebarResponse.text();
+                    document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+
+                    // Load footer
+                    const footerResponse = await fetch('components/footer.html');
+                    const footerHtml = await footerResponse.text();
+                    document.getElementById('footer-container').innerHTML = footerHtml;
+
+                } catch (error) {
+                    console.error('Error loading components:', error);
+                    NotificationsModule.showError('Errore nel caricamento dei componenti');
+                }
+            }
+
+            setupEventListeners() {
+                setTimeout(() => {
+                    if (window.sidebarManager) {
+                        window.sidebarManager.updateUserInfo();
+                    }
+                }, 100);
+            }
+
+            initializeSystems() {
+                // Initialize shop
+                this.shop = new GameShopModule();
+                
+                // Force refresh shop data
+                this.refreshShopData();
+                
+                // Initialize credits
+                CreditsModule.initializeCredits(100);
+                
+                // Load UI elements
+                this.loadRarityLegend();
+                this.loadTabs();
+                this.loadFeaturedItems();
+                this.loadProducts();
+                this.loadStats();
+                
+                // Initialize theme
+                if (window.themeManager) {
+                    window.themeManager.loadTheme();
+                }
+            }
+
+            refreshShopData() {
+                // Forza ricaricamento dati negozio da localStorage
+                this.shop.loadInventory();
+                this.shop.loadEquipped();
+                this.shop.loadPremiumCurrency();
+                
+                // Aggiorna display crediti
+                if (CreditsModule) {
+                    CreditsModule.updateCreditDisplay();
+                }
+            }
+
+            loadRarityLegend() {
+                const legendContainer = document.getElementById('rarityLegend');
+                const rarityConfig = this.shop.getRarityConfig();
+                
+                legendContainer.innerHTML = Object.keys(rarityConfig).map(rarity => `
+                    <div class="rarity-item" style="background: ${rarityConfig[rarity].gradient}; color: white;">
+                        <span>${rarityConfig[rarity].icon}</span>
+                        <span>${rarityConfig[rarity].name}</span>
+                    </div>
+                `).join('');
+            }
+
+            loadTabs() {
+                const tabsContainer = document.getElementById('shopTabs');
+                const categories = this.shop.getCategories();
+                
+                tabsContainer.innerHTML = categories.map(category => `
+                    <button class="shop-tab ${category.id === this.currentCategory ? 'active' : ''}" 
+                            data-category="${category.id}"
+                            onclick="gameShopController.switchCategory('${category.id}')">
+                        <span>${category.icon}</span>
+                        <span>${category.name}</span>
+                    </button>
+                `).join('');
+            }
+
+            switchCategory(categoryId) {
+                this.currentCategory = categoryId;
+                
+                // Update active tab
+                document.querySelectorAll('.shop-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                });
+                document.querySelector(`[data-category="${categoryId}"]`).classList.add('active');
+                
+                // Reload products
+                this.loadProducts();
+            }
+
+            loadFeaturedItems() {
+                const featuredContainer = document.getElementById('featuredGrid');
+                const featuredItems = ['pack-starter', 'pack-pro', 'pack-ultimate', 'pack-mega', 'boost-mega'];
+                
+                featuredContainer.innerHTML = featuredItems.map(itemId => {
+                    const product = this.shop.products[itemId];
+                    const state = this.shop.getItemState(itemId);
+                    const rarityConfig = this.shop.getRarityConfig()[product.rarity];
+                    
+                    return `
+                        <div class="product-card ${state === 'owned' ? 'owned' : ''}" 
+                             style="--rarity-color: ${rarityConfig.color};"
+                             onclick="gameShopController.showItemDetails('${itemId}')">
+                            ${state === 'owned' ? '<div class="owned-badge">ACQUISTATO</div>' : ''}
+                            <div class="limited-offer">LIMITATO</div>
+                            <div class="product-icon">${product.icon}</div>
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-prices">
+                                <div class="price-tag price-credits">
+                                    <span>💰</span>
+                                    <span>${product.price}</span>
+                                </div>
+                                ${product.euroPrice ? `
+                                    <div class="price-tag price-euro" style="background: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid #10b981;">
+                                        <span>💳</span>
+                                        <span>${product.euroPrice}</span>
+                                    </div>
+                                ` : ''}
+                                ${product.premiumPrice && !product.euroPrice ? `
+                                    <div class="price-tag price-premium">
+                                        <span>💎</span>
+                                        <span>${product.premiumPrice}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="product-actions">
+                                ${state === 'owned' && !product.consumable && product.type !== 'pack' ? 
+                                    '<span style="color: #4ade80; font-weight: 600;">✓ Già tuo</span>' :
+                                    `<button class="btn-primary" onclick="event.stopPropagation(); gameShopController.purchaseItem('${itemId}', 'credits')">
+                                        💰 Acquista
+                                    </button>` + 
+                                    (product.euroPrice ? `
+                                        <button class="btn-secondary" onclick="event.stopPropagation(); gameShopController.purchaseItem('${itemId}', 'euro')" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                            💳 ${product.euroPrice}
+                                        </button>
+                                    ` : '') +
+                                    (product.premiumPrice && !product.euroPrice ? `
+                                        <button class="btn-secondary" onclick="event.stopPropagation(); gameShopController.purchaseItem('${itemId}', 'premium')">
+                                            💎 Premium
+                                        </button>
+                                    ` : '')
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            loadProducts() {
+                const productsContainer = document.getElementById('productsGrid');
+                const products = Object.values(this.shop.products).filter(product => 
+                    this.currentCategory === 'all' || product.category === this.currentCategory
+                );
+                
+                if (products.length === 0) {
+                    productsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 3rem; color: var(--muted); grid-column: 1 / -1;">
+                            <h3>Nessun prodotto in questa categoria</h3>
+                            <p>Prova un\'altra categoria!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                productsContainer.innerHTML = products.map(product => {
+                    const state = this.shop.getItemState(product.id);
+                    const rarityConfig = this.shop.getRarityConfig()[product.rarity];
+                    
+                    return `
+                        <div class="product-card ${state === 'owned' ? 'owned' : ''} ${state === 'equipped' ? 'equipped' : ''}" 
+                             style="--rarity-color: ${rarityConfig.color};"
+                             onclick="gameShopController.showItemDetails('${product.id}')">
+                            ${state === 'owned' ? '<div class="owned-badge">ACQUISTATO</div>' : ''}
+                            ${state === 'equipped' ? '<div class="equipped-badge">EQUIPAGGIATO</div>' : ''}
+                            <div class="product-rarity" style="background: ${rarityConfig.gradient};">
+                                ${rarityConfig.icon} ${rarityConfig.name}
+                            </div>
+                            <div class="product-icon">${product.icon}</div>
+                            <h3 class="product-name">${product.name}</h3>
+                            <p class="product-description">${product.description}</p>
+                            <div class="product-prices">
+                                <div class="price-tag price-credits">
+                                    <span>💰</span>
+                                    <span>${product.price}</span>
+                                </div>
+                                ${product.premiumPrice ? `
+                                    <div class="price-tag price-premium">
+                                        <span>💎</span>
+                                        <span>${product.premiumPrice}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="product-actions">
+                                ${state === 'not-owned' ? 
+                                    `<button class="btn-primary" onclick="event.stopPropagation(); gameShopController.purchaseItem('${product.id}', 'credits')">
+                                        💰 Acquista
+                                    </button>` + 
+                                    (product.euroPrice ? `
+                                        <button class="btn-secondary" onclick="event.stopPropagation(); gameShopController.purchaseItem('${product.id}', 'euro')" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                            💳 ${product.euroPrice}
+                                        </button>
+                                    ` : '') +
+                                    (product.premiumPrice && !product.euroPrice ? `
+                                        <button class="btn-secondary" onclick="event.stopPropagation(); gameShopController.purchaseItem('${product.id}', 'premium')">
+                                            💎 Premium
+                                        </button>
+                                    ` : '')
+                                : state === 'owned' && !product.consumable && product.type !== 'pack' ? 
+                                    `<button class="btn-primary" onclick="event.stopPropagation(); gameShopController.equipItem('${product.id}')">
+                                        ⚔️ Equipaggia
+                                    </button>` : 
+                                    (state === 'owned' && (product.consumable || product.type === 'pack') ? 
+                                        '<span style="color: #4ade80; font-weight: 600;">✓ Posseduto</span>' :
+                                        `<button class="btn-secondary" onclick="event.stopPropagation(); gameShopController.unequipItem('${product.id}')">
+                                            🔄 Rimuovi
+                                        </button>`)
+                                }
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            loadStats() {
+                const statsContainer = document.getElementById('statsGrid');
+                const stats = this.shop.getStats();
+                
+                statsContainer.innerHTML = `
+                    <div class="stat-item">
+                        <div class="stat-value">${stats.ownedItems}</div>
+                        <div class="stat-label">Oggetti Posseduti</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${stats.equippedItems}</div>
+                        <div class="stat-label">Oggetti Equipaggiati</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${stats.completionRate}%</div>
+                        <div class="stat-label">Completamento</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">${stats.premiumCurrency}</div>
+                        <div class="stat-label">Valuta Premium</div>
+                    </div>
+                `;
+                
+                // Update currency displays
+                document.getElementById('creditsDisplay').textContent = CreditsModule.getCrediti();
+                document.getElementById('premiumDisplay').textContent = stats.premiumCurrency;
+            }
+
+            purchaseItem(productId, paymentType = 'credits') {
+                const result = this.shop.purchaseItem(productId, paymentType);
+                
+                if (result.success) {
+                    // Reload UI
+                    this.loadProducts();
+                    this.loadFeaturedItems();
+                    this.loadStats();
+                    
+                    // Notifica avatar controller se esiste
+                    if (window.fotoAvatarController) {
+                        window.fotoAvatarController.refreshFromPurchase(result);
+                    }
+                    
+                    // Show success message
+                    NotificationsModule.showSuccess(result.message);
+                } else {
+                    // Show error message
+                    NotificationsModule.showError(result.message);
+                }
+            }
+
+            equipItem(productId) {
+                const result = this.shop.equipItem(productId);
+                
+                if (result.success) {
+                    // Reload UI
+                    this.loadProducts();
+                    this.loadStats();
+                    
+                    // Show message
+                    if (result.action === 'equipped') {
+                        NotificationsModule.showSuccess(result.message);
+                    } else {
+                        NotificationsModule.showInfo(result.message);
+                    }
+                } else {
+                    NotificationsModule.showError(result.message);
+                }
+            }
+
+            unequipItem(productId) {
+                const result = this.shop.equipItem(productId);
+                
+                if (result.success) {
+                    // Update UI
+                    this.loadProducts();
+                    this.updateEquippedSlot(productId, true);
+                    this.updateStats();
+                    
+                    // Notifica avatar controller
+                    if (window.fotoAvatarController) {
+                        window.fotoAvatarController.refreshFromPurchase({ success: true, product: this.shop.products[productId] });
+                    }
+                    
+                    NotificationsModule.showSuccess(result.message);
+                } else {
+                    NotificationsModule.showError(result.message);
+                }
+            }
+
+            showItemDetails(productId) {
+                const product = this.shop.products[productId];
+                const state = this.shop.getItemState(productId);
+                const rarityConfig = this.shop.getRarityConfig()[product.rarity];
+                
+                // Create modal with item details
+                const modal = document.createElement('div');
+                modal.className = 'item-preview-modal';
+                modal.style.display = 'flex';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>${product.name}</h3>
+                            <button class="close-btn" onclick="this.closest('.item-preview-modal').remove()">✖️</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="preview-item">
+                                <div class="preview-icon">${product.icon}</div>
+                                <div class="preview-details">
+                                    <div class="preview-rarity rarity-${product.rarity}" style="color: ${rarityConfig.color};">
+                                        ${rarityConfig.icon} ${rarityConfig.name}
+                                    </div>
+                                    <div class="preview-description">${product.description}</div>
+                                    <div class="preview-prices">
+                                        <span class="price-tag price-credits">💰 ${product.price}</span>
+                                        ${product.premiumPrice ? `<span class="price-tag price-premium">💎 ${product.premiumPrice}</span>` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="preview-actions">
+                                ${state === 'not-owned' ? 
+                                    `<button class="btn-primary" onclick="gameShopController.purchaseItem('${productId}', 'credits'); this.closest('.item-preview-modal').remove();">
+                                        💰 Acquista
+                                    </button>` + 
+                                    (product.euroPrice ? `
+                                        <button class="btn-secondary" onclick="gameShopController.purchaseItem('${productId}', 'euro'); this.closest('.item-preview-modal').remove();" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                            💳 ${product.euroPrice}
+                                        </button>
+                                    ` : '') +
+                                    (product.premiumPrice && !product.euroPrice ? `
+                                        <button class="btn-secondary" onclick="gameShopController.purchaseItem('${productId}', 'premium'); this.closest('.item-preview-modal').remove();">
+                                            💎 Premium
+                                        </button>
+                                    ` : '')
+                                : state === 'owned' ? 
+                                    `<button class="btn-primary" onclick="gameShopController.equipItem('${productId}'); this.closest('.item-preview-modal').remove();">
+                                        ⚔️ Equipaggia
+                                    </button>` : 
+                                    `<button class="btn-secondary" onclick="gameShopController.unequipItem('${productId}'); this.closest('.item-preview-modal').remove();">
+                                        🔄 Rimuovi
+                                    </button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                // Close on background click
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.remove();
+                    }
+                });
+            }
+        }
+
+        // Initialize game shop
+        document.addEventListener('DOMContentLoaded', () => {
+            window.gameShopController = new GameShopController();
+        });
+
+        console.log('Game Shop caricato!');
+    </script>
+</body>
+</html>

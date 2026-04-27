@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avatar Studio Completo - BrainPlay</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/avatar.css">
+    <style>
+        .avatar-studio-complete {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .studio-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr 350px;
+            gap: 2rem;
+            height: 100%;
+        }
+
+        /* Avatar Preview Section */
+        .avatar-preview-section {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .preview-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .preview-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .avatar-display {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .avatar-frame {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: var(--background);
+        }
+
+        .avatar-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .avatar-svg {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+            transition: all 0.3s ease;
+        }
+
+        .avatar-frame-border {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border: 4px solid transparent;
+            border-radius: 25px;
+            z-index: 3;
+            pointer-events: none;
+            transition: all 0.5s ease;
+        }
+
+        .avatar-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .info-item {
+            background: var(--background);
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        .info-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* Inventory Section */
+        .inventory-section {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .inventory-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .inventory-filters {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:hover {
+            border-color: var(--accent);
+        }
+
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .inventory-item {
+            background: var(--background);
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inventory-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+
+        .inventory-item.equipped {
+            border-color: #4ade80;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.1), var(--background));
+        }
+
+        .inventory-item-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: block;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .inventory-item-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .inventory-item-rarity {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        .equipped-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #4ade80;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        /* Equipped Items Section */
+        .equipped-section {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .equipped-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .equipped-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .equipped-slots {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .slot {
+            background: var(--background);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .slot:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .slot.filled {
+            border-color: #4ade80;
+            background: linear-gradient(135deg, rgba(74, 222, 128, 0.05), var(--background));
+        }
+
+        .slot-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .slot-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .slot-content {
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slot-empty {
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+
+        .slot-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            text-align: center;
+        }
+
+        .slot-item-icon {
+            font-size: 2rem;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .slot-item-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.2;
+        }
+
+        .slot-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .slot:hover .slot-remove {
+            opacity: 1;
+        }
+
+        /* Emote Controls */
+        .emote-controls {
+            background: var(--panel);
+            border-radius: 20px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .emote-header {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .emote-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .emote-btn {
+            background: var(--background);
+            border: 2px solid var(--border);
+            padding: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .emote-btn:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .emote-icon {
+            font-size: 1.5rem;
+        }
+
+        .emote-name {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Rarity Colors */
+        .rarity-common { background: linear-gradient(135deg, #9ca3af, #6b7280); color: white; }
+        .rarity-rare { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .rarity-epic { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        .rarity-legendary { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+        .rarity-mythic { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes framePulse {
+            0%, 100% { box-shadow: 0 0 15px var(--frame-color); }
+            50% { box-shadow: 0 0 30px var(--frame-color); }
+        }
+
+        .avatar-frame:hover .avatar-svg {
+            animation: pulse 2s infinite;
+        }
+
+        .inventory-item:hover {
+            animation: float 2s infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .studio-layout {
+                grid-template-columns: 350px 1fr 300px;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .studio-layout {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .avatar-studio-complete {
+                padding: 1rem;
+            }
+            
+            .avatar-frame {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .inventory-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--accent);
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Component -->
+    <div id="header-container"></div>
+
+    <div class="page-shell">
+        <!-- Sidebar Component -->
+        <div id="sidebar-container"></div>
+
+        <main class="main-content">
+            <!-- Page Header -->
+            <section class="page-header">
+                <h1 class="page-title">🎭 Avatar Studio Completo</h1>
+                <p class="page-subtitle">Personalizza il tuo avatar con tutti i cosmetici disponibili!</p>
+            </section>
+
+            <!-- Avatar Studio Complete -->
+            <div class="avatar-studio-complete">
+                <div class="studio-layout">
+                    <!-- Avatar Preview Section -->
+                    <div class="avatar-preview-section">
+                        <div class="preview-header">
+                            <h2 class="preview-title">
+                                <span>🎭</span>
+                                <span>Anteprima Avatar</span>
+                            </h2>
+                            <div class="preview-controls">
+                                <button class="btn-small" onclick="avatarStudioComplete.randomizeAvatar()">🎲 Random</button>
+                                <button class="btn-small" onclick="avatarStudioComplete.resetAvatar()">🔄 Reset</button>
+                                <button class="btn-primary" onclick="avatarStudioComplete.saveAvatar()">💾 Salva</button>
+                            </div>
+                        </div>
+                        
+                        <div class="avatar-display">
+                            <div class="avatar-frame" id="avatarFrame">
+                                <div class="avatar-background" id="avatarBackground"></div>
+                                <svg width="250" height="250" viewBox="0 0 100 100" class="avatar-svg" id="avatarCanvas">
+                                    <!-- Definitions for patterns -->
+                                    <defs id="svgDefs"></defs>
+                                    
+                                    <!-- Avatar Base -->
+                                    <circle cx="50" cy="40" r="25" fill="#fdbcb4" stroke="#333" stroke-width="1" id="avatarHead"/>
+                                    <circle cx="42" cy="38" r="3" fill="#333" id="leftEye"/>
+                                    <circle cx="58" cy="38" r="3" fill="#333" id="rightEye"/>
+                                    <path d="M 45 48 Q 50 52, 55 48" stroke="#333" stroke-width="1.5" fill="none"/>
+                                    
+                                    <!-- Hair Container -->
+                                    <g id="hairContainer"></g>
+                                    
+                                    <!-- Hat Container -->
+                                    <g id="hatContainer"></g>
+                                    
+                                    <!-- Accessories Container -->
+                                    <g id="accessoriesContainer"></g>
+                                    
+                                    <!-- Body -->
+                                    <rect x="25" y="65" width="50" height="30" fill="#4a90e2" rx="5" id="avatarShirt"/>
+                                </svg>
+                                <div class="avatar-frame-border" id="avatarFrameBorder"></div>
+                            </div>
+                            
+                            <div class="avatar-info">
+                                <div class="info-item">
+                                    <div class="info-label">Livello</div>
+                                    <div class="info-value" id="avatarLevel">1</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Crediti</div>
+                                    <div class="info-value" id="avatarCredits">0</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Premium</div>
+                                    <div class="info-value" id="premiumCurrency">0 💎</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">Oggetti</div>
+                                    <div class="info-value" id="totalItems">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Emote Controls -->
+                        <div class="emote-controls">
+                            <h3 class="emote-header">🕺 Emote</h3>
+                            <div class="emote-grid" id="emoteGrid">
+                                <!-- Emotes will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Section -->
+                    <div class="inventory-section">
+                        <div class="inventory-header">
+                            <h2 class="inventory-title">
+                                <span>🎒</span>
+                                <span>Inventario</span>
+                            </h2>
+                            <div class="inventory-filters">
+                                <select id="inventoryFilter" class="filter-select" onchange="avatarStudioComplete.filterInventory(this.value)">
+                                    <option value="all">Tutti</option>
+                                    <option value="skins">Skin</option>
+                                    <option value="outfits">Vestiti</option>
+                                    <option value="hats">Cappelli</option>
+                                    <option value="accessories">Accessori</option>
+                                    <option value="backgrounds">Sfondi</option>
+                                    <option value="frames">Cornici</option>
+                                    <option value="emotes">Emote</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="inventory-grid" id="inventoryGrid">
+                            <!-- Inventory items will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Equipped Items Section -->
+                    <div class="equipped-section">
+                        <div class="equipped-header">
+                            <h2 class="equipped-title">
+                                <span>⚔️</span>
+                                <span>Equipaggiati</span>
+                            </h2>
+                            <button class="btn-small" onclick="avatarStudioComplete.unequipAll()">🔄 Rimuovi Tutto</button>
+                        </div>
+                        
+                        <div class="equipped-slots" id="equippedSlots">
+                            <!-- Slots will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer Component -->
+    <div id="footer-container"></div>
+
+    <!-- Scripts -->
+    <script src="config.js"></script>
+    <script src="modules/auth.js"></script>
+    <script src="modules/credits.js"></script>
+    <script src="modules/notifications.js"></script>
+    <script src="modules/utils.js"></script>
+    <script src="modules/game-shop.js"></script>
+    <script src="modules/avatar-renderer-enhanced.js"></script>
+    <script src="modules/avatar-storage.js"></script>
+    <script src="mascotte-growth.js"></script>
+    <script src="theme-manager.js"></script>
+    <script src="sidebar.js"></script>
+
+    <script>
+        // Avatar Studio Complete Controller
+        class AvatarStudioCompleteController {
+            constructor() {
+                this.shop = null;
+                this.enhancedRenderer = null;
+                this.currentFilter = 'all';
+                this.equippedItems = {};
+                this.init();
+            }
+
+            init() {
+                if (!AuthModule.checkAuthentication()) return;
+                
+                this.loadComponents();
+                this.setupEventListeners();
+                this.initializeSystems();
+            }
+
+            async loadComponents() {
+                try {
+                    // Load header
+                    const headerResponse = await fetch('components/header.html');
+                    const headerHtml = await headerResponse.text();
+                    document.getElementById('header-container').innerHTML = headerHtml;
+                    document.getElementById('pageTitle').textContent = 'Avatar Studio Completo - BrainPlay';
+
+                    // Load sidebar
+                    const sidebarResponse = await fetch('components/sidebar.html');
+                    const sidebarHtml = await sidebarResponse.text();
+                    document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+
+                    // Load footer
+                    const footerResponse = await fetch('components/footer.html');
+                    const footerHtml = await footerResponse.text();
+                    document.getElementById('footer-container').innerHTML = footerHtml;
+
+                } catch (error) {
+                    console.error('Error loading components:', error);
+                    NotificationsModule.showError('Errore nel caricamento dei componenti');
+                }
+            }
+
+            setupEventListeners() {
+                setTimeout(() => {
+                    if (window.sidebarManager) {
+                        window.sidebarManager.updateUserInfo();
+                    }
+                }, 100);
+            }
+
+            initializeSystems() {
+                // Initialize shop
+                this.shop = new GameShopModule();
+                
+                // Initialize enhanced avatar renderer
+                this.enhancedRenderer = new EnhancedAvatarRenderer();
+                window.enhancedAvatarRenderer = this.enhancedRenderer;
+                
+                // Initialize credits
+                CreditsModule.initializeCredits(100);
+                
+                // Load UI elements
+                this.loadEquippedSlots();
+                this.loadInventory();
+                this.loadEmotes();
+                this.updateStats();
+                
+                // Apply equipped items
+                this.applyEquippedItems();
+                
+                // Initialize theme
+                if (window.themeManager) {
+                    window.themeManager.loadTheme();
+                }
+            }
+
+            loadEquippedSlots() {
+                const slotsContainer = document.getElementById('equippedSlots');
+                const slots = [
+                    { id: 'head', name: 'Testa', icon: '🎩' },
+                    { id: 'body', name: 'Corpo', icon: '👔' },
+                    { id: 'face', name: 'Viso', icon: '😎' },
+                    { id: 'neck', name: 'Collo', icon: '📿' },
+                    { id: 'background', name: 'Sfondo', icon: '🌌' },
+                    { id: 'frame', name: 'Cornice', icon: '🖼️' }
+                ];
+
+                slotsContainer.innerHTML = slots.map(slot => `
+                    <div class="slot" data-slot="${slot.id}" id="slot-${slot.id}">
+                        <div class="slot-header">
+                            <div class="slot-label">
+                                <span>${slot.icon}</span>
+                                <span>${slot.name}</span>
+                            </div>
+                        </div>
+                        <div class="slot-content" id="slot-content-${slot.id}">
+                            <span class="slot-empty">Vuoto</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            loadInventory() {
+                const inventoryContainer = document.getElementById('inventoryGrid');
+                const items = this.shop.getInventoryItems(this.currentFilter);
+                
+                if (items.length === 0) {
+                    inventoryContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--muted); grid-column: 1 / -1;">
+                            <h3>Nessun oggetto in questa categoria</h3>
+                            <p>Visita il negozio per ottenere nuovi cosmetici!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                inventoryContainer.innerHTML = items.map(item => {
+                    const state = this.shop.getItemState(item.id);
+                    const rarityConfig = this.shop.getRarityConfig()[item.rarity];
+                    
+                    return `
+                        <div class="inventory-item ${state === 'equipped' ? 'equipped' : ''}" 
+                             onclick="avatarStudioComplete.toggleItem('${item.id}')">
+                            ${state === 'equipped' ? '<div class="equipped-badge">EQUIPAGGIATO</div>' : ''}
+                            <div class="inventory-item-icon">${item.icon}</div>
+                            <div class="inventory-item-name">${item.name}</div>
+                            <div class="inventory-item-rarity rarity-${item.rarity}">
+                                ${rarityConfig.icon} ${rarityConfig.name}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            loadEmotes() {
+                const emoteGrid = document.getElementById('emoteGrid');
+                const emotes = this.shop.getInventoryItems('emotes');
+                
+                if (emotes.length === 0) {
+                    emoteGrid.innerHTML = `
+                        <div style="text-align: center; padding: 1rem; color: var(--muted); grid-column: 1 / -1;">
+                            <p>Nessuna emote posseduta</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                emoteGrid.innerHTML = emotes.map(emote => `
+                    <button class="emote-btn" onclick="avatarStudioComplete.playEmote('${emote.id}')">
+                        <div class="emote-icon">${emote.icon}</div>
+                        <div class="emote-name">${emote.name}</div>
+                    </button>
+                `).join('');
+            }
+
+            toggleItem(itemId) {
+                const state = this.shop.getItemState(itemId);
+                
+                if (state === 'equipped') {
+                    // Unequip item
+                    this.unequipItem(itemId);
+                } else if (state === 'owned') {
+                    // Equip item
+                    this.equipItem(itemId);
+                } else {
+                    // Item not owned
+                    NotificationsModule.showError('Questo oggetto non è stato acquistato');
+                }
+            }
+
+            equipItem(itemId) {
+                const result = this.shop.equipItem(itemId);
+                
+                if (result.success) {
+                    // Update UI
+                    this.loadInventory();
+                    this.updateEquippedSlot(itemId, true);
+                    this.updateStats();
+                    
+                    NotificationsModule.showSuccess(result.message);
+                } else {
+                    NotificationsModule.showError(result.message);
+                }
+            }
+
+            unequipItem(itemId) {
+                const result = this.shop.equipItem(itemId);
+                
+                if (result.success) {
+                    // Update UI
+                    this.loadInventory();
+                    this.updateEquippedSlot(itemId, false);
+                    this.updateStats();
+                    
+                    NotificationsModule.showInfo(result.message);
+                } else {
+                    NotificationsModule.showError(result.message);
+                }
+            }
+
+            updateEquippedSlot(itemId, isEquipped) {
+                const product = this.shop.products[itemId];
+                if (!product) return;
+
+                const slotElement = document.getElementById(`slot-content-${product.slot}`);
+                if (!slotElement) return;
+
+                if (isEquipped) {
+                    slotElement.innerHTML = `
+                        <div class="slot-item">
+                            <div class="slot-item-icon">${product.icon}</div>
+                            <div class="slot-item-name">${product.name}</div>
+                            <button class="slot-remove" onclick="avatarStudioComplete.unequipItem('${itemId}')">✖️</button>
+                        </div>
+                    `;
+                    slotElement.parentElement.classList.add('filled');
+                } else {
+                    slotElement.innerHTML = '<span class="slot-empty">Vuoto</span>';
+                    slotElement.parentElement.classList.remove('filled');
+                }
+            }
+
+            applyEquippedItems() {
+                // Apply all equipped items to the enhanced renderer
+                Object.keys(this.shop.equipped).forEach(itemId => {
+                    if (this.shop.equipped[itemId]) {
+                        this.enhancedRenderer.applyCosmetic(itemId);
+                        this.updateEquippedSlot(itemId, true);
+                    }
+                });
+            }
+
+            playEmote(emoteId) {
+                if (this.enhancedRenderer) {
+                    this.enhancedRenderer.playEmote(emoteId);
+                    NotificationsModule.showInfo(`Emote: ${this.shop.products[emoteId]?.name || 'Unknown'}`);
+                }
+            }
+
+            filterInventory(category) {
+                this.currentFilter = category;
+                this.loadInventory();
+            }
+
+            unequipAll() {
+                const equippedIds = Object.keys(this.shop.equipped);
+                
+                equippedIds.forEach(itemId => {
+                    this.unequipItem(itemId);
+                });
+                
+                // Reset enhanced renderer
+                this.enhancedRenderer.resetAllCosmetics();
+                
+                NotificationsModule.showInfo('Tutti gli oggetti rimossi');
+            }
+
+            randomizeAvatar() {
+                // Randomize equipped items
+                const ownedItems = this.shop.getInventoryItems();
+                const slots = ['head', 'body', 'face', 'neck', 'background', 'frame'];
+                
+                // Clear current equipped items
+                this.unequipAll();
+                
+                // Randomly equip one item per slot
+                slots.forEach(slot => {
+                    const slotItems = ownedItems.filter(item => item.slot === slot);
+                    if (slotItems.length > 0) {
+                        const randomItem = slotItems[Math.floor(Math.random() * slotItems.length)];
+                        this.equipItem(randomItem.id);
+                    }
+                });
+                
+                NotificationsModule.showInfo('Avatar randomizzato!');
+            }
+
+            resetAvatar() {
+                this.unequipAll();
+                NotificationsModule.showInfo('Avatar resettato!');
+            }
+
+            saveAvatar() {
+                const equippedData = this.enhancedRenderer.getEquippedItems();
+                
+                // Save to storage
+                localStorage.setItem('bp_avatar_equipped_complete', JSON.stringify(equippedData));
+                
+                // Award credits
+                CreditsModule.earnCrediti(5, 'Salvataggio Avatar Completo');
+                
+                NotificationsModule.showSuccess('Avatar salvato con successo! +5 crediti');
+            }
+
+            updateStats() {
+                const stats = this.shop.getStats();
+                const credits = CreditsModule.getCrediti();
+                
+                document.getElementById('avatarLevel').textContent = '1'; // TODO: Integrate with level system
+                document.getElementById('avatarCredits').textContent = credits;
+                document.getElementById('premiumCurrency').textContent = stats.premiumCurrency + ' 💎';
+                document.getElementById('totalItems').textContent = stats.ownedItems;
+                
+                // Update global credits display
+                CreditsModule.updateCreditDisplay();
+            }
+        }
+
+        // Initialize avatar studio complete
+        document.addEventListener('DOMContentLoaded', () => {
+            window.avatarStudioComplete = new AvatarStudioCompleteController();
+        });
+
+        console.log('Avatar Studio Completo caricato!');
+    </script>
+</body>
+</html>

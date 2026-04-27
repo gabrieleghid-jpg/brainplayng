@@ -42,6 +42,36 @@
 
   <div class="page-shell">
     <aside class="sidebar">
+      <!-- Avatar Personalizzabile -->
+      <article class="avatar-card">
+        <header>
+          <h2>Il tuo Avatar</h2>
+          <span class="pill">Personalizza</span>
+        </header>
+        <div class="avatar-display">
+          <div class="avatar-frame" id="fotoAvatarFrame">
+            <canvas id="gameAvatarCanvas" width="300" height="400" style="border-radius: 15px;"></canvas>
+          </div>
+          
+          <div class="avatar-info">
+            <div class="info-item">
+              <div class="info-label">Crediti</div>
+              <div class="info-value" id="fotoAvatarCredits">0</div>
+            </div>
+            <div class="info-item">
+              <div class="info-label">Oggetti</div>
+              <div class="info-value" id="fotoAvatarItems">0</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="avatar-controls">
+          <button class="avatar-btn" onclick="fotoAvatarController.openShop()">🛍️ Negozio</button>
+          <button class="avatar-btn" onclick="fotoAvatarController.randomize()">🎲 Random</button>
+          <button class="avatar-btn" onclick="fotoAvatarController.reset()">🔄 Reset</button>
+        </div>
+      </article>
+
       <article class="session-card">
         <header>
           <h2>Carica una foto</h2>
@@ -68,7 +98,7 @@
           <h2>Consiglio rapido</h2>
           <span class="pill">Studio</span>
         </header>
-        <p>Quando carichi una foto, l’AI spiegherà il contenuto e ti aiuterà a chiarire i dubbi con domande e quiz.</p>
+        <p>Quando carichi una foto, l'AI spiegherà il contenuto e ti aiuterà a chiarire i dubbi con domande e quiz.</p>
       </article>
     </aside>
 
@@ -142,6 +172,257 @@
     </main>
   </div>
 
-  <script src="js/foto.js"></script>
+  <!-- Scripts per sistema avatar -->
+<script src="modules/auth.js"></script>
+<script src="modules/credits.js"></script>
+<script src="modules/notifications.js"></script>
+<script src="modules/game-shop.js"></script>
+<script src="modules/game-avatar-system.js"></script>
+<script src="js/foto.js"></script>
+
+<script>
+// Foto Avatar Controller con Game Avatar System
+class FotoAvatarController {
+    constructor() {
+        this.shop = null;
+        this.gameAvatar = null;
+        this.init();
+    }
+
+    init() {
+        // Initialize systems
+        if (typeof GameShopModule !== 'undefined') {
+            this.shop = new GameShopModule();
+        }
+        
+        if (typeof GameAvatarSystem !== 'undefined') {
+            this.gameAvatar = new GameAvatarSystem();
+        }
+        
+        // Initialize credits
+        if (typeof CreditsModule !== 'undefined') {
+            CreditsModule.initializeCredits(100);
+        }
+        
+        // Apply equipped items from shop
+        this.applyEquippedItems();
+        
+        // Update stats
+        this.updateStats();
+        
+        // Setup event listeners
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        // Ascolta acquisti dal negozio
+        window.addEventListener('shopItemPurchased', (e) => {
+            this.handleShopPurchase(e.detail);
+        });
+    }
+
+    handleShopPurchase(purchaseData) {
+        console.log('Avatar: Ricevuto acquisto', purchaseData); // Debug
+        
+        if (purchaseData.success && purchaseData.product) {
+            const product = purchaseData.product;
+            
+            // Se è un pacchetto, aggiungi oggetti all'inventario avatar
+            if (product.type === 'pack') {
+                this.addPackItemsToAvatar(product);
+            } else if (product.type !== 'consumable') {
+                // Aggiungi oggetto singolo all'inventario
+                this.addItemToAvatar(product.id);
+                
+                // Applica immediatamente l'oggetto all'avatar
+                this.applyItemToAvatar(product.id);
+            }
+            
+            // Aggiorna stats
+            this.updateStats();
+            
+            // Ridisegna avatar
+            if (this.gameAvatar) {
+                this.gameAvatar.drawAvatar();
+            }
+            
+            // Mostra notifica
+            if (typeof NotificationsModule !== 'undefined') {
+                NotificationsModule.showSuccess(`${product.name} aggiunto all'avatar!`);
+            }
+        }
+    }
+
+    applyItemToAvatar(itemId) {
+        if (!this.gameAvatar) return;
+        
+        // Applica l'oggetto all'avatar
+        this.gameAvatar.equipItem(itemId);
+        
+        // Salva negli equipaggiati
+        const avatarInventory = this.loadAvatarInventory();
+        if (!avatarInventory.equippedItems) {
+            avatarInventory.equippedItems = {};
+        }
+        avatarInventory.equippedItems[itemId] = true;
+        this.saveAvatarInventory(avatarInventory);
+    }
+
+    addPackItemsToAvatar(packProduct) {
+        // Simula apertura pacchetto e aggiungi oggetti casuali
+        const possibleItems = Object.keys(this.shop.products).filter(id => 
+            this.shop.products[id].category !== 'packs' && 
+            this.shop.products[id].category !== 'powerups'
+        );
+        
+        const numItems = packProduct.contents ? packProduct.contents.length : 3;
+        const selectedItems = [];
+        
+        for (let i = 0; i < numItems; i++) {
+            const randomItem = possibleItems[Math.floor(Math.random() * possibleItems.length)];
+            selectedItems.push(randomItem);
+            this.addItemToAvatar(randomItem);
+        }
+        
+        return selectedItems;
+    }
+
+    addItemToAvatar(itemId) {
+        // Aggiungi oggetto all'inventario dell'avatar
+        const avatarInventory = this.loadAvatarInventory();
+        
+        if (!avatarInventory.ownedItems) {
+            avatarInventory.ownedItems = [];
+        }
+        
+        if (!avatarInventory.ownedItems.includes(itemId)) {
+            avatarInventory.ownedItems.push(itemId);
+            this.saveAvatarInventory(avatarInventory);
+        }
+    }
+
+    loadAvatarInventory() {
+        try {
+            const saved = localStorage.getItem('bp_avatar_game_inventory');
+            return saved ? JSON.parse(saved) : { ownedItems: [], equippedItems: {} };
+        } catch (error) {
+            console.error('Error loading avatar inventory:', error);
+            return { ownedItems: [], equippedItems: {} };
+        }
+    }
+
+    saveAvatarInventory(inventory) {
+        try {
+            localStorage.setItem('bp_avatar_game_inventory', JSON.stringify(inventory));
+        } catch (error) {
+            console.error('Error saving avatar inventory:', error);
+        }
+    }
+
+    applyEquippedItems() {
+        if (!this.gameAvatar) return;
+        
+        // Carica oggetti equipaggiati dall'inventario avatar
+        const avatarInventory = this.loadAvatarInventory();
+        
+        // Applica oggetti equipaggiati
+        Object.keys(avatarInventory.equippedItems).forEach(itemId => {
+            if (avatarInventory.equippedItems[itemId]) {
+                this.gameAvatar.equipItem(itemId);
+            }
+        });
+    }
+
+    updateStats() {
+        if (!this.shop) return;
+        
+        const shopStats = this.shop.getStats();
+        const avatarInventory = this.loadAvatarInventory();
+        const credits = typeof CreditsModule !== 'undefined' ? CreditsModule.getCrediti() : 0;
+        
+        const creditsElement = document.getElementById('fotoAvatarCredits');
+        const itemsElement = document.getElementById('fotoAvatarItems');
+        
+        if (creditsElement) creditsElement.textContent = credits;
+        if (itemsElement) itemsElement.textContent = avatarInventory.ownedItems.length;
+    }
+
+    openShop() {
+        // Redirect to game shop
+        window.location.href = 'game-shop.html';
+    }
+
+    randomize() {
+        if (!this.gameAvatar) {
+            if (typeof NotificationsModule !== 'undefined') {
+                NotificationsModule.showError('Sistema avatar non disponibile');
+            }
+            return;
+        }
+
+        // Reset e applica oggetti casuali posseduti
+        this.gameAvatar.reset();
+        
+        const avatarInventory = this.loadAvatarInventory();
+        const slots = ['head', 'body', 'face', 'neck', 'background'];
+        
+        slots.forEach(slot => {
+            const slotItems = avatarInventory.ownedItems.filter(itemId => {
+                const product = this.shop.products[itemId];
+                return product && product.slot === slot;
+            });
+            
+            if (slotItems.length > 0) {
+                const randomItem = slotItems[Math.floor(Math.random() * slotItems.length)];
+                this.gameAvatar.equipItem(randomItem);
+            }
+        });
+        
+        if (typeof NotificationsModule !== 'undefined') {
+            NotificationsModule.showInfo('Avatar randomizzato!');
+        }
+    }
+
+    reset() {
+        if (!this.gameAvatar) {
+            if (typeof NotificationsModule !== 'undefined') {
+                NotificationsModule.showError('Sistema avatar non disponibile');
+            }
+            return;
+        }
+
+        this.gameAvatar.reset();
+        
+        if (typeof NotificationsModule !== 'undefined') {
+            NotificationsModule.showInfo('Avatar resettato!');
+        }
+    }
+
+    // Metodo pubblico per aggiornare avatar da acquisti
+    refreshFromPurchase(purchaseData) {
+        this.handleShopPurchase(purchaseData);
+    }
+}
+
+// Initialize foto avatar controller when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    window.fotoAvatarController = new FotoAvatarController();
+});
+
+// Interceptor per acquisti negozio
+const originalPurchaseItem = window.GameShopModule?.prototype?.purchaseItem;
+if (originalPurchaseItem) {
+    window.GameShopModule.prototype.purchaseItem = function(productId, paymentType) {
+        const result = originalPurchaseItem.call(this, productId, paymentType);
+        
+        // Notifica il controller avatar
+        if (window.fotoAvatarController) {
+            window.fotoAvatarController.refreshFromPurchase(result);
+        }
+        
+        return result;
+    };
+}
+</script>
 </body>
 </html>
